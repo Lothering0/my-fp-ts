@@ -1,4 +1,11 @@
-import { Applicative, Functor, Monad } from "../types"
+import {
+  Applicative,
+  createMonad,
+  Functor,
+  Monad,
+  Monoid,
+  Semigroup,
+} from "../types"
 
 declare module "../types" {
   export interface Kind<A> {
@@ -21,12 +28,18 @@ export const applicative: Applicative<"Array"> = {
 
 export const { apply } = applicative
 
-const monad: Monad<"Array"> = {
+const monad: Monad<"Array"> = createMonad (functor) ({
   _URI: "Array",
   join: as => as.flat (),
-  bind: (as, f) => join (map (as, f)),
-}
+})
 
-export const { bind, join } = monad
+export const { Do, bind, join, mapTo, applyTo, bindTo, tap, tapIo } = monad
 
-export const Do: Array<{}> = [{}]
+export const getSemigroup = <A>(): Semigroup<Array<A>> => ({
+  concat: (xs, ys) => [...xs, ...ys],
+})
+
+export const getMonoid = <A>(): Monoid<Array<A>> => ({
+  ...getSemigroup (),
+  empty: [],
+})

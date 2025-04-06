@@ -1,8 +1,14 @@
-import { Applicative2, Bifunctor, Functor2, Monad2 } from "../types"
+import {
+  Applicative2,
+  Bifunctor,
+  createMonad2,
+  Functor2,
+  Monad2,
+} from "../types"
 
 declare module "../types" {
-  export interface Kind2<A, B> {
-    Either: Either<A, B>
+  export interface Kind2<E, A> {
+    Either: Either<E, A>
   }
 }
 
@@ -71,12 +77,9 @@ export const applicative: Applicative2<"Either"> = {
 
 export const { apply } = applicative
 
-export const monad: Monad2<"Either"> = {
+export const monad: Monad2<"Either"> = createMonad2 (functor) ({
   _URI: "Either",
   join: <E, A>(mma: Right<Either<E, A>>) => mma.value,
-  bind: (mma, f) => isLeft (mma) ? mma : f (mma.value),
-}
+})
 
-export const { join, bind } = monad
-
-export const Do: Either<never, {}> = right ({})
+export const { Do, join, bind, mapTo, applyTo, bindTo, tap, tapIo } = monad

@@ -1,4 +1,4 @@
-import { Applicative, Functor, Monad } from "../types"
+import { Applicative, createMonad, Functor, Monad } from "../types"
 
 declare module "../types" {
   interface Kind<A> {
@@ -7,11 +7,13 @@ declare module "../types" {
 }
 
 export interface Identity<A> {
+  readonly _tag: "Identity"
   readonly value: A
 }
 
 type IdentityConstructor = <A>(a: A) => Identity<A>
 export const identity: IdentityConstructor = value => ({
+  _tag: "Identity",
   value,
 })
 
@@ -33,12 +35,9 @@ export const applicative: Applicative<"Identity"> = {
 
 export const { apply } = applicative
 
-export const monad: Monad<"Identity"> = {
+export const monad: Monad<"Identity"> = createMonad (functor) ({
   _URI: "Identity",
   join: fromIdentity,
-  bind: (ma, f) => f (fromIdentity (ma)),
-}
+})
 
-export const { join, bind } = monad
-
-export const Do: Identity<{}> = identity ({})
+export const { Do, join, bind, mapTo, applyTo, bindTo, tap, tapIo } = monad

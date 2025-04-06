@@ -1,3 +1,5 @@
+export * from "./add"
+export * from "./call"
 export * from "./compose"
 export * from "./constant"
 export * from "./curry"

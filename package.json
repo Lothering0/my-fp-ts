@@ -8,6 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "node ./esbuild.config.mjs",
     "start": "npm run build && clear && node ./dist/index.cjs",
+    "start:watch": "npm run build && node ./dist/index.cjs",
     "watch": "nodemon dist/index.cjs",
     "nodemon": "nodemon",
     "lint": "eslint --fix"
