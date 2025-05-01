@@ -11,12 +11,24 @@ export default [
     plugins: {
       "@stylistic/js": stylistic,
     },
+    /* @type {import('@stylistic/eslint-plugin').RuleOptions} */
     rules: {
       "prettier/prettier": "off",
       "@typescript-eslint/no-unused-vars": "warn",
       "@typescript-eslint/no-empty-object-type": "off",
       "@stylistic/js/function-call-spacing": ["error", "always"],
       "@stylistic/js/no-extra-parens": ["warn", "all"],
+      "@stylistic/js/no-multi-spaces": [
+        "error",
+        {
+          exceptions: {
+            ImportDeclaration: true,
+            ImportAttribute: true,
+            Property: true,
+            VariableDeclarator: true,
+          },
+        },
+      ],
     },
   },
 ]

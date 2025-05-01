@@ -1,43 +1,48 @@
-import { Applicative, createMonad, Functor, Monad } from "../types"
+import { Applicative } from "../types/Applicative"
+import { Functor } from "../types/Functor"
+import { createMonad, Monad } from "../types/Monad"
 
-declare module "../types" {
+declare module "../types/Kind" {
   interface Kind<A> {
     readonly Identity: Identity<A>
   }
 }
 
-export interface Identity<A> {
-  readonly _tag: "Identity"
-  readonly value: A
-}
+export type Identity<A> = A
 
-type IdentityConstructor = <A>(a: A) => Identity<A>
-export const identity: IdentityConstructor = value => ({
-  _tag: "Identity",
-  value,
-})
-
-type FromIdentity = <A>(ma: Identity<A>) => A
-export const fromIdentity: FromIdentity = mma => mma.value
+export const identity = <A>(a: A): Identity<A> => a
 
 export const functor: Functor<"Identity"> = {
   _URI: "Identity",
   pure: identity,
-  map: (fa, f) => identity (f (fromIdentity (fa))),
+  map: (fa, f) => f (fa),
 }
 
 export const { pure, map } = functor
 
 export const applicative: Applicative<"Identity"> = {
   _URI: "Identity",
-  apply: (fa, ff) => map (fa, fromIdentity (ff)),
+  apply: (fa, ff) => map (fa, ff),
 }
 
 export const { apply } = applicative
 
 export const monad: Monad<"Identity"> = createMonad (functor) ({
   _URI: "Identity",
-  join: fromIdentity,
+  join: identity,
 })
 
-export const { Do, join, bind, mapTo, applyTo, bindTo, tap, tapIo } = monad
+export const {
+  Do,
+  join,
+  bind,
+  compose,
+  mapTo,
+  applyTo,
+  applyResultTo,
+  apS,
+  bindTo,
+  tap,
+  tapIo,
+  returnM,
+} = monad

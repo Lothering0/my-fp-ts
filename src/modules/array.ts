@@ -1,13 +1,10 @@
-import {
-  Applicative,
-  createMonad,
-  Functor,
-  Monad,
-  Monoid,
-  Semigroup,
-} from "../types"
+import { Applicative } from "../types/Applicative"
+import { Functor } from "../types/Functor"
+import { createMonad, Monad } from "../types/Monad"
+import { Semigroup } from "../types/Semigroup"
+import { Monoid } from "../types/Monoid"
 
-declare module "../types" {
+declare module "../types/Kind" {
   export interface Kind<A> {
     readonly Array: Array<A>
   }
@@ -30,10 +27,23 @@ export const { apply } = applicative
 
 const monad: Monad<"Array"> = createMonad (functor) ({
   _URI: "Array",
-  join: as => as.flat (),
+  join: xs => xs.flat (),
 })
 
-export const { Do, bind, join, mapTo, applyTo, bindTo, tap, tapIo } = monad
+export const {
+  Do,
+  join,
+  bind,
+  compose,
+  mapTo,
+  applyTo,
+  applyResultTo,
+  apS,
+  bindTo,
+  tap,
+  tapIo,
+  returnM,
+} = monad
 
 export const getSemigroup = <A>(): Semigroup<Array<A>> => ({
   concat: (xs, ys) => [...xs, ...ys],

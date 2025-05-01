@@ -1,17 +1,21 @@
-import { Applicative, createMonad, Functor, Monad } from "../../types"
+import { Applicative } from "../types/Applicative"
+import { Functor } from "../types/Functor"
+import { createMonad, Monad } from "../types/Monad"
 
-declare module "../../types" {
+declare module "../types/Kind" {
   interface Kind<A> {
     readonly IO: IO<A>
   }
 }
 
 export interface IO<T> {
+  readonly _tag: "IO"
   readonly value: T
 }
 
 type IOConstructor = <A>(a: A) => IO<A>
 export const io: IOConstructor = value => ({
+  _tag: "IO",
   value,
 })
 
@@ -38,4 +42,17 @@ export const monad: Monad<"IO"> = createMonad (functor) ({
   join: fromIo,
 })
 
-export const { Do, join, bind, mapTo, applyTo, bindTo, tap, tapIo } = monad
+export const {
+  Do,
+  join,
+  bind,
+  compose,
+  mapTo,
+  applyTo,
+  applyResultTo,
+  apS,
+  bindTo,
+  tap,
+  tapIo,
+  returnM,
+} = monad

@@ -1,4 +1,5 @@
-import { Monoid, Semigroup } from "../types"
+import { Monoid } from "../types/Monoid"
+import { Semigroup } from "../types/Semigroup"
 
 export const semigroup: Semigroup<string> = {
   concat: (x, y) => x.concat (y),

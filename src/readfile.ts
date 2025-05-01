@@ -2,19 +2,19 @@ import * as IO from "./modules/io"
 import * as O from "./modules/option"
 import { _, pipe } from "./utils"
 
-type LogCharOn = (a: string) => (n: number) => IO.IO<void>
-const logCharOn: LogCharOn = chars => index =>
-  chars[index] ? IO.writeToStdout (chars[index]) : IO.pure (_)
+type LogCharOn_ = (a: string) => (n: number) => IO.IO<void>
+const logCharOn_: LogCharOn_ = chars => index =>
+  chars[index] ? IO.writeToStdout_ (chars[index]) : IO.pure (_)
 
-type LogChars = (a: string) => (n: number) => IO.IO<void>
-const logChars: LogChars = chars => index =>
+type LogChars_ = (a: string) => (n: number) => IO.IO<void>
+const logChars_: LogChars_ = chars => index =>
   chars.length === index - 1
-    ? logCharOn (chars) (index)
+    ? logCharOn_ (chars) (index)
     : pipe (
         IO.Do,
-        () => logCharOn (chars) (index),
-        () => IO.waitSync (10),
-        () => logChars (chars) (index + 1),
+        () => logCharOn_ (chars) (index),
+        () => IO.wait_ (10),
+        () => logChars_ (chars) (index + 1),
       )
 
 pipe (
@@ -26,7 +26,7 @@ pipe (
     O.option (
       maybeFileContent,
       () => IO.raise ("Something went wrong"),
-      fileContent => logChars (fileContent) (0),
+      fileContent => logChars_ (fileContent) (0),
     ),
   ),
 )
