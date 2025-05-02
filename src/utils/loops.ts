@@ -15,7 +15,4 @@ export const getDoWhile: GetDoWhile = functor => p => f => {
 type GetDoWhile2 = <URI extends URIS2>(
   functor: Functor2<URI>,
 ) => <E, A>(f: Predicate<void>) => (g: () => A) => HKT2<URI, E, void>
-export const getDoWhile2: GetDoWhile2 = functor => p => f => {
-  while (p ()) f ()
-  return functor.pure (_)
-}
+export const getDoWhile2: GetDoWhile2 = getDoWhile as GetDoWhile2

@@ -1,8 +1,11 @@
-import { Applicative } from "../types/Applicative"
-import { Functor } from "../types/Functor"
+import { Applicative, createApplicative } from "../types/Applicative"
 import { createMonad, Monad } from "../types/Monad"
 import { Semigroup } from "../types/Semigroup"
 import { Monoid } from "../types/Monoid"
+import {
+  FunctorWithIndex,
+  createFunctorWithIndex,
+} from "../types/FunctorWithIndex"
 
 declare module "../types/Kind" {
   export interface Kind<A> {
@@ -10,29 +13,29 @@ declare module "../types/Kind" {
   }
 }
 
-export const functor: Functor<"Array"> = {
+export const functor: FunctorWithIndex<"Array"> = createFunctorWithIndex ({
   _URI: "Array",
   pure: a => [a],
   map: (fa, f) => fa.map (f),
-}
+})
 
 export const { pure, map } = functor
 
-export const applicative: Applicative<"Array"> = {
+export const applicative: Applicative<"Array"> = createApplicative ({
   _URI: "Array",
-  apply: (fa, ff) => join (map (ff, f => map (fa, f))),
-}
+  apply: (fa, ff) => flat (map (ff, f => map (fa, f))),
+})
 
 export const { apply } = applicative
 
 const monad: Monad<"Array"> = createMonad (functor) ({
   _URI: "Array",
-  join: xs => xs.flat (),
+  flat: xs => xs.flat (),
 })
 
 export const {
   Do,
-  join,
+  flat,
   bind,
   compose,
   mapTo,
@@ -42,7 +45,6 @@ export const {
   bindTo,
   tap,
   tapIo,
-  returnM,
 } = monad
 
 export const getSemigroup = <A>(): Semigroup<Array<A>> => ({

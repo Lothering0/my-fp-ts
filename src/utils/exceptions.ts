@@ -1,7 +1,6 @@
-import * as IO from "../modules/io"
 import * as E from "../modules/either"
 
-type Raise = <A>(a: A) => IO.IO<never>
+type Raise = <A>(a: A) => never
 export const raise: Raise = a => {
   throw a
 }

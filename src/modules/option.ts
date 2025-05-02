@@ -1,9 +1,10 @@
 import * as I from "./identity"
-import { Functor } from "../types/Functor"
-import { Applicative } from "../types/Applicative"
+import { createFunctor, Functor } from "../types/Functor"
+import { createApplicative, Applicative } from "../types/Applicative"
 import { createMonad, Monad } from "../types/Monad"
 import { Semigroup } from "../types/Semigroup"
 import { Monoid } from "../types/Monoid"
+import { overloadWithPointFree2 } from "../utils/points"
 
 declare module "../types/Kind" {
   export interface Kind<A> {
@@ -38,9 +39,21 @@ export const isSome: IsSome = fa => fa._tag === "Some"
 type IsNone = <A>(fa: Option<A>) => fa is None
 export const isNone: IsNone = fa => fa._tag === "None"
 
-type OptionEliminator = <A, B>(fa: Option<A>, b: () => B, f: (a: A) => B) => B
-export const option: OptionEliminator = (fa, whenNone, whenSome) =>
-  isNone (fa) ? whenNone () : whenSome (fa.value)
+type FromSome = <A>(fa: Some<A>) => A
+export const fromSome: FromSome = fa => fa.value
+
+interface OptionEliminatorPointed {
+  <A, B>(fa: Option<A>, b: () => B, f: (a: A) => B): B
+}
+
+interface OptionEliminator extends OptionEliminatorPointed {
+  <A, B>(b: () => B, f: (a: A) => B): (fa: Option<A>) => B
+}
+
+const optionPointed: OptionEliminatorPointed = (fa, whenNone, whenSome) =>
+  isNone (fa) ? whenNone () : whenSome (fromSome (fa))
+
+export const option: OptionEliminator = overloadWithPointFree2 (optionPointed)
 
 type ToOption = <A>(a: A) => Option<NonNullable<A>>
 export const toOption: ToOption = a => a == null ? none : some (a)
@@ -49,17 +62,17 @@ type FromOption = <A>(a: A) => (fa: Option<A>) => A
 export const fromOption: FromOption =
   <A>(a: A) =>
   (fa: Option<A>) =>
-    isNone (fa) ? a : fa.value
+    isNone (fa) ? a : fromSome (fa)
 
-export const functor: Functor<"Option"> = {
+export const functor: Functor<"Option"> = createFunctor ({
   _URI: "Option",
   pure: some,
   map: (fa, f) => option (fa, () => none, I.compose (some, f)),
-}
+})
 
 export const { pure, map } = functor
 
-export const applicative: Applicative<"Option"> = {
+export const applicative: Applicative<"Option"> = createApplicative ({
   _URI: "Option",
   apply: (fa, ff) =>
     option (
@@ -67,18 +80,18 @@ export const applicative: Applicative<"Option"> = {
       () => none,
       f => option (fa, () => none, I.compose (some, f)),
     ),
-}
+})
 
 export const { apply } = applicative
 
 export const monad: Monad<"Option"> = createMonad (functor) ({
   _URI: "Option",
-  join: mma => option (mma, () => none, I.identity),
+  flat: mma => option (mma, () => none, I.identity),
 })
 
 export const {
   Do,
-  join,
+  flat,
   bind,
   compose,
   mapTo,
@@ -88,7 +101,6 @@ export const {
   bindTo,
   tap,
   tapIo,
-  returnM,
 } = monad
 
 type GetMonoid = <A>(semigroup: Semigroup<A>) => Monoid<Option<A>>
@@ -101,5 +113,5 @@ export const getMonoid: GetMonoid = s => ({
         : my
       : isNone (my)
         ? mx
-        : some (s.concat (mx.value, my.value)),
+        : some (s.concat (fromSome (mx), fromSome (my))),
 })

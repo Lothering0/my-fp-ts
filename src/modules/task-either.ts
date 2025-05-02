@@ -1,7 +1,8 @@
-import { Functor2 } from "../types/Functor"
-import { Applicative2 } from "../types/Applicative"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { createFunctor2, Functor2 } from "../types/Functor"
+import { createApplicative2, Applicative2 } from "../types/Applicative"
 import { createMonad2, Monad2 } from "../types/Monad"
-import { Bifunctor } from "../types/Bifunctor"
+import { createBifunctor, Bifunctor } from "../types/Bifunctor"
 import { Semigroup } from "../types/Semigroup"
 import { Monoid } from "../types/Monoid"
 import * as T from "./task"
@@ -9,6 +10,7 @@ import * as E from "./either"
 import * as I from "./identity"
 import { pipe } from "../utils/pipe"
 import { _ } from "../utils/underscore"
+import { overloadWithPointFree2 } from "../utils/points"
 
 declare module "../types/Kind" {
   interface Kind2<E, A> {
@@ -39,17 +41,44 @@ type FromTaskEither = <E, A>(ma: TaskEither<E, A>) => Promise<E.Either<E, A>>
 export const fromTaskEither: FromTaskEither = mma =>
   mma ().then (I.identity, e => E.left (e))
 
-export const functor: Functor2<"TaskEither"> = {
+interface TaskEitherEliminatorPointed {
+  <E, A, B>(
+    mma: TaskEither<E, A>,
+    whenLeft: (e: E) => B,
+    whenRight: (a: A) => B,
+  ): T.Task<B>
+}
+
+interface TaskEitherEliminator extends TaskEitherEliminatorPointed {
+  <E, A, B>(
+    whenLeft: (e: E) => B,
+    whenRight: (a: A) => B,
+  ): (mma: TaskEither<E, A>) => T.Task<B>
+}
+
+const taskEitherPointed: TaskEitherEliminatorPointed = (mma, f, g) => () =>
+  fromTaskEither (mma).then (E.either (f, g))
+
+export const taskEither: TaskEitherEliminator =
+  overloadWithPointFree2 (taskEitherPointed)
+
+export const functor: Functor2<"TaskEither"> = createFunctor2 ({
   _URI: "TaskEither",
   pure: taskRight,
-  map: (fma, f) => () => fromTaskEither (fma).then (ma => E.map (ma, f)),
-}
+  map:
+    <E, A, B>(fma: TaskEither<E, A>, f: (a: A) => B): TaskEither<E, B> =>
+    () =>
+      fromTaskEither (fma).then (ma => E.map (ma, f)),
+})
 
 export const { map, pure } = functor
 
-export const bifunctor: Bifunctor<"TaskEither"> = {
+export const bifunctor: Bifunctor<"TaskEither"> = createBifunctor ({
   _URI: "TaskEither",
-  mapLeft: (fma, f) => () => fromTaskEither (fma).then (ma => E.mapLeft (ma, f)),
+  mapLeft:
+    <E, _, B>(fma: TaskEither<E, _>, f: (e: E) => B): TaskEither<B, _> =>
+    () =>
+      fromTaskEither (fma).then (ma => E.mapLeft (ma, f)),
   bimap:
     <E, A, B = E, C = A>(
       fma: TaskEither<E, A>,
@@ -60,30 +89,35 @@ export const bifunctor: Bifunctor<"TaskEither"> = {
       fromTaskEither (fma).then (ma =>
         E.isLeft (ma) ? E.mapLeft<E, C, B> (ma, f) : E.map<B, A, C> (ma, g),
       ),
-}
+})
 
 export const { mapLeft, bimap } = bifunctor
 
-export const applicative: Applicative2<"TaskEither"> = {
+export const applicative: Applicative2<"TaskEither"> = createApplicative2 ({
   _URI: "TaskEither",
-  apply: (fma, fmf) => () =>
-    fromTaskEither (fma).then (ma =>
-      fromTaskEither (fmf).then (mf =>
-        pipe (
-          E.Do,
-          E.apS ("a", ma),
-          E.apS ("f", mf),
-          E.returnM (({ f, a }) => f (a)),
+  apply:
+    <E, A, B>(
+      fma: TaskEither<E, A>,
+      fmf: TaskEither<E, (a: A) => B>,
+    ): TaskEither<E, B> =>
+    () =>
+      fromTaskEither (fma).then (ma =>
+        fromTaskEither (fmf).then (mf =>
+          pipe (
+            E.Do,
+            E.apS ("a", ma),
+            E.apS ("f", mf),
+            E.map (({ f, a }) => f (a)),
+          ),
         ),
       ),
-    ),
-}
+})
 
 export const { apply } = applicative
 
 export const monad: Monad2<"TaskEither"> = createMonad2 (functor) ({
   _URI: "TaskEither",
-  join: mma => () =>
+  flat: mma => () =>
     fromTaskEither (mma).then (ma =>
       E.isLeft (ma) ? ma : fromTaskEither (E.fromRight (ma)),
     ),
@@ -91,43 +125,43 @@ export const monad: Monad2<"TaskEither"> = createMonad2 (functor) ({
     fromTaskEither (mma).then (ma =>
       E.isLeft (ma) ? ma : pipe (ma, E.fromRight, f, fromTaskEither),
     ),
-  tap: f => mma => () =>
+  tap: (mma, f) => () =>
     fromTaskEither (mma).then (ma =>
       E.isLeft (ma)
         ? ma
-        : pipe (ma, E.fromRight, f, fromTaskEither).then (() => ma),
+        : pipe (ma, E.fromRight, f, fromTaskEither).then (ea =>
+            E.isLeft (ea) ? ea : ma,
+          ),
     ),
-  tapIo: f => mma => () =>
+  tapIo: (mma, f) => () =>
     fromTaskEither (mma).then (
       ma => (E.isLeft (ma) ? ma : f (E.fromRight (ma)), ma),
     ),
-  applyTo: (name, fmf) => fma => () =>
+  applyTo: (fma, name, fmf) => () =>
     fromTaskEither (fmf).then (mf =>
       fromTaskEither (fma).then (ma =>
         pipe (
           E.Do,
           E.apS ("f", mf),
           E.apS ("a", ma),
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          E.returnM (({ f, a }) => ({ [name]: f (a), ...a }) as any),
+          E.map (({ f, a }) => ({ [name]: f (a), ...a }) as any),
         ),
       ),
     ),
-  applyResultTo: (name, fmb) => fma => () =>
+  applyResultTo: (fma, name, fmb) => () =>
     Promise.all ([fromTaskEither (fma), fromTaskEither (fmb)]).then (([ma, mb]) =>
       pipe (
         E.Do,
         E.apS ("a", ma),
         E.apS ("b", mb),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        E.returnM (({ a, b }) => ({ [name]: b, ...a }) as any),
+        E.map (({ a, b }) => ({ [name]: b, ...a }) as any),
       ),
     ),
 })
 
 export const {
   Do,
-  join,
+  flat,
   bind,
   compose,
   mapTo,
@@ -137,16 +171,25 @@ export const {
   bindTo,
   tap,
   tapIo,
-  returnM,
 } = monad
 
-type TapTask = <E, A, _>(
-  f: (a: A) => T.Task<_>,
-) => (ma: TaskEither<E, A>) => TaskEither<E, A>
-export const tapTask: TapTask = f => mma => () =>
+interface TapTaskPointed {
+  <E, A, _>(ma: TaskEither<E, A>, f: (a: A) => T.Task<_>): TaskEither<E, A>
+}
+
+interface TapTask extends TapTaskPointed {
+  <E, A, _>(f: (a: A) => T.Task<_>): (ma: TaskEither<E, A>) => TaskEither<E, A>
+}
+
+const tapTaskPointed: TapTaskPointed = (mma, f) => () =>
   fromTaskEither (mma).then (ma =>
     E.isLeft (ma) ? ma : pipe (ma, E.fromRight, f, T.fromTask).then (() => ma),
   )
+
+export const tapTask: TapTask = (a: any, b?: any): any =>
+  typeof b === "undefined"
+    ? (mma: any) => tapTaskPointed (mma, a)
+    : tapTaskPointed (a, b)
 
 export const parallel = applyResultTo
 

@@ -1,6 +1,7 @@
-import { Applicative } from "../types/Applicative"
-import { Functor } from "../types/Functor"
+import { createApplicative, Applicative } from "../types/Applicative"
+import { createFunctor, Functor } from "../types/Functor"
 import { createMonad, Monad } from "../types/Monad"
+import { pipe } from "../utils/pipe"
 
 declare module "../types/Kind" {
   interface Kind<A> {
@@ -22,29 +23,29 @@ export const io: IOConstructor = value => ({
 type FromIO = <A>(ma: IO<A>) => A
 export const fromIo: FromIO = mma => mma.value
 
-export const functor: Functor<"IO"> = {
+export const functor: Functor<"IO"> = createFunctor ({
   _URI: "IO",
   pure: io,
-  map: (fa, f) => io (f (fromIo (fa))),
-}
+  map: (fa, f) => pipe (fa, fromIo, f, io),
+})
 
 export const { pure, map } = functor
 
-export const applicative: Applicative<"IO"> = {
+export const applicative: Applicative<"IO"> = createApplicative ({
   _URI: "IO",
   apply: (fa, ff) => map (fa, fromIo (ff)),
-}
+})
 
 export const { apply } = applicative
 
 export const monad: Monad<"IO"> = createMonad (functor) ({
   _URI: "IO",
-  join: fromIo,
+  flat: fromIo,
 })
 
 export const {
   Do,
-  join,
+  flat,
   bind,
   compose,
   mapTo,
@@ -54,5 +55,4 @@ export const {
   bindTo,
   tap,
   tapIo,
-  returnM,
 } = monad

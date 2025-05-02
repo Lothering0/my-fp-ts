@@ -1,4 +1,14 @@
 import { Predicate } from "../modules/predicate"
+import { overloadWithPointFree } from "./points"
 
-type Filter = <A>(ma: Array<A>, f: Predicate<A>) => Array<A>
-export const filter: Filter = (ma, f) => ma.filter (f)
+interface FilterPointed {
+  <A>(ma: Array<A>, f: Predicate<A>): Array<A>
+}
+
+interface Filter extends FilterPointed {
+  <A>(f: Predicate<A>): (ma: Array<A>) => Array<A>
+}
+
+const filterPointed: FilterPointed = (ma, f) => ma.filter (f)
+
+export const filter: Filter = overloadWithPointFree (filterPointed)

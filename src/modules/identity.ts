@@ -1,5 +1,5 @@
-import { Applicative } from "../types/Applicative"
-import { Functor } from "../types/Functor"
+import { createApplicative, Applicative } from "../types/Applicative"
+import { createFunctor, Functor } from "../types/Functor"
 import { createMonad, Monad } from "../types/Monad"
 
 declare module "../types/Kind" {
@@ -12,29 +12,29 @@ export type Identity<A> = A
 
 export const identity = <A>(a: A): Identity<A> => a
 
-export const functor: Functor<"Identity"> = {
+export const functor: Functor<"Identity"> = createFunctor ({
   _URI: "Identity",
   pure: identity,
   map: (fa, f) => f (fa),
-}
+})
 
 export const { pure, map } = functor
 
-export const applicative: Applicative<"Identity"> = {
+export const applicative: Applicative<"Identity"> = createApplicative ({
   _URI: "Identity",
   apply: (fa, ff) => map (fa, ff),
-}
+})
 
 export const { apply } = applicative
 
 export const monad: Monad<"Identity"> = createMonad (functor) ({
   _URI: "Identity",
-  join: identity,
+  flat: identity,
 })
 
 export const {
   Do,
-  join,
+  flat,
   bind,
   compose,
   mapTo,
@@ -44,5 +44,4 @@ export const {
   bindTo,
   tap,
   tapIo,
-  returnM,
 } = monad

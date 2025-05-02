@@ -1,8 +1,10 @@
-import { Applicative2 } from "../types/Applicative"
-import { Bifunctor } from "../types/Bifunctor"
-import { Functor2 } from "../types/Functor"
+import { Applicative2, createApplicative2 } from "../types/Applicative"
+import { Bifunctor, createBifunctor } from "../types/Bifunctor"
+import { Functor2, createFunctor2 } from "../types/Functor"
 import { createMonad2, Monad2 } from "../types/Monad"
 import { Semigroup } from "../types/Semigroup"
+import { pipe } from "../utils/pipe"
+import { overloadWithPointFree2 } from "../utils/points"
 
 declare module "../types/Kind" {
   export interface Kind2<E, A> {
@@ -46,50 +48,60 @@ export const fromLeft: FromLeft = ma => ma.value
 type FromRight = <A>(ma: Right<A>) => A
 export const fromRight: FromRight = ma => ma.value
 
-type EitherEliminator = <E, A, B>(
-  ma: Either<E, A>,
-  whenLeft: (e: E) => B,
-  whenRight: (a: A) => B,
-) => B
-export const either: EitherEliminator = (ma, whenLeft, whenRight) =>
+interface EitherEliminatorPointed {
+  <E, A, B>(ma: Either<E, A>, whenLeft: (e: E) => B, whenRight: (a: A) => B): B
+}
+
+interface EitherEliminator extends EitherEliminatorPointed {
+  <E, A, B>(
+    whenLeft: (e: E) => B,
+    whenRight: (a: A) => B,
+  ): (ma: Either<E, A>) => B
+}
+
+const eitherPointed: EitherEliminatorPointed = (ma, whenLeft, whenRight) =>
   isLeft (ma) ? whenLeft (fromLeft (ma)) : whenRight (fromRight (ma))
 
-export const functor: Functor2<"Either"> = {
+export const either: EitherEliminator = overloadWithPointFree2 (eitherPointed)
+
+export const functor: Functor2<"Either"> = createFunctor2 ({
   _URI: "Either",
   pure: right,
-  map: (fa, f) => isLeft (fa) ? fa : right (f (fromRight (fa))),
-}
+  map: <E, A, B>(fa: Either<E, A>, f: (a: A) => B) =>
+    isLeft<E, A> (fa) ? fa : pipe (fa, fromRight, f, right<E, B>),
+})
 
 export const { pure, map } = functor
 
-export const bifunctor: Bifunctor<"Either"> = {
+export const bifunctor: Bifunctor<"Either"> = createBifunctor ({
   _URI: "Either",
-  mapLeft: (fa, f) => isRight (fa) ? fa : left (f (fromLeft (fa))),
+  mapLeft: <E, _, B>(fa: Either<E, _>, f: (e: E) => B): Either<B, _> =>
+    isRight (fa) ? fa : pipe (fa, fromLeft, f, left<B, _>),
   bimap: <E, A, B = E, C = A>(
     fa: Either<E, A>,
     f: (e: E) => B,
     g: (a: A) => C,
   ) => isLeft (fa) ? mapLeft<E, C, B> (fa, f) : map<B, A, C> (fa, g),
-}
+})
 
 export const { mapLeft, bimap } = bifunctor
 
-export const applicative: Applicative2<"Either"> = {
+export const applicative: Applicative2<"Either"> = createApplicative2 ({
   _URI: "Either",
   apply: (fa, ff) => isLeft (ff) ? ff : map (fa, fromRight (ff)),
-}
+})
 
 export const { apply } = applicative
 
 export const monad: Monad2<"Either"> = createMonad2 (functor) ({
   _URI: "Either",
-  join: <E, A>(mma: Either<E, Either<E, A>>) =>
+  flat: <E, A>(mma: Either<E, Either<E, A>>) =>
     isLeft (mma) ? mma : fromRight (mma),
 })
 
 export const {
   Do,
-  join,
+  flat,
   bind,
   compose,
   mapTo,
@@ -99,7 +111,6 @@ export const {
   bindTo,
   tap,
   tapIo,
-  returnM,
 } = monad
 
 type GetSemigroup = <E, A>(semigroup: Semigroup<A>) => Semigroup<Either<E, A>>

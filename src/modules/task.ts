@@ -1,6 +1,6 @@
 import * as I from "./identity"
-import { Functor } from "../types/Functor"
-import { Applicative } from "../types/Applicative"
+import { createFunctor, Functor } from "../types/Functor"
+import { createApplicative, Applicative } from "../types/Applicative"
 import { createMonad, Monad } from "../types/Monad"
 import { Semigroup } from "../types/Semigroup"
 import { Monoid } from "../types/Monoid"
@@ -22,35 +22,39 @@ export const task: TaskConstructor = a => () => Promise.resolve (a)
 type FromTask = <A>(ma: Task<A>) => Promise<A>
 export const fromTask: FromTask = ma => ma ()
 
-export const functor: Functor<"Task"> = {
+export const functor: Functor<"Task"> = createFunctor ({
   _URI: "Task",
   pure: task,
-  map: (fa, f) => () => fromTask (fa).then (f),
-}
+  map:
+    <A, B>(fa: Task<A>, f: (a: A) => B): Task<B> =>
+    () =>
+      fromTask (fa).then (f),
+})
 
 export const { map, pure } = functor
 
-export const applicative: Applicative<"Task"> = {
+export const applicative: Applicative<"Task"> = createApplicative ({
   _URI: "Task",
-  apply: (fa, ff) => () => fromTask (fa).then (a => fromTask (ff).then (f => f (a))),
-  /* apply: (fa, ff) => () =>
-    Promise.all ([fromTask (fa), fromTask (ff)]).then (([a, f]) => f (a)), */
-}
+  apply:
+    <A, B>(fa: Task<A>, ff: Task<(a: A) => B>): Task<B> =>
+    () =>
+      fromTask (fa).then (a => fromTask (ff).then (f => f (a))),
+})
 
 export const { apply } = applicative
 
 export const monad: Monad<"Task"> = createMonad (functor) ({
   _URI: "Task",
-  join: mma => () => fromTask (mma).then (fromTask),
+  flat: mma => () => fromTask (mma).then (fromTask),
   bind: (ma, f) => () => fromTask (ma).then (I.compose (fromTask, f)),
-  tap: f => ma => () => fromTask (ma).then (a => fromTask (f (a)).then (() => a)),
-  tapIo: f => ma => () => fromTask (ma).then (a => (f (a), a)),
-  applyTo: (name, ff) => fa => () =>
+  tap: (ma, f) => () => fromTask (ma).then (a => fromTask (f (a)).then (() => a)),
+  tapIo: (ma, f) => () => fromTask (ma).then (a => (f (a), a)),
+  applyTo: (fa, name, ff) => () =>
     fromTask (ff).then (f =>
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       fromTask (fa).then (a => ({ [name]: f (a), ...a }) as any),
     ),
-  applyResultTo: (name, fb) => fa => () =>
+  applyResultTo: (fa, name, fb) => () =>
     Promise.all ([fromTask (fa), fromTask (fb)]).then (
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ([a, b]) => ({ [name]: b, ...a }) as any,
@@ -59,7 +63,7 @@ export const monad: Monad<"Task"> = createMonad (functor) ({
 
 export const {
   Do,
-  join,
+  flat,
   bind,
   compose,
   mapTo,
@@ -69,7 +73,6 @@ export const {
   bindTo,
   tap,
   tapIo,
-  returnM,
 } = monad
 
 export const parallel = applyResultTo

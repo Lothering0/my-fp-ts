@@ -1,4 +1,4 @@
-import { Contravariant } from "../types/Contravariant"
+import { Contravariant, createContravariant } from "../types/Contravariant"
 import { compose } from "./identity"
 
 declare module "../types/Kind" {
@@ -11,9 +11,9 @@ export interface Predicate<A> {
   (a: A): boolean
 }
 
-export const contravariant: Contravariant<"Predicate"> = {
+export const contravariant: Contravariant<"Predicate"> = createContravariant ({
   _URI: "Predicate",
   contramap: compose,
-}
+})
 
 export const { contramap } = contravariant
