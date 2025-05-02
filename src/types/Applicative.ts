@@ -26,13 +26,13 @@ export const createApplicative: CreateApplicative = applicative => ({
 })
 
 interface ApplyPointed2<URI extends URIS2> {
-  <E, A, B>(fa: HKT2<URI, E, A>, ff: HKT2<URI, E, (a: A) => B>): HKT2<URI, E, B>
+  <_, A, B>(fa: HKT2<URI, _, A>, ff: HKT2<URI, _, (a: A) => B>): HKT2<URI, _, B>
 }
 
 interface Apply2<URI extends URIS2> extends ApplyPointed2<URI> {
-  <E, A, B>(
-    ff: HKT2<URI, E, (a: A) => B>,
-  ): (fa: HKT2<URI, E, A>) => HKT2<URI, E, B>
+  <_, A, B>(
+    ff: HKT2<URI, _, (a: A) => B>,
+  ): (fa: HKT2<URI, _, A>) => HKT2<URI, _, B>
 }
 
 export interface Applicative2<URI extends URIS2> {

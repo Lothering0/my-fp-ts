@@ -22,11 +22,11 @@ export interface TaskEither<E, A> extends T.Task<E.Either<E, A>> {
   (): Promise<E.Either<E, A>>
 }
 
-type TaskLeftConstructor = <E, A>(a: E) => TaskEither<E, A>
+type TaskLeftConstructor = <E, _>(e: E) => TaskEither<E, _>
 export const taskLeft: TaskLeftConstructor = a => () =>
   Promise.resolve (E.left (a))
 
-type TaskRightConstructor = <E, A>(a: A) => TaskEither<E, A>
+type TaskRightConstructor = <_, A>(a: A) => TaskEither<_, A>
 export const taskRight: TaskRightConstructor = a => () =>
   Promise.resolve (E.right (a))
 
@@ -66,7 +66,7 @@ export const functor: Functor2<"TaskEither"> = createFunctor2 ({
   _URI: "TaskEither",
   pure: taskRight,
   map:
-    <E, A, B>(fma: TaskEither<E, A>, f: (a: A) => B): TaskEither<E, B> =>
+    <_, A, B>(fma: TaskEither<_, A>, f: (a: A) => B): TaskEither<_, B> =>
     () =>
       fromTaskEither (fma).then (ma => E.map (ma, f)),
 })
@@ -96,10 +96,10 @@ export const { mapLeft, bimap } = bifunctor
 export const applicative: Applicative2<"TaskEither"> = createApplicative2 ({
   _URI: "TaskEither",
   apply:
-    <E, A, B>(
-      fma: TaskEither<E, A>,
-      fmf: TaskEither<E, (a: A) => B>,
-    ): TaskEither<E, B> =>
+    <_, A, B>(
+      fma: TaskEither<_, A>,
+      fmf: TaskEither<_, (a: A) => B>,
+    ): TaskEither<_, B> =>
     () =>
       fromTaskEither (fma).then (ma =>
         fromTaskEither (fmf).then (mf =>
@@ -174,11 +174,13 @@ export const {
 } = monad
 
 interface TapTaskPointed {
-  <E, A, _>(ma: TaskEither<E, A>, f: (a: A) => T.Task<_>): TaskEither<E, A>
+  <_, A, _2>(ma: TaskEither<_, A>, f: (a: A) => T.Task<_2>): TaskEither<_, A>
 }
 
 interface TapTask extends TapTaskPointed {
-  <E, A, _>(f: (a: A) => T.Task<_>): (ma: TaskEither<E, A>) => TaskEither<E, A>
+  <_, A, _2>(
+    f: (a: A) => T.Task<_2>,
+  ): (ma: TaskEither<_, A>) => TaskEither<_, A>
 }
 
 const tapTaskPointed: TapTaskPointed = (mma, f) => () =>

@@ -139,9 +139,10 @@ interface MonadPointed<URI extends URIS>
   readonly tapIo: TapIoPointed<URI>
 }
 
-const createMonadFromPointed = <URI extends URIS>(
+type CreateMonadFromPointed = <URI extends URIS>(
   monadPointed: MonadPointed<URI>,
-): Monad<URI> => ({
+) => Monad<URI>
+const createMonadFromPointed: CreateMonadFromPointed = monadPointed => ({
   ...monadPointed,
   bind: overloadWithPointFree (monadPointed.bind),
   compose: overloadWithPointFreeLast2 (monadPointed.compose),

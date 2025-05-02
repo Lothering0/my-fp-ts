@@ -25,16 +25,16 @@ export const createFunctor: CreateFunctor = functor => ({
 })
 
 interface MapPointed2<URI extends URIS2> {
-  <E, A, B>(fa: HKT2<URI, E, A>, f: (a: A) => B): HKT2<URI, E, B>
+  <_, A, B>(fa: HKT2<URI, _, A>, f: (a: A) => B): HKT2<URI, _, B>
 }
 
 interface Map2<URI extends URIS2> extends MapPointed2<URI> {
-  <E, A, B>(f: (a: A) => B): (fa: HKT2<URI, E, A>) => HKT2<URI, E, B>
+  <_, A, B>(f: (a: A) => B): (fa: HKT2<URI, _, A>) => HKT2<URI, _, B>
 }
 
 export interface Functor2<URI extends URIS2> {
   readonly _URI: URI
-  readonly pure: <E, A>(a: A) => HKT2<URI, E, A>
+  readonly pure: <_, A>(a: A) => HKT2<URI, _, A>
   readonly map: Map2<URI>
 }
 

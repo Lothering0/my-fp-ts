@@ -187,5 +187,5 @@ export const getRaceSemigroup: GetRaceSemigroup = () => ({
 type GetRaceMonoid = <A>() => Monoid<TaskOption<A>>
 export const getRaceMonoid: GetRaceMonoid = () => ({
   ...getRaceSemigroup (),
-  empty: () => new Promise (() => E.right (_)),
+  empty: () => new Promise (() => O.some (_)),
 })

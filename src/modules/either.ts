@@ -24,22 +24,22 @@ export interface Right<A> {
   readonly value: A
 }
 
-type LeftConstructor = <E, A>(e: E) => Either<E, A>
+type LeftConstructor = <E, _>(e: E) => Either<E, _>
 export const left: LeftConstructor = value => ({
   _tag: "Left",
   value,
 })
 
-type RightConstructor = <E, A>(a: A) => Either<E, A>
+type RightConstructor = <_, A>(a: A) => Either<_, A>
 export const right: RightConstructor = value => ({
   _tag: "Right",
   value,
 })
 
-type IsLeft = <E, A>(ma: Either<E, A>) => ma is Left<E>
+type IsLeft = <E, _>(ma: Either<E, _>) => ma is Left<E>
 export const isLeft: IsLeft = ma => ma._tag === "Left"
 
-type IsRight = <E, A>(ma: Either<E, A>) => ma is Right<A>
+type IsRight = <_, A>(ma: Either<_, A>) => ma is Right<A>
 export const isRight: IsRight = ma => ma._tag === "Right"
 
 type FromLeft = <E>(ma: Left<E>) => E
@@ -67,8 +67,8 @@ export const either: EitherEliminator = overloadWithPointFree2 (eitherPointed)
 export const functor: Functor2<"Either"> = createFunctor2 ({
   _URI: "Either",
   pure: right,
-  map: <E, A, B>(fa: Either<E, A>, f: (a: A) => B) =>
-    isLeft<E, A> (fa) ? fa : pipe (fa, fromRight, f, right<E, B>),
+  map: <_, A, B>(fa: Either<_, A>, f: (a: A) => B) =>
+    isLeft<_, A> (fa) ? fa : pipe (fa, fromRight, f, right<_, B>),
 })
 
 export const { pure, map } = functor
