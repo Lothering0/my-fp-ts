@@ -1,13 +1,11 @@
 import * as fs from "node:fs"
 import * as fsPromises from "node:fs/promises"
-import * as IO from "../modules/io"
-import * as E from "../modules/either"
+import * as IOE from "../modules/io-either"
 import * as TE from "../modules/task-either"
-import { tryDo } from "./exceptions"
 
-type ReadFileSync = (a: string) => IO.IO<E.Either<unknown, Buffer>>
+type ReadFileSync = (a: string) => IOE.IOEither<unknown, Buffer>
 export const readFileSync: ReadFileSync = path =>
-  IO.pure (tryDo (() => fs.readFileSync (path)))
+  IOE.toTaskEither (() => fs.readFileSync (path))
 
 type ReadFile = (a: string) => TE.TaskEither<unknown, Buffer>
 export const readFile: ReadFile = path =>

@@ -86,7 +86,7 @@ export const { apply } = applicative
 
 export const monad: Monad<"Option"> = createMonad (functor) ({
   _URI: "Option",
-  flat: mma => option (mma, () => none, I.identity),
+  flat: option (() => none, I.identity),
 })
 
 export const {

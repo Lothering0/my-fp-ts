@@ -11,6 +11,7 @@ import * as O from "./option"
 import * as I from "./identity"
 import { pipe } from "../utils/pipe"
 import { _ } from "../utils/underscore"
+import { overloadWithPointFree, overloadWithPointFree2 } from "../utils/points"
 
 declare module "../types/Kind" {
   interface Kind<A> {
@@ -46,6 +47,27 @@ export const toTaskOptionFromTaskEither: ToTaskOptionFromTaskEither =
 type FromTaskOption = <A>(ma: TaskOption<A>) => Promise<O.Option<A>>
 export const fromTaskOption: FromTaskOption = mma =>
   mma ().then (I.identity, () => O.none)
+
+interface TaskOptionEliminatorPointed {
+  <A, B>(
+    mma: TaskOption<A>,
+    whenNone: () => B,
+    whenSome: (a: A) => B,
+  ): T.Task<B>
+}
+
+interface TaskOptionEliminator extends TaskOptionEliminatorPointed {
+  <A, B>(
+    whenNone: () => B,
+    whenSome: (a: A) => B,
+  ): (mma: TaskOption<A>) => T.Task<B>
+}
+
+const taskOptionPointed: TaskOptionEliminatorPointed = (mma, f, g) => () =>
+  fromTaskOption (mma).then (O.option (f, g))
+
+export const taskOption: TaskOptionEliminator =
+  overloadWithPointFree2 (taskOptionPointed)
 
 export const functor: Functor<"TaskOption"> = createFunctor ({
   _URI: "TaskOption",
@@ -146,10 +168,7 @@ const tapTaskPointed: TapTaskPointed = (mma, f) => () =>
     O.isNone (ma) ? ma : pipe (ma, O.fromSome, f, T.fromTask).then (() => ma),
   )
 
-export const tapTask: TapTask = (a: any, b?: any): any =>
-  typeof b === "undefined"
-    ? (mma: any) => tapTaskPointed (mma, a)
-    : tapTaskPointed (a, b)
+export const tapTask: TapTask = overloadWithPointFree (tapTaskPointed)
 
 interface TapTaskEitherPointed {
   <E, A, _>(ma: TaskOption<A>, f: (a: A) => TE.TaskEither<E, _>): TaskOption<A>
@@ -171,11 +190,7 @@ const tapTaskEitherPointed: TapTaskEitherPointed = (mma, f) => () =>
   )
 
 export const tapTaskEither: TapTaskEither =
-  (a: any, b?: any): any =>
-  () =>
-    typeof b === "undefined"
-      ? (mma: any) => tapTaskEitherPointed (mma, a)
-      : tapTaskEitherPointed (a, b)
+  overloadWithPointFree (tapTaskEitherPointed)
 
 export const parallel = applyResultTo
 

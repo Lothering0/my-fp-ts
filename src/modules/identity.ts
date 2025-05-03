@@ -10,7 +10,8 @@ declare module "../types/Kind" {
 
 export type Identity<A> = A
 
-export const identity = <A>(a: A): Identity<A> => a
+type IdentityConstructor = <A>(a: A) => Identity<A>
+export const identity: IdentityConstructor = a => a
 
 export const functor: Functor<"Identity"> = createFunctor ({
   _URI: "Identity",
@@ -22,7 +23,7 @@ export const { pure, map } = functor
 
 export const applicative: Applicative<"Identity"> = createApplicative ({
   _URI: "Identity",
-  apply: (fa, ff) => map (fa, ff),
+  apply: map,
 })
 
 export const { apply } = applicative

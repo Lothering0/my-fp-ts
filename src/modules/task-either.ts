@@ -10,7 +10,7 @@ import * as E from "./either"
 import * as I from "./identity"
 import { pipe } from "../utils/pipe"
 import { _ } from "../utils/underscore"
-import { overloadWithPointFree2 } from "../utils/points"
+import { overloadWithPointFree, overloadWithPointFree2 } from "../utils/points"
 
 declare module "../types/Kind" {
   interface Kind2<E, A> {
@@ -188,10 +188,7 @@ const tapTaskPointed: TapTaskPointed = (mma, f) => () =>
     E.isLeft (ma) ? ma : pipe (ma, E.fromRight, f, T.fromTask).then (() => ma),
   )
 
-export const tapTask: TapTask = (a: any, b?: any): any =>
-  typeof b === "undefined"
-    ? (mma: any) => tapTaskPointed (mma, a)
-    : tapTaskPointed (a, b)
+export const tapTask: TapTask = overloadWithPointFree (tapTaskPointed)
 
 export const parallel = applyResultTo
 
