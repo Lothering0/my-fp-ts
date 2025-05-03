@@ -1,12 +1,6 @@
-import * as I from "./identity"
-import { createFunctor, Functor } from "../types/Functor"
-import { createApplicative, Applicative } from "../types/Applicative"
-import { createMonad, Monad } from "../types/Monad"
-import { Semigroup } from "../types/Semigroup"
-import { Monoid } from "../types/Monoid"
-import { overloadWithPointFree2 } from "../utils/points"
+import { overloadWithPointFree2 } from "../../utils/points"
 
-declare module "../types/Kind" {
+declare module "../../types/Kind" {
   export interface Kind<A> {
     readonly Option: Option<A>
   }
@@ -63,55 +57,3 @@ export const fromOption: FromOption =
   <A>(a: A) =>
   (fa: Option<A>) =>
     isNone (fa) ? a : fromSome (fa)
-
-export const functor: Functor<"Option"> = createFunctor ({
-  _URI: "Option",
-  pure: some,
-  map: (fa, f) => option (fa, () => none, I.compose (some, f)),
-})
-
-export const { pure, map } = functor
-
-export const applicative: Applicative<"Option"> = createApplicative ({
-  _URI: "Option",
-  apply: (fa, ff) =>
-    option (
-      ff,
-      () => none,
-      f => option (fa, () => none, I.compose (some, f)),
-    ),
-})
-
-export const { apply } = applicative
-
-export const monad: Monad<"Option"> = createMonad (functor) ({
-  _URI: "Option",
-  flat: option (() => none, I.identity),
-})
-
-export const {
-  Do,
-  flat,
-  bind,
-  compose,
-  mapTo,
-  applyTo,
-  applyResultTo,
-  apS,
-  bindTo,
-  tap,
-  tapIo,
-} = monad
-
-type GetMonoid = <A>(semigroup: Semigroup<A>) => Monoid<Option<A>>
-export const getMonoid: GetMonoid = s => ({
-  empty: none,
-  concat: (mx, my) =>
-    isNone (mx)
-      ? isNone (my)
-        ? none
-        : my
-      : isNone (my)
-        ? mx
-        : some (s.concat (fromSome (mx), fromSome (my))),
-})
