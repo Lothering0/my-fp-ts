@@ -3,52 +3,20 @@ import * as T from "../task"
 import * as TE from "../task-either"
 import * as E from "../either"
 import * as O from "../option"
-import * as I from "../identity"
-import { createMonad, Monad } from "../../types/Monad"
+import { createMonad, DoObject, Monad } from "../../types/Monad"
 import { TaskOption, fromTaskOption, toTaskOptionFromTask } from "./task-option"
-import { functor, pure, map } from "./functor"
+import { functor, map } from "./functor"
 import { pipe } from "../../utils/pipe"
-import { overloadWithPointFree } from "../../utils/points"
+import {
+  overloadWithPointFree,
+  overloadWithPointFree2,
+} from "../../utils/points"
 
 export const monad: Monad<"TaskOption"> = createMonad (functor) ({
   _URI: "TaskOption",
   flat: mma => () =>
     fromTaskOption (mma).then (ma =>
       O.isNone (ma) ? ma : fromTaskOption (O.fromSome (ma)),
-    ),
-  bind: (mma, f) =>
-    pipe (
-      Do,
-      apS ("a", mma),
-      map (({ a }) => f (a)),
-      flat,
-    ),
-  tap: (mma, f) =>
-    pipe (
-      Do,
-      apS ("a", mma),
-      bind (({ a }) => bind (f (a), () => pure (a))),
-    ),
-  tapIo: (mma, f) => tap (mma, I.compose (pure, f)),
-  applyTo: (fma, name, fmf) => () =>
-    fromTaskOption (fma).then (ma =>
-      fromTaskOption (fmf).then (mf =>
-        pipe (
-          O.Do,
-          O.apS ("f", mf),
-          O.apS ("a", ma),
-          O.map (({ f, a }) => ({ [name]: f (a), ...a }) as any),
-        ),
-      ),
-    ),
-  applyResultTo: (fma, name, fmb) => () =>
-    Promise.all ([fromTaskOption (fma), fromTaskOption (fmb)]).then (([ma, mb]) =>
-      pipe (
-        O.Do,
-        O.apS ("a", ma),
-        O.apS ("b", mb),
-        O.map (({ a, b }) => ({ [name]: b, ...a }) as any),
-      ),
     ),
 })
 
@@ -66,7 +34,47 @@ export const {
   tapIo,
 } = monad
 
-export const parallel = applyResultTo
+interface ParallelPointed {
+  <N extends string | number | symbol, A, B>(
+    fa: TaskOption<A>,
+    fb: TaskOption<B>,
+  ): TaskOption<DoObject<N, A, B>>
+}
+
+interface Parallel extends ParallelPointed {
+  <N extends string | number | symbol, A, B>(
+    fb: TaskOption<B>,
+  ): (fa: TaskOption<A>) => TaskOption<DoObject<N, A, B>>
+}
+
+const parallelPointed: ParallelPointed = (fa, fb) => () =>
+  Promise.all ([fromTaskOption (fa), fromTaskOption (fb)]).then (([ma, mb]) =>
+    O.bind (mb, () => ma as any),
+  )
+
+export const parallel: Parallel = overloadWithPointFree (parallelPointed)
+
+interface ParallelToPointed {
+  <N extends string | number | symbol, A, B>(
+    fa: TaskOption<A>,
+    name: Exclude<N, keyof A>,
+    fb: TaskOption<B>,
+  ): TaskOption<DoObject<N, A, B>>
+}
+
+interface ParallelTo extends ParallelToPointed {
+  <N extends string | number | symbol, A, B>(
+    name: Exclude<N, keyof A>,
+    fb: TaskOption<B>,
+  ): (fa: TaskOption<A>) => TaskOption<DoObject<N, A, B>>
+}
+
+const parallelToPointed: ParallelToPointed = (fa, name, fb) => () =>
+  Promise.all ([fromTaskOption (fa), fromTaskOption (fb)]).then (([ma, mb]) =>
+    O.apS (ma, name, mb),
+  )
+
+export const parallelTo: ParallelTo = overloadWithPointFree2 (parallelToPointed)
 
 interface TapOptionPointed {
   <A, _>(ma: TaskOption<A>, f: (a: A) => O.Option<_>): TaskOption<A>

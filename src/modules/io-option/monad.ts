@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as IOE from "../io-either"
 import * as O from "../option"
 import { Either } from "../either"
 import { createMonad, Monad } from "../../types/Monad"
-import { functor, pure, map } from "./functor"
+import { functor } from "./functor"
 import { pipe } from "../../utils/pipe"
 import { fromIoOption, IOOption } from "./io-option"
 import { overloadWithPointFree } from "../../utils/points"
@@ -14,34 +13,6 @@ export const monad: Monad<"IOOption"> = createMonad (functor) ({
     pipe (mma, fromIoOption, ma =>
       O.isNone (ma) ? ma : fromIoOption (O.fromSome (ma)),
     ),
-  bind: (mma, f) =>
-    pipe (
-      Do,
-      apS ("a", mma),
-      map (({ a }) => f (a)),
-      flat,
-    ),
-  tap: (mma, f) =>
-    pipe (
-      Do,
-      apS ("a", mma),
-      bind (({ a }) => bind (f (a), () => pure (a))),
-    ),
-  tapIo: (mma, f) =>
-    pipe (
-      Do,
-      apS ("a", mma),
-      bind (({ a }) => bind (pure (f (a)), () => pure (a))),
-    ),
-  applyTo: (fa, name, ff) =>
-    pipe (
-      Do,
-      apS ("a", fa),
-      apS ("f", ff),
-      map (({ a, f }) => ({ [name]: f (a), ...a }) as any),
-    ),
-  applyResultTo: (fa, name, fb) => () =>
-    ({ [name]: fromIoOption (fb), ...fromIoOption (fa) }) as any,
 })
 
 export const {

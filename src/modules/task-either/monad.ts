@@ -1,56 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as E from "../either"
 import * as T from "../task"
-import { createMonad2, Monad2 } from "../../types/Monad"
-import { functor, pure, map } from "./functor"
+import { createMonad2, DoObject, Monad2 } from "../../types/Monad"
+import { functor, map } from "./functor"
 import { TaskEither, fromTaskEither, toTaskEither } from "./task-either"
 import { pipe } from "../../utils/pipe"
-import { overloadWithPointFree } from "../../utils/points"
+import {
+  overloadWithPointFree,
+  overloadWithPointFree2,
+} from "../../utils/points"
 
 export const monad: Monad2<"TaskEither"> = createMonad2 (functor) ({
   _URI: "TaskEither",
   flat: mma => () =>
     fromTaskEither (mma).then (ma =>
       E.isLeft (ma) ? ma : fromTaskEither (E.fromRight (ma)),
-    ),
-  bind: (mma, f) =>
-    pipe (
-      Do,
-      apS ("a", mma),
-      map (({ a }) => f (a)),
-      flat,
-    ),
-  tap: (mma, f) =>
-    pipe (
-      Do,
-      apS ("a", mma),
-      bind (({ a }) => bind (f (a), () => pure (a))),
-    ),
-  tapIo: (mma, f) =>
-    pipe (
-      Do,
-      apS ("a", mma),
-      bind (({ a }) => bind (pure (f (a)), () => pure (a))),
-    ),
-  applyTo: (fma, name, fmf) => () =>
-    fromTaskEither (fma).then (ma =>
-      fromTaskEither (fmf).then (mf =>
-        pipe (
-          E.Do,
-          E.apS ("a", ma),
-          E.apS ("f", mf),
-          E.map (({ f, a }) => ({ [name]: f (a), ...a }) as any),
-        ),
-      ),
-    ),
-  applyResultTo: (fma, name, fmb) => () =>
-    Promise.all ([fromTaskEither (fma), fromTaskEither (fmb)]).then (([ma, mb]) =>
-      pipe (
-        E.Do,
-        E.apS ("a", ma),
-        E.apS ("b", mb),
-        E.map (({ a, b }) => ({ [name]: b, ...a }) as any),
-      ),
     ),
 })
 
@@ -68,7 +32,47 @@ export const {
   tapIo,
 } = monad
 
-export const parallel = applyResultTo
+interface ParallelPointed {
+  <N extends string | number | symbol, E, A, B>(
+    fa: TaskEither<E, A>,
+    fb: TaskEither<E, B>,
+  ): TaskEither<E, DoObject<N, A, B>>
+}
+
+interface Parallel extends ParallelPointed {
+  <N extends string | number | symbol, E, A, B>(
+    fb: TaskEither<E, B>,
+  ): (fa: TaskEither<E, A>) => TaskEither<E, DoObject<N, A, B>>
+}
+
+const parallelPointed: ParallelPointed = (fa, fb) => () =>
+  Promise.all ([fromTaskEither (fa), fromTaskEither (fb)]).then (([ma, mb]) =>
+    E.bind (mb, () => ma as any),
+  )
+
+export const parallel: Parallel = overloadWithPointFree (parallelPointed)
+
+interface ParallelToPointed {
+  <N extends string | number | symbol, E, A, B>(
+    fa: TaskEither<E, A>,
+    name: Exclude<N, keyof A>,
+    fb: TaskEither<E, B>,
+  ): TaskEither<E, DoObject<N, A, B>>
+}
+
+interface ParallelTo extends ParallelToPointed {
+  <N extends string | number | symbol, E, A, B>(
+    name: Exclude<N, keyof A>,
+    fb: TaskEither<E, B>,
+  ): (fa: TaskEither<E, A>) => TaskEither<E, DoObject<N, A, B>>
+}
+
+const parallelToPointed: ParallelToPointed = (fa, name, fb) => () =>
+  Promise.all ([fromTaskEither (fa), fromTaskEither (fb)]).then (([ma, mb]) =>
+    E.apS (ma, name, mb),
+  )
+
+export const parallelTo: ParallelTo = overloadWithPointFree2 (parallelToPointed)
 
 interface TapTaskPointed {
   <_, A, _2>(ma: TaskEither<_, A>, f: (a: A) => T.Task<_2>): TaskEither<_, A>
