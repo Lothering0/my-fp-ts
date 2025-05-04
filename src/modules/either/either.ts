@@ -42,6 +42,9 @@ export const fromLeft: FromLeft = ma => ma.value
 type FromRight = <A>(ma: Right<A>) => A
 export const fromRight: FromRight = ma => ma.value
 
+type ToUnion = <E, A>(ma: Either<E, A>) => E | A
+export const toUnion: ToUnion = ma => ma.value
+
 interface EitherEliminatorPointed {
   <E, A, B>(ma: Either<E, A>, whenLeft: (e: E) => B, whenRight: (a: A) => B): B
 }

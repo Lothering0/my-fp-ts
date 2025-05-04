@@ -1,3 +1,4 @@
+import * as E from "../either"
 import { overloadWithPointFree2 } from "../../utils/points"
 
 declare module "../../types/Kind" {
@@ -57,3 +58,6 @@ export const fromOption: FromOption =
   <A>(a: A) =>
   (fa: Option<A>) =>
     isNone (fa) ? a : fromSome (fa)
+
+type FromEither = <_, A>(ma: E.Either<_, A>) => Option<A>
+export const fromEither: FromEither = E.either (() => none, some)

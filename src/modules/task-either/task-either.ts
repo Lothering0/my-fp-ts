@@ -32,6 +32,10 @@ type FromTaskEither = <E, A>(ma: TaskEither<E, A>) => Promise<E.Either<E, A>>
 export const fromTaskEither: FromTaskEither = mma =>
   mma ().then (identity, e => E.left (e))
 
+type ToTaskUnion = <E, A>(ma: TaskEither<E, A>) => T.Task<E | A>
+export const toTaskUnion: ToTaskUnion = mma => () =>
+  fromTaskEither (mma).then (E.toUnion)
+
 interface TaskEitherEliminatorPointed {
   <E, A, B>(
     mma: TaskEither<E, A>,

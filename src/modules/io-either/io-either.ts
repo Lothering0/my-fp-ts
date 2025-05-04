@@ -32,6 +32,9 @@ export const fromIoEither: FromIOEither = <E, A>(ma: IOEither<E, A>) => {
   }
 }
 
+type ToIOUnion = <E, A>(ma: IOEither<E, A>) => IO.IO<E | A>
+export const toIoUnion: ToIOUnion = mma => () => E.toUnion (mma ())
+
 interface IOEitherEliminatorPointed {
   <E, A, B>(
     mma: IOEither<E, A>,

@@ -2,8 +2,8 @@
 import * as E from "../either"
 import * as T from "../task"
 import { createMonad2, Monad2 } from "../../types/Monad"
-import { functor } from "./functor"
-import { TaskEither, fromTaskEither } from "./task-either"
+import { functor, pure, map } from "./functor"
+import { TaskEither, fromTaskEither, toTaskEither } from "./task-either"
 import { pipe } from "../../utils/pipe"
 import { overloadWithPointFree } from "../../utils/points"
 
@@ -13,29 +13,32 @@ export const monad: Monad2<"TaskEither"> = createMonad2 (functor) ({
     fromTaskEither (mma).then (ma =>
       E.isLeft (ma) ? ma : fromTaskEither (E.fromRight (ma)),
     ),
-  bind: (mma, f) => () =>
-    fromTaskEither (mma).then (ma =>
-      E.isLeft (ma) ? ma : pipe (ma, E.fromRight, f, fromTaskEither),
+  bind: (mma, f) =>
+    pipe (
+      Do,
+      apS ("a", mma),
+      map (({ a }) => f (a)),
+      flat,
     ),
-  tap: (mma, f) => () =>
-    fromTaskEither (mma).then (ma =>
-      E.isLeft (ma)
-        ? ma
-        : pipe (ma, E.fromRight, f, fromTaskEither).then (ea =>
-            E.isLeft (ea) ? ea : ma,
-          ),
+  tap: (mma, f) =>
+    pipe (
+      Do,
+      apS ("a", mma),
+      bind (({ a }) => bind (f (a), () => pure (a))),
     ),
-  tapIo: (mma, f) => () =>
-    fromTaskEither (mma).then (
-      ma => (E.isLeft (ma) ? ma : f (E.fromRight (ma)), ma),
+  tapIo: (mma, f) =>
+    pipe (
+      Do,
+      apS ("a", mma),
+      bind (({ a }) => bind (pure (f (a)), () => pure (a))),
     ),
   applyTo: (fma, name, fmf) => () =>
-    fromTaskEither (fmf).then (mf =>
-      fromTaskEither (fma).then (ma =>
+    fromTaskEither (fma).then (ma =>
+      fromTaskEither (fmf).then (mf =>
         pipe (
           E.Do,
-          E.apS ("f", mf),
           E.apS ("a", ma),
+          E.apS ("f", mf),
           E.map (({ f, a }) => ({ [name]: f (a), ...a }) as any),
         ),
       ),
@@ -77,9 +80,12 @@ interface TapTask extends TapTaskPointed {
   ): (ma: TaskEither<_, A>) => TaskEither<_, A>
 }
 
-const tapTaskPointed: TapTaskPointed = (mma, f) => () =>
-  fromTaskEither (mma).then (ma =>
-    E.isLeft (ma) ? ma : pipe (ma, E.fromRight, f, T.fromTask).then (() => ma),
+const tapTaskPointed: TapTaskPointed = (mma, f) =>
+  pipe (
+    Do,
+    apS ("a", mma),
+    tap (({ a }) => toTaskEither (f (a))),
+    map (({ a }) => a),
   )
 
 export const tapTask: TapTask = overloadWithPointFree (tapTaskPointed)

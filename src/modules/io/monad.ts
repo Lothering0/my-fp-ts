@@ -1,15 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createMonad, Monad } from "../../types/Monad"
-import { functor, map } from "./functor"
+import { functor, map, pure } from "./functor"
 import { fromIo } from "./io"
 import { pipe } from "../../utils/pipe"
 
 export const monad: Monad<"IO"> = createMonad (functor) ({
   _URI: "IO",
   flat: fromIo,
-  bind: (ma, f) => () => pipe (ma, fromIo, f, fromIo),
-  tap: (ma, f) => pipe (ma, fromIo, f, fromIo, () => ma),
-  tapIo: (ma, f) => pipe (ma, fromIo, f, fromIo, () => ma),
+  bind: (ma, f) => pipe (ma, fromIo, f),
+  tap: (ma, f) =>
+    pipe (
+      Do,
+      apS ("a", ma),
+      bind (({ a }) => bind (f (a), () => pure (a))),
+    ),
+  tapIo: (ma, f) =>
+    pipe (
+      Do,
+      apS ("a", ma),
+      bind (({ a }) => bind (pure (f (a)), () => pure (a))),
+    ),
   applyTo: (fa, name, ff) =>
     pipe (
       Do,
