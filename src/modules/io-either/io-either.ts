@@ -51,7 +51,7 @@ interface IOEitherEliminator extends IOEitherEliminatorPointed {
 }
 
 const ioEitherPointed: IOEitherEliminatorPointed = (mma, f, g) =>
-  pipe (mma, fromIoEither, E.either (f, g), IO.pure)
+  pipe (mma, fromIoEither, E.either (f, g), IO.of)
 
 export const ioEither: IOEitherEliminator =
   overloadWithPointFree2 (ioEitherPointed)

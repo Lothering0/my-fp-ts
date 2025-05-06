@@ -3,11 +3,11 @@ import { Task, task, fromTask } from "./task"
 
 export const functor: Functor<"Task"> = createFunctor ({
   _URI: "Task",
-  pure: task,
+  of: task,
   map:
     <A, B>(fa: Task<A>, f: (a: A) => B): Task<B> =>
     () =>
       fromTask (fa).then (f),
 })
 
-export const { map, pure } = functor
+export const { of, map } = functor

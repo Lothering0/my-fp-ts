@@ -1,12 +1,19 @@
+import { Functor, createFunctor } from "../../types/Functor"
 import {
   FunctorWithIndex,
   createFunctorWithIndex,
 } from "../../types/FunctorWithIndex"
 
-export const functor: FunctorWithIndex<"Array"> = createFunctorWithIndex ({
+export const functor: Functor<"Array"> = createFunctor ({
   _URI: "Array",
-  pure: a => [a],
-  map: (fa, f) => fa.map (f),
+  of: a => [a],
+  map: (fa, f) => fa.map (a => f (a)),
 })
 
-export const { pure, map } = functor
+export const functorWithIndex: FunctorWithIndex<"Array", number> =
+  createFunctorWithIndex ({
+    ...functor,
+    mapWithIndex: (fa, f) => fa.map ((a, i) => f (i, a)),
+  })
+
+export const { of, map, mapWithIndex } = functorWithIndex

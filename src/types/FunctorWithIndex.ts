@@ -3,46 +3,46 @@ import { HKT, HKT2 } from "./HKT"
 import { URIS, URIS2 } from "./Kind"
 import { overloadWithPointFree } from "../utils/points"
 
-interface MapPointed<URI extends URIS> {
-  <A, B>(fa: HKT<URI, A>, f: (a: A, i: number) => B): HKT<URI, B>
+interface MapWithIndexPointed<URI extends URIS, I> {
+  <A, B>(fa: HKT<URI, A>, f: (i: I, a: A) => B): HKT<URI, B>
 }
 
-interface Map<URI extends URIS> extends MapPointed<URI> {
-  <A, B>(f: (a: A, i: number) => B): (fa: HKT<URI, A>) => HKT<URI, B>
+interface MapWithIndex<URI extends URIS, I>
+  extends MapWithIndexPointed<URI, I> {
+  <A, B>(f: (i: I, a: A) => B): (fa: HKT<URI, A>) => HKT<URI, B>
 }
 
-export interface FunctorWithIndex<URI extends URIS> extends Functor<URI> {
-  readonly map: Map<URI>
+export interface FunctorWithIndex<URI extends URIS, I> extends Functor<URI> {
+  readonly mapWithIndex: MapWithIndex<URI, I>
 }
 
-type CreateFunctorWithIndex = <URI extends URIS>(
-  functor: Omit<FunctorWithIndex<URI>, "map"> & {
-    map: MapPointed<URI>
+type CreateFunctorWithIndex = <URI extends URIS, I>(
+  functor: Functor<URI> & {
+    mapWithIndex: MapWithIndexPointed<URI, I>
   },
-) => FunctorWithIndex<URI>
+) => FunctorWithIndex<URI, I>
 export const createFunctorWithIndex: CreateFunctorWithIndex = functor => ({
   ...functor,
-  map: overloadWithPointFree (functor.map),
+  mapWithIndex: overloadWithPointFree (functor.mapWithIndex),
 })
 
-interface MapPointed2<URI extends URIS2> {
-  <_, A, B>(fa: HKT2<URI, _, A>, f: (a: A, i: number) => B): HKT2<URI, _, B>
+interface MapWithIndexPointed2<URI extends URIS2, I> {
+  <_, A, B>(fa: HKT2<URI, _, A>, f: (i: I, a: A) => B): HKT2<URI, _, B>
 }
 
-interface Map2<URI extends URIS2> extends MapPointed2<URI> {
-  <_, A, B>(f: (a: A, i: number) => B): (fa: HKT2<URI, _, A>) => HKT2<URI, _, B>
+interface MapWithIndex2<URI extends URIS2, I>
+  extends MapWithIndexPointed2<URI, I> {
+  <_, A, B>(f: (i: I, a: A) => B): (fa: HKT2<URI, _, A>) => HKT2<URI, _, B>
 }
 
-export interface FunctorWithIndex2<URI extends URIS2> extends Functor2<URI> {
-  readonly _URI: URI
-  readonly pure: <_, A>(a: A) => HKT2<URI, _, A>
-  readonly map: Map2<URI>
+export interface FunctorWithIndex2<URI extends URIS2, I> extends Functor2<URI> {
+  readonly mapWithIndex: MapWithIndex2<URI, I>
 }
 
-type CreateFunctorWithIndex2 = <URI extends URIS2>(
-  functorWithIndex: Omit<FunctorWithIndex2<URI>, "map"> & {
-    map: MapPointed2<URI>
+type CreateFunctorWithIndex2 = <URI extends URIS2, I>(
+  functorWithIndex: Functor2<URI> & {
+    mapWithIndex: MapWithIndexPointed2<URI, I>
   },
-) => Functor2<URI>
+) => FunctorWithIndex2<URI, I>
 export const createFunctorWithIndex2: CreateFunctorWithIndex2 =
   createFunctorWithIndex as CreateFunctorWithIndex2

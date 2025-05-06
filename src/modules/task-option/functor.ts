@@ -4,11 +4,11 @@ import { TaskOption, taskSome, fromTaskOption } from "./task-option"
 
 export const functor: Functor<"TaskOption"> = createFunctor ({
   _URI: "TaskOption",
-  pure: taskSome,
+  of: taskSome,
   map:
     <A, B>(fma: TaskOption<A>, f: (a: A) => B): TaskOption<B> =>
     () =>
       fromTaskOption (fma).then (ma => O.map (ma, f)),
 })
 
-export const { map, pure } = functor
+export const { map, of } = functor

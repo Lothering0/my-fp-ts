@@ -29,15 +29,9 @@ type ListEliminator = <A, B>(
   whenNil: () => B,
   whenCons: (a: A) => B,
 ) => B
-const list: ListEliminator = (xs, whenNil, whenCons) =>
+export const list: ListEliminator = (xs, whenNil, whenCons) =>
   isNil (xs) ? whenNil () : whenCons (xs.head)
 
 type FromArray = <A>(xs: Array<A>) => List<A>
-const fromArray: FromArray = xs => xs.reduceRight ((acc, x) => cons (x, acc), nil)
-
-/* type FromArrayLazy = <A>(xs: Array<A>) => () => List<A>
-const fromArrayLazy: FromArrayLazy = xs => () =>
-  xs.length ? cons (xs[0]!, fromArrayLazy (xs.slice (1))) : nil */
-
-const myList = cons (5, cons (3, cons (4, nil)))
-const myList2 = fromArray ([1, 2, 3])
+export const fromArray: FromArray = xs =>
+  xs.reduceRight ((acc, x) => cons (x, acc), nil)

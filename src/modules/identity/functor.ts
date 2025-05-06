@@ -3,8 +3,8 @@ import { createFunctor, Functor } from "../../types/Functor"
 
 export const functor: Functor<"Identity"> = createFunctor ({
   _URI: "Identity",
-  pure: identity,
+  of: identity,
   map: (fa, f) => f (fa),
 })
 
-export const { pure, map } = functor
+export const { of, map } = functor

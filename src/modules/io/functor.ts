@@ -4,11 +4,11 @@ import { pipe } from "../../utils/pipe"
 
 export const functor: Functor<"IO"> = createFunctor ({
   _URI: "IO",
-  pure: io,
+  of: io,
   map:
     <A, B>(fa: IO<A>, f: (a: A) => B) =>
     () =>
       pipe (fa, fromIo, f),
 })
 
-export const { pure, map } = functor
+export const { of, map } = functor

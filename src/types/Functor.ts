@@ -12,7 +12,7 @@ interface Map<URI extends URIS> extends MapPointed<URI> {
 
 export interface Functor<URI extends URIS> {
   readonly _URI: URI
-  readonly pure: <A>(a: A) => HKT<URI, A>
+  readonly of: <A>(a: A) => HKT<URI, A>
   readonly map: Map<URI>
 }
 
@@ -34,7 +34,7 @@ interface Map2<URI extends URIS2> extends MapPointed2<URI> {
 
 export interface Functor2<URI extends URIS2> {
   readonly _URI: URI
-  readonly pure: <_, A>(a: A) => HKT2<URI, _, A>
+  readonly of: <A>(a: A) => HKT2<URI, never, A>
   readonly map: Map2<URI>
 }
 

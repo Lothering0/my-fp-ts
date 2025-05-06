@@ -136,13 +136,14 @@ interface CreateMonadArg<URI extends URIS> {
 export const createMonad =
   <URI extends URIS>(functor: Functor<URI>) =>
   (monad: CreateMonadArg<URI>): Monad<URI> => {
-    const { pure, map } = functor
+    const { of, map } = functor
     const { flat } = monad
-    const Do = pure ({})
+    const Do = of ({})
 
     const applyResultToPointed: ApplyResultToPointed<URI> = (fa, name, fb) =>
       pipe (
-        map (fa, a => map (fb, b => pure ({ [name]: b, ...a } as any))),
+        fa,
+        map (a => map (fb, b => of ({ [name]: b, ...a } as any))),
         flat,
         flat,
       )
@@ -166,7 +167,7 @@ export const createMonad =
       pipe (
         Do,
         apS ("a", ma),
-        bind (({ a }) => bind (f (a), () => pure (a))),
+        bind (({ a }) => bind (f (a), () => of (a))),
       )
     const tap: Tap<URI> = overloadWithPointFree (tapPointed)
 
@@ -174,13 +175,13 @@ export const createMonad =
       pipe (
         Do,
         apS ("a", ma),
-        bind (({ a }) => bind (pure (f (a)), () => pure (a))),
+        bind (({ a }) => bind (of (f (a)), () => of (a))),
       )
     const tapIo: TapIo<URI> = overloadWithPointFree (tapIoPointed)
 
     const mapToPointed: MapToPointed<URI> = (fa, name, f) =>
       bind (fa, a =>
-        pure ({
+        of ({
           [name]: f (a),
           ...a,
         } as any),
@@ -199,7 +200,7 @@ export const createMonad =
     const bindToPointed: BindToPointed<URI> = (ma, name, f) =>
       bind (ma, a =>
         bind (f (a), b =>
-          pure ({
+          of ({
             [name]: b,
             ...a,
           } as any),

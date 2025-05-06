@@ -9,7 +9,7 @@ type GetDoWhile = <URI extends URIS>(
 ) => <A>(f: Predicate<void>) => (g: () => A) => HKT<URI, void>
 export const getDoWhile: GetDoWhile = functor => p => f => {
   while (p ()) f ()
-  return functor.pure (_)
+  return functor.of (_)
 }
 
 type GetDoWhile2 = <URI extends URIS2>(

@@ -5,11 +5,11 @@ import { pipe } from "../../utils/pipe"
 
 export const functor: Functor2<"IOEither"> = createFunctor2 ({
   _URI: "IOEither",
-  pure: ioRight,
+  of: ioRight,
   map:
     <_, A, B>(fma: IOEither<_, A>, f: (a: A) => B): IOEither<_, B> =>
     () =>
       pipe (fma, fromIoEither, E.map (f)),
 })
 
-export const { pure, map } = functor
+export const { of, map } = functor
