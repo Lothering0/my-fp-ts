@@ -1,5 +1,4 @@
 export * from "./io-either"
 export * from "./functor"
-export * from "./bifunctor"
 export * from "./applicative"
 export * from "./monad"

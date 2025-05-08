@@ -4,6 +4,7 @@ import { compose } from "../identity"
 
 export const applicative: Applicative<"Option"> = createApplicative ({
   _URI: "Option",
+  of: some,
   apply: (fa, ff) =>
     option (
       ff,
@@ -12,4 +13,4 @@ export const applicative: Applicative<"Option"> = createApplicative ({
     ),
 })
 
-export const { apply } = applicative
+export const { of, apply } = applicative

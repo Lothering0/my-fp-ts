@@ -6,7 +6,6 @@ import {
 
 export const functor: Functor<"Array"> = createFunctor ({
   _URI: "Array",
-  of: a => [a],
   map: (fa, f) => fa.map (a => f (a)),
 })
 
@@ -16,4 +15,4 @@ export const functorWithIndex: FunctorWithIndex<"Array", number> =
     mapWithIndex: (fa, f) => fa.map ((a, i) => f (i, a)),
   })
 
-export const { of, map, mapWithIndex } = functorWithIndex
+export const { map, mapWithIndex } = functorWithIndex

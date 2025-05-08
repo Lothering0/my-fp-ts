@@ -1,8 +1,8 @@
 import { createMonad, Monad } from "../../types/Monad"
-import { functor } from "./functor"
+import { applicative } from "./applicative"
 
-const monad: Monad<"Array"> = createMonad (functor) ({
-  _URI: "Array",
+const monad: Monad<"Array"> = createMonad ({
+  ...applicative,
   flat: xs => xs.flat (),
 })
 

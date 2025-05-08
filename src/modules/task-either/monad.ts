@@ -3,7 +3,8 @@ import * as E from "../either"
 import * as T from "../task"
 import * as IOE from "../io-either"
 import { createMonad2, DoObject, Monad2 } from "../../types/Monad"
-import { functor, map } from "./functor"
+import { map } from "./functor"
+import { applicative } from "./applicative"
 import { TaskEither, fromTaskEither, toTaskEither } from "./task-either"
 import { pipe } from "../../utils/pipe"
 import {
@@ -11,12 +12,14 @@ import {
   overloadWithPointFree2,
 } from "../../utils/points"
 
-export const monad: Monad2<"TaskEither"> = createMonad2 (functor) ({
-  _URI: "TaskEither",
-  flat: mma => () =>
-    fromTaskEither (mma).then (ma =>
-      E.isLeft (ma) ? ma : fromTaskEither (E.fromRight (ma)),
-    ),
+export const monad: Monad2<"TaskEither"> = createMonad2 ({
+  ...applicative,
+  flat:
+    <E, A>(mma: TaskEither<E, TaskEither<E, A>>): TaskEither<E, A> =>
+    () =>
+      fromTaskEither (mma).then (ma =>
+        E.isLeft (ma) ? ma : fromTaskEither (E.fromRight (ma)),
+      ),
 })
 
 export const {

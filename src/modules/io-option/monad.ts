@@ -2,17 +2,19 @@ import * as IOE from "../io-either"
 import * as O from "../option"
 import { Either } from "../either"
 import { createMonad, Monad } from "../../types/Monad"
-import { functor } from "./functor"
+import { applicative } from "./applicative"
 import { pipe } from "../../utils/pipe"
 import { fromIoOption, IOOption } from "./io-option"
 import { overloadWithPointFree } from "../../utils/points"
 
-export const monad: Monad<"IOOption"> = createMonad (functor) ({
-  _URI: "IOOption",
-  flat: mma => () =>
-    pipe (mma, fromIoOption, ma =>
-      O.isNone (ma) ? ma : fromIoOption (O.fromSome (ma)),
-    ),
+export const monad: Monad<"IOOption"> = createMonad ({
+  ...applicative,
+  flat:
+    <A>(mma: IOOption<IOOption<A>>) =>
+    () =>
+      pipe (mma, fromIoOption, ma =>
+        O.isNone (ma) ? ma : fromIoOption (O.fromSome (ma)),
+      ),
 })
 
 export const {

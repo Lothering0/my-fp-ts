@@ -60,11 +60,11 @@ interface ReduceWithIndex2<URI extends URIS2, I>
 }
 
 interface ReduceRightWithIndexPointed<URI extends URIS, I> {
-  <A, B>(fa: HKT<URI, A>, b: B, f: (i: I, b: B, a: A) => B): B
+  <A, B>(fa: HKT<URI, A>, b: B, f: (i: I, a: A, b: B) => B): B
 }
 
 interface ReduceRightWithIndexPointed2<URI extends URIS2, I> {
-  <E, A, B>(fa: HKT2<URI, E, A>, b: B, f: (i: I, b: B, a: A) => B): B
+  <E, A, B>(fa: HKT2<URI, E, A>, b: B, f: (i: I, a: A, b: B) => B): B
 }
 
 interface ReduceRightWithIndex<URI extends URIS, I>

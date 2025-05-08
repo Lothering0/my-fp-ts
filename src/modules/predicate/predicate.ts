@@ -1,5 +1,5 @@
 declare module "../../types/Kind" {
-  export interface Kind<A> {
+  interface Kind<A> {
     readonly Predicate: Predicate<A>
   }
 }

@@ -1,10 +1,11 @@
 import * as O from "../option"
 import { Applicative, createApplicative } from "../../types/Applicative"
-import { fromIoOption, IOOption } from "./io-option"
+import { some, fromIoOption, IOOption } from "./io-option"
 import { pipe } from "../../utils/pipe"
 
 export const applicative: Applicative<"IOOption"> = createApplicative ({
   _URI: "IOOption",
+  of: some,
   apply:
     <A, B>(fma: IOOption<A>, fmf: IOOption<(a: A) => B>): IOOption<B> =>
     () =>
@@ -16,4 +17,4 @@ export const applicative: Applicative<"IOOption"> = createApplicative ({
       ),
 })
 
-export const { apply } = applicative
+export const { of, apply } = applicative

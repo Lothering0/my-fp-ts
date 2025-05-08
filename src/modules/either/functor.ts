@@ -1,11 +1,16 @@
+import * as E from "./either"
 import { Functor2, createFunctor2 } from "../../types/Functor"
-import { isLeft, fromRight, right } from "./either"
+import { Bifunctor, createBifunctor } from "../../types/Bifunctor"
 import { pipe } from "../../utils/pipe"
 
 export const functor: Functor2<"Either"> = createFunctor2 ({
   _URI: "Either",
-  of: right,
-  map: (fa, f) => isLeft (fa) ? fa : pipe (fa, fromRight, f, right),
+  map: (fa, f) => E.isLeft (fa) ? fa : pipe (fa, E.fromRight, f, E.right),
 })
 
-export const { of, map } = functor
+export const bifunctor: Bifunctor<"Either"> = createBifunctor ({
+  ...functor,
+  mapLeft: (fe, f) => E.isRight (fe) ? fe : pipe (fe, E.fromLeft, f, E.left),
+})
+
+export const { map, mapLeft, bimap } = bifunctor

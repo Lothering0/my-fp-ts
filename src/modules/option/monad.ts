@@ -1,13 +1,14 @@
 import * as O from "./option"
 import * as E from "../either"
 import { createMonad, Monad } from "../../types/Monad"
-import { functor, map } from "./functor"
+import { map } from "./functor"
+import { applicative } from "./applicative"
 import { identity } from "../identity"
 import { pipe } from "../../utils/pipe"
 import { overloadWithPointFree } from "../../utils/points"
 
-export const monad: Monad<"Option"> = createMonad (functor) ({
-  _URI: "Option",
+export const monad: Monad<"Option"> = createMonad ({
+  ...applicative,
   flat: O.option (() => O.none, identity),
 })
 

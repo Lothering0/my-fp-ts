@@ -7,19 +7,22 @@ import * as IOO from "../io-option"
 import * as IOE from "../io-either"
 import { createMonad, DoObject, Monad } from "../../types/Monad"
 import { TaskOption, fromTaskOption, toTaskOptionFromTask } from "./task-option"
-import { functor, map } from "./functor"
+import { map } from "./functor"
+import { applicative } from "./applicative"
 import { pipe } from "../../utils/pipe"
 import {
   overloadWithPointFree,
   overloadWithPointFree2,
 } from "../../utils/points"
 
-export const monad: Monad<"TaskOption"> = createMonad (functor) ({
-  _URI: "TaskOption",
-  flat: mma => () =>
-    fromTaskOption (mma).then (ma =>
-      O.isNone (ma) ? ma : fromTaskOption (O.fromSome (ma)),
-    ),
+export const monad: Monad<"TaskOption"> = createMonad ({
+  ...applicative,
+  flat:
+    <A>(mma: TaskOption<TaskOption<A>>): TaskOption<A> =>
+    () =>
+      fromTaskOption (mma).then (ma =>
+        O.isNone (ma) ? ma : fromTaskOption (O.fromSome (ma)),
+      ),
 })
 
 export const {

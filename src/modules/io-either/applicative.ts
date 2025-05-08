@@ -1,10 +1,11 @@
 import * as E from "../either"
 import { Applicative2, createApplicative2 } from "../../types/Applicative"
-import { fromIoEither, IOEither } from "./io-either"
+import { right, fromIoEither, IOEither } from "./io-either"
 import { pipe } from "../../utils/pipe"
 
 export const applicative: Applicative2<"IOEither"> = createApplicative2 ({
   _URI: "IOEither",
+  of: right,
   apply:
     <_, A, B>(
       fma: IOEither<_, A>,
@@ -19,4 +20,4 @@ export const applicative: Applicative2<"IOEither"> = createApplicative2 ({
       ),
 })
 
-export const { apply } = applicative
+export const { of, apply } = applicative

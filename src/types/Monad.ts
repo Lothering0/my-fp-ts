@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Functor, Functor2 } from "./Functor"
+import { Applicative, Applicative2 } from "./Applicative"
 import { HKT, HKT2 } from "./HKT"
 import { URIS, URIS2 } from "./Kind"
 import {
@@ -9,8 +9,7 @@ import {
 } from "../utils/points"
 import { pipe } from "../utils/pipe"
 
-export interface Monad<URI extends URIS> {
-  readonly _URI: URI
+export interface Monad<URI extends URIS> extends Applicative<URI> {
   readonly Do: HKT<URI, {}>
   readonly flat: <A>(mma: HKT<URI, HKT<URI, A>>) => HKT<URI, A>
   readonly bind: Bind<URI>
@@ -25,8 +24,7 @@ export interface Monad<URI extends URIS> {
   readonly tapIo: TapIo<URI>
 }
 
-export interface Monad2<URI extends URIS2> {
-  readonly _URI: URI
+export interface Monad2<URI extends URIS2> extends Applicative2<URI> {
   readonly Do: HKT2<URI, unknown, {}>
   readonly flat: <E, A>(mma: HKT2<URI, E, HKT2<URI, E, A>>) => HKT2<URI, E, A>
   readonly bind: Bind2<URI>
@@ -45,108 +43,106 @@ export type DoObject<N extends string | number | symbol, A, B> = {
   readonly [K in N | keyof A]: K extends keyof A ? A[K] : B
 }
 
-export const createMonad =
-  <URI extends URIS>(functor: Functor<URI>) =>
-  (monad: CreateMonadArg<URI>): Monad<URI> => {
-    const { of, map } = functor
-    const { flat } = monad
-    const Do = of ({})
+export const createMonad = <URI extends URIS>(
+  monad: CreateMonadArg<URI>,
+): Monad<URI> => {
+  const { of, apply, flat } = monad
+  const Do = of ({})
 
-    const applyResultToPointed: ApplyResultToPointed<URI> = (fa, name, fb) =>
-      pipe (
-        fa,
-        map (a => map (fb, b => of ({ [name]: b, ...a } as any))),
-        flat,
-        flat,
-      )
-    const applyResultTo: ApplyResultTo<URI> =
-      overloadWithPointFree2 (applyResultToPointed)
-    const apS = applyResultTo
+  const applyResultToPointed: ApplyResultToPointed<URI> = (fa, name, fb) =>
+    pipe (
+      fa,
+      apply (
+        of (a =>
+          apply (
+            fb,
+            of (b => ({ [name]: b, ...a }) as any),
+          ),
+        ),
+      ),
+      flat,
+    )
+  const applyResultTo: ApplyResultTo<URI> =
+    overloadWithPointFree2 (applyResultToPointed)
+  const apS = applyResultTo
 
-    const bindPointed: BindPointed<URI> = (ma, f) =>
-      pipe (
-        Do,
-        apS ("a", ma),
-        map (({ a }) => f (a)),
-        flat,
-      )
-    const bind: Bind<URI> = overloadWithPointFree (bindPointed)
+  const bindPointed: BindPointed<URI> = (ma, f) =>
+    pipe (Do, apS ("a", ma), apply (of (({ a }) => f (a))), flat)
+  const bind: Bind<URI> = overloadWithPointFree (bindPointed)
 
-    const composePointed: ComposePointed<URI> = (g, f, a) => bind (f (a), g)
-    const compose: Compose<URI> = overloadWithPointFreeLast2 (composePointed)
+  const composePointed: ComposePointed<URI> = (g, f, a) => bind (f (a), g)
+  const compose: Compose<URI> = overloadWithPointFreeLast2 (composePointed)
 
-    const tapPointed: TapPointed<URI> = (ma, f) =>
-      pipe (
-        Do,
-        apS ("a", ma),
-        bind (({ a }) => bind (f (a), () => of (a))),
-      )
-    const tap: Tap<URI> = overloadWithPointFree (tapPointed)
+  const tapPointed: TapPointed<URI> = (ma, f) =>
+    pipe (
+      Do,
+      apS ("a", ma),
+      bind (({ a }) => bind (f (a), () => of (a))),
+    )
+  const tap: Tap<URI> = overloadWithPointFree (tapPointed)
 
-    const tapIoPointed: TapIoPointed<URI> = (ma, f) =>
-      pipe (
-        Do,
-        apS ("a", ma),
-        bind (({ a }) => bind (of (f (a)), () => of (a))),
-      )
-    const tapIo: TapIo<URI> = overloadWithPointFree (tapIoPointed)
+  const tapIoPointed: TapIoPointed<URI> = (ma, f) =>
+    pipe (
+      Do,
+      apS ("a", ma),
+      bind (({ a }) => bind (of (f (a)), () => of (a))),
+    )
+  const tapIo: TapIo<URI> = overloadWithPointFree (tapIoPointed)
 
-    const mapToPointed: MapToPointed<URI> = (fa, name, f) =>
-      bind (fa, a =>
+  const mapToPointed: MapToPointed<URI> = (fa, name, f) =>
+    bind (fa, a =>
+      of ({
+        [name]: f (a),
+        ...a,
+      } as any),
+    )
+  const mapTo: MapTo<URI> = overloadWithPointFree2 (mapToPointed)
+
+  const applyToPointed: ApplyToPointed<URI> = (fa, name, ff) =>
+    pipe (
+      Do,
+      apS ("a", fa),
+      apS ("f", ff),
+      apply (of (({ a, f }) => ({ [name]: f (a), ...a }) as any)),
+    )
+  const applyTo: ApplyTo<URI> = overloadWithPointFree2 (applyToPointed)
+
+  const bindToPointed: BindToPointed<URI> = (ma, name, f) =>
+    bind (ma, a =>
+      bind (f (a), b =>
         of ({
-          [name]: f (a),
+          [name]: b,
           ...a,
         } as any),
-      )
-    const mapTo: MapTo<URI> = overloadWithPointFree2 (mapToPointed)
+      ),
+    )
+  const bindTo: BindTo<URI> = overloadWithPointFree2 (bindToPointed)
 
-    const applyToPointed: ApplyToPointed<URI> = (fa, name, ff) =>
-      pipe (
-        Do,
-        apS ("a", fa),
-        apS ("f", ff),
-        map (({ a, f }) => ({ [name]: f (a), ...a }) as any),
-      )
-    const applyTo: ApplyTo<URI> = overloadWithPointFree2 (applyToPointed)
-
-    const bindToPointed: BindToPointed<URI> = (ma, name, f) =>
-      bind (ma, a =>
-        bind (f (a), b =>
-          of ({
-            [name]: b,
-            ...a,
-          } as any),
-        ),
-      )
-    const bindTo: BindTo<URI> = overloadWithPointFree2 (bindToPointed)
-
-    return {
-      ...monad,
-      Do,
-      bind,
-      compose,
-      tap,
-      tapIo,
-      mapTo,
-      applyTo,
-      applyResultTo,
-      apS,
-      bindTo,
-    }
+  return {
+    ...monad,
+    Do,
+    bind,
+    compose,
+    tap,
+    tapIo,
+    mapTo,
+    applyTo,
+    applyResultTo,
+    apS,
+    bindTo,
   }
+}
 
 type CreateMonad2 = <URI extends URIS2>(
-  functor: Functor2<URI>,
-) => (monad: CreateMonadArg2<URI>) => Monad2<URI>
+  monad: CreateMonadArg2<URI>,
+) => Monad2<URI>
 export const createMonad2: CreateMonad2 = createMonad as CreateMonad2
 
-interface CreateMonadArg<URI extends URIS> {
-  readonly _URI: URI
+interface CreateMonadArg<URI extends URIS> extends Applicative<URI> {
   readonly flat: Monad<URI>["flat"]
 }
 
-interface CreateMonadArg2<URI extends URIS2> {
-  readonly _URI: URI
+interface CreateMonadArg2<URI extends URIS2> extends Applicative2<URI> {
   readonly flat: Monad2<URI>["flat"]
 }
 

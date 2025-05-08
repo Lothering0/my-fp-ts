@@ -4,13 +4,11 @@ import { overloadWithPointFree } from "../utils/points"
 
 export interface Functor<URI extends URIS> {
   readonly _URI: URI
-  readonly of: <A>(a: A) => HKT<URI, A>
   readonly map: Map<URI>
 }
 
 export interface Functor2<URI extends URIS2> {
   readonly _URI: URI
-  readonly of: <A>(a: A) => HKT2<URI, never, A>
   readonly map: Map2<URI>
 }
 

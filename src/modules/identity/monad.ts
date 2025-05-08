@@ -1,9 +1,9 @@
 import { createMonad, Monad } from "../../types/Monad"
-import { functor } from "./functor"
+import { applicative } from "./applicative"
 import { identity } from "./identity"
 
-export const monad: Monad<"Identity"> = createMonad (functor) ({
-  _URI: "Identity",
+export const monad: Monad<"Identity"> = createMonad ({
+  ...applicative,
   flat: identity,
 })
 

@@ -2,7 +2,7 @@ import * as E from "../either"
 import { overloadWithPointFree2 } from "../../utils/points"
 
 declare module "../../types/Kind" {
-  export interface Kind<A> {
+  interface Kind<A> {
     readonly Option: Option<A>
   }
 }

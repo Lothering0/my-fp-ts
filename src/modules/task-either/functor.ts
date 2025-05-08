@@ -1,14 +1,22 @@
 import * as E from "../either"
 import { createFunctor2, Functor2 } from "../../types/Functor"
-import { fromTaskEither, TaskEither, right } from "./task-either"
+import { Bifunctor, createBifunctor } from "../../types/Bifunctor"
+import { fromTaskEither, TaskEither } from "./task-either"
 
 export const functor: Functor2<"TaskEither"> = createFunctor2 ({
   _URI: "TaskEither",
-  of: right,
   map:
     <_, A, B>(fma: TaskEither<_, A>, f: (a: A) => B): TaskEither<_, B> =>
     () =>
       fromTaskEither (fma).then (ma => E.map (ma, f)),
 })
 
-export const { of, map } = functor
+export const bifunctor: Bifunctor<"TaskEither"> = createBifunctor ({
+  ...functor,
+  mapLeft:
+    <E, _, B>(fma: TaskEither<E, _>, f: (e: E) => B): TaskEither<B, _> =>
+    () =>
+      fromTaskEither (fma).then (ma => E.mapLeft (ma, f)),
+})
+
+export const { map, mapLeft, bimap } = bifunctor

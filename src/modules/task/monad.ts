@@ -1,15 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as T from "./task"
 import { createMonad, Monad, DoObject } from "../../types/Monad"
-import { functor } from "./functor"
+import { applicative } from "./applicative"
 import {
   overloadWithPointFree,
   overloadWithPointFree2,
 } from "../../utils/points"
 
-export const monad: Monad<"Task"> = createMonad (functor) ({
-  _URI: "Task",
-  flat: mma => () => T.fromTask (mma).then (T.fromTask),
+export const monad: Monad<"Task"> = createMonad ({
+  ...applicative,
+  flat:
+    <A>(mma: T.Task<T.Task<A>>): T.Task<A> =>
+    () =>
+      T.fromTask (mma).then (T.fromTask),
 })
 
 export const {

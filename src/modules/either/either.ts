@@ -1,7 +1,7 @@
 import { overloadWithPointFree2 } from "../../utils/points"
 
 declare module "../../types/Kind" {
-  export interface Kind2<E, A> {
+  interface Kind2<E, A> {
     readonly Either: Either<E, A>
   }
 }

@@ -1,10 +1,11 @@
 import * as E from "../either"
 import { Applicative2, createApplicative2 } from "../../types/Applicative"
-import { fromTaskEither, TaskEither } from "./task-either"
+import { right, fromTaskEither, TaskEither } from "./task-either"
 import { pipe } from "../../utils/pipe"
 
 export const applicative: Applicative2<"TaskEither"> = createApplicative2 ({
   _URI: "TaskEither",
+  of: right,
   apply:
     <_, A, B>(
       fma: TaskEither<_, A>,
@@ -23,4 +24,4 @@ export const applicative: Applicative2<"TaskEither"> = createApplicative2 ({
       ),
 })
 
-export const { apply } = applicative
+export const { of, apply } = applicative
