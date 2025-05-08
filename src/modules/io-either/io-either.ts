@@ -14,14 +14,14 @@ export interface IOEither<E, A> extends IO.IO<E.Either<E, A>> {
   (): E.Either<E, A>
 }
 
-type IOLeftConstructor = <E>(e: E) => IOEither<E, never>
-export const ioLeft: IOLeftConstructor = e => () => E.left (e)
+type LeftConstructor = <E>(e: E) => IOEither<E, never>
+export const left: LeftConstructor = e => () => E.left (e)
 
-type IORightConstructor = <A>(a: A) => IOEither<never, A>
-export const ioRight: IORightConstructor = a => () => E.right (a)
+type RightConstructor = <A>(a: A) => IOEither<never, A>
+export const right: RightConstructor = a => () => E.right (a)
 
 type ToIOEither = <E, A>(ma: IO.IO<A>) => IOEither<E, A>
-export const toTaskEither: ToIOEither = ma => () => tryDo (ma)
+export const toIoEither: ToIOEither = ma => () => tryDo (ma)
 
 type FromIOEither = <E, A>(ma: IOEither<E, A>) => E.Either<E, A>
 export const fromIoEither: FromIOEither = <E, A>(ma: IOEither<E, A>) => {
@@ -32,8 +32,8 @@ export const fromIoEither: FromIOEither = <E, A>(ma: IOEither<E, A>) => {
   }
 }
 
-type ToIOUnion = <E, A>(ma: IOEither<E, A>) => IO.IO<E | A>
-export const toIoUnion: ToIOUnion = mma => () => E.toUnion (mma ())
+type ToUnion = <E, A>(ma: IOEither<E, A>) => IO.IO<E | A>
+export const toUnion: ToUnion = mma => () => E.toUnion (mma ())
 
 interface IOEitherEliminatorPointed {
   <E, A, B>(

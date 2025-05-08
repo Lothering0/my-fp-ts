@@ -15,12 +15,11 @@ export interface TaskOption<A> extends T.Task<O.Option<A>> {
   (): Promise<O.Option<A>>
 }
 
-type TaskNoneConstructor = TaskOption<never>
-export const taskNone: TaskNoneConstructor = () => Promise.resolve (O.none)
+type NoneConstructor = TaskOption<never>
+export const none: NoneConstructor = T.of (O.none)
 
-type TaskSomeConstructor = <A>(a: A) => TaskOption<A>
-export const taskSome: TaskSomeConstructor = a => () =>
-  Promise.resolve (O.some (a))
+type SomeConstructor = <A>(a: A) => TaskOption<A>
+export const some: SomeConstructor = a => T.of (O.some (a))
 
 type ToTaskOptionFromTask = <A>(ma: T.Task<A>) => TaskOption<A>
 export const toTaskOptionFromTask: ToTaskOptionFromTask = ma => () =>

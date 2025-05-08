@@ -1,11 +1,11 @@
 import * as O from "../option"
 import { createFunctor, Functor } from "../../types/Functor"
-import { fromIoOption, IOOption, ioSome } from "./io-option"
+import { fromIoOption, IOOption, some } from "./io-option"
 import { pipe } from "../../utils/pipe"
 
 export const functor: Functor<"IOOption"> = createFunctor ({
   _URI: "IOOption",
-  of: ioSome,
+  of: some,
   map:
     <A, B>(fma: IOOption<A>, f: (a: A) => B): IOOption<B> =>
     () =>

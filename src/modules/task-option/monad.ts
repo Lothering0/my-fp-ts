@@ -3,6 +3,8 @@ import * as T from "../task"
 import * as TE from "../task-either"
 import * as E from "../either"
 import * as O from "../option"
+import * as IOO from "../io-option"
+import * as IOE from "../io-either"
 import { createMonad, DoObject, Monad } from "../../types/Monad"
 import { TaskOption, fromTaskOption, toTaskOptionFromTask } from "./task-option"
 import { functor, map } from "./functor"
@@ -156,3 +158,43 @@ const tapTaskEitherPointed: TapTaskEitherPointed = (mma, f) =>
 
 export const tapTaskEither: TapTaskEither =
   overloadWithPointFree (tapTaskEitherPointed)
+
+interface TapIOOptionPointed {
+  <A, _>(ma: TaskOption<A>, f: (a: A) => IOO.IOOption<_>): TaskOption<A>
+}
+
+interface TapIOOption extends TapIOOptionPointed {
+  <A, _>(f: (a: A) => IOO.IOOption<_>): (ma: TaskOption<A>) => TaskOption<A>
+}
+
+const tapIoOptionPointed: TapIOOptionPointed = (mma, f) =>
+  pipe (
+    Do,
+    apS ("a", mma),
+    tapOption (({ a }) => IOO.fromIoOption (f (a))),
+    map (({ a }) => a),
+  )
+
+export const tapIoOption: TapIOOption =
+  overloadWithPointFree (tapIoOptionPointed)
+
+interface TapIOEitherPointed {
+  <E, A, _>(ma: TaskOption<A>, f: (a: A) => IOE.IOEither<E, _>): TaskOption<A>
+}
+
+interface TapIOEither extends TapIOEitherPointed {
+  <E, A, _>(
+    f: (a: A) => IOE.IOEither<E, _>,
+  ): (ma: TaskOption<A>) => TaskOption<A>
+}
+
+const tapIoEitherPointed: TapIOEitherPointed = (mma, f) =>
+  pipe (
+    Do,
+    apS ("a", mma),
+    tapEither (({ a }) => IOE.fromIoEither (f (a))),
+    map (({ a }) => a),
+  )
+
+export const tapIoEither: TapIOEither =
+  overloadWithPointFree (tapIoEitherPointed)

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as E from "../either"
 import * as T from "../task"
+import * as IOE from "../io-either"
 import { createMonad2, DoObject, Monad2 } from "../../types/Monad"
 import { functor, map } from "./functor"
 import { TaskEither, fromTaskEither, toTaskEither } from "./task-either"
@@ -73,6 +74,50 @@ const parallelToPointed: ParallelToPointed = (fa, name, fb) => () =>
   )
 
 export const parallelTo: ParallelTo = overloadWithPointFree2 (parallelToPointed)
+
+interface TapEitherPointed {
+  <E, A, _>(ma: TaskEither<E, A>, f: (a: A) => E.Either<E, _>): TaskEither<E, A>
+}
+
+interface TapEither extends TapEitherPointed {
+  <E, A, _>(
+    f: (a: A) => E.Either<E, _>,
+  ): (ma: TaskEither<E, A>) => TaskEither<E, A>
+}
+
+const tapEitherPointed: TapEitherPointed = (ma, f) =>
+  pipe (
+    Do,
+    apS ("a", ma),
+    tap (({ a }) => T.of (f (a))),
+    map (({ a }) => a),
+  )
+
+export const tapEither: TapEither = overloadWithPointFree (tapEitherPointed)
+
+interface TapIOEitherPointed {
+  <E, A, _>(
+    ma: TaskEither<E, A>,
+    f: (a: A) => IOE.IOEither<E, _>,
+  ): TaskEither<E, A>
+}
+
+interface TapIOEither extends TapIOEitherPointed {
+  <E, A, _>(
+    f: (a: A) => IOE.IOEither<E, _>,
+  ): (ma: TaskEither<E, A>) => TaskEither<E, A>
+}
+
+const tapIoEitherPointed: TapIOEitherPointed = (ma, f) =>
+  pipe (
+    Do,
+    apS ("a", ma),
+    tap (({ a }) => T.of (IOE.fromIoEither (f (a)))),
+    map (({ a }) => a),
+  )
+
+export const tapIoEither: TapIOEither =
+  overloadWithPointFree (tapIoEitherPointed)
 
 interface TapTaskPointed {
   <_, A, _2>(ma: TaskEither<_, A>, f: (a: A) => T.Task<_2>): TaskEither<_, A>

@@ -1,10 +1,10 @@
 import * as O from "../option"
 import { createFunctor, Functor } from "../../types/Functor"
-import { TaskOption, taskSome, fromTaskOption } from "./task-option"
+import { TaskOption, some, fromTaskOption } from "./task-option"
 
 export const functor: Functor<"TaskOption"> = createFunctor ({
   _URI: "TaskOption",
-  of: taskSome,
+  of: some,
   map:
     <A, B>(fma: TaskOption<A>, f: (a: A) => B): TaskOption<B> =>
     () =>

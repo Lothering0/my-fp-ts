@@ -9,109 +9,6 @@ import {
 } from "../utils/points"
 import { pipe } from "../utils/pipe"
 
-export type DoObject<N extends string | number | symbol, A, B> = {
-  readonly [K in N | keyof A]: K extends keyof A ? A[K] : B
-}
-
-interface BindPointed<URI extends URIS> {
-  <A, B>(ma: HKT<URI, A>, f: (a: A) => HKT<URI, B>): HKT<URI, B>
-}
-
-interface Bind<URI extends URIS> extends BindPointed<URI> {
-  <A, B>(f: (a: A) => HKT<URI, B>): (ma: HKT<URI, A>) => HKT<URI, B>
-}
-
-interface ComposePointed<URI extends URIS> {
-  <A, B, C>(
-    g: (b: B) => HKT<URI, C>,
-    f: (a: A) => HKT<URI, B>,
-    a: A,
-  ): HKT<URI, C>
-}
-
-interface Compose<URI extends URIS> extends ComposePointed<URI> {
-  <A, B, C>(
-    g: (b: B) => HKT<URI, C>,
-    f: (a: A) => HKT<URI, B>,
-  ): (a: A) => HKT<URI, C>
-}
-
-interface MapToPointed<URI extends URIS> {
-  <N extends string | number | symbol, A, B>(
-    fa: HKT<URI, A>,
-    name: Exclude<N, keyof A>,
-    f: (a: A) => B,
-  ): HKT<URI, DoObject<N, A, B>>
-}
-
-interface MapTo<URI extends URIS> extends MapToPointed<URI> {
-  <N extends string | number | symbol, A, B>(
-    name: Exclude<N, keyof A>,
-    f: (a: A) => B,
-  ): (fa: HKT<URI, A>) => HKT<URI, DoObject<N, A, B>>
-}
-
-interface ApplyToPointed<URI extends URIS> {
-  <N extends string | number | symbol, A, B>(
-    fa: HKT<URI, A>,
-    name: Exclude<N, keyof A>,
-    ff: HKT<URI, (a: A) => B>,
-  ): HKT<URI, DoObject<N, A, B>>
-}
-
-interface ApplyTo<URI extends URIS> extends ApplyToPointed<URI> {
-  <N extends string | number | symbol, A, B>(
-    name: Exclude<N, keyof A>,
-    ff: HKT<URI, (a: A) => B>,
-  ): (fa: HKT<URI, A>) => HKT<URI, DoObject<N, A, B>>
-}
-
-interface ApplyResultToPointed<URI extends URIS> {
-  <N extends string | number | symbol, A, B>(
-    fa: HKT<URI, A>,
-    name: Exclude<N, keyof A>,
-    fb: HKT<URI, B>,
-  ): HKT<URI, DoObject<N, A, B>>
-}
-
-interface ApplyResultTo<URI extends URIS> extends ApplyResultToPointed<URI> {
-  <N extends string | number | symbol, A, B>(
-    name: Exclude<N, keyof A>,
-    fb: HKT<URI, B>,
-  ): (fa: HKT<URI, A>) => HKT<URI, DoObject<N, A, B>>
-}
-
-interface BindToPointed<URI extends URIS> {
-  <N extends string | number | symbol, A, B>(
-    ma: HKT<URI, A>,
-    name: Exclude<N, keyof A>,
-    f: (a: A) => HKT<URI, B>,
-  ): HKT<URI, DoObject<N, A, B>>
-}
-
-interface BindTo<URI extends URIS> extends BindToPointed<URI> {
-  <N extends string | number | symbol, A, B>(
-    name: Exclude<N, keyof A>,
-    f: (a: A) => HKT<URI, B>,
-  ): (ma: HKT<URI, A>) => HKT<URI, DoObject<N, A, B>>
-}
-
-interface TapPointed<URI extends URIS> {
-  <A, _>(ma: HKT<URI, A>, f: (a: A) => HKT<URI, _>): HKT<URI, A>
-}
-
-interface Tap<URI extends URIS> extends TapPointed<URI> {
-  <A, _>(f: (a: A) => HKT<URI, _>): (ma: HKT<URI, A>) => HKT<URI, A>
-}
-
-interface TapIoPointed<URI extends URIS> {
-  <A, _>(ma: HKT<URI, A>, f: (a: A) => HKT<"IO", _>): HKT<URI, A>
-}
-
-interface TapIo<URI extends URIS> extends TapIoPointed<URI> {
-  <A, _>(f: (a: A) => HKT<"IO", _>): (ma: HKT<URI, A>) => HKT<URI, A>
-}
-
 export interface Monad<URI extends URIS> {
   readonly _URI: URI
   readonly Do: HKT<URI, {}>
@@ -128,9 +25,24 @@ export interface Monad<URI extends URIS> {
   readonly tapIo: TapIo<URI>
 }
 
-interface CreateMonadArg<URI extends URIS> {
+export interface Monad2<URI extends URIS2> {
   readonly _URI: URI
-  readonly flat: Monad<URI>["flat"]
+  readonly Do: HKT2<URI, unknown, {}>
+  readonly flat: <E, A>(mma: HKT2<URI, E, HKT2<URI, E, A>>) => HKT2<URI, E, A>
+  readonly bind: Bind2<URI>
+  readonly compose: Compose2<URI>
+  readonly mapTo: MapTo2<URI>
+  readonly applyTo: ApplyTo2<URI>
+  readonly applyResultTo: ApplyResultTo2<URI>
+  /** Alias for `applyResultTo` */
+  readonly apS: Monad2<URI>["applyResultTo"]
+  readonly bindTo: BindTo2<URI>
+  readonly tap: Tap2<URI>
+  readonly tapIo: TapIo2<URI>
+}
+
+export type DoObject<N extends string | number | symbol, A, B> = {
+  readonly [K in N | keyof A]: K extends keyof A ? A[K] : B
 }
 
 export const createMonad =
@@ -223,131 +135,224 @@ export const createMonad =
     }
   }
 
-interface BindPointed2<URI extends URIS2> {
-  <E, A, B>(ma: HKT2<URI, E, A>, f: (a: A) => HKT2<URI, E, B>): HKT2<URI, E, B>
-}
+type CreateMonad2 = <URI extends URIS2>(
+  functor: Functor2<URI>,
+) => (monad: CreateMonadArg2<URI>) => Monad2<URI>
+export const createMonad2: CreateMonad2 = createMonad as CreateMonad2
 
-interface Bind2<URI extends URIS2> extends BindPointed2<URI> {
-  <E, A, B>(
-    f: (a: A) => HKT2<URI, E, B>,
-  ): (ma: HKT2<URI, E, A>) => HKT2<URI, E, B>
-}
-
-interface ComposePointed2<URI extends URIS2> {
-  <E, A, B, C>(
-    g: (b: B) => HKT2<URI, E, C>,
-    f: (a: A) => HKT2<URI, E, B>,
-    a: A,
-  ): HKT2<URI, E, C>
-}
-
-interface Compose2<URI extends URIS2> extends ComposePointed2<URI> {
-  <E, A, B, C>(
-    g: (b: B) => HKT2<URI, E, C>,
-    f: (a: A) => HKT2<URI, E, B>,
-  ): (a: A) => HKT2<URI, E, C>
-}
-
-interface MapToPointed2<URI extends URIS2> {
-  <N extends string | number | symbol, E, A, B>(
-    fa: HKT2<URI, E, A>,
-    name: Exclude<N, keyof A>,
-    f: (a: A) => B,
-  ): HKT2<URI, E, DoObject<N, A, B>>
-}
-
-interface MapTo2<URI extends URIS2> extends MapToPointed2<URI> {
-  <N extends string | number | symbol, E, A, B>(
-    name: Exclude<N, keyof A>,
-    f: (a: A) => B,
-  ): (fa: HKT2<URI, E, A>) => HKT2<URI, E, DoObject<N, A, B>>
-}
-
-interface ApplyToPointed2<URI extends URIS2> {
-  <N extends string | number | symbol, E, A, B>(
-    fa: HKT2<URI, E, A>,
-    name: Exclude<N, keyof A>,
-    ff: HKT2<URI, E, (a: A) => B>,
-  ): HKT2<URI, E, DoObject<N, A, B>>
-}
-
-interface ApplyTo2<URI extends URIS2> extends ApplyToPointed2<URI> {
-  <N extends string | number | symbol, E, A, B>(
-    name: Exclude<N, keyof A>,
-    ff: HKT2<URI, E, (a: A) => B>,
-  ): (fa: HKT2<URI, E, A>) => HKT2<URI, E, DoObject<N, A, B>>
-}
-
-interface ApplyResultToPointed2<URI extends URIS2> {
-  <N extends string | number | symbol, E, A, B>(
-    fa: HKT2<URI, E, A>,
-    name: Exclude<N, keyof A>,
-    fb: HKT2<URI, E, B>,
-  ): HKT2<URI, E, DoObject<N, A, B>>
-}
-
-interface ApplyResultTo2<URI extends URIS2> extends ApplyResultToPointed2<URI> {
-  <N extends string | number | symbol, E, A, B>(
-    name: Exclude<N, keyof A>,
-    fb: HKT2<URI, E, B>,
-  ): (fa: HKT2<URI, E, A>) => HKT2<URI, E, DoObject<N, A, B>>
-}
-
-interface BindToPointed2<URI extends URIS2> {
-  <N extends string | number | symbol, E, A, B>(
-    ma: HKT2<URI, E, A>,
-    name: Exclude<N, keyof A>,
-    f: (a: A) => HKT2<URI, E, B>,
-  ): HKT2<URI, E, DoObject<N, A, B>>
-}
-
-interface BindTo2<URI extends URIS2> extends BindToPointed2<URI> {
-  <N extends string | number | symbol, E, A, B>(
-    name: Exclude<N, keyof A>,
-    f: (a: A) => HKT2<URI, E, B>,
-  ): (ma: HKT2<URI, E, A>) => HKT2<URI, E, DoObject<N, A, B>>
-}
-
-interface TapPointed2<URI extends URIS2> {
-  <E, A, _>(ma: HKT2<URI, E, A>, f: (a: A) => HKT2<URI, E, _>): HKT2<URI, E, A>
-}
-
-interface Tap2<URI extends URIS2> extends TapPointed2<URI> {
-  <E, A, _>(
-    f: (a: A) => HKT2<URI, E, _>,
-  ): (ma: HKT2<URI, E, A>) => HKT2<URI, E, A>
-}
-
-interface TapIoPointed2<URI extends URIS2> {
-  <E, A, _>(ma: HKT2<URI, E, A>, f: (a: A) => HKT<"IO", _>): HKT2<URI, E, A>
-}
-
-interface TapIo2<URI extends URIS2> extends TapIoPointed2<URI> {
-  <E, A, _>(f: (a: A) => HKT<"IO", _>): (ma: HKT2<URI, E, A>) => HKT2<URI, E, A>
-}
-
-export interface Monad2<URI extends URIS2> {
+interface CreateMonadArg<URI extends URIS> {
   readonly _URI: URI
-  readonly Do: HKT2<URI, unknown, {}>
-  readonly flat: <E, A>(mma: HKT2<URI, E, HKT2<URI, E, A>>) => HKT2<URI, E, A>
-  readonly bind: Bind2<URI>
-  readonly compose: Compose2<URI>
-  readonly mapTo: MapTo2<URI>
-  readonly applyTo: ApplyTo2<URI>
-  readonly applyResultTo: ApplyResultTo2<URI>
-  /** Alias for `applyResultTo` */
-  readonly apS: Monad2<URI>["applyResultTo"]
-  readonly bindTo: BindTo2<URI>
-  readonly tap: Tap2<URI>
-  readonly tapIo: TapIo2<URI>
+  readonly flat: Monad<URI>["flat"]
 }
 
-interface CreateMonad2Arg<URI extends URIS2> {
+interface CreateMonadArg2<URI extends URIS2> {
   readonly _URI: URI
   readonly flat: Monad2<URI>["flat"]
 }
 
-type CreateMonad2 = <URI extends URIS2>(
-  functor: Functor2<URI>,
-) => (monad: CreateMonad2Arg<URI>) => Monad2<URI>
-export const createMonad2: CreateMonad2 = createMonad as CreateMonad2
+interface BindPointed<URI extends URIS> {
+  <A, B>(ma: HKT<URI, A>, f: (a: A) => HKT<URI, B>): HKT<URI, B>
+}
+
+interface BindPointed2<URI extends URIS2> {
+  <_, A, B>(ma: HKT2<URI, _, A>, f: (a: A) => HKT2<URI, _, B>): HKT2<URI, _, B>
+}
+
+interface Bind<URI extends URIS> extends BindPointed<URI> {
+  <A, B>(f: (a: A) => HKT<URI, B>): (ma: HKT<URI, A>) => HKT<URI, B>
+}
+
+interface Bind2<URI extends URIS2> extends BindPointed2<URI> {
+  <_, A, B>(
+    f: (a: A) => HKT2<URI, _, B>,
+  ): (ma: HKT2<URI, _, A>) => HKT2<URI, _, B>
+}
+
+interface ComposePointed<URI extends URIS> {
+  <A, B, C>(
+    g: (b: B) => HKT<URI, C>,
+    f: (a: A) => HKT<URI, B>,
+    a: A,
+  ): HKT<URI, C>
+}
+
+interface ComposePointed2<URI extends URIS2> {
+  <_, A, B, C>(
+    g: (b: B) => HKT2<URI, _, C>,
+    f: (a: A) => HKT2<URI, _, B>,
+    a: A,
+  ): HKT2<URI, _, C>
+}
+
+interface Compose<URI extends URIS> extends ComposePointed<URI> {
+  <A, B, C>(
+    g: (b: B) => HKT<URI, C>,
+    f: (a: A) => HKT<URI, B>,
+  ): (a: A) => HKT<URI, C>
+}
+
+interface Compose2<URI extends URIS2> extends ComposePointed2<URI> {
+  <_, A, B, C>(
+    g: (b: B) => HKT2<URI, _, C>,
+    f: (a: A) => HKT2<URI, _, B>,
+  ): (a: A) => HKT2<URI, _, C>
+}
+
+interface MapToPointed<URI extends URIS> {
+  <N extends string | number | symbol, A, B>(
+    fa: HKT<URI, A>,
+    name: Exclude<N, keyof A>,
+    f: (a: A) => B,
+  ): HKT<URI, DoObject<N, A, B>>
+}
+
+interface MapToPointed2<URI extends URIS2> {
+  <N extends string | number | symbol, _, A, B>(
+    fa: HKT2<URI, _, A>,
+    name: Exclude<N, keyof A>,
+    f: (a: A) => B,
+  ): HKT2<URI, _, DoObject<N, A, B>>
+}
+
+interface MapTo<URI extends URIS> extends MapToPointed<URI> {
+  <N extends string | number | symbol, A, B>(
+    name: Exclude<N, keyof A>,
+    f: (a: A) => B,
+  ): (fa: HKT<URI, A>) => HKT<URI, DoObject<N, A, B>>
+}
+
+interface MapTo2<URI extends URIS2> extends MapToPointed2<URI> {
+  <N extends string | number | symbol, _, A, B>(
+    name: Exclude<N, keyof A>,
+    f: (a: A) => B,
+  ): (fa: HKT2<URI, _, A>) => HKT2<URI, _, DoObject<N, A, B>>
+}
+
+interface ApplyToPointed<URI extends URIS> {
+  <N extends string | number | symbol, A, B>(
+    fa: HKT<URI, A>,
+    name: Exclude<N, keyof A>,
+    ff: HKT<URI, (a: A) => B>,
+  ): HKT<URI, DoObject<N, A, B>>
+}
+
+interface ApplyToPointed2<URI extends URIS2> {
+  <N extends string | number | symbol, _, A, B>(
+    fa: HKT2<URI, _, A>,
+    name: Exclude<N, keyof A>,
+    ff: HKT2<URI, _, (a: A) => B>,
+  ): HKT2<URI, _, DoObject<N, A, B>>
+}
+
+interface ApplyTo<URI extends URIS> extends ApplyToPointed<URI> {
+  <N extends string | number | symbol, A, B>(
+    name: Exclude<N, keyof A>,
+    ff: HKT<URI, (a: A) => B>,
+  ): (fa: HKT<URI, A>) => HKT<URI, DoObject<N, A, B>>
+}
+
+interface ApplyTo2<URI extends URIS2> extends ApplyToPointed2<URI> {
+  <N extends string | number | symbol, _, A, B>(
+    name: Exclude<N, keyof A>,
+    ff: HKT2<URI, _, (a: A) => B>,
+  ): (fa: HKT2<URI, _, A>) => HKT2<URI, _, DoObject<N, A, B>>
+}
+
+interface ApplyResultToPointed<URI extends URIS> {
+  <N extends string | number | symbol, A, B>(
+    fa: HKT<URI, A>,
+    name: Exclude<N, keyof A>,
+    fb: HKT<URI, B>,
+  ): HKT<URI, DoObject<N, A, B>>
+}
+
+interface ApplyResultToPointed2<URI extends URIS2> {
+  <N extends string | number | symbol, _, A, B>(
+    fa: HKT2<URI, _, A>,
+    name: Exclude<N, keyof A>,
+    fb: HKT2<URI, _, B>,
+  ): HKT2<URI, _, DoObject<N, A, B>>
+}
+
+interface ApplyResultTo<URI extends URIS> extends ApplyResultToPointed<URI> {
+  <N extends string | number | symbol, A, B>(
+    name: Exclude<N, keyof A>,
+    fb: HKT<URI, B>,
+  ): (fa: HKT<URI, A>) => HKT<URI, DoObject<N, A, B>>
+}
+
+interface ApplyResultTo2<URI extends URIS2> extends ApplyResultToPointed2<URI> {
+  <N extends string | number | symbol, _, A, B>(
+    name: Exclude<N, keyof A>,
+    fb: HKT2<URI, _, B>,
+  ): (fa: HKT2<URI, _, A>) => HKT2<URI, _, DoObject<N, A, B>>
+}
+
+interface BindToPointed<URI extends URIS> {
+  <N extends string | number | symbol, A, B>(
+    ma: HKT<URI, A>,
+    name: Exclude<N, keyof A>,
+    f: (a: A) => HKT<URI, B>,
+  ): HKT<URI, DoObject<N, A, B>>
+}
+
+interface BindToPointed2<URI extends URIS2> {
+  <N extends string | number | symbol, _, A, B>(
+    ma: HKT2<URI, _, A>,
+    name: Exclude<N, keyof A>,
+    f: (a: A) => HKT2<URI, _, B>,
+  ): HKT2<URI, _, DoObject<N, A, B>>
+}
+
+interface BindTo<URI extends URIS> extends BindToPointed<URI> {
+  <N extends string | number | symbol, A, B>(
+    name: Exclude<N, keyof A>,
+    f: (a: A) => HKT<URI, B>,
+  ): (ma: HKT<URI, A>) => HKT<URI, DoObject<N, A, B>>
+}
+
+interface BindTo2<URI extends URIS2> extends BindToPointed2<URI> {
+  <N extends string | number | symbol, _, A, B>(
+    name: Exclude<N, keyof A>,
+    f: (a: A) => HKT2<URI, _, B>,
+  ): (ma: HKT2<URI, _, A>) => HKT2<URI, _, DoObject<N, A, B>>
+}
+
+interface TapPointed<URI extends URIS> {
+  <A, _>(ma: HKT<URI, A>, f: (a: A) => HKT<URI, _>): HKT<URI, A>
+}
+
+interface TapPointed2<URI extends URIS2> {
+  <_, A, _2>(
+    ma: HKT2<URI, _, A>,
+    f: (a: A) => HKT2<URI, _, _2>,
+  ): HKT2<URI, _, A>
+}
+
+interface Tap<URI extends URIS> extends TapPointed<URI> {
+  <A, _>(f: (a: A) => HKT<URI, _>): (ma: HKT<URI, A>) => HKT<URI, A>
+}
+
+interface Tap2<URI extends URIS2> extends TapPointed2<URI> {
+  <_, A, _2>(
+    f: (a: A) => HKT2<URI, _, _2>,
+  ): (ma: HKT2<URI, _, A>) => HKT2<URI, _, A>
+}
+
+interface TapIoPointed<URI extends URIS> {
+  <A, _>(ma: HKT<URI, A>, f: (a: A) => HKT<"IO", _>): HKT<URI, A>
+}
+
+interface TapIoPointed2<URI extends URIS2> {
+  <_, A, _2>(ma: HKT2<URI, _, A>, f: (a: A) => HKT<"IO", _2>): HKT2<URI, _, A>
+}
+
+interface TapIo<URI extends URIS> extends TapIoPointed<URI> {
+  <A, _>(f: (a: A) => HKT<"IO", _>): (ma: HKT<URI, A>) => HKT<URI, A>
+}
+
+interface TapIo2<URI extends URIS2> extends TapIoPointed2<URI> {
+  <_, A, _2>(
+    f: (a: A) => HKT<"IO", _2>,
+  ): (ma: HKT2<URI, _, A>) => HKT2<URI, _, A>
+}

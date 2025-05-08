@@ -13,28 +13,21 @@ export interface TaskEither<E, A> extends T.Task<E.Either<E, A>> {
   (): Promise<E.Either<E, A>>
 }
 
-type TaskLeftConstructor = <E>(e: E) => TaskEither<E, never>
-export const taskLeft: TaskLeftConstructor = a => () =>
-  Promise.resolve (E.left (a))
+type LeftConstructor = <E>(e: E) => TaskEither<E, never>
+export const left: LeftConstructor = a => T.of (E.left (a))
 
-type TaskRightConstructor = <A>(a: A) => TaskEither<never, A>
-export const taskRight: TaskRightConstructor = a => () =>
-  Promise.resolve (E.right (a))
+type RightConstructor = <A>(a: A) => TaskEither<never, A>
+export const right: RightConstructor = a => T.of (E.right (a))
 
 type ToTaskEither = <E, A>(ma: T.Task<A>) => TaskEither<E, A>
-export const toTaskEither: ToTaskEither = ma => () =>
-  ma ().then (
-    a => E.right (a),
-    e => E.left (e),
-  )
+export const toTaskEither: ToTaskEither = ma => () => ma ().then (E.right, E.left)
 
 type FromTaskEither = <E, A>(ma: TaskEither<E, A>) => Promise<E.Either<E, A>>
 export const fromTaskEither: FromTaskEither = mma =>
-  mma ().then (identity, e => E.left (e))
+  mma ().then (identity, E.left)
 
-type ToTaskUnion = <E, A>(ma: TaskEither<E, A>) => T.Task<E | A>
-export const toTaskUnion: ToTaskUnion = mma => () =>
-  fromTaskEither (mma).then (E.toUnion)
+type ToUnion = <E, A>(ma: TaskEither<E, A>) => T.Task<E | A>
+export const toUnion: ToUnion = mma => () => fromTaskEither (mma).then (E.toUnion)
 
 interface TaskEitherEliminatorPointed {
   <E, A, B>(

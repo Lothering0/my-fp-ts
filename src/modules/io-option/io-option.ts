@@ -2,6 +2,7 @@ import * as IO from "../io"
 import * as O from "../option"
 import * as E from "../either"
 import { tryDo } from "../../utils/exceptions"
+import { overloadWithPointFree2 } from "../../utils/points"
 
 declare module "../../types/Kind" {
   interface Kind<A> {
@@ -13,11 +14,11 @@ export interface IOOption<A> extends IO.IO<O.Option<A>> {
   (): O.Option<A>
 }
 
-type IONoneConstructor = IOOption<never>
-export const ioNone: IONoneConstructor = () => O.none
+type NoneConstructor = IOOption<never>
+export const none: NoneConstructor = () => O.none
 
-type IOSomeConstructor = <A>(a: A) => IOOption<A>
-export const ioSome: IOSomeConstructor = a => () => O.some (a)
+type SomeConstructor = <A>(a: A) => IOOption<A>
+export const some: SomeConstructor = a => () => O.some (a)
 
 type ToIOOption = <A>(ma: IO.IO<A>) => IOOption<A>
 export const toIoOption: ToIOOption = ma => () =>
@@ -31,3 +32,17 @@ export const fromIoOption: FromIOOption = <A>(ma: IOOption<A>) => {
     return O.none
   }
 }
+
+interface IOOptionEliminatorPointed {
+  <A, B>(fa: IOOption<A>, b: () => B, f: (a: A) => B): B
+}
+
+interface IOOptionEliminator extends IOOptionEliminatorPointed {
+  <A, B>(fa: IOOption<A>, b: () => B, f: (a: A) => B): B
+}
+
+const ioOptionPointed: IOOptionEliminatorPointed = (fa, whenNone, whenSome) =>
+  O.option (fa (), whenNone, whenSome)
+
+export const ioOption: IOOptionEliminator =
+  overloadWithPointFree2 (ioOptionPointed)
