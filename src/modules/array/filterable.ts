@@ -17,5 +17,13 @@ export const filterableWithIndex: FilterableWithIndex<"Array", number> =
     ...functorWithIndex,
   })
 
-export const { filter, filterWithIndex, filterMap, filterMapWithIndex } =
-  filterableWithIndex
+export const {
+  filterMap,
+  filterMapWithIndex,
+  filter,
+  filterWithIndex,
+  partitionMap,
+  partitionMapWithIndex,
+  partition,
+  partitionWithIndex,
+} = filterableWithIndex

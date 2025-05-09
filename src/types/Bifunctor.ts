@@ -20,7 +20,7 @@ export const createBifunctor: CreateBifunctor = <URI extends URIS2>(
 
   return {
     ...bifunctor,
-    mapLeft: overloadWithPointFree (bifunctor.mapLeft),
+    mapLeft: overloadWithPointFree (mapLeft),
     bimap: overloadWithPointFree2 (bimapPointed),
   }
 }
