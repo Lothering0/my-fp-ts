@@ -14,7 +14,7 @@ export const functor: Functor2<"TaskEither"> = createFunctor2 ({
 export const bifunctor: Bifunctor<"TaskEither"> = createBifunctor ({
   ...functor,
   mapLeft:
-    <E, _, B>(fma: TaskEither<E, _>, f: (e: E) => B): TaskEither<B, _> =>
+    <E, _, D>(fma: TaskEither<E, _>, f: (e: E) => D): TaskEither<D, _> =>
     () =>
       fromTaskEither (fma).then (ma => E.mapLeft (ma, f)),
 })

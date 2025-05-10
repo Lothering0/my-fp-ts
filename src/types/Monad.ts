@@ -8,18 +8,20 @@ import {
   overloadWithPointFreeLast2,
 } from "../utils/points"
 import { pipe } from "../utils/pipe"
+import { constant } from "../utils/constant"
 
 export interface Monad<URI extends URIS> extends Applicative<URI> {
   readonly Do: HKT<URI, {}>
   readonly flat: <A>(mma: HKT<URI, HKT<URI, A>>) => HKT<URI, A>
-  readonly bind: Bind<URI>
+  readonly flatMap: FlatMap<URI>
   readonly compose: Compose<URI>
+  readonly setTo: SetTo<URI>
   readonly mapTo: MapTo<URI>
   readonly applyTo: ApplyTo<URI>
   readonly applyResultTo: ApplyResultTo<URI>
   /** Alias for `applyResultTo` */
   readonly apS: Monad<URI>["applyResultTo"]
-  readonly bindTo: BindTo<URI>
+  readonly flatMapTo: FlatMapTo<URI>
   readonly tap: Tap<URI>
   readonly tapIo: TapIo<URI>
 }
@@ -27,14 +29,15 @@ export interface Monad<URI extends URIS> extends Applicative<URI> {
 export interface Monad2<URI extends URIS2> extends Applicative2<URI> {
   readonly Do: HKT2<URI, unknown, {}>
   readonly flat: <E, A>(mma: HKT2<URI, E, HKT2<URI, E, A>>) => HKT2<URI, E, A>
-  readonly bind: Bind2<URI>
+  readonly flatMap: FlatMap2<URI>
   readonly compose: Compose2<URI>
+  readonly setTo: SetTo2<URI>
   readonly mapTo: MapTo2<URI>
   readonly applyTo: ApplyTo2<URI>
   readonly applyResultTo: ApplyResultTo2<URI>
   /** Alias for `applyResultTo` */
   readonly apS: Monad2<URI>["applyResultTo"]
-  readonly bindTo: BindTo2<URI>
+  readonly flatMapTo: FlatMapTo2<URI>
   readonly tap: Tap2<URI>
   readonly tapIo: TapIo2<URI>
 }
@@ -66,18 +69,25 @@ export const createMonad = <URI extends URIS>(
     overloadWithPointFree2 (applyResultToPointed)
   const apS = applyResultTo
 
-  const bindPointed: BindPointed<URI> = (ma, f) =>
+  const flatMapPointed: FlatMapPointed<URI> = (ma, f) =>
     pipe (Do, apS ("a", ma), apply (of (({ a }) => f (a))), flat)
-  const bind: Bind<URI> = overloadWithPointFree (bindPointed)
+  const flatMap: FlatMap<URI> = overloadWithPointFree (flatMapPointed)
 
-  const composePointed: ComposePointed<URI> = (g, f, a) => bind (f (a), g)
+  const composePointed: ComposePointed<URI> = (g, f, a) =>
+    pipe (a, f, flatMap (g))
   const compose: Compose<URI> = overloadWithPointFreeLast2 (composePointed)
 
   const tapPointed: TapPointed<URI> = (ma, f) =>
     pipe (
       Do,
       apS ("a", ma),
-      bind (({ a }) => bind (f (a), () => of (a))),
+      flatMap (({ a }) =>
+        pipe (
+          a,
+          f,
+          flatMap (() => of (a)),
+        ),
+      ),
     )
   const tap: Tap<URI> = overloadWithPointFree (tapPointed)
 
@@ -85,18 +95,29 @@ export const createMonad = <URI extends URIS>(
     pipe (
       Do,
       apS ("a", ma),
-      bind (({ a }) => bind (of (f (a)), () => of (a))),
+      flatMap (({ a }) =>
+        pipe (
+          a,
+          f,
+          of,
+          flatMap (() => of (a)),
+        ),
+      ),
     )
   const tapIo: TapIo<URI> = overloadWithPointFree (tapIoPointed)
 
   const mapToPointed: MapToPointed<URI> = (fa, name, f) =>
-    bind (fa, a =>
+    flatMap (fa, a =>
       of ({
         [name]: f (a),
         ...a,
       } as any),
     )
   const mapTo: MapTo<URI> = overloadWithPointFree2 (mapToPointed)
+
+  const setToPointed: SetToPointed<URI> = (fa, name, b) =>
+    mapToPointed (fa, name, constant (b))
+  const setTo: SetTo<URI> = overloadWithPointFree2 (setToPointed)
 
   const applyToPointed: ApplyToPointed<URI> = (fa, name, ff) =>
     pipe (
@@ -107,29 +128,34 @@ export const createMonad = <URI extends URIS>(
     )
   const applyTo: ApplyTo<URI> = overloadWithPointFree2 (applyToPointed)
 
-  const bindToPointed: BindToPointed<URI> = (ma, name, f) =>
-    bind (ma, a =>
-      bind (f (a), b =>
-        of ({
-          [name]: b,
-          ...a,
-        } as any),
+  const flatMapToPointed: FlatMapToPointed<URI> = (ma, name, f) =>
+    flatMap (ma, a =>
+      pipe (
+        a,
+        f,
+        flatMap (b =>
+          of ({
+            [name]: b,
+            ...a,
+          } as any),
+        ),
       ),
     )
-  const bindTo: BindTo<URI> = overloadWithPointFree2 (bindToPointed)
+  const flatMapTo: FlatMapTo<URI> = overloadWithPointFree2 (flatMapToPointed)
 
   return {
     ...monad,
     Do,
-    bind,
+    flatMap,
     compose,
     tap,
     tapIo,
+    setTo,
     mapTo,
     applyTo,
     applyResultTo,
     apS,
-    bindTo,
+    flatMapTo,
   }
 }
 
@@ -146,19 +172,19 @@ interface CreateMonadArg2<URI extends URIS2> extends Applicative2<URI> {
   readonly flat: Monad2<URI>["flat"]
 }
 
-interface BindPointed<URI extends URIS> {
+interface FlatMapPointed<URI extends URIS> {
   <A, B>(ma: HKT<URI, A>, f: (a: A) => HKT<URI, B>): HKT<URI, B>
 }
 
-interface BindPointed2<URI extends URIS2> {
+interface FlatMapPointed2<URI extends URIS2> {
   <_, A, B>(ma: HKT2<URI, _, A>, f: (a: A) => HKT2<URI, _, B>): HKT2<URI, _, B>
 }
 
-interface Bind<URI extends URIS> extends BindPointed<URI> {
+interface FlatMap<URI extends URIS> extends FlatMapPointed<URI> {
   <A, B>(f: (a: A) => HKT<URI, B>): (ma: HKT<URI, A>) => HKT<URI, B>
 }
 
-interface Bind2<URI extends URIS2> extends BindPointed2<URI> {
+interface FlatMap2<URI extends URIS2> extends FlatMapPointed2<URI> {
   <_, A, B>(
     f: (a: A) => HKT2<URI, _, B>,
   ): (ma: HKT2<URI, _, A>) => HKT2<URI, _, B>
@@ -192,6 +218,36 @@ interface Compose2<URI extends URIS2> extends ComposePointed2<URI> {
     g: (b: B) => HKT2<URI, _, C>,
     f: (a: A) => HKT2<URI, _, B>,
   ): (a: A) => HKT2<URI, _, C>
+}
+
+interface SetToPointed<URI extends URIS> {
+  <N extends string | number | symbol, A, B>(
+    fa: HKT<URI, A>,
+    name: Exclude<N, keyof A>,
+    b: B,
+  ): HKT<URI, DoObject<N, A, B>>
+}
+
+interface SetToPointed2<URI extends URIS2> {
+  <N extends string | number | symbol, _, A, B>(
+    fa: HKT2<URI, _, A>,
+    name: Exclude<N, keyof A>,
+    b: B,
+  ): HKT2<URI, _, DoObject<N, A, B>>
+}
+
+interface SetTo<URI extends URIS> extends SetToPointed<URI> {
+  <N extends string | number | symbol, A, B>(
+    name: Exclude<N, keyof A>,
+    b: B,
+  ): (fa: HKT<URI, A>) => HKT<URI, DoObject<N, A, B>>
+}
+
+interface SetTo2<URI extends URIS2> extends SetToPointed2<URI> {
+  <N extends string | number | symbol, _, A, B>(
+    name: Exclude<N, keyof A>,
+    b: B,
+  ): (fa: HKT2<URI, _, A>) => HKT2<URI, _, DoObject<N, A, B>>
 }
 
 interface MapToPointed<URI extends URIS> {
@@ -284,7 +340,7 @@ interface ApplyResultTo2<URI extends URIS2> extends ApplyResultToPointed2<URI> {
   ): (fa: HKT2<URI, _, A>) => HKT2<URI, _, DoObject<N, A, B>>
 }
 
-interface BindToPointed<URI extends URIS> {
+interface FlatMapToPointed<URI extends URIS> {
   <N extends string | number | symbol, A, B>(
     ma: HKT<URI, A>,
     name: Exclude<N, keyof A>,
@@ -292,7 +348,7 @@ interface BindToPointed<URI extends URIS> {
   ): HKT<URI, DoObject<N, A, B>>
 }
 
-interface BindToPointed2<URI extends URIS2> {
+interface FlatMapToPointed2<URI extends URIS2> {
   <N extends string | number | symbol, _, A, B>(
     ma: HKT2<URI, _, A>,
     name: Exclude<N, keyof A>,
@@ -300,14 +356,14 @@ interface BindToPointed2<URI extends URIS2> {
   ): HKT2<URI, _, DoObject<N, A, B>>
 }
 
-interface BindTo<URI extends URIS> extends BindToPointed<URI> {
+interface FlatMapTo<URI extends URIS> extends FlatMapToPointed<URI> {
   <N extends string | number | symbol, A, B>(
     name: Exclude<N, keyof A>,
     f: (a: A) => HKT<URI, B>,
   ): (ma: HKT<URI, A>) => HKT<URI, DoObject<N, A, B>>
 }
 
-interface BindTo2<URI extends URIS2> extends BindToPointed2<URI> {
+interface FlatMapTo2<URI extends URIS2> extends FlatMapToPointed2<URI> {
   <N extends string | number | symbol, _, A, B>(
     name: Exclude<N, keyof A>,
     f: (a: A) => HKT2<URI, _, B>,

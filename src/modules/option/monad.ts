@@ -15,13 +15,14 @@ export const monad: Monad<"Option"> = createMonad ({
 export const {
   Do,
   flat,
-  bind,
+  flatMap,
   compose,
+  setTo,
   mapTo,
   applyTo,
   applyResultTo,
   apS,
-  bindTo,
+  flatMapTo,
   tap,
   tapIo,
 } = monad
@@ -41,7 +42,7 @@ const tapEitherPointed: TapEitherPointed = <E, A, _>(
   pipe (
     ma,
     map (f),
-    bind (
+    flatMap (
       E.either (
         () => O.none,
         () => ma,

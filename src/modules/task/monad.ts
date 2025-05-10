@@ -18,13 +18,14 @@ export const monad: Monad<"Task"> = createMonad ({
 export const {
   Do,
   flat,
-  bind,
+  flatMap,
   compose,
+  setTo,
   mapTo,
   applyTo,
   applyResultTo,
   apS,
-  bindTo,
+  flatMapTo,
   tap,
   tapIo,
 } = monad

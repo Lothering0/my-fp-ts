@@ -21,20 +21,21 @@ export const monad: Monad<"TaskOption"> = createMonad ({
     <A>(mma: TaskOption<TaskOption<A>>): TaskOption<A> =>
     () =>
       fromTaskOption (mma).then (ma =>
-        O.isNone (ma) ? ma : fromTaskOption (O.fromSome (ma)),
+        O.isNone (ma) ? ma : pipe (ma, O.fromSome, fromTaskOption),
       ),
 })
 
 export const {
   Do,
   flat,
-  bind,
+  flatMap,
   compose,
+  setTo,
   mapTo,
   applyTo,
   applyResultTo,
   apS,
-  bindTo,
+  flatMapTo,
   tap,
   tapIo,
 } = monad
@@ -54,7 +55,7 @@ interface Parallel extends ParallelPointed {
 
 const parallelPointed: ParallelPointed = (fa, fb) => () =>
   Promise.all ([fromTaskOption (fa), fromTaskOption (fb)]).then (([ma, mb]) =>
-    O.bind (mb, () => ma as any),
+    O.flatMap (mb, () => ma as any),
   )
 
 export const parallel: Parallel = overloadWithPointFree (parallelPointed)
@@ -93,7 +94,7 @@ const tapOptionPointed: TapOptionPointed = (mma, f) =>
   pipe (
     Do,
     apS ("a", mma),
-    tap (({ a }) => T.task (f (a))),
+    tap (({ a }) => pipe (a, f, T.task)),
     map (({ a }) => a),
   )
 
@@ -129,7 +130,7 @@ const tapTaskPointed: TapTaskPointed = (mma, f) =>
   pipe (
     Do,
     apS ("a", mma),
-    tap (({ a }) => toTaskOptionFromTask (f (a))),
+    tap (({ a }) => pipe (a, f, toTaskOptionFromTask)),
     map (({ a }) => a),
   )
 
@@ -150,10 +151,13 @@ const tapTaskEitherPointed: TapTaskEitherPointed = (mma, f) =>
     Do,
     apS ("a", mma),
     tap (({ a }) =>
-      TE.taskEither (
-        f (a),
-        () => O.none,
-        () => O.some (a),
+      pipe (
+        a,
+        f,
+        TE.taskEither (
+          () => O.none,
+          () => O.some (a),
+        ),
       ),
     ),
     map (({ a }) => a),
@@ -174,7 +178,7 @@ const tapIoOptionPointed: TapIOOptionPointed = (mma, f) =>
   pipe (
     Do,
     apS ("a", mma),
-    tapOption (({ a }) => IOO.fromIoOption (f (a))),
+    tapOption (({ a }) => pipe (a, f, IOO.fromIoOption)),
     map (({ a }) => a),
   )
 
@@ -195,7 +199,7 @@ const tapIoEitherPointed: TapIOEitherPointed = (mma, f) =>
   pipe (
     Do,
     apS ("a", mma),
-    tapEither (({ a }) => IOE.fromIoEither (f (a))),
+    tapEither (({ a }) => pipe (a, f, IOE.fromIoEither)),
     map (({ a }) => a),
   )
 

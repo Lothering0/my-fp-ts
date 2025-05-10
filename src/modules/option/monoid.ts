@@ -1,6 +1,7 @@
 import { Option, none, isNone, some, fromSome } from "./option"
 import { Monoid } from "../../types/Monoid"
 import { Semigroup } from "../../types/Semigroup"
+import { pipe } from "../../utils/pipe"
 
 type GetMonoid = <A>(semigroup: Semigroup<A>) => Monoid<Option<A>>
 export const getMonoid: GetMonoid = s => ({
@@ -12,5 +13,5 @@ export const getMonoid: GetMonoid = s => ({
         : my
       : isNone (my)
         ? mx
-        : some (s.concat (fromSome (mx), fromSome (my))),
+        : pipe (s.concat (fromSome (mx), fromSome (my)), some),
 })

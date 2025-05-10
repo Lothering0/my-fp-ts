@@ -1,3 +1,4 @@
+import { pipe } from "../../utils/pipe"
 import { overloadWithPointFree2 } from "../../utils/points"
 
 declare module "../../types/Kind" {
@@ -57,6 +58,6 @@ interface EitherEliminator extends EitherEliminatorPointed {
 }
 
 const eitherPointed: EitherEliminatorPointed = (ma, whenLeft, whenRight) =>
-  isLeft (ma) ? whenLeft (fromLeft (ma)) : whenRight (fromRight (ma))
+  isLeft (ma) ? pipe (ma, fromLeft, whenLeft) : pipe (ma, fromRight, whenRight)
 
 export const either: EitherEliminator = overloadWithPointFree2 (eitherPointed)

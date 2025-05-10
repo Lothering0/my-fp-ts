@@ -10,13 +10,14 @@ export const monad: Monad2<"Either"> = createMonad2 ({
 export const {
   Do,
   flat,
-  bind,
+  flatMap,
   compose,
+  setTo,
   mapTo,
   applyTo,
   applyResultTo,
   apS,
-  bindTo,
+  flatMapTo,
   tap,
   tapIo,
 } = monad

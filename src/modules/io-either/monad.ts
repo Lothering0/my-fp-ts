@@ -11,20 +11,21 @@ export const monad: Monad2<"IOEither"> = createMonad2 ({
     <E, A>(mma: IOEither<E, IOEither<E, A>>) =>
     () =>
       pipe (mma, fromIoEither, ma =>
-        E.isLeft (ma) ? ma : fromIoEither (E.fromRight (ma)),
+        E.isLeft (ma) ? ma : pipe (ma, E.fromRight, fromIoEither),
       ),
 })
 
 export const {
   Do,
   flat,
-  bind,
+  flatMap,
   compose,
+  setTo,
   mapTo,
   applyTo,
   applyResultTo,
   apS,
-  bindTo,
+  flatMapTo,
   tap,
   tapIo,
 } = monad
@@ -37,6 +38,7 @@ interface TapEither extends TapEitherPointed {
   <E, A, _>(f: (a: A) => E.Either<E, _>): (ma: IOEither<E, A>) => IOEither<E, A>
 }
 
-const tapEitherPointed: TapEitherPointed = (mma, f) => () => E.tap (mma (), f)
+const tapEitherPointed: TapEitherPointed = (mma, f) => () =>
+  pipe (mma (), E.tap (f))
 
 export const tapEither: TapEither = overloadWithPointFree (tapEitherPointed)

@@ -2,7 +2,7 @@ import * as O from "../option"
 import * as E from "../either"
 import * as S from "../separated"
 import { Compactable } from "../../types/Compactable"
-import { bind } from "./monad"
+import { flatMap } from "./monad"
 import { reduce } from "./foldable"
 
 const getInitialSeparated = <E, A>(): S.Separated<E[], A[]> => ({
@@ -12,7 +12,8 @@ const getInitialSeparated = <E, A>(): S.Separated<E[], A[]> => ({
 
 export const compactable: Compactable<"Array"> = {
   _URI: "Array",
-  compact: bind (a => O.isNone (a) ? [] : [O.fromSome (a)]),
+  compact: flatMap (a => O.isNone (a) ? [] : [O.fromSome (a)]),
+  compactEithers: flatMap (a => E.isLeft (a) ? [] : [E.fromRight (a)]),
   separate: reduce (getInitialSeparated (), (b, ma) =>
     E.either (
       ma,
@@ -22,4 +23,4 @@ export const compactable: Compactable<"Array"> = {
   ),
 }
 
-export const { compact, separate } = compactable
+export const { compact, compactEithers, separate } = compactable

@@ -3,6 +3,7 @@ import * as TE from "../task-either"
 import * as E from "../either"
 import * as O from "../option"
 import { identity } from "../identity"
+import { pipe } from "../../utils/pipe"
 import { overloadWithPointFree2 } from "../../utils/points"
 
 declare module "../../types/Kind" {
@@ -19,7 +20,7 @@ type NoneConstructor = TaskOption<never>
 export const none: NoneConstructor = T.of (O.none)
 
 type SomeConstructor = <A>(a: A) => TaskOption<A>
-export const some: SomeConstructor = a => T.of (O.some (a))
+export const some: SomeConstructor = a => pipe (a, O.some, T.of)
 
 type ToTaskOptionFromTask = <A>(ma: T.Task<A>) => TaskOption<A>
 export const toTaskOptionFromTask: ToTaskOptionFromTask = ma => () =>

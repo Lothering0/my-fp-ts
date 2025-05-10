@@ -18,20 +18,21 @@ export const monad: Monad2<"TaskEither"> = createMonad2 ({
     <E, A>(mma: TaskEither<E, TaskEither<E, A>>): TaskEither<E, A> =>
     () =>
       fromTaskEither (mma).then (ma =>
-        E.isLeft (ma) ? ma : fromTaskEither (E.fromRight (ma)),
+        E.isLeft (ma) ? ma : pipe (ma, E.fromRight, fromTaskEither),
       ),
 })
 
 export const {
   Do,
   flat,
-  bind,
+  flatMap,
   compose,
+  setTo,
   mapTo,
   applyTo,
   applyResultTo,
   apS,
-  bindTo,
+  flatMapTo,
   tap,
   tapIo,
 } = monad
@@ -51,7 +52,7 @@ interface Parallel extends ParallelPointed {
 
 const parallelPointed: ParallelPointed = (fa, fb) => () =>
   Promise.all ([fromTaskEither (fa), fromTaskEither (fb)]).then (([ma, mb]) =>
-    E.bind (mb, () => ma as any),
+    E.flatMap (mb, () => ma as any),
   )
 
 export const parallel: Parallel = overloadWithPointFree (parallelPointed)
@@ -92,7 +93,7 @@ const tapEitherPointed: TapEitherPointed = (ma, f) =>
   pipe (
     Do,
     apS ("a", ma),
-    tap (({ a }) => T.of (f (a))),
+    tap (({ a }) => pipe (a, f, T.of)),
     map (({ a }) => a),
   )
 
@@ -115,7 +116,7 @@ const tapIoEitherPointed: TapIOEitherPointed = (ma, f) =>
   pipe (
     Do,
     apS ("a", ma),
-    tap (({ a }) => T.of (IOE.fromIoEither (f (a)))),
+    tap (({ a }) => pipe (a, f, IOE.fromIoEither, T.of)),
     map (({ a }) => a),
   )
 

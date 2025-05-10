@@ -13,20 +13,21 @@ export const monad: Monad<"IOOption"> = createMonad ({
     <A>(mma: IOOption<IOOption<A>>) =>
     () =>
       pipe (mma, fromIoOption, ma =>
-        O.isNone (ma) ? ma : fromIoOption (O.fromSome (ma)),
+        O.isNone (ma) ? ma : pipe (ma, O.fromSome, fromIoOption),
       ),
 })
 
 export const {
   Do,
   flat,
-  bind,
+  flatMap,
   compose,
+  setTo,
   mapTo,
   applyTo,
   applyResultTo,
   apS,
-  bindTo,
+  flatMapTo,
   tap,
   tapIo,
 } = monad
@@ -39,7 +40,8 @@ interface TapOption extends TapOptionPointed {
   <A, _>(f: (a: A) => O.Option<_>): (ma: IOOption<A>) => IOOption<A>
 }
 
-const tapOptionPointed: TapOptionPointed = (mma, f) => () => O.tap (mma (), f)
+const tapOptionPointed: TapOptionPointed = (mma, f) => () =>
+  pipe (mma (), O.tap (f))
 
 export const tapOption: TapOption = overloadWithPointFree (tapOptionPointed)
 
@@ -52,7 +54,7 @@ interface TapEither extends TapEitherPointed {
 }
 
 const tapEitherPointed: TapEitherPointed = (mma, f) => () =>
-  O.tapEither (mma (), f)
+  pipe (mma (), O.tapEither (f))
 
 export const tapEither: TapEither = overloadWithPointFree (tapEitherPointed)
 
@@ -65,7 +67,10 @@ interface TapIOEither extends TapIOEitherPointed {
 }
 
 const tapIoEitherPointed: TapIOEitherPointed = (mma, f) => () =>
-  O.tap (mma (), a => pipe (a, f, IOE.fromIoEither, O.fromEither))
+  pipe (
+    mma (),
+    O.tap (a => pipe (a, f, IOE.fromIoEither, O.fromEither)),
+  )
 
 export const tapIoEither: TapIOEither =
   overloadWithPointFree (tapIoEitherPointed)
