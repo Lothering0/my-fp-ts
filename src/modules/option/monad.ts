@@ -4,7 +4,7 @@ import { createMonad, Monad } from "../../types/Monad"
 import { map } from "./functor"
 import { applicative } from "./applicative"
 import { identity } from "../identity"
-import { pipe } from "../../utils/pipe"
+import { pipe } from "../../utils/flow"
 import { overloadWithPointFree } from "../../utils/points"
 
 export const monad: Monad<"Option"> = createMonad ({

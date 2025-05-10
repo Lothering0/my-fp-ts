@@ -2,7 +2,7 @@ import * as E from "../either"
 import { Functor2, createFunctor2 } from "../../types/Functor"
 import { Bifunctor, createBifunctor } from "../../types/Bifunctor"
 import { IOEither, fromIoEither } from "./io-either"
-import { pipe } from "../../utils/pipe"
+import { pipe } from "../../utils/flow"
 
 export const functor: Functor2<"IOEither"> = createFunctor2 ({
   _URI: "IOEither",

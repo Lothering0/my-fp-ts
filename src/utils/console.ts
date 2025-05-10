@@ -1,21 +1,17 @@
-import { _ } from "./underscore"
-import { constant } from "./constant"
-import { io, IO } from "../modules/io"
-import { compose } from "../modules/identity"
+import { IO } from "../modules/io"
 
 type Log_ = (a: unknown) => IO<void>
-export const log_: Log_ = compose (io, console.log)
+export const log_: Log_ = a => () => console.log (a)
 
 type Info_ = (a: unknown) => IO<void>
-export const info_: Info_ = compose (io, console.info)
+export const info_: Info_ = a => () => console.info (a)
 
 type Warn_ = (a: unknown) => IO<void>
-export const warn_: Warn_ = compose (io, console.warn)
+export const warn_: Warn_ = a => () => console.warn (a)
 
 type Error_ = (a: unknown) => IO<void>
-export const error_: Error_ = compose (io, console.error)
+export const error_: Error_ = a => () => console.error (a)
 
 type WriteToStdout_ = (a: string) => IO<void>
-export const writeToStdout_: WriteToStdout_ = compose (constant (io (_)), string =>
-  process.stdout.write (string),
-)
+export const writeToStdout_: WriteToStdout_ = string => () =>
+  process.stdout.write (string)

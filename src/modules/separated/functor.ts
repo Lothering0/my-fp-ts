@@ -1,7 +1,7 @@
 import { Separated, left, right } from "./separated"
 import { Functor2, createFunctor2 } from "../../types/Functor"
 import { Bifunctor, createBifunctor } from "../../types/Bifunctor"
-import { pipe } from "../../utils/pipe"
+import { pipe } from "../../utils/flow"
 
 export const functor: Functor2<"Separated"> = createFunctor2 ({
   _URI: "Separated",

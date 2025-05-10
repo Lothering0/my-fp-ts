@@ -1,7 +1,7 @@
 import { Option, none, isNone, some, fromSome } from "./option"
 import { Monoid } from "../../types/Monoid"
 import { Semigroup } from "../../types/Semigroup"
-import { pipe } from "../../utils/pipe"
+import { pipe } from "../../utils/flow"
 
 type GetMonoid = <A>(semigroup: Semigroup<A>) => Monoid<Option<A>>
 export const getMonoid: GetMonoid = s => ({

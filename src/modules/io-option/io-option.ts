@@ -2,6 +2,7 @@ import * as IO from "../io"
 import * as O from "../option"
 import * as E from "../either"
 import { tryDo } from "../../utils/exceptions"
+import { pipe } from "../../utils/flow"
 import { overloadWithPointFree2 } from "../../utils/points"
 
 declare module "../../types/Kind" {
@@ -22,7 +23,11 @@ export const some: SomeConstructor = a => () => O.some (a)
 
 type ToIOOption = <A>(ma: IO.IO<A>) => IOOption<A>
 export const toIoOption: ToIOOption = ma => () =>
-  E.either (tryDo (ma), () => O.none, O.some)
+  pipe (
+    ma,
+    tryDo,
+    E.either (() => O.none, O.some),
+  )
 
 type FromIOOption = <A>(ma: IOOption<A>) => O.Option<A>
 export const fromIoOption: FromIOOption = <A>(ma: IOOption<A>) => {
@@ -42,7 +47,7 @@ interface IOOptionEliminator extends IOOptionEliminatorPointed {
 }
 
 const ioOptionPointed: IOOptionEliminatorPointed = (fa, whenNone, whenSome) =>
-  O.option (fa (), whenNone, whenSome)
+  pipe (fa, fromIoOption, O.option (whenNone, whenSome))
 
 export const ioOption: IOOptionEliminator =
   overloadWithPointFree2 (ioOptionPointed)

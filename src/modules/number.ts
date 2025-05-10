@@ -4,7 +4,7 @@ import { Predicate } from "./predicate"
 import { Semigroup } from "../types/Semigroup"
 import { Monoid } from "../types/Monoid"
 import { Group } from "../types/Group"
-import { pipe } from "../utils/pipe"
+import { flow } from "../utils/flow"
 
 export const sumSemigroup: Semigroup<number> = {
   concat: (x, y) => x + y,
@@ -52,4 +52,4 @@ export const divideSafe: DivideSafe = x => y =>
 
 export const isEven: Predicate<number> = a => a % 2 === 0
 
-export const isOdd: Predicate<number> = a => pipe (a, isEven, not)
+export const isOdd: Predicate<number> = flow (isEven, not)

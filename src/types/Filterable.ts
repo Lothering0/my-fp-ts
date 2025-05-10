@@ -6,8 +6,8 @@ import { Functor, Functor2 } from "./Functor"
 import { HKT, HKT2 } from "./HKT"
 import { URIS, URIS2 } from "./Kind"
 import { Compactable, Compactable2 } from "./Compactable"
-import { overloadWithPointFree } from "src/utils/points"
-import { pipe } from "../utils/pipe"
+import { pipe } from "../utils/flow"
+import { overloadWithPointFree } from "../utils/points"
 
 export interface Filterable<URI extends URIS>
   extends Functor<URI>,

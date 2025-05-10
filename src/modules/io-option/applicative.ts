@@ -1,7 +1,7 @@
 import * as O from "../option"
 import { Applicative, createApplicative } from "../../types/Applicative"
 import { some, fromIoOption, IOOption } from "./io-option"
-import { pipe } from "../../utils/pipe"
+import { pipe } from "../../utils/flow"
 
 export const applicative: Applicative<"IOOption"> = createApplicative ({
   _URI: "IOOption",

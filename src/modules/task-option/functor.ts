@@ -7,7 +7,7 @@ export const functor: Functor<"TaskOption"> = createFunctor ({
   map:
     <A, B>(fma: TaskOption<A>, f: (a: A) => B): TaskOption<B> =>
     () =>
-      fromTaskOption (fma).then (ma => O.map (ma, f)),
+      fromTaskOption (fma).then (O.map (f)),
 })
 
 export const { map } = functor

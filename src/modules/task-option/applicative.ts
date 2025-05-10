@@ -1,7 +1,7 @@
 import * as O from "../option"
 import { Applicative, createApplicative } from "../../types/Applicative"
 import { some, fromTaskOption, TaskOption } from "./task-option"
-import { pipe } from "../../utils/pipe"
+import { pipe } from "../../utils/flow"
 
 export const applicative: Applicative<"TaskOption"> = createApplicative ({
   _URI: "TaskOption",

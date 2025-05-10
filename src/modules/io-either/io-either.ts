@@ -1,7 +1,7 @@
 import * as E from "../either"
 import * as IO from "../io"
 import { tryDo } from "../../utils/exceptions"
-import { pipe } from "../../utils/pipe"
+import { pipe } from "../../utils/flow"
 import { overloadWithPointFree2 } from "../../utils/points"
 
 declare module "../../types/Kind" {

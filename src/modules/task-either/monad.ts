@@ -6,7 +6,7 @@ import { createMonad2, DoObject, Monad2 } from "../../types/Monad"
 import { map } from "./functor"
 import { applicative } from "./applicative"
 import { TaskEither, fromTaskEither, toTaskEither } from "./task-either"
-import { pipe } from "../../utils/pipe"
+import { pipe } from "../../utils/flow"
 import {
   overloadWithPointFree,
   overloadWithPointFree2,

@@ -1,7 +1,7 @@
 import * as T from "../task"
 import * as E from "../either"
 import { identity } from "../identity"
-import { pipe } from "../../utils/pipe"
+import { flow } from "../../utils/flow"
 import { overloadWithPointFree2 } from "../../utils/points"
 
 declare module "../../types/Kind" {
@@ -15,10 +15,10 @@ export interface TaskEither<E, A> extends T.Task<E.Either<E, A>> {
 }
 
 type LeftConstructor = <E>(e: E) => TaskEither<E, never>
-export const left: LeftConstructor = a => pipe (a, E.left, T.of)
+export const left: LeftConstructor = flow (E.left, T.of)
 
 type RightConstructor = <A>(a: A) => TaskEither<never, A>
-export const right: RightConstructor = a => pipe (a, E.right, T.of)
+export const right: RightConstructor = flow (E.right, T.of)
 
 type ToTaskEither = <E, A>(ma: T.Task<A>) => TaskEither<E, A>
 export const toTaskEither: ToTaskEither = ma => () => ma ().then (E.right, E.left)

@@ -1,9 +1,4 @@
-declare module "../../types/Kind" {
-  interface Kind<A> {
-    readonly Array: Array<A>
-  }
-}
-
+export * from "./array"
 export * from "./functor"
 export * from "./applicative"
 export * from "./monad"

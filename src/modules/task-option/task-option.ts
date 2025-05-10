@@ -3,7 +3,8 @@ import * as TE from "../task-either"
 import * as E from "../either"
 import * as O from "../option"
 import { identity } from "../identity"
-import { pipe } from "../../utils/pipe"
+import { constant } from "../../utils/constant"
+import { flow } from "../../utils/flow"
 import { overloadWithPointFree2 } from "../../utils/points"
 
 declare module "../../types/Kind" {
@@ -20,7 +21,7 @@ type NoneConstructor = TaskOption<never>
 export const none: NoneConstructor = T.of (O.none)
 
 type SomeConstructor = <A>(a: A) => TaskOption<A>
-export const some: SomeConstructor = a => pipe (a, O.some, T.of)
+export const some: SomeConstructor = flow (O.some, T.of)
 
 type ToTaskOptionFromTask = <A>(ma: T.Task<A>) => TaskOption<A>
 export const toTaskOptionFromTask: ToTaskOptionFromTask = ma => () =>
@@ -31,14 +32,11 @@ type ToTaskOptionFromTaskEither = <E, A>(
 ) => TaskOption<A>
 export const toTaskOptionFromTaskEither: ToTaskOptionFromTaskEither =
   ma => () =>
-    ma ().then (
-      ma => E.either (ma, () => O.none, O.some),
-      () => O.none,
-    )
+    ma ().then (E.either (constant (O.none), O.some), constant (O.none))
 
 type FromTaskOption = <A>(ma: TaskOption<A>) => Promise<O.Option<A>>
 export const fromTaskOption: FromTaskOption = mma =>
-  mma ().then (identity, () => O.none)
+  mma ().then (identity, constant (O.none))
 
 interface TaskOptionEliminatorPointed {
   <A, B>(

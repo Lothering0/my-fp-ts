@@ -1,7 +1,7 @@
 import * as O from "../option"
 import { createFunctor, Functor } from "../../types/Functor"
 import { fromIoOption, IOOption } from "./io-option"
-import { pipe } from "../../utils/pipe"
+import { pipe } from "../../utils/flow"
 
 export const functor: Functor<"IOOption"> = createFunctor ({
   _URI: "IOOption",

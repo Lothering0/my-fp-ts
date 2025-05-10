@@ -9,7 +9,7 @@ import { createMonad, DoObject, Monad } from "../../types/Monad"
 import { TaskOption, fromTaskOption, toTaskOptionFromTask } from "./task-option"
 import { map } from "./functor"
 import { applicative } from "./applicative"
-import { pipe } from "../../utils/pipe"
+import { pipe } from "../../utils/flow"
 import {
   overloadWithPointFree,
   overloadWithPointFree2,
@@ -94,7 +94,7 @@ const tapOptionPointed: TapOptionPointed = (mma, f) =>
   pipe (
     Do,
     apS ("a", mma),
-    tap (({ a }) => pipe (a, f, T.task)),
+    tap (({ a }) => pipe (a, f, T.of)),
     map (({ a }) => a),
   )
 
@@ -112,7 +112,7 @@ const tapEitherPointed: TapEitherPointed = (mma, f) =>
   pipe (
     Do,
     apS ("a", mma),
-    tap (({ a }) => pipe (a, f, O.fromEither, T.task)),
+    tap (({ a }) => pipe (a, f, O.fromEither, T.of)),
     map (({ a }) => a),
   )
 

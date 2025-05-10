@@ -3,7 +3,7 @@ import * as O from "../option"
 import { Either } from "../either"
 import { createMonad, Monad } from "../../types/Monad"
 import { applicative } from "./applicative"
-import { pipe } from "../../utils/pipe"
+import { pipe } from "../../utils/flow"
 import { fromIoOption, IOOption } from "./io-option"
 import { overloadWithPointFree } from "../../utils/points"
 

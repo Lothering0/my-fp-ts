@@ -7,7 +7,7 @@ import {
   overloadWithPointFree2,
   overloadWithPointFreeLast2,
 } from "../utils/points"
-import { pipe } from "../utils/pipe"
+import { pipe } from "../utils/flow"
 import { constant } from "../utils/constant"
 
 export interface Monad<URI extends URIS> extends Applicative<URI> {
@@ -99,6 +99,7 @@ export const createMonad = <URI extends URIS>(
         pipe (
           a,
           f,
+          f => f (), // From IO
           of,
           flatMap (() => of (a)),
         ),

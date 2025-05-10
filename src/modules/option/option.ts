@@ -1,4 +1,5 @@
 import * as E from "../either"
+import { pipe } from "../../utils/flow"
 import { overloadWithPointFree2 } from "../../utils/points"
 
 declare module "../../types/Kind" {
@@ -46,7 +47,7 @@ interface OptionEliminator extends OptionEliminatorPointed {
 }
 
 const optionPointed: OptionEliminatorPointed = (fa, whenNone, whenSome) =>
-  isNone (fa) ? whenNone () : whenSome (fromSome (fa))
+  isNone (fa) ? whenNone () : pipe (fa, fromSome, whenSome)
 
 export const option: OptionEliminator = overloadWithPointFree2 (optionPointed)
 

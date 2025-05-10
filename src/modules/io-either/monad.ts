@@ -2,7 +2,7 @@ import * as E from "../either"
 import { createMonad2, Monad2 } from "../../types/Monad"
 import { fromIoEither, IOEither } from "./io-either"
 import { applicative } from "./applicative"
-import { pipe } from "../../utils/pipe"
+import { pipe } from "../../utils/flow"
 import { overloadWithPointFree } from "../../utils/points"
 
 export const monad: Monad2<"IOEither"> = createMonad2 ({

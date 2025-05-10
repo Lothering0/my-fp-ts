@@ -4,9 +4,9 @@ import * as S from "../modules/separated"
 import { FunctorWithIndex, FunctorWithIndex2 } from "./FunctorWithIndex"
 import { HKT, HKT2 } from "./HKT"
 import { URIS, URIS2 } from "./Kind"
-import { overloadWithPointFree } from "src/utils/points"
 import { Filterable, Filterable2 } from "./Filterable"
-import { pipe } from "../utils/pipe"
+import { pipe } from "../utils/flow"
+import { overloadWithPointFree } from "../utils/points"
 
 export interface FilterableWithIndex<URI extends URIS, I>
   extends FunctorWithIndex<URI, I>,

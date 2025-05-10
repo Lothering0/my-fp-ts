@@ -1,4 +1,4 @@
-import { pipe } from "../../utils/pipe"
+import { pipe } from "../../utils/flow"
 import { overloadWithPointFree2 } from "../../utils/points"
 
 declare module "../../types/Kind" {
