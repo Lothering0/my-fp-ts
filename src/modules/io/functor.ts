@@ -1,9 +1,9 @@
 import { createFunctor, Functor } from "../../types/Functor"
-import { IO, fromIo } from "./io"
+import { _URI, IO, fromIo } from "./io"
 import { pipe } from "../../utils/flow"
 
-export const functor: Functor<"IO"> = createFunctor ({
-  _URI: "IO",
+export const functor: Functor<typeof _URI> = createFunctor ({
+  _URI,
   map:
     <A, B>(fa: IO<A>, f: (a: A) => B) =>
     () =>

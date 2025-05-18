@@ -1,8 +1,8 @@
 import { createFunctor, Functor } from "../../types/Functor"
-import { Task, fromTask } from "./task"
+import { _URI, Task, fromTask } from "./task"
 
-export const functor: Functor<"Task"> = createFunctor ({
-  _URI: "Task",
+export const functor: Functor<typeof _URI> = createFunctor ({
+  _URI,
   map:
     <A, B>(fa: Task<A>, f: (a: A) => B): Task<B> =>
     () =>

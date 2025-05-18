@@ -1,10 +1,22 @@
+import { _URI } from "./array"
 import { Applicative, createApplicative } from "../../types/Applicative"
-import { map } from "./functor"
+import {
+  ApplicativeWithIndex,
+  createApplicativeWithIndex,
+} from "../../types/ApplicativeWithIndex"
+import { map, mapWithIndex } from "./functor"
 
-export const applicative: Applicative<"Array"> = createApplicative ({
-  _URI: "Array",
+export const applicative: Applicative<typeof _URI> = createApplicative ({
+  _URI,
   of: a => [a],
-  apply: (fa, ff) => map (ff, f => map (fa, f)).flat (),
+  apply: (fa, ff) => map (fa, a => map (ff, f => f (a))).flat (),
 })
 
-export const { of, apply } = applicative
+export const applicativeWithIndex: ApplicativeWithIndex<typeof _URI, number> =
+  createApplicativeWithIndex ({
+    ...applicative,
+    applyWithIndex: (fa, ff) =>
+      mapWithIndex (fa, (i, a) => map (ff, f => f (i, a))).flat (),
+  })
+
+export const { of, apply, applyWithIndex } = applicativeWithIndex

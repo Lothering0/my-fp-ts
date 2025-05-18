@@ -1,10 +1,10 @@
 import * as O from "../option"
 import { Applicative, createApplicative } from "../../types/Applicative"
-import { some, fromTaskOption, TaskOption } from "./task-option"
+import { _URI, some, fromTaskOption, TaskOption } from "./task-option"
 import { pipe } from "../../utils/flow"
 
-export const applicative: Applicative<"TaskOption"> = createApplicative ({
-  _URI: "TaskOption",
+export const applicative: Applicative<typeof _URI> = createApplicative ({
+  _URI,
   of: some,
   apply:
     <A, B>(fma: TaskOption<A>, fmf: TaskOption<(a: A) => B>): TaskOption<B> =>

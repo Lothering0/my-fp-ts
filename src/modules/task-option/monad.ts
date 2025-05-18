@@ -6,7 +6,12 @@ import * as O from "../option"
 import * as IOO from "../io-option"
 import * as IOE from "../io-either"
 import { createMonad, DoObject, Monad } from "../../types/Monad"
-import { TaskOption, fromTaskOption, toTaskOptionFromTask } from "./task-option"
+import {
+  _URI,
+  TaskOption,
+  fromTaskOption,
+  toTaskOptionFromTask,
+} from "./task-option"
 import { map } from "./functor"
 import { applicative } from "./applicative"
 import { pipe } from "../../utils/flow"
@@ -15,7 +20,7 @@ import {
   overloadWithPointFree2,
 } from "../../utils/points"
 
-export const monad: Monad<"TaskOption"> = createMonad ({
+export const monad: Monad<typeof _URI> = createMonad ({
   ...applicative,
   flat:
     <A>(mma: TaskOption<TaskOption<A>>): TaskOption<A> =>

@@ -1,9 +1,9 @@
 import { createApplicative, Applicative } from "../../types/Applicative"
-import { option, none, some } from "./option"
+import { _URI, option, none, some } from "./option"
 import { pipe, flow } from "../../utils/flow"
 
-export const applicative: Applicative<"Option"> = createApplicative ({
-  _URI: "Option",
+export const applicative: Applicative<typeof _URI> = createApplicative ({
+  _URI,
   of: some,
   apply: (fa, ff) =>
     option (

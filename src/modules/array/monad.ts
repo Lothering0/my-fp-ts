@@ -1,7 +1,8 @@
+import { _URI } from "./array"
 import { createMonad, Monad } from "../../types/Monad"
 import { applicative } from "./applicative"
 
-const monad: Monad<"Array"> = createMonad ({
+export const monad: Monad<typeof _URI> = createMonad ({
   ...applicative,
   flat: xs => xs.flat (),
 })

@@ -7,7 +7,7 @@ import { identity } from "../identity"
 import { pipe } from "../../utils/flow"
 import { overloadWithPointFree } from "../../utils/points"
 
-export const monad: Monad<"Option"> = createMonad ({
+export const monad: Monad<typeof O._URI> = createMonad ({
   ...applicative,
   flat: O.option (() => O.none, identity),
 })

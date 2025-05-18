@@ -1,10 +1,10 @@
 import * as E from "../either"
 import { Applicative2, createApplicative2 } from "../../types/Applicative"
-import { right, fromTaskEither, TaskEither } from "./task-either"
+import { _URI, right, fromTaskEither, TaskEither } from "./task-either"
 import { pipe } from "../../utils/flow"
 
-export const applicative: Applicative2<"TaskEither"> = createApplicative2 ({
-  _URI: "TaskEither",
+export const applicative: Applicative2<typeof _URI> = createApplicative2 ({
+  _URI,
   of: right,
   apply:
     <_, A, B>(

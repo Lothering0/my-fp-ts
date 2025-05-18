@@ -1,5 +1,6 @@
 import * as E from "../either"
 import * as IO from "../io"
+import { URIS2 } from "../../types/Kind"
 import { tryDo } from "../../utils/exceptions"
 import { pipe } from "../../utils/flow"
 import { overloadWithPointFree2 } from "../../utils/points"
@@ -10,9 +11,9 @@ declare module "../../types/Kind" {
   }
 }
 
-export interface IOEither<E, A> extends IO.IO<E.Either<E, A>> {
-  (): E.Either<E, A>
-}
+export interface IOEither<E, A> extends IO.IO<E.Either<E, A>> {}
+
+export const _URI = "IOEither" satisfies URIS2
 
 type LeftConstructor = <E>(e: E) => IOEither<E, never>
 export const left: LeftConstructor = e => () => E.left (e)

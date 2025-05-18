@@ -7,7 +7,7 @@ import {
   overloadWithPointFree2,
 } from "../../utils/points"
 
-export const monad: Monad<"Task"> = createMonad ({
+export const monad: Monad<typeof T._URI> = createMonad ({
   ...applicative,
   flat:
     <A>(mma: T.Task<T.Task<A>>): T.Task<A> =>

@@ -1,8 +1,8 @@
 import { createMonad, Monad } from "../../types/Monad"
 import { applicative } from "./applicative"
-import { identity } from "./identity"
+import { _URI, identity } from "./identity"
 
-export const monad: Monad<"Identity"> = createMonad ({
+export const monad: Monad<typeof _URI> = createMonad ({
   ...applicative,
   flat: identity,
 })

@@ -1,8 +1,8 @@
 import { Applicative, createApplicative } from "../../types/Applicative"
-import { task, fromTask, Task } from "./task"
+import { _URI, task, fromTask, Task } from "./task"
 
-export const applicative: Applicative<"Task"> = createApplicative ({
-  _URI: "Task",
+export const applicative: Applicative<typeof _URI> = createApplicative ({
+  _URI,
   of: task,
   apply:
     <A, B>(fa: Task<A>, ff: Task<(a: A) => B>): Task<B> =>

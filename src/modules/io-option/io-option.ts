@@ -1,6 +1,7 @@
 import * as IO from "../io"
 import * as O from "../option"
 import * as E from "../either"
+import { URIS } from "../../types/Kind"
 import { tryDo } from "../../utils/exceptions"
 import { pipe } from "../../utils/flow"
 import { overloadWithPointFree2 } from "../../utils/points"
@@ -11,9 +12,9 @@ declare module "../../types/Kind" {
   }
 }
 
-export interface IOOption<A> extends IO.IO<O.Option<A>> {
-  (): O.Option<A>
-}
+export interface IOOption<A> extends IO.IO<O.Option<A>> {}
+
+export const _URI = "IOOption" satisfies URIS
 
 type NoneConstructor = IOOption<never>
 export const none: NoneConstructor = () => O.none

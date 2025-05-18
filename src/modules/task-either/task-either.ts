@@ -1,5 +1,6 @@
 import * as T from "../task"
 import * as E from "../either"
+import { URIS2 } from "../../types/Kind"
 import { identity } from "../identity"
 import { flow } from "../../utils/flow"
 import { overloadWithPointFree2 } from "../../utils/points"
@@ -10,9 +11,9 @@ declare module "../../types/Kind" {
   }
 }
 
-export interface TaskEither<E, A> extends T.Task<E.Either<E, A>> {
-  (): Promise<E.Either<E, A>>
-}
+export interface TaskEither<E, A> extends T.Task<E.Either<E, A>> {}
+
+export const _URI = "TaskEither" satisfies URIS2
 
 type LeftConstructor = <E>(e: E) => TaskEither<E, never>
 export const left: LeftConstructor = flow (E.left, T.of)

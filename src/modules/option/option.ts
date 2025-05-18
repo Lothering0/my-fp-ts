@@ -1,4 +1,5 @@
 import * as E from "../either"
+import { URIS } from "../../types/Kind"
 import { pipe } from "../../utils/flow"
 import { overloadWithPointFree2 } from "../../utils/points"
 
@@ -9,6 +10,8 @@ declare module "../../types/Kind" {
 }
 
 export type Option<A> = None | Some<A>
+
+export const _URI = "Option" satisfies URIS
 
 export interface None {
   readonly _tag: "None"

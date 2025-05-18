@@ -1,9 +1,9 @@
 import { Applicative, createApplicative } from "../../types/Applicative"
 import { map } from "./functor"
-import { identity } from "./identity"
+import { _URI, identity } from "./identity"
 
-export const applicative: Applicative<"Identity"> = createApplicative ({
-  _URI: "Identity",
+export const applicative: Applicative<typeof _URI> = createApplicative ({
+  _URI,
   of: identity,
   apply: map,
 })

@@ -1,10 +1,10 @@
 import { map } from "./functor"
-import { io, fromIo } from "./io"
+import { _URI, io, fromIo } from "./io"
 import { Applicative, createApplicative } from "../../types/Applicative"
 import { pipe } from "../../utils/flow"
 
-export const applicative: Applicative<"IO"> = createApplicative ({
-  _URI: "IO",
+export const applicative: Applicative<typeof _URI> = createApplicative ({
+  _URI,
   of: io,
   apply: (fa, ff) => pipe (fa, map (fromIo (ff))),
 })

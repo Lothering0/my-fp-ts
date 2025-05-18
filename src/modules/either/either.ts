@@ -1,3 +1,4 @@
+import { URIS2 } from "../../types/Kind"
 import { pipe } from "../../utils/flow"
 import { overloadWithPointFree2 } from "../../utils/points"
 
@@ -8,6 +9,8 @@ declare module "../../types/Kind" {
 }
 
 export type Either<E, A> = Left<E> | Right<A>
+
+export const _URI = "Either" satisfies URIS2
 
 export interface Left<E> {
   readonly _tag: "Left"

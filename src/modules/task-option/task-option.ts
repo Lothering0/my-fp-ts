@@ -2,6 +2,7 @@ import * as T from "../task"
 import * as TE from "../task-either"
 import * as E from "../either"
 import * as O from "../option"
+import { URIS } from "../../types/Kind"
 import { identity } from "../identity"
 import { constant } from "../../utils/constant"
 import { flow } from "../../utils/flow"
@@ -13,9 +14,9 @@ declare module "../../types/Kind" {
   }
 }
 
-export interface TaskOption<A> extends T.Task<O.Option<A>> {
-  (): Promise<O.Option<A>>
-}
+export interface TaskOption<A> extends T.Task<O.Option<A>> {}
+
+export const _URI = "TaskOption" satisfies URIS
 
 type NoneConstructor = TaskOption<never>
 export const none: NoneConstructor = T.of (O.none)
