@@ -1,6 +1,5 @@
 import * as NEA from "../non-empty-array"
 import * as O from "../option"
-import * as M from "./monad"
 import { flatMap } from "./monad"
 import { getSemigroup } from "./semigroup"
 import { filterMap } from "./filterable"
@@ -140,7 +139,7 @@ export function comprehension(
       ? pipe (
           input,
           NEA.head,
-          M.flatMap (x => pipe (input, NEA.tail, getArgs (append (x) (args)))),
+          flatMap (x => pipe (input, NEA.tail, getArgs (append (x) (args)))),
         )
       : [args]
 

@@ -6,7 +6,8 @@ import { Compactable } from "../../types/Compactable"
 import { flatMap } from "./monad"
 import { reduce } from "./foldable"
 
-const getInitialSeparated = <E, A>(): S.Separated<E[], A[]> => ({
+type GetInitialSeparated = <E, A>() => S.Separated<E[], A[]>
+const getInitialSeparated: GetInitialSeparated = () => ({
   left: [],
   right: [],
 })
