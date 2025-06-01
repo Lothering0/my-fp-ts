@@ -1,4 +1,4 @@
-import { overloadWithPointFree2 } from "../utils/points"
+import { overload2 } from "../utils/overloads"
 
 type Not = <T extends boolean>(a: T) => T extends true ? false : true
 export const not: Not = <T>(a: T) => !a as T extends true ? false : true
@@ -14,6 +14,4 @@ interface BooleanEliminator extends BooleanEliminatorPointed {
 const booleanEliminatorPointed: BooleanEliminatorPointed = (x, f, g) =>
   x ? g () : f ()
 
-export const boolean: BooleanEliminator = overloadWithPointFree2 (
-  booleanEliminatorPointed,
-)
+export const boolean: BooleanEliminator = overload2 (booleanEliminatorPointed)

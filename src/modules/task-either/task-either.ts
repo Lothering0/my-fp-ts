@@ -3,7 +3,7 @@ import * as E from "../either"
 import { URIS2 } from "../../types/Kind"
 import { identity } from "../identity"
 import { flow } from "../../utils/flow"
-import { overloadWithPointFree2 } from "../../utils/points"
+import { overload2 } from "../../utils/overloads"
 
 declare module "../../types/Kind" {
   interface Kind2<E, A> {
@@ -49,5 +49,4 @@ interface TaskEitherEliminator extends TaskEitherEliminatorPointed {
 const taskEitherPointed: TaskEitherEliminatorPointed = (mma, f, g) => () =>
   fromTaskEither (mma).then (E.either (f, g))
 
-export const taskEither: TaskEitherEliminator =
-  overloadWithPointFree2 (taskEitherPointed)
+export const taskEither: TaskEitherEliminator = overload2 (taskEitherPointed)

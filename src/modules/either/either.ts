@@ -1,6 +1,6 @@
 import { URIS2 } from "../../types/Kind"
 import { pipe } from "../../utils/flow"
-import { overloadWithPointFree2 } from "../../utils/points"
+import { overload2 } from "../../utils/overloads"
 
 declare module "../../types/Kind" {
   interface Kind2<E, A> {
@@ -63,4 +63,4 @@ interface EitherEliminator extends EitherEliminatorPointed {
 const eitherPointed: EitherEliminatorPointed = (ma, whenLeft, whenRight) =>
   isLeft (ma) ? pipe (ma, fromLeft, whenLeft) : pipe (ma, fromRight, whenRight)
 
-export const either: EitherEliminator = overloadWithPointFree2 (eitherPointed)
+export const either: EitherEliminator = overload2 (eitherPointed)

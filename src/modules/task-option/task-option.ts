@@ -6,7 +6,7 @@ import { URIS } from "../../types/Kind"
 import { identity } from "../identity"
 import { constant } from "../../utils/constant"
 import { flow } from "../../utils/flow"
-import { overloadWithPointFree2 } from "../../utils/points"
+import { overload2 } from "../../utils/overloads"
 
 declare module "../../types/Kind" {
   interface Kind<A> {
@@ -57,5 +57,4 @@ interface TaskOptionEliminator extends TaskOptionEliminatorPointed {
 const taskOptionPointed: TaskOptionEliminatorPointed = (mma, f, g) => () =>
   fromTaskOption (mma).then (O.option (f, g))
 
-export const taskOption: TaskOptionEliminator =
-  overloadWithPointFree2 (taskOptionPointed)
+export const taskOption: TaskOptionEliminator = overload2 (taskOptionPointed)

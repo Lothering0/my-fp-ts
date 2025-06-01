@@ -3,7 +3,7 @@ import * as IO from "../io"
 import { URIS2 } from "../../types/Kind"
 import { tryDo } from "../../utils/exceptions"
 import { pipe } from "../../utils/flow"
-import { overloadWithPointFree2 } from "../../utils/points"
+import { overload2 } from "../../utils/overloads"
 
 declare module "../../types/Kind" {
   interface Kind2<E, A> {
@@ -54,5 +54,4 @@ interface IOEitherEliminator extends IOEitherEliminatorPointed {
 const ioEitherPointed: IOEitherEliminatorPointed = (mma, f, g) =>
   pipe (mma, fromIoEither, E.either (f, g), IO.of)
 
-export const ioEither: IOEitherEliminator =
-  overloadWithPointFree2 (ioEitherPointed)
+export const ioEither: IOEitherEliminator = overload2 (ioEitherPointed)

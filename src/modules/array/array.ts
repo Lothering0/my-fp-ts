@@ -4,7 +4,7 @@ import { flatMap } from "./monad"
 import { getSemigroup } from "./semigroup"
 import { filterMap } from "./filterable"
 import { URIS } from "../../types/Kind"
-import { overloadWithPointFree2 } from "../../utils/points"
+import { overload2 } from "../../utils/overloads"
 import { constant } from "../../utils/constant"
 import { pipe } from "../../utils/flow"
 
@@ -45,7 +45,7 @@ interface ArrayEliminator extends ArrayEliminatorPointed {
 const arrayPointed: ArrayEliminatorPointed = (as, whenEmpty, whenNonEmpty) =>
   isNonEmpty (as) ? whenNonEmpty (as) : whenEmpty ()
 
-export const array: ArrayEliminator = overloadWithPointFree2 (arrayPointed)
+export const array: ArrayEliminator = overload2 (arrayPointed)
 
 type Head = <A>(as: A[]) => O.Option<A>
 export const head: Head = as =>

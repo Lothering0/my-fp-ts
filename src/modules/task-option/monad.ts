@@ -15,10 +15,7 @@ import {
 import { map } from "./functor"
 import { applicative } from "./applicative"
 import { pipe } from "../../utils/flow"
-import {
-  overloadWithPointFree,
-  overloadWithPointFree2,
-} from "../../utils/points"
+import { overload, overload2 } from "../../utils/overloads"
 
 export const monad: Monad<typeof _URI> = createMonad ({
   ...applicative,
@@ -63,7 +60,7 @@ const parallelPointed: ParallelPointed = (fa, fb) => () =>
     O.flatMap (mb, () => ma as any),
   )
 
-export const parallel: Parallel = overloadWithPointFree (parallelPointed)
+export const parallel: Parallel = overload (parallelPointed)
 
 interface ParallelToPointed {
   <N extends string | number | symbol, A, B>(
@@ -85,7 +82,7 @@ const parallelToPointed: ParallelToPointed = (fa, name, fb) => () =>
     O.apS (ma, name, mb),
   )
 
-export const parallelTo: ParallelTo = overloadWithPointFree2 (parallelToPointed)
+export const parallelTo: ParallelTo = overload2 (parallelToPointed)
 
 interface TapOptionPointed {
   <A, _>(ma: TaskOption<A>, f: (a: A) => O.Option<_>): TaskOption<A>
@@ -103,7 +100,7 @@ const tapOptionPointed: TapOptionPointed = (mma, f) =>
     map (({ a }) => a),
   )
 
-export const tapOption: TapOption = overloadWithPointFree (tapOptionPointed)
+export const tapOption: TapOption = overload (tapOptionPointed)
 
 interface TapEitherPointed {
   <E, A, _>(ma: TaskOption<A>, f: (a: A) => E.Either<E, _>): TaskOption<A>
@@ -121,7 +118,7 @@ const tapEitherPointed: TapEitherPointed = (mma, f) =>
     map (({ a }) => a),
   )
 
-export const tapEither: TapEither = overloadWithPointFree (tapEitherPointed)
+export const tapEither: TapEither = overload (tapEitherPointed)
 
 interface TapTaskPointed {
   <A, _>(ma: TaskOption<A>, f: (a: A) => T.Task<_>): TaskOption<A>
@@ -139,7 +136,7 @@ const tapTaskPointed: TapTaskPointed = (mma, f) =>
     map (({ a }) => a),
   )
 
-export const tapTask: TapTask = overloadWithPointFree (tapTaskPointed)
+export const tapTask: TapTask = overload (tapTaskPointed)
 
 interface TapTaskEitherPointed {
   <E, A, _>(ma: TaskOption<A>, f: (a: A) => TE.TaskEither<E, _>): TaskOption<A>
@@ -168,8 +165,7 @@ const tapTaskEitherPointed: TapTaskEitherPointed = (mma, f) =>
     map (({ a }) => a),
   )
 
-export const tapTaskEither: TapTaskEither =
-  overloadWithPointFree (tapTaskEitherPointed)
+export const tapTaskEither: TapTaskEither = overload (tapTaskEitherPointed)
 
 interface TapIOOptionPointed {
   <A, _>(ma: TaskOption<A>, f: (a: A) => IOO.IOOption<_>): TaskOption<A>
@@ -187,8 +183,7 @@ const tapIoOptionPointed: TapIOOptionPointed = (mma, f) =>
     map (({ a }) => a),
   )
 
-export const tapIoOption: TapIOOption =
-  overloadWithPointFree (tapIoOptionPointed)
+export const tapIoOption: TapIOOption = overload (tapIoOptionPointed)
 
 interface TapIOEitherPointed {
   <E, A, _>(ma: TaskOption<A>, f: (a: A) => IOE.IOEither<E, _>): TaskOption<A>
@@ -208,5 +203,4 @@ const tapIoEitherPointed: TapIOEitherPointed = (mma, f) =>
     map (({ a }) => a),
   )
 
-export const tapIoEither: TapIOEither =
-  overloadWithPointFree (tapIoEitherPointed)
+export const tapIoEither: TapIOEither = overload (tapIoEitherPointed)

@@ -5,7 +5,7 @@ import { map } from "./functor"
 import { applicative } from "./applicative"
 import { identity } from "../identity"
 import { pipe } from "../../utils/flow"
-import { overloadWithPointFree } from "../../utils/points"
+import { overload } from "../../utils/overloads"
 
 export const monad: Monad<typeof O._URI> = createMonad ({
   ...applicative,
@@ -50,4 +50,4 @@ const tapEitherPointed: TapEitherPointed = <E, A, _>(
     ),
   )
 
-export const tapEither: TapEither = overloadWithPointFree (tapEitherPointed)
+export const tapEither: TapEither = overload (tapEitherPointed)

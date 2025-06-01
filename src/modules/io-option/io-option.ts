@@ -4,7 +4,7 @@ import * as E from "../either"
 import { URIS } from "../../types/Kind"
 import { tryDo } from "../../utils/exceptions"
 import { pipe } from "../../utils/flow"
-import { overloadWithPointFree2 } from "../../utils/points"
+import { overload2 } from "../../utils/overloads"
 
 declare module "../../types/Kind" {
   interface Kind<A> {
@@ -50,5 +50,4 @@ interface IOOptionEliminator extends IOOptionEliminatorPointed {
 const ioOptionPointed: IOOptionEliminatorPointed = (fa, whenNone, whenSome) =>
   pipe (fa, fromIoOption, O.option (whenNone, whenSome))
 
-export const ioOption: IOOptionEliminator =
-  overloadWithPointFree2 (ioOptionPointed)
+export const ioOption: IOOptionEliminator = overload2 (ioOptionPointed)
