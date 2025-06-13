@@ -14,10 +14,8 @@ export const createContravariant: CreateContravariant = contravariant => ({
 type CreateContravariant2 = <URI extends URIS2>(
   functor: CreateContravariantArg2<URI>,
 ) => Contravariant2<URI>
-export const createContravariant2: CreateContravariant2 = contravariant => ({
-  ...contravariant,
-  contramap: overload (contravariant.contramap),
-})
+export const createContravariant2: CreateContravariant2 =
+  createContravariant as CreateContravariant2
 
 interface CreateContravariantArg<URI extends URIS>
   extends Omit<Contravariant<URI>, "contramap"> {

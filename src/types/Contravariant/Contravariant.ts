@@ -13,5 +13,6 @@ export interface Contravariant2<URI extends URIS2> {
 
 export interface Contravariant2C<URI extends URIS2, E> {
   readonly _URI: URI
+  readonly _E: E
   readonly contramap: Contramap2C<URI, E>
 }
