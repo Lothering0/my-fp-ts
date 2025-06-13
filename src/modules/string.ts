@@ -1,3 +1,4 @@
+import { curry } from "../utils/curry"
 import { Monoid } from "../types/Monoid"
 import { Semigroup } from "../types/Semigroup"
 
@@ -19,3 +20,6 @@ export const monoid: Monoid<string> = {
   ...semigroup,
   empty: "",
 }
+
+type Concat = (a: string) => (b: string) => string
+export const concat: Concat = curry (semigroup.concat)
