@@ -14,4 +14,5 @@ export const applicativeWithIndex: ApplicativeWithIndex<typeof _URI, number> = {
   _URI,
 } as any
 
-export const { of, apply, applyWithIndex } = applicativeWithIndex
+export const { of, apply, ap, applyWithIndex, apWithIndex } =
+  applicativeWithIndex

@@ -2,9 +2,10 @@ import * as E from "../either"
 import { Applicative2, createApplicative2 } from "../../types/Applicative"
 import { _URI, right, fromIoEither, IOEither } from "./io-either"
 import { pipe } from "../../utils/flow"
+import { functor } from "./functor"
 
 export const applicative: Applicative2<typeof _URI> = createApplicative2 ({
-  _URI,
+  ...functor,
   of: right,
   apply:
     <_, A, B>(
@@ -20,4 +21,4 @@ export const applicative: Applicative2<typeof _URI> = createApplicative2 ({
       ),
 })
 
-export const { of, apply } = applicative
+export const { of, apply, ap } = applicative

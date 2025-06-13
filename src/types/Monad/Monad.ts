@@ -1,6 +1,6 @@
 import { Applicative, Applicative2, Applicative2C } from "../Applicative"
 import { URIS, URIS2 } from "../Kind"
-import { ApplyResultTo, ApplyResultTo2, ApplyResultTo2C } from "./ApplyResultTo"
+import { ApS, ApS2, ApS2C } from "./ApS"
 import { ApplyTo, ApplyTo2, ApplyTo2C } from "./ApplyTo"
 import { Compose, Compose2, Compose2C } from "./Compose"
 import { Do, Do2, Do2C } from "./Do"
@@ -20,9 +20,7 @@ export interface Monad<URI extends URIS> extends Applicative<URI> {
   readonly setTo: SetTo<URI>
   readonly mapTo: MapTo<URI>
   readonly applyTo: ApplyTo<URI>
-  readonly applyResultTo: ApplyResultTo<URI>
-  /** Alias for `applyResultTo` */
-  readonly apS: Monad<URI>["applyResultTo"]
+  readonly apS: ApS<URI>
   readonly flatMapTo: FlatMapTo<URI>
   readonly tap: Tap<URI>
   readonly tapIo: TapIo<URI>
@@ -36,9 +34,7 @@ export interface Monad2<URI extends URIS2> extends Applicative2<URI> {
   readonly setTo: SetTo2<URI>
   readonly mapTo: MapTo2<URI>
   readonly applyTo: ApplyTo2<URI>
-  readonly applyResultTo: ApplyResultTo2<URI>
-  /** Alias for `applyResultTo` */
-  readonly apS: Monad2<URI>["applyResultTo"]
+  readonly apS: ApS2<URI>
   readonly flatMapTo: FlatMapTo2<URI>
   readonly tap: Tap2<URI>
   readonly tapIo: TapIo2<URI>
@@ -52,9 +48,7 @@ export interface Monad2C<URI extends URIS2, E> extends Applicative2C<URI, E> {
   readonly setTo: SetTo2C<URI, E>
   readonly mapTo: MapTo2C<URI, E>
   readonly applyTo: ApplyTo2C<URI, E>
-  readonly applyResultTo: ApplyResultTo2C<URI, E>
-  /** Alias for `applyResultTo` */
-  readonly apS: Monad2C<URI, E>["applyResultTo"]
+  readonly apS: ApS2C<URI, E>
   readonly flatMapTo: FlatMapTo2C<URI, E>
   readonly tap: Tap2C<URI, E>
   readonly tapIo: TapIo2C<URI, E>

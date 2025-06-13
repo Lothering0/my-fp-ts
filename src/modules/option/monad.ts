@@ -20,7 +20,6 @@ export const {
   setTo,
   mapTo,
   applyTo,
-  applyResultTo,
   apS,
   flatMapTo,
   tap,

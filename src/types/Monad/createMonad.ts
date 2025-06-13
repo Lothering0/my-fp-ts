@@ -5,7 +5,7 @@ import { overload, overload2, overloadLast2 } from "../../utils/overloads"
 import { pipe } from "../../utils/flow"
 import { constant } from "../../utils/constant"
 import { Monad, Monad2 } from "./Monad"
-import { ApplyResultTo, ApplyResultToPointed } from "./ApplyResultTo"
+import { ApS, ApSPointed } from "./ApS"
 import { FlatMap, FlatMapPointed } from "./FlatMap"
 import { Compose, ComposePointed } from "./Compose"
 import { Tap, TapPointed } from "./Tap"
@@ -18,27 +18,24 @@ import { FlatMapTo, FlatMapToPointed } from "./FlatMapTo"
 export const createMonad = <URI extends URIS>(
   monad: CreateMonadArg<URI>,
 ): Monad<URI> => {
-  const { of, apply, flat } = monad
+  const { of, map, flat } = monad
   const Do = of ({})
 
-  const applyResultToPointed: ApplyResultToPointed<URI> = (fa, name, fb) =>
+  const apSPointed: ApSPointed<URI> = (fa, name, fb) =>
     pipe (
       fa,
-      apply (
-        of (a =>
-          apply (
-            fb,
-            of (b => ({ [name]: b, ...a }) as any),
-          ),
-        ),
-      ),
+      map (a => map (fb, b => ({ [name]: b, ...a }) as any)),
       flat,
     )
-  const applyResultTo: ApplyResultTo<URI> = overload2 (applyResultToPointed)
-  const apS = applyResultTo
+  const apS: ApS<URI> = overload2 (apSPointed)
 
   const flatMapPointed: FlatMapPointed<URI> = (ma, f) =>
-    pipe (Do, apS ("a", ma), apply (of (({ a }) => f (a))), flat)
+    pipe (
+      Do,
+      apS ("a", ma),
+      map (({ a }) => f (a)),
+      flat,
+    )
   const flatMap: FlatMap<URI> = overload (flatMapPointed)
 
   const composePointed: ComposePointed<URI> = (g, f, a) =>
@@ -93,7 +90,7 @@ export const createMonad = <URI extends URIS>(
       Do,
       apS ("a", fa),
       apS ("f", ff),
-      apply (of (({ a, f }) => ({ [name]: f (a), ...a }) as any)),
+      map (({ a, f }) => ({ [name]: f (a), ...a }) as any),
     )
   const applyTo: ApplyTo<URI> = overload2 (applyToPointed)
 
@@ -122,7 +119,6 @@ export const createMonad = <URI extends URIS>(
     setTo,
     mapTo,
     applyTo,
-    applyResultTo,
     apS,
     flatMapTo,
   }
