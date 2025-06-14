@@ -1,4 +1,4 @@
-import { IO } from "../modules/io"
+import { Io } from "../modules/Io"
 
-type Now = IO<number>
+type Now = Io<number>
 export const now: Now = () => Date.now ()

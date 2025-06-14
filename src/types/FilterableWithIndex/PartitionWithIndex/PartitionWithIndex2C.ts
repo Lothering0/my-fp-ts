@@ -1,4 +1,4 @@
-import { Separated } from "../../../modules/separated"
+import { Separated } from "../../../modules/Separated"
 import { HKT2 } from "../../HKT"
 import { URIS2 } from "../../Kind"
 

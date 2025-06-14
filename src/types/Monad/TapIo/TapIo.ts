@@ -6,9 +6,9 @@ export interface TapIo<URI extends URIS>
     TapIoPointFree<URI> {}
 
 export interface TapIoPointed<URI extends URIS> {
-  <A, _>(ma: HKT<URI, A>, f: (a: A) => HKT<"IO", _>): HKT<URI, A>
+  <A, _>(ma: HKT<URI, A>, f: (a: A) => HKT<"Io", _>): HKT<URI, A>
 }
 
 export interface TapIoPointFree<URI extends URIS> {
-  <A, _>(f: (a: A) => HKT<"IO", _>): (ma: HKT<URI, A>) => HKT<URI, A>
+  <A, _>(f: (a: A) => HKT<"Io", _>): (ma: HKT<URI, A>) => HKT<URI, A>
 }

@@ -1,6 +1,6 @@
 import { Semigroup } from "./Semigroup"
 import { Monoid } from "./Monoid"
-import { identity, compose } from "../modules/identity"
+import { identity, compose } from "../modules/Identity"
 
 export interface Endomorphism<A> {
   (a: A): A

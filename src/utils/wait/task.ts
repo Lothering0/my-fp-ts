@@ -1,4 +1,4 @@
-import * as T from "../../modules/task"
+import * as T from "../../modules/Task"
 import { _ } from "../underscore"
 
 type Wait = (n: number) => T.Task<void>

@@ -1,5 +1,5 @@
-import { Either } from "../../../modules/either"
-import { Separated } from "../../../modules/separated"
+import { Either } from "../../../modules/Either"
+import { Separated } from "../../../modules/Separated"
 import { HKT } from "../../HKT"
 import { URIS } from "../../Kind"
 

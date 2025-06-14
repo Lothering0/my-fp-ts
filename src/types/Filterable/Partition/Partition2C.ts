@@ -1,5 +1,5 @@
-import { Predicate } from "../../../modules/predicate"
-import { Separated } from "../../../modules/separated"
+import { Predicate } from "../../../modules/Predicate"
+import { Separated } from "../../../modules/Separated"
 import { HKT2 } from "../../HKT"
 import { URIS2 } from "../../Kind"
 

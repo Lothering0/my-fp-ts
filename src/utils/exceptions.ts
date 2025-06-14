@@ -1,4 +1,4 @@
-import * as E from "../modules/either"
+import * as E from "../modules/Either"
 
 type Raise = <A>(a: A) => never
 export const raise: Raise = a => {

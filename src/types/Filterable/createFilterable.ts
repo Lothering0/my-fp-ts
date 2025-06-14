@@ -1,5 +1,5 @@
-import * as O from "../../modules/option"
-import * as E from "../../modules/either"
+import * as O from "../../modules/Option"
+import * as E from "../../modules/Either"
 import { Functor, Functor2 } from "../Functor"
 import { URIS, URIS2 } from "../Kind"
 import { Compactable, Compactable2 } from "../Compactable"

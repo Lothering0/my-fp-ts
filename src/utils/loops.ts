@@ -1,7 +1,7 @@
 import { _ } from "./underscore"
 import { URIS, URIS2 } from "../types/Kind"
 import { Applicative, Applicative2 } from "../types/Applicative"
-import { Predicate } from "../modules/predicate"
+import { Predicate } from "../modules/Predicate"
 import { HKT, HKT2 } from "../types/HKT"
 
 type GetDoWhile = <URI extends URIS>(

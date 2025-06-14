@@ -1,4 +1,4 @@
-import { Option } from "../../../modules/option"
+import { Option } from "../../../modules/Option"
 import { HKT2 } from "../../HKT"
 import { URIS2 } from "../../Kind"
 

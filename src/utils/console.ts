@@ -1,17 +1,17 @@
-import { IO } from "../modules/io"
+import { Io } from "../modules/Io"
 
-type Log_ = (a: unknown) => IO<void>
+type Log_ = (a: unknown) => Io<void>
 export const log_: Log_ = a => () => console.log (a)
 
-type Info_ = (a: unknown) => IO<void>
+type Info_ = (a: unknown) => Io<void>
 export const info_: Info_ = a => () => console.info (a)
 
-type Warn_ = (a: unknown) => IO<void>
+type Warn_ = (a: unknown) => Io<void>
 export const warn_: Warn_ = a => () => console.warn (a)
 
-type Error_ = (a: unknown) => IO<void>
+type Error_ = (a: unknown) => Io<void>
 export const error_: Error_ = a => () => console.error (a)
 
-type WriteToStdout_ = (a: string) => IO<void>
+type WriteToStdout_ = (a: string) => Io<void>
 export const writeToStdout_: WriteToStdout_ = string => () =>
   process.stdout.write (string)

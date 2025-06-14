@@ -1,4 +1,4 @@
-import { Predicate } from "../../../modules/predicate"
+import { Predicate } from "../../../modules/Predicate"
 import { HKT2 } from "../../HKT"
 import { URIS2 } from "../../Kind"
 
