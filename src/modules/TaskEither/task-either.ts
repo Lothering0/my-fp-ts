@@ -31,7 +31,7 @@ export const fromTaskEither: FromTaskEither = mma =>
 type ToUnion = <E, A>(ma: TaskEither<E, A>) => T.Task<E | A>
 export const toUnion: ToUnion = mma => () => fromTaskEither (mma).then (E.toUnion)
 
-interface TaskEitherEliminatorPointed {
+interface MatchPointed {
   <E, A, B>(
     mma: TaskEither<E, A>,
     whenLeft: (e: E) => B,
@@ -39,14 +39,14 @@ interface TaskEitherEliminatorPointed {
   ): T.Task<B>
 }
 
-interface TaskEitherEliminator extends TaskEitherEliminatorPointed {
+interface Match extends MatchPointed {
   <E, A, B>(
     whenLeft: (e: E) => B,
     whenRight: (a: A) => B,
   ): (mma: TaskEither<E, A>) => T.Task<B>
 }
 
-const taskEitherPointed: TaskEitherEliminatorPointed = (mma, f, g) => () =>
-  fromTaskEither (mma).then (E.either (f, g))
+const matchPointed: MatchPointed = (mma, f, g) => () =>
+  fromTaskEither (mma).then (E.match (f, g))
 
-export const taskEither: TaskEitherEliminator = overload2 (taskEitherPointed)
+export const match: Match = overload2 (matchPointed)

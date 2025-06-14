@@ -33,13 +33,13 @@ type ToTaskOptionFromTaskEither = <E, A>(
 ) => TaskOption<A>
 export const toTaskOptionFromTaskEither: ToTaskOptionFromTaskEither =
   ma => () =>
-    ma ().then (E.either (constant (O.none), O.some), constant (O.none))
+    ma ().then (E.match (constant (O.none), O.some), constant (O.none))
 
 type FromTaskOption = <A>(ma: TaskOption<A>) => Promise<O.Option<A>>
 export const fromTaskOption: FromTaskOption = mma =>
   mma ().then (identity, constant (O.none))
 
-interface TaskOptionEliminatorPointed {
+interface MatchPointed {
   <A, B>(
     mma: TaskOption<A>,
     whenNone: () => B,
@@ -47,14 +47,14 @@ interface TaskOptionEliminatorPointed {
   ): T.Task<B>
 }
 
-interface TaskOptionEliminator extends TaskOptionEliminatorPointed {
+interface Match extends MatchPointed {
   <A, B>(
     whenNone: () => B,
     whenSome: (a: A) => B,
   ): (mma: TaskOption<A>) => T.Task<B>
 }
 
-const taskOptionPointed: TaskOptionEliminatorPointed = (mma, f, g) => () =>
-  fromTaskOption (mma).then (O.option (f, g))
+const matchPointed: MatchPointed = (mma, f, g) => () =>
+  fromTaskOption (mma).then (O.match (f, g))
 
-export const taskOption: TaskOptionEliminator = overload2 (taskOptionPointed)
+export const match: Match = overload2 (matchPointed)

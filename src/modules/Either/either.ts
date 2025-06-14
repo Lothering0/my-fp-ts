@@ -49,18 +49,18 @@ export const fromRight: FromRight = ma => ma.value
 type ToUnion = <E, A>(ma: Either<E, A>) => E | A
 export const toUnion: ToUnion = ma => ma.value
 
-interface EitherEliminatorPointed {
+interface MatchPointed {
   <E, A, B>(ma: Either<E, A>, whenLeft: (e: E) => B, whenRight: (a: A) => B): B
 }
 
-interface EitherEliminator extends EitherEliminatorPointed {
+interface Match extends MatchPointed {
   <E, A, B>(
     whenLeft: (e: E) => B,
     whenRight: (a: A) => B,
   ): (ma: Either<E, A>) => B
 }
 
-const eitherPointed: EitherEliminatorPointed = (ma, whenLeft, whenRight) =>
+const matchPointed: MatchPointed = (ma, whenLeft, whenRight) =>
   isLeft (ma) ? pipe (ma, fromLeft, whenLeft) : pipe (ma, fromRight, whenRight)
 
-export const either: EitherEliminator = overload2 (eitherPointed)
+export const match: Match = overload2 (matchPointed)

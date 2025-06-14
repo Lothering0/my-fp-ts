@@ -32,6 +32,9 @@ export const none: Option<never> = {
   _tag: "None",
 }
 
+type Zero = <A>() => Option<A>
+export const zero: Zero = () => none
+
 type IsSome = <A>(fa: Option<A>) => fa is Some<A>
 export const isSome: IsSome = fa => fa._tag === "Some"
 
@@ -41,18 +44,18 @@ export const isNone: IsNone = fa => fa._tag === "None"
 type FromSome = <A>(fa: Some<A>) => A
 export const fromSome: FromSome = fa => fa.value
 
-interface OptionEliminatorPointed {
+interface MatchPointed {
   <A, B>(fa: Option<A>, b: () => B, f: (a: A) => B): B
 }
 
-interface OptionEliminator extends OptionEliminatorPointed {
+interface Match extends MatchPointed {
   <A, B>(b: () => B, f: (a: A) => B): (fa: Option<A>) => B
 }
 
-const optionPointed: OptionEliminatorPointed = (fa, whenNone, whenSome) =>
+const matchPointed: MatchPointed = (fa, whenNone, whenSome) =>
   isNone (fa) ? whenNone () : pipe (fa, fromSome, whenSome)
 
-export const option: OptionEliminator = overload2 (optionPointed)
+export const match: Match = overload2 (matchPointed)
 
 type ToOption = <A>(a: A) => Option<NonNullable<A>>
 export const toOption: ToOption = a => a == null ? none : some (a)
@@ -64,4 +67,4 @@ export const fromOption: FromOption =
     isNone (fa) ? a : fromSome (fa)
 
 type FromEither = <_, A>(ma: E.Either<_, A>) => Option<A>
-export const fromEither: FromEither = E.either (() => none, some)
+export const fromEither: FromEither = E.match (() => none, some)

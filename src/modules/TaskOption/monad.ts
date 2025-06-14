@@ -155,7 +155,7 @@ const tapTaskEitherPointed: TapTaskEitherPointed = (mma, f) =>
       pipe (
         a,
         f,
-        TE.taskEither (
+        TE.match (
           () => O.none,
           () => O.some (a),
         ),

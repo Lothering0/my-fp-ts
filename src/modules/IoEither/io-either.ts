@@ -36,7 +36,7 @@ export const fromIoEither: FromIoEither = <E, A>(ma: IoEither<E, A>) => {
 type ToUnion = <E, A>(ma: IoEither<E, A>) => Io.Io<E | A>
 export const toUnion: ToUnion = mma => () => E.toUnion (mma ())
 
-interface IoEitherEliminatorPointed {
+interface MatchPointed {
   <E, A, B>(
     mma: IoEither<E, A>,
     whenLeft: (e: E) => B,
@@ -44,14 +44,14 @@ interface IoEitherEliminatorPointed {
   ): Io.Io<B>
 }
 
-interface IoEitherEliminator extends IoEitherEliminatorPointed {
+interface Match extends MatchPointed {
   <E, A, B>(
     whenLeft: (e: E) => B,
     whenRight: (a: A) => B,
   ): (mma: IoEither<E, A>) => Io.Io<B>
 }
 
-const ioEitherPointed: IoEitherEliminatorPointed = (mma, f, g) =>
-  pipe (mma, fromIoEither, E.either (f, g), Io.of)
+const matchPointed: MatchPointed = (mma, f, g) =>
+  pipe (mma, fromIoEither, E.match (f, g), Io.of)
 
-export const ioEither: IoEitherEliminator = overload2 (ioEitherPointed)
+export const match: Match = overload2 (matchPointed)

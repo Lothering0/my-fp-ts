@@ -27,7 +27,7 @@ export const isNonEmpty = <A>(as: A[]): as is NEA.NonEmptyArray<A> =>
 type Copy = <A>(as: A[]) => A[]
 export const copy: Copy = as => [...as]
 
-interface ArrayEliminatorPointed {
+interface MatchPointed {
   <A, B>(
     as: A[],
     whenEmpty: () => B,
@@ -35,17 +35,17 @@ interface ArrayEliminatorPointed {
   ): B
 }
 
-interface ArrayEliminator extends ArrayEliminatorPointed {
+interface Match extends MatchPointed {
   <A, B>(
     whenEmpty: () => B,
     whenNonEmpty: (as: NEA.NonEmptyArray<A>) => B,
   ): (as: A[]) => B
 }
 
-const arrayPointed: ArrayEliminatorPointed = (as, whenEmpty, whenNonEmpty) =>
+const matchPointed: MatchPointed = (as, whenEmpty, whenNonEmpty) =>
   isNonEmpty (as) ? whenNonEmpty (as) : whenEmpty ()
 
-export const array: ArrayEliminator = overload2 (arrayPointed)
+export const match: Match = overload2 (matchPointed)
 
 type Head = <A>(as: A[]) => O.Option<A>
 export const head: Head = as =>

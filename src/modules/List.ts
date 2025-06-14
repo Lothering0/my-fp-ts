@@ -24,12 +24,8 @@ const cons: ConsConstructor = (head, tail) => ({
 type IsNil = (xs: List<unknown>) => xs is Nil
 const isNil: IsNil = xs => xs._tag === "Nil"
 
-type ListEliminator = <A, B>(
-  xs: List<A>,
-  whenNil: () => B,
-  whenCons: (a: A) => B,
-) => B
-export const list: ListEliminator = (xs, whenNil, whenCons) =>
+type Match = <A, B>(xs: List<A>, whenNil: () => B, whenCons: (a: A) => B) => B
+export const match: Match = (xs, whenNil, whenCons) =>
   isNil (xs) ? whenNil () : whenCons (xs.head)
 
 type FromArray = <A>(xs: Array<A>) => List<A>

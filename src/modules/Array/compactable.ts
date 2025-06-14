@@ -17,7 +17,7 @@ export const compactable: Compactable<typeof _URI> = {
   compact: flatMap (a => O.isNone (a) ? [] : [O.fromSome (a)]),
   compactEithers: flatMap (a => E.isLeft (a) ? [] : [E.fromRight (a)]),
   separate: reduce (getInitialSeparated (), (b, ma) =>
-    E.either (
+    E.match (
       ma,
       e => ({ left: [...S.left (b), e], right: S.right (b) }),
       a => ({ left: S.left (b), right: [...S.right (b), a] }),

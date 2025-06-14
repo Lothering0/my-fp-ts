@@ -27,7 +27,7 @@ export const toIoOption: ToIoOption = ma => () =>
   pipe (
     ma,
     tryDo,
-    E.either (() => O.none, O.some),
+    E.match (() => O.none, O.some),
   )
 
 type FromIoOption = <A>(ma: IoOption<A>) => O.Option<A>
@@ -39,15 +39,15 @@ export const fromIoOption: FromIoOption = <A>(ma: IoOption<A>) => {
   }
 }
 
-interface IoOptionEliminatorPointed {
+interface MatchPointed {
   <A, B>(fa: IoOption<A>, b: () => B, f: (a: A) => B): B
 }
 
-interface IoOptionEliminator extends IoOptionEliminatorPointed {
+interface Match extends MatchPointed {
   <A, B>(fa: IoOption<A>, b: () => B, f: (a: A) => B): B
 }
 
-const ioOptionPointed: IoOptionEliminatorPointed = (fa, whenNone, whenSome) =>
-  pipe (fa, fromIoOption, O.option (whenNone, whenSome))
+const matchPointed: MatchPointed = (fa, whenNone, whenSome) =>
+  pipe (fa, fromIoOption, O.match (whenNone, whenSome))
 
-export const ioOption: IoOptionEliminator = overload2 (ioOptionPointed)
+export const match: Match = overload2 (matchPointed)

@@ -9,7 +9,7 @@ import { overload } from "../../utils/overloads"
 
 export const monad: Monad<typeof O._URI> = createMonad ({
   ...applicative,
-  flat: O.option (() => O.none, identity),
+  flat: O.match (() => O.none, identity),
 })
 
 export const {
@@ -42,7 +42,7 @@ const tapEitherPointed: TapEitherPointed = <E, A, _>(
     ma,
     map (f),
     flatMap (
-      E.either (
+      E.match (
         () => O.none,
         () => ma,
       ),
