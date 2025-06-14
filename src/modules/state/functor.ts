@@ -6,8 +6,7 @@ export const functor: Functor2<typeof _URI> = createFunctor2 ({
   _URI,
   map: <S, A, B>(fa: State<S, A>, f: (a: A) => B) =>
     flow (
-      run<S>,
-      g => g (fa),
+      (s: S) => run (s) (fa),
       ([a1, s1]) => [f (a1), s1],
     ),
 })

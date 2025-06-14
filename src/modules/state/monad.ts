@@ -5,7 +5,7 @@ import { _URI } from "./state"
 
 export const monad: Monad2<typeof _URI> = createMonad2 ({
   ...applicative,
-  flat: mma => flow (mma, ([m, s1]) => m (s1)),
+  flat: mma => flow (mma, ([ma, s1]) => ma (s1)),
 })
 
 export const {
