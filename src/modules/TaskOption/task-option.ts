@@ -9,7 +9,7 @@ import { flow } from "../../utils/flow"
 import { overload2 } from "../../utils/overloads"
 
 declare module "../../types/Kind" {
-  interface Kind<A> {
+  interface URIToKind<A> {
     readonly TaskOption: TaskOption<A>
   }
 }

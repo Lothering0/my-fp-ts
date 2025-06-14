@@ -1,7 +1,7 @@
 import { URIS2 } from "../../types/Kind"
 
 declare module "../../types/Kind" {
-  interface Kind2<E, A> {
+  interface URIToKind2<E, A> {
     readonly Separated: Separated<E, A>
   }
 }

@@ -1,14 +1,13 @@
-import { HKT } from "../../HKT"
-import { URIS } from "../../Kind"
+import { Kind, URIS } from "../../Kind"
 
 export interface ApplyWithIndex<URI extends URIS, I>
   extends ApplyWithIndexPointed<URI, I>,
     ApplyWithIndexPointFree<URI, I> {}
 
 export interface ApplyWithIndexPointed<URI extends URIS, I> {
-  <A, B>(fa: HKT<URI, A>, ff: HKT<URI, (i: I, a: A) => B>): HKT<URI, B>
+  <A, B>(fa: Kind<URI, A>, ff: Kind<URI, (i: I, a: A) => B>): Kind<URI, B>
 }
 
 export interface ApplyWithIndexPointFree<URI extends URIS, I> {
-  <A, B>(ff: HKT<URI, (i: I, a: A) => B>): (fa: HKT<URI, A>) => HKT<URI, B>
+  <A, B>(ff: Kind<URI, (i: I, a: A) => B>): (fa: Kind<URI, A>) => Kind<URI, B>
 }

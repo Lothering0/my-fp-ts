@@ -5,7 +5,7 @@ import { constant } from "../../utils/constant"
 import { pipe } from "../../utils/flow"
 
 declare module "../../types/Kind" {
-  interface Kind2<E, A> {
+  interface URIToKind2<E, A> {
     readonly State: State<E, A>
   }
 }

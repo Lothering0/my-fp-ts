@@ -1,5 +1,4 @@
-import { HKT2 } from "../../HKT"
-import { URIS2 } from "../../Kind"
+import { URIS2, Kind2 } from "../../Kind"
 
 export interface Compose2C<URI extends URIS2, E>
   extends Compose2CPointed<URI, E>,
@@ -7,15 +6,15 @@ export interface Compose2C<URI extends URIS2, E>
 
 export interface Compose2CPointed<URI extends URIS2, _> {
   <A, B, C>(
-    g: (b: B) => HKT2<URI, _, C>,
-    f: (a: A) => HKT2<URI, _, B>,
+    g: (b: B) => Kind2<URI, _, C>,
+    f: (a: A) => Kind2<URI, _, B>,
     a: A,
-  ): HKT2<URI, _, C>
+  ): Kind2<URI, _, C>
 }
 
 export interface Compose2CPointFree<URI extends URIS2, _> {
   <A, B, C>(
-    g: (b: B) => HKT2<URI, _, C>,
-    f: (a: A) => HKT2<URI, _, B>,
-  ): (a: A) => HKT2<URI, _, C>
+    g: (b: B) => Kind2<URI, _, C>,
+    f: (a: A) => Kind2<URI, _, B>,
+  ): (a: A) => Kind2<URI, _, C>
 }

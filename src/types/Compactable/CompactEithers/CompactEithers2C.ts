@@ -1,7 +1,6 @@
-import { HKT2 } from "../../HKT"
-import { URIS2 } from "../../Kind"
+import { Kind2, URIS2 } from "../../Kind"
 import { Either } from "../../../modules/Either"
 
 export interface CompactEithers2C<URI extends URIS2, _> {
-  <A>(fa: HKT2<URI, _, Either<unknown, A>>): HKT2<URI, _, A>
+  <A>(fa: Kind2<URI, _, Either<unknown, A>>): Kind2<URI, _, A>
 }

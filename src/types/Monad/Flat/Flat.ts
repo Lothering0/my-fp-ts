@@ -1,6 +1,5 @@
-import { URIS } from "../../Kind"
-import { HKT } from "../../HKT"
+import { URIS, Kind } from "../../Kind"
 
 export interface Flat<URI extends URIS> {
-  <A>(mma: HKT<URI, HKT<URI, A>>): HKT<URI, A>
+  <A>(mma: Kind<URI, Kind<URI, A>>): Kind<URI, A>
 }

@@ -1,6 +1,5 @@
-import { HKT } from "../../HKT"
-import { URIS } from "../../Kind"
+import { Kind, URIS } from "../../Kind"
 
 export interface Of<URI extends URIS> {
-  <A>(a: A): HKT<URI, A>
+  <A>(a: A): Kind<URI, A>
 }

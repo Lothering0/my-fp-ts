@@ -1,5 +1,8 @@
-export interface Kind<A> {}
-export interface Kind2<E, A> {}
+export interface URIToKind<A> {}
+export interface URIToKind2<E, A> {}
 
-export type URIS = keyof Kind<unknown>
-export type URIS2 = keyof Kind2<unknown, unknown>
+export type URIS = keyof URIToKind<unknown>
+export type URIS2 = keyof URIToKind2<unknown, unknown>
+
+export type Kind<URI extends URIS, A> = URIToKind<A>[URI]
+export type Kind2<URI extends URIS2, A, B> = URIToKind2<A, B>[URI]

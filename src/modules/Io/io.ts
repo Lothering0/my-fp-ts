@@ -1,7 +1,7 @@
 import { URIS } from "../../types/Kind"
 
 declare module "../../types/Kind" {
-  interface Kind<A> {
+  interface URIToKind<A> {
     readonly Io: Io<A>
   }
 }

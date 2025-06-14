@@ -3,7 +3,7 @@ import { pipe } from "../../utils/flow"
 import { overload2 } from "../../utils/overloads"
 
 declare module "../../types/Kind" {
-  interface Kind2<E, A> {
+  interface URIToKind2<E, A> {
     readonly Either: Either<E, A>
   }
 }

@@ -1,5 +1,4 @@
-import { HKT } from "../../HKT"
-import { URIS } from "../../Kind"
+import { URIS, Kind } from "../../Kind"
 import { DoObject } from "../DoObject"
 
 export interface ApS<URI extends URIS>
@@ -8,15 +7,15 @@ export interface ApS<URI extends URIS>
 
 export interface ApSPointed<URI extends URIS> {
   <N extends string | number | symbol, A, B>(
-    fa: HKT<URI, A>,
+    fa: Kind<URI, A>,
     name: Exclude<N, keyof A>,
-    fb: HKT<URI, B>,
-  ): HKT<URI, DoObject<N, A, B>>
+    fb: Kind<URI, B>,
+  ): Kind<URI, DoObject<N, A, B>>
 }
 
 export interface ApSPointFree<URI extends URIS> {
   <N extends string | number | symbol, A, B>(
     name: Exclude<N, keyof A>,
-    fb: HKT<URI, B>,
-  ): (fa: HKT<URI, A>) => HKT<URI, DoObject<N, A, B>>
+    fb: Kind<URI, B>,
+  ): (fa: Kind<URI, A>) => Kind<URI, DoObject<N, A, B>>
 }

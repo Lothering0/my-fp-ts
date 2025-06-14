@@ -1,5 +1,4 @@
-import { HKT } from "../../HKT"
-import { URIS } from "../../Kind"
+import { URIS, Kind } from "../../Kind"
 import { DoObject } from "../DoObject"
 
 export interface SetTo<URI extends URIS>
@@ -8,15 +7,15 @@ export interface SetTo<URI extends URIS>
 
 export interface SetToPointed<URI extends URIS> {
   <N extends string | number | symbol, A, B>(
-    fa: HKT<URI, A>,
+    fa: Kind<URI, A>,
     name: Exclude<N, keyof A>,
     b: B,
-  ): HKT<URI, DoObject<N, A, B>>
+  ): Kind<URI, DoObject<N, A, B>>
 }
 
 export interface SetToPointFree<URI extends URIS> {
   <N extends string | number | symbol, A, B>(
     name: Exclude<N, keyof A>,
     b: B,
-  ): (fa: HKT<URI, A>) => HKT<URI, DoObject<N, A, B>>
+  ): (fa: Kind<URI, A>) => Kind<URI, DoObject<N, A, B>>
 }

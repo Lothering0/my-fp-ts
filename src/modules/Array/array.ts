@@ -9,7 +9,7 @@ import { constant } from "../../utils/constant"
 import { pipe } from "../../utils/flow"
 
 declare module "../../types/Kind" {
-  interface Kind<A> {
+  interface URIToKind<A> {
     readonly Array: Array<A>
   }
 }

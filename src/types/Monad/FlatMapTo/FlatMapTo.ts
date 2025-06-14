@@ -1,5 +1,4 @@
-import { HKT } from "../../HKT"
-import { URIS } from "../../Kind"
+import { URIS, Kind } from "../../Kind"
 import { DoObject } from "../DoObject"
 
 export interface FlatMapTo<URI extends URIS>
@@ -8,15 +7,15 @@ export interface FlatMapTo<URI extends URIS>
 
 export interface FlatMapToPointed<URI extends URIS> {
   <N extends string | number | symbol, A, B>(
-    ma: HKT<URI, A>,
+    ma: Kind<URI, A>,
     name: Exclude<N, keyof A>,
-    f: (a: A) => HKT<URI, B>,
-  ): HKT<URI, DoObject<N, A, B>>
+    f: (a: A) => Kind<URI, B>,
+  ): Kind<URI, DoObject<N, A, B>>
 }
 
 export interface FlatMapToPointFree<URI extends URIS> {
   <N extends string | number | symbol, A, B>(
     name: Exclude<N, keyof A>,
-    f: (a: A) => HKT<URI, B>,
-  ): (ma: HKT<URI, A>) => HKT<URI, DoObject<N, A, B>>
+    f: (a: A) => Kind<URI, B>,
+  ): (ma: Kind<URI, A>) => Kind<URI, DoObject<N, A, B>>
 }

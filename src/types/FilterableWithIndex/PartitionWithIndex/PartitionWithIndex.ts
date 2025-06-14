@@ -1,6 +1,5 @@
 import { Separated } from "../../../modules/Separated"
-import { HKT } from "../../HKT"
-import { URIS } from "../../Kind"
+import { URIS, Kind } from "../../Kind"
 
 export interface PartitionWithIndex<URI extends URIS, I>
   extends PartitionWithIndexPointed<URI, I>,
@@ -8,13 +7,13 @@ export interface PartitionWithIndex<URI extends URIS, I>
 
 export interface PartitionWithIndexPointed<URI extends URIS, I> {
   <A>(
-    fa: HKT<URI, A>,
+    fa: Kind<URI, A>,
     p: (i: I, a: A) => boolean,
-  ): Separated<HKT<URI, A>, HKT<URI, A>>
+  ): Separated<Kind<URI, A>, Kind<URI, A>>
 }
 
 export interface PartitionWithIndexPointFree<URI extends URIS, I> {
   <A>(
     p: (i: I, a: A) => boolean,
-  ): (fa: HKT<URI, A>) => Separated<HKT<URI, A>, HKT<URI, A>>
+  ): (fa: Kind<URI, A>) => Separated<Kind<URI, A>, Kind<URI, A>>
 }

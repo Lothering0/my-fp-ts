@@ -1,7 +1,6 @@
 import { Either } from "../../../modules/Either"
 import { Separated } from "../../../modules/Separated"
-import { HKT } from "../../HKT"
-import { URIS } from "../../Kind"
+import { URIS, Kind } from "../../Kind"
 
 export interface PartitionMapWithIndex<URI extends URIS, I>
   extends PartitionMapWithIndexPointed<URI, I>,
@@ -9,13 +8,13 @@ export interface PartitionMapWithIndex<URI extends URIS, I>
 
 export interface PartitionMapWithIndexPointed<URI extends URIS, I> {
   <A, B, C>(
-    fa: HKT<URI, A>,
+    fa: Kind<URI, A>,
     p: (i: I, a: A) => Either<B, C>,
-  ): Separated<HKT<URI, B>, HKT<URI, C>>
+  ): Separated<Kind<URI, B>, Kind<URI, C>>
 }
 
 export interface PartitionMapWithIndexPointFree<URI extends URIS, I> {
   <A, B, C>(
     p: (i: I, a: A) => Either<B, C>,
-  ): (fa: HKT<URI, A>) => Separated<HKT<URI, B>, HKT<URI, C>>
+  ): (fa: Kind<URI, A>) => Separated<Kind<URI, B>, Kind<URI, C>>
 }

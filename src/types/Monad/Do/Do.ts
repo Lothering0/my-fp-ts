@@ -1,4 +1,3 @@
-import { HKT } from "../../HKT"
-import { URIS } from "../../Kind"
+import { URIS, Kind } from "../../Kind"
 
-export type Do<URI extends URIS> = HKT<URI, {}>
+export type Do<URI extends URIS> = Kind<URI, {}>

@@ -2,17 +2,17 @@ import { _ } from "./underscore"
 import { URIS, URIS2 } from "../types/Kind"
 import { Applicative, Applicative2 } from "../types/Applicative"
 import { Predicate } from "../modules/Predicate"
-import { HKT, HKT2 } from "../types/HKT"
+import { Kind, Kind2 } from "../types/Kind"
 
 type GetDoWhile = <URI extends URIS>(
-  applicative: Applicative<URI>,
-) => <A>(f: Predicate<void>) => (g: () => A) => HKT<URI, void>
+  applicative: Applicative<URI>
+) => <A>(f: Predicate<void>) => (g: () => A) => Kind<URI, void>
 export const getDoWhile: GetDoWhile = applicative => p => f => {
-  while (p ()) f ()
-  return applicative.of (_)
+  while (p()) f()
+  return applicative.of(_)
 }
 
 type GetDoWhile2 = <URI extends URIS2>(
-  applicative: Applicative2<URI>,
-) => <E, A>(f: Predicate<void>) => (g: () => A) => HKT2<URI, E, void>
+  applicative: Applicative2<URI>
+) => <E, A>(f: Predicate<void>) => (g: () => A) => Kind2<URI, E, void>
 export const getDoWhile2: GetDoWhile2 = getDoWhile as GetDoWhile2
