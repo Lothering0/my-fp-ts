@@ -64,6 +64,7 @@ export function match<URI extends URIS2, E>(
   functor: Functor2C<URI, E>,
 ): Match2C<URI, E>
 export function match<URI extends URIS2>(functor: Functor2<URI>): Match2<URI>
+export function match<URI extends URIS>(functor: Functor<URI>): Match<URI>
 export function match<URI extends URIS>(functor: Functor<URI>): Match<URI> {
   return overload2 ((mm, onNone, onSome) =>
     functor.map (mm, O.match (onNone, onSome)),

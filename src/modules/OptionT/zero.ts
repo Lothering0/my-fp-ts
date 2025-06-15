@@ -24,6 +24,7 @@ export function zero<URI extends URIS2, E>(
 export function zero<URI extends URIS2>(
   applicative: Applicative2<URI>,
 ): Zero2<URI>
+export function zero<URI extends URIS>(applicative: Applicative<URI>): Zero<URI>
 export function zero<URI extends URIS>(
   applicative: Applicative<URI>,
 ): Zero<URI> {

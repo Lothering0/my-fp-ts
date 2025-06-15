@@ -78,6 +78,7 @@ export function chain<URI extends URIS2, E>(
   monad: Monad2C<URI, E>,
 ): Chain2C<URI, E>
 export function chain<URI extends URIS2>(monad: Monad2<URI>): Chain2<URI>
+export function chain<URI extends URIS>(monad: Monad<URI>): Chain<URI>
 export function chain<URI extends URIS>(monad: Monad<URI>): Chain<URI> {
   return overload (
     <A, B>(

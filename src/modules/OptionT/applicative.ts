@@ -62,6 +62,7 @@ export function ap<URI extends URIS2, E>(
   applicative: Applicative2C<URI, E>,
 ): Ap2C<URI, E>
 export function ap<URI extends URIS2>(applicative: Applicative2<URI>): Ap2<URI>
+export function ap<URI extends URIS>(applicative: Applicative<URI>): Ap<URI>
 export function ap<URI extends URIS>(applicative: Applicative<URI>): Ap<URI> {
   return overload (
     <A, B>(

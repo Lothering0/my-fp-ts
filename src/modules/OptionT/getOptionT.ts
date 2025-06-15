@@ -54,6 +54,9 @@ export function getOptionT<URI extends URIS2>(
 ): OptionT2<URI>
 export function getOptionT<URI extends URIS>(
   instances: Functor<URI> & Applicative<URI> & Monad<URI>,
+): OptionT<URI>
+export function getOptionT<URI extends URIS>(
+  instances: Functor<URI> & Applicative<URI> & Monad<URI>,
 ): OptionT<URI> {
   const a: any = instances
   return {

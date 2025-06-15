@@ -55,6 +55,7 @@ export function map<URI extends URIS2, E>(
   functor: Functor2C<URI, E>,
 ): Map2C<URI, E>
 export function map<URI extends URIS2>(functor: Functor2<URI>): Map2<URI>
+export function map<URI extends URIS>(functor: Functor<URI>): Map<URI>
 export function map<URI extends URIS>(functor: Functor<URI>): Map<URI> {
   return overload ((fma, f) => functor.map (fma, O.map (f)))
 }

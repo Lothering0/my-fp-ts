@@ -27,6 +27,9 @@ export function some<URI extends URIS2>(
 ): SomeConstructor2<URI>
 export function some<URI extends URIS>(
   applicative: Applicative<URI>,
+): SomeConstructor<URI>
+export function some<URI extends URIS>(
+  applicative: Applicative<URI>,
 ): SomeConstructor<URI> {
   return flow (O.some, applicative.of)
 }
