@@ -1,7 +1,7 @@
 import * as O from "../Option"
 import { Kind, Kind2, URIS, URIS2 } from "../../types/Kind"
-import { Functor, Functor2, Functor2C } from "src/types/Functor"
-import { overload2 } from "src/utils/overloads"
+import { Functor, Functor2, Functor2C } from "../../types/Functor"
+import { overload2 } from "../../utils/overloads"
 
 interface Match2CPointed<URI extends URIS2, E> {
   <A, B>(
@@ -48,15 +48,15 @@ interface MatchPointFree<URI extends URIS> {
   ): (ma: Kind<URI, O.Option<A>>) => Kind<URI, B>
 }
 
-interface Match2C<URI extends URIS2, E>
+export interface Match2C<URI extends URIS2, E>
   extends Match2CPointed<URI, E>,
     Match2CPointFree<URI, E> {}
 
-interface Match2<URI extends URIS2>
+export interface Match2<URI extends URIS2>
   extends Match2Pointed<URI>,
     Match2PointFree<URI> {}
 
-interface Match<URI extends URIS>
+export interface Match<URI extends URIS>
   extends MatchPointed<URI>,
     MatchPointFree<URI> {}
 
