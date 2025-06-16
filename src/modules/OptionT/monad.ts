@@ -5,24 +5,6 @@ import { Monad, Monad2, Monad2C } from "../../types/Monad"
 import { pipe } from "../../utils/flow"
 import { identity } from "../Identity"
 
-interface Chain2CPointFree<URI extends URIS2, E> {
-  <A, B>(
-    f: (a: A) => Kind2<URI, E, O.Option<B>>,
-  ): (fma: Kind2<URI, E, O.Option<A>>) => Kind2<URI, E, O.Option<B>>
-}
-
-interface Chain2PointFree<URI extends URIS2> {
-  <E, A, B>(
-    f: (a: A) => Kind2<URI, E, O.Option<B>>,
-  ): (fma: Kind2<URI, E, O.Option<A>>) => Kind2<URI, E, O.Option<B>>
-}
-
-interface ChainPointFree<URI extends URIS> {
-  <A, B>(
-    f: (a: A) => Kind<URI, O.Option<B>>,
-  ): (fma: Kind<URI, O.Option<A>>) => Kind<URI, O.Option<B>>
-}
-
 interface Chain2CPointed<URI extends URIS2, E> {
   <A, B>(
     fma: Kind2<URI, E, O.Option<A>>,

@@ -22,13 +22,13 @@ export interface Right<A> {
   readonly value: A
 }
 
-type LeftConstructor = <E>(e: E) => Either<E, never>
+type LeftConstructor = <E = never, A = never>(e: E) => Either<E, A>
 export const left: LeftConstructor = value => ({
   _tag: "Left",
   value,
 })
 
-type RightConstructor = <A>(a: A) => Either<never, A>
+type RightConstructor = <E = never, A = never>(a: A) => Either<E, A>
 export const right: RightConstructor = value => ({
   _tag: "Right",
   value,
@@ -50,17 +50,17 @@ type ToUnion = <E, A>(ma: Either<E, A>) => E | A
 export const toUnion: ToUnion = ma => ma.value
 
 interface MatchPointed {
-  <E, A, B>(ma: Either<E, A>, whenLeft: (e: E) => B, whenRight: (a: A) => B): B
+  <E, A, B>(ma: Either<E, A>, onLeft: (e: E) => B, onRight: (a: A) => B): B
 }
 
 interface Match extends MatchPointed {
-  <E, A, B>(
-    whenLeft: (e: E) => B,
-    whenRight: (a: A) => B,
-  ): (ma: Either<E, A>) => B
+  <E, A, B>(onLeft: (e: E) => B, onRight: (a: A) => B): (ma: Either<E, A>) => B
 }
 
-const matchPointed: MatchPointed = (ma, whenLeft, whenRight) =>
-  isLeft (ma) ? pipe (ma, fromLeft, whenLeft) : pipe (ma, fromRight, whenRight)
+const matchPointed: MatchPointed = (ma, onLeft, onRight) =>
+  isLeft (ma) ? pipe (ma, fromLeft, onLeft) : pipe (ma, fromRight, onRight)
 
 export const match: Match = overload2 (matchPointed)
+
+export const swap = <E, A>(ma: Either<E, A>): Either<A, E> =>
+  match<E, A, Either<A, E>> (ma, right, left)

@@ -7,15 +7,15 @@ import {
 import { Kind, Kind2, URIS, URIS2 } from "../../types/Kind"
 
 export interface Zero2C<URI extends URIS2, E> {
-  <A>(): Kind2<URI, E, O.Option<A>>
+  <A = never>(): Kind2<URI, E, O.Option<A>>
 }
 
 export interface Zero2<URI extends URIS2> {
-  <E, A>(): Kind2<URI, E, O.Option<A>>
+  <E, A = never>(): Kind2<URI, E, O.Option<A>>
 }
 
 export interface Zero<URI extends URIS> {
-  <A>(): Kind<URI, O.Option<A>>
+  <A = never>(): Kind<URI, O.Option<A>>
 }
 
 export function zero<URI extends URIS2, E>(

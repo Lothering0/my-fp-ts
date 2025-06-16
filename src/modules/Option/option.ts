@@ -32,7 +32,7 @@ export const none: Option<never> = {
   _tag: "None",
 }
 
-type Zero = <A>() => Option<A>
+type Zero = <A = never>() => Option<A>
 export const zero: Zero = () => none
 
 type IsSome = <A>(fa: Option<A>) => fa is Some<A>

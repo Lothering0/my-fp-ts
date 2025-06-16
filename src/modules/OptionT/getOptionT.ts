@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { URIS, URIS2 } from "src/types/Kind"
-import { Functor, Functor2, Functor2C } from "src/types/Functor"
-import { Applicative, Applicative2, Applicative2C } from "src/types/Applicative"
 import { Monad, Monad2, Monad2C } from "src/types/Monad"
 import { map, Map, Map2, Map2C } from "./functor"
 import { ap, Ap, Ap2, Ap2C } from "./applicative"
@@ -47,25 +45,19 @@ interface OptionT<URI extends URIS> {
 }
 
 export function getOptionT<URI extends URIS2, E>(
-  instances: Functor2C<URI, E> & Applicative2C<URI, E> & Monad2C<URI, E>,
+  monad: Monad2C<URI, E>,
 ): OptionT2C<URI, E>
-export function getOptionT<URI extends URIS2>(
-  instances: Functor2<URI> & Applicative2<URI> & Monad2<URI>,
-): OptionT2<URI>
-export function getOptionT<URI extends URIS>(
-  instances: Functor<URI> & Applicative<URI> & Monad<URI>,
-): OptionT<URI>
-export function getOptionT<URI extends URIS>(
-  instances: Functor<URI> & Applicative<URI> & Monad<URI>,
-): OptionT<URI> {
-  const a: any = instances
+export function getOptionT<URI extends URIS2>(monad: Monad2<URI>): OptionT2<URI>
+export function getOptionT<URI extends URIS>(monad: Monad<URI>): OptionT<URI>
+export function getOptionT<URI extends URIS>(monad: Monad<URI>): OptionT<URI> {
+  const m: any = monad
   return {
-    map: map (a),
-    ap: ap (a),
-    chain: chain (a),
-    fromF: fromF (a),
-    match: match (a),
-    some: some (a),
-    zero: zero (a),
+    map: map (m),
+    ap: ap (m),
+    chain: chain (m),
+    fromF: fromF (m),
+    match: match (m),
+    some: some (m),
+    zero: zero (m),
   } as any
 }
