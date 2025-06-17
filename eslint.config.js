@@ -14,7 +14,16 @@ export default [
     /* @type {import('@stylistic/eslint-plugin').RuleOptions} */
     rules: {
       "prettier/prettier": "off",
-      "@typescript-eslint/no-unused-vars": "warn",
+      // "@typescript-eslint/no-unused-vars": "warn",
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
       "@typescript-eslint/no-empty-object-type": "off",
       "@stylistic/js/function-call-spacing": ["error", "always"],
       "@stylistic/js/no-extra-parens": ["warn", "all"],
