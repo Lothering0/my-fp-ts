@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { URIS, URIS2 } from "src/types/Kind"
-import { Monad, Monad2, Monad2C } from "src/types/Monad"
+import { URIS, URIS2 } from "../../types/Kind"
+import { Monad, Monad2, Monad2C } from "../../types/Monad"
 import {
   map,
   Map,
@@ -16,7 +16,7 @@ import {
   Bimap2C,
 } from "./functor"
 import { ap, Ap, Ap2, Ap2C } from "./applicative"
-import { chain, Chain, Chain2, Chain2C } from "./monad"
+import { flatMap, FlatMap, FlatMap2, FlatMap2C } from "./monad"
 import {
   left,
   Left,
@@ -46,7 +46,7 @@ interface EitherT2C<URI extends URIS2, E> {
   readonly mapLeft: MapLeft2C<URI, E>
   readonly bimap: Bimap2C<URI, E>
   readonly ap: Ap2C<URI, E>
-  readonly chain: Chain2C<URI, E>
+  readonly flatMap: FlatMap2C<URI, E>
   readonly left: Left2C<URI, E>
   readonly leftF: LeftF2C<URI, E>
   readonly right: Right2C<URI, E>
@@ -61,7 +61,7 @@ interface EitherT2<URI extends URIS2> {
   readonly mapLeft: MapLeft2<URI>
   readonly bimap: Bimap2<URI>
   readonly ap: Ap2<URI>
-  readonly chain: Chain2<URI>
+  readonly flatMap: FlatMap2<URI>
   readonly left: Left2<URI>
   readonly leftF: LeftF2<URI>
   readonly right: Right2<URI>
@@ -76,7 +76,7 @@ interface EitherT<URI extends URIS> {
   readonly mapLeft: MapLeft<URI>
   readonly bimap: Bimap<URI>
   readonly ap: Ap<URI>
-  readonly chain: Chain<URI>
+  readonly flatMap: FlatMap<URI>
   readonly left: Left<URI>
   readonly leftF: LeftF<URI>
   readonly right: Right<URI>
@@ -98,7 +98,7 @@ export function getEitherT<URI extends URIS>(monad: Monad<URI>): EitherT<URI> {
     mapLeft: mapLeft (m),
     bimap: bimap (m),
     ap: ap (m),
-    chain: chain (m),
+    flatMap: flatMap (m),
     left: left (m),
     leftF: leftF (m),
     right: right (m),

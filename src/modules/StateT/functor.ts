@@ -1,42 +1,37 @@
-import * as O from "../Option"
-import { Kind, Kind2, URIS, URIS2 } from "../../types/Kind"
+import { URIS, URIS2 } from "../../types/Kind"
 import { Functor, Functor2, Functor2C } from "../../types/Functor"
 import { overload } from "../../utils/overloads"
+import { StateT, StateT2 } from "./StateT"
 
 interface Map2CPointed<URI extends URIS2, _> {
-  <A, B>(
-    fma: Kind2<URI, _, O.Option<A>>,
-    f: (a: A) => B,
-  ): Kind2<URI, _, O.Option<B>>
+  <S, A, B>(fma: StateT2<URI, _, S, A>, f: (a: A) => B): StateT2<URI, _, S, B>
 }
 
 interface Map2Pointed<URI extends URIS2> {
-  <_, A, B>(
-    fma: Kind2<URI, _, O.Option<A>>,
+  <S, _, A, B>(
+    fma: StateT2<URI, _, S, A>,
     f: (a: A) => B,
-  ): Kind2<URI, _, O.Option<B>>
+  ): StateT2<URI, _, S, B>
 }
 
 interface MapPointed<URI extends URIS> {
-  <A, B>(fma: Kind<URI, O.Option<A>>, f: (a: A) => B): Kind<URI, O.Option<B>>
+  <S, A, B>(fma: StateT<URI, S, A>, f: (a: A) => B): StateT<URI, S, B>
 }
 
 interface Map2CPointFree<URI extends URIS2, _> {
-  <A, B>(
+  <S, A, B>(
     f: (a: A) => B,
-  ): (fma: Kind2<URI, _, O.Option<A>>) => Kind2<URI, _, O.Option<B>>
+  ): (fma: StateT2<URI, _, S, A>) => StateT2<URI, _, S, B>
 }
 
 interface Map2PointFree<URI extends URIS2> {
-  <_, A, B>(
+  <S, _, A, B>(
     f: (a: A) => B,
-  ): (fma: Kind2<URI, _, O.Option<A>>) => Kind2<URI, _, O.Option<B>>
+  ): (fma: StateT2<URI, _, S, A>) => StateT2<URI, _, S, B>
 }
 
 interface MapPointFree<URI extends URIS> {
-  <A, B>(
-    f: (a: A) => B,
-  ): (fma: Kind<URI, O.Option<A>>) => Kind<URI, O.Option<B>>
+  <S, A, B>(f: (a: A) => B): (fma: StateT<URI, S, A>) => StateT<URI, S, B>
 }
 
 export interface Map2C<URI extends URIS2, E>
@@ -57,5 +52,8 @@ export function map<URI extends URIS2, E>(
 export function map<URI extends URIS2>(functor: Functor2<URI>): Map2<URI>
 export function map<URI extends URIS>(functor: Functor<URI>): Map<URI>
 export function map<URI extends URIS>(functor: Functor<URI>): Map<URI> {
-  return overload ((fma, f) => functor.map (fma, O.map (f)))
+  const mapPointed: MapPointed<URI> = (fma, f) => s =>
+    functor.map (fma (s), ([a, s]) => [f (a), s])
+
+  return overload (mapPointed)
 }

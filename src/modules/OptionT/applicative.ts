@@ -8,18 +8,18 @@ import {
 import { overload } from "../../utils/overloads"
 import { pipe } from "../../utils/flow"
 
-interface Ap2CPointed<URI extends URIS2, E> {
+interface Ap2CPointed<URI extends URIS2, _> {
   <A, B>(
-    fmf: Kind2<URI, E, O.Option<(a: A) => B>>,
-    fma: Kind2<URI, E, O.Option<A>>,
-  ): Kind2<URI, E, O.Option<B>>
+    fmf: Kind2<URI, _, O.Option<(a: A) => B>>,
+    fma: Kind2<URI, _, O.Option<A>>,
+  ): Kind2<URI, _, O.Option<B>>
 }
 
 interface Ap2Pointed<URI extends URIS2> {
-  <E, A, B>(
-    fmf: Kind2<URI, E, O.Option<(a: A) => B>>,
-    fma: Kind2<URI, E, O.Option<A>>,
-  ): Kind2<URI, E, O.Option<B>>
+  <_, A, B>(
+    fmf: Kind2<URI, _, O.Option<(a: A) => B>>,
+    fma: Kind2<URI, _, O.Option<A>>,
+  ): Kind2<URI, _, O.Option<B>>
 }
 
 interface ApPointed<URI extends URIS> {
@@ -29,16 +29,16 @@ interface ApPointed<URI extends URIS> {
   ): Kind<URI, O.Option<B>>
 }
 
-interface Ap2CPointFree<URI extends URIS2, E> {
+interface Ap2CPointFree<URI extends URIS2, _> {
   <A, B>(
-    fma: Kind2<URI, E, O.Option<A>>,
-  ): (fmf: Kind2<URI, E, O.Option<(a: A) => B>>) => Kind2<URI, E, O.Option<B>>
+    fma: Kind2<URI, _, O.Option<A>>,
+  ): (fmf: Kind2<URI, _, O.Option<(a: A) => B>>) => Kind2<URI, _, O.Option<B>>
 }
 
 interface Ap2PointFree<URI extends URIS2> {
-  <E, A, B>(
-    fma: Kind2<URI, E, O.Option<A>>,
-  ): (fmf: Kind2<URI, E, O.Option<(a: A) => B>>) => Kind2<URI, E, O.Option<B>>
+  <_, A, B>(
+    fma: Kind2<URI, _, O.Option<A>>,
+  ): (fmf: Kind2<URI, _, O.Option<(a: A) => B>>) => Kind2<URI, _, O.Option<B>>
 }
 
 interface ApPointFree<URI extends URIS> {

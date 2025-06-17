@@ -3,20 +3,20 @@ import { Kind, Kind2, URIS, URIS2 } from "../../types/Kind"
 import { Functor, Functor2, Functor2C } from "../../types/Functor"
 import { overload2 } from "../../utils/overloads"
 
-interface Match2CPointed<URI extends URIS2, E> {
+interface Match2CPointed<URI extends URIS2, _> {
   <A, B>(
-    ma: Kind2<URI, E, O.Option<A>>,
+    ma: Kind2<URI, _, O.Option<A>>,
     onNone: () => B,
     onSome: (a: A) => B,
-  ): Kind2<URI, E, B>
+  ): Kind2<URI, _, B>
 }
 
 interface Match2Pointed<URI extends URIS2> {
-  <E, A, B>(
-    ma: Kind2<URI, E, O.Option<A>>,
+  <_, A, B>(
+    ma: Kind2<URI, _, O.Option<A>>,
     onNone: () => B,
     onSome: (a: A) => B,
-  ): Kind2<URI, E, B>
+  ): Kind2<URI, _, B>
 }
 
 interface MatchPointed<URI extends URIS> {
@@ -27,18 +27,18 @@ interface MatchPointed<URI extends URIS> {
   ): Kind<URI, B>
 }
 
-interface Match2CPointFree<URI extends URIS2, E> {
+interface Match2CPointFree<URI extends URIS2, _> {
   <A, B>(
     onNone: () => B,
     onSome: (a: A) => B,
-  ): (ma: Kind2<URI, E, O.Option<A>>) => Kind2<URI, E, B>
+  ): (ma: Kind2<URI, _, O.Option<A>>) => Kind2<URI, _, B>
 }
 
 interface Match2PointFree<URI extends URIS2> {
-  <E, A, B>(
+  <_, A, B>(
     onNone: () => B,
     onSome: (a: A) => B,
-  ): (ma: Kind2<URI, E, O.Option<A>>) => Kind2<URI, E, B>
+  ): (ma: Kind2<URI, _, O.Option<A>>) => Kind2<URI, _, B>
 }
 
 interface MatchPointFree<URI extends URIS> {

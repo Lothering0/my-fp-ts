@@ -9,46 +9,46 @@ import { overload } from "../../utils/overloads"
 import { pipe } from "../../utils/flow"
 
 interface Ap2CPointed<URI extends URIS2, KE> {
-  <E, A, B>(
-    fmf: Kind2<URI, KE, E.Either<E, (a: A) => B>>,
-    fma: Kind2<URI, KE, E.Either<E, A>>,
-  ): Kind2<URI, KE, E.Either<E, B>>
+  <_, A, B>(
+    fmf: Kind2<URI, KE, E.Either<_, (a: A) => B>>,
+    fma: Kind2<URI, KE, E.Either<_, A>>,
+  ): Kind2<URI, KE, E.Either<_, B>>
 }
 
 interface Ap2Pointed<URI extends URIS2> {
-  <KE, E, A, B>(
-    fmf: Kind2<URI, KE, E.Either<E, (a: A) => B>>,
-    fma: Kind2<URI, KE, E.Either<E, A>>,
-  ): Kind2<URI, KE, E.Either<E, B>>
+  <KE, _, A, B>(
+    fmf: Kind2<URI, KE, E.Either<_, (a: A) => B>>,
+    fma: Kind2<URI, KE, E.Either<_, A>>,
+  ): Kind2<URI, KE, E.Either<_, B>>
 }
 
 interface ApPointed<URI extends URIS> {
-  <E, A, B>(
-    fmf: Kind<URI, E.Either<E, (a: A) => B>>,
-    fma: Kind<URI, E.Either<E, A>>,
-  ): Kind<URI, E.Either<E, B>>
+  <_, A, B>(
+    fmf: Kind<URI, E.Either<_, (a: A) => B>>,
+    fma: Kind<URI, E.Either<_, A>>,
+  ): Kind<URI, E.Either<_, B>>
 }
 
 interface Ap2CPointFree<URI extends URIS2, KE> {
-  <E, A, B>(
-    fma: Kind2<URI, KE, E.Either<E, A>>,
+  <_, A, B>(
+    fma: Kind2<URI, KE, E.Either<_, A>>,
   ): (
-    fmf: Kind2<URI, KE, E.Either<E, (a: A) => B>>,
-  ) => Kind2<URI, KE, E.Either<E, B>>
+    fmf: Kind2<URI, KE, E.Either<_, (a: A) => B>>,
+  ) => Kind2<URI, KE, E.Either<_, B>>
 }
 
 interface Ap2PointFree<URI extends URIS2> {
-  <KE, E, A, B>(
-    fma: Kind2<URI, KE, E.Either<E, A>>,
+  <KE, _, A, B>(
+    fma: Kind2<URI, KE, E.Either<_, A>>,
   ): (
-    fmf: Kind2<URI, KE, E.Either<E, (a: A) => B>>,
-  ) => Kind2<URI, KE, E.Either<E, B>>
+    fmf: Kind2<URI, KE, E.Either<_, (a: A) => B>>,
+  ) => Kind2<URI, KE, E.Either<_, B>>
 }
 
 interface ApPointFree<URI extends URIS> {
-  <E, A, B>(
-    fma: Kind<URI, E.Either<E, A>>,
-  ): (fmf: Kind<URI, E.Either<E, (a: A) => B>>) => Kind<URI, E.Either<E, B>>
+  <_, A, B>(
+    fma: Kind<URI, E.Either<_, A>>,
+  ): (fmf: Kind<URI, E.Either<_, (a: A) => B>>) => Kind<URI, E.Either<_, B>>
 }
 
 export interface Ap2C<URI extends URIS2, E>

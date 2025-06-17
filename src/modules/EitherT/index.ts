@@ -1,7 +1,7 @@
 export * from "./getEitherT"
 export { map, mapLeft, bimap } from "./functor"
 export { ap } from "./applicative"
-export { chain } from "./monad"
+export { flatMap } from "./monad"
 export { left, leftF } from "./left"
 export { right, rightF } from "./right"
 export { match } from "./match"

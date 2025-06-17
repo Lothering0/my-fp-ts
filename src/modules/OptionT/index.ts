@@ -1,7 +1,7 @@
 export * from "./getOptionT"
 export { map } from "./functor"
 export { ap } from "./applicative"
-export { chain } from "./monad"
+export { flatMap } from "./monad"
 export { some } from "./some"
 export { zero } from "./zero"
 export { match } from "./match"

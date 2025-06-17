@@ -5,68 +5,68 @@ import { Monad, Monad2, Monad2C } from "../../types/Monad"
 import { flow, pipe } from "../../utils/flow"
 import { identity } from "../Identity"
 
-interface Chain2CPointed<URI extends URIS2, KE> {
-  <E, A, B>(
-    fma: Kind2<URI, KE, E.Either<E, A>>,
-    f: (a: A) => Kind2<URI, KE, E.Either<E, B>>,
-  ): Kind2<URI, KE, E.Either<E, B>>
+interface FlatMap2CPointed<URI extends URIS2, KE> {
+  <_, A, B>(
+    fma: Kind2<URI, KE, E.Either<_, A>>,
+    f: (a: A) => Kind2<URI, KE, E.Either<_, B>>,
+  ): Kind2<URI, KE, E.Either<_, B>>
 }
 
-interface Chain2Pointed<URI extends URIS2> {
-  <KE, E, A, B>(
-    fma: Kind2<URI, KE, E.Either<E, A>>,
-    f: (a: A) => Kind2<URI, KE, E.Either<E, B>>,
-  ): Kind2<URI, KE, E.Either<E, B>>
+interface FlatMap2Pointed<URI extends URIS2> {
+  <KE, _, A, B>(
+    fma: Kind2<URI, KE, E.Either<_, A>>,
+    f: (a: A) => Kind2<URI, KE, E.Either<_, B>>,
+  ): Kind2<URI, KE, E.Either<_, B>>
 }
 
-interface ChainPointed<URI extends URIS> {
-  <E, A, B>(
-    fma: Kind<URI, E.Either<E, A>>,
-    f: (a: A) => Kind<URI, E.Either<E, B>>,
-  ): Kind<URI, E.Either<E, B>>
+interface FlatMapPointed<URI extends URIS> {
+  <_, A, B>(
+    fma: Kind<URI, E.Either<_, A>>,
+    f: (a: A) => Kind<URI, E.Either<_, B>>,
+  ): Kind<URI, E.Either<_, B>>
 }
 
-interface Chain2CPointFree<URI extends URIS2, KE> {
-  <E, A, B>(
-    f: (a: A) => Kind2<URI, KE, E.Either<E, B>>,
-  ): (fma: Kind2<URI, KE, E.Either<E, A>>) => Kind2<URI, KE, E.Either<E, B>>
+interface FlatMap2CPointFree<URI extends URIS2, KE> {
+  <_, A, B>(
+    f: (a: A) => Kind2<URI, KE, E.Either<_, B>>,
+  ): (fma: Kind2<URI, KE, E.Either<_, A>>) => Kind2<URI, KE, E.Either<_, B>>
 }
 
-interface Chain2PointFree<URI extends URIS2> {
-  <KE, E, A, B>(
-    f: (a: A) => Kind2<URI, KE, E.Either<E, B>>,
-  ): (fma: Kind2<URI, KE, E.Either<E, A>>) => Kind2<URI, KE, E.Either<E, B>>
+interface FlatMap2PointFree<URI extends URIS2> {
+  <KE, _, A, B>(
+    f: (a: A) => Kind2<URI, KE, E.Either<_, B>>,
+  ): (fma: Kind2<URI, KE, E.Either<_, A>>) => Kind2<URI, KE, E.Either<_, B>>
 }
 
-interface ChainPointFree<URI extends URIS> {
-  <E, A, B>(
-    f: (a: A) => Kind<URI, E.Either<E, B>>,
-  ): (fma: Kind<URI, E.Either<E, A>>) => Kind<URI, E.Either<E, B>>
+interface FlatMapPointFree<URI extends URIS> {
+  <_, A, B>(
+    f: (a: A) => Kind<URI, E.Either<_, B>>,
+  ): (fma: Kind<URI, E.Either<_, A>>) => Kind<URI, E.Either<_, B>>
 }
 
-export interface Chain2C<URI extends URIS2, E>
-  extends Chain2CPointed<URI, E>,
-    Chain2CPointFree<URI, E> {}
+export interface FlatMap2C<URI extends URIS2, E>
+  extends FlatMap2CPointed<URI, E>,
+    FlatMap2CPointFree<URI, E> {}
 
-export interface Chain2<URI extends URIS2>
-  extends Chain2Pointed<URI>,
-    Chain2PointFree<URI> {}
+export interface FlatMap2<URI extends URIS2>
+  extends FlatMap2Pointed<URI>,
+    FlatMap2PointFree<URI> {}
 
-export interface Chain<URI extends URIS>
-  extends ChainPointed<URI>,
-    ChainPointFree<URI> {}
+export interface FlatMap<URI extends URIS>
+  extends FlatMapPointed<URI>,
+    FlatMapPointFree<URI> {}
 
-export function chain<URI extends URIS2, E>(
+export function flatMap<URI extends URIS2, E>(
   monad: Monad2C<URI, E>,
-): Chain2C<URI, E>
-export function chain<URI extends URIS2>(monad: Monad2<URI>): Chain2<URI>
-export function chain<URI extends URIS>(monad: Monad<URI>): Chain<URI>
-export function chain<URI extends URIS>(monad: Monad<URI>): Chain<URI> {
+): FlatMap2C<URI, E>
+export function flatMap<URI extends URIS2>(monad: Monad2<URI>): FlatMap2<URI>
+export function flatMap<URI extends URIS>(monad: Monad<URI>): FlatMap<URI>
+export function flatMap<URI extends URIS>(monad: Monad<URI>): FlatMap<URI> {
   return overload (
-    <E, A, B>(
-      fma: Kind<URI, E.Either<E, A>>,
-      f: (a: A) => Kind<URI, E.Either<E, B>>,
-    ): Kind<URI, E.Either<E, B>> =>
+    <_, A, B>(
+      fma: Kind<URI, E.Either<_, A>>,
+      f: (a: A) => Kind<URI, E.Either<_, B>>,
+    ): Kind<URI, E.Either<_, B>> =>
       pipe (
         monad.Do,
         monad.apS ("ma", fma),
