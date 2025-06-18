@@ -13,7 +13,8 @@ declare module "../../types/Kind" {
 
 export interface TaskEither<E, A> extends T.Task<E.Either<E, A>> {}
 
-export const _URI = "TaskEither" satisfies URIS2
+export const URI = "TaskEither" satisfies URIS2
+export type URI = typeof URI
 
 type LeftConstructor = <E>(e: E) => TaskEither<E, never>
 export const left: LeftConstructor = flow (E.left, T.of)

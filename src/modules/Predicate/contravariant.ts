@@ -1,9 +1,9 @@
-import { _URI } from "./predicate"
+import { URI } from "./predicate"
 import { Contravariant, createContravariant } from "../../types/Contravariant"
 import { compose } from "../Identity"
 
-export const contravariant: Contravariant<typeof _URI> = createContravariant ({
-  _URI,
+export const contravariant: Contravariant<URI> = createContravariant ({
+  URI,
   contramap: compose,
 })
 

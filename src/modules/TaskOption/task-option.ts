@@ -16,7 +16,8 @@ declare module "../../types/Kind" {
 
 export interface TaskOption<A> extends T.Task<O.Option<A>> {}
 
-export const _URI = "TaskOption" satisfies URIS
+export const URI = "TaskOption" satisfies URIS
+export type URI = typeof URI
 
 type NoneConstructor = TaskOption<never>
 export const none: NoneConstructor = T.of (O.none)

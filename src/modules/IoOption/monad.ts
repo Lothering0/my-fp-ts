@@ -4,10 +4,10 @@ import { Either } from "../Either"
 import { createMonad, Monad } from "../../types/Monad"
 import { applicative } from "./applicative"
 import { pipe } from "../../utils/flow"
-import { _URI, fromIoOption, IoOption } from "./io-option"
+import { URI, fromIoOption, IoOption } from "./io-option"
 import { overload } from "../../utils/overloads"
 
-export const monad: Monad<typeof _URI> = createMonad ({
+export const monad: Monad<URI> = createMonad ({
   ...applicative,
   flat:
     <A>(mma: IoOption<IoOption<A>>) =>

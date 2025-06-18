@@ -13,7 +13,8 @@ declare module "../../types/Kind" {
 
 export interface IoEither<E, A> extends Io.Io<E.Either<E, A>> {}
 
-export const _URI = "IoEither" satisfies URIS2
+export const URI = "IoEither" satisfies URIS2
+export type URI = typeof URI
 
 type LeftConstructor = <E>(e: E) => IoEither<E, never>
 export const left: LeftConstructor = e => () => E.left (e)

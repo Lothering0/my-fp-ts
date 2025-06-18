@@ -14,7 +14,8 @@ declare module "../../types/Kind" {
   }
 }
 
-export const _URI = "Array" satisfies URIS
+export const URI = "Array" satisfies URIS
+export type URI = typeof URI
 
 type Length = <A>(as: A[]) => number
 export const length: Length = as => as.length

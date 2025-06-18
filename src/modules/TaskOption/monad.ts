@@ -7,7 +7,7 @@ import * as IoO from "../IoOption"
 import * as IoE from "../IoEither"
 import { createMonad, DoObject, Monad } from "../../types/Monad"
 import {
-  _URI,
+  URI,
   TaskOption,
   fromTaskOption,
   toTaskOptionFromTask,
@@ -17,7 +17,7 @@ import { applicative } from "./applicative"
 import { pipe } from "../../utils/flow"
 import { overload, overload2 } from "../../utils/overloads"
 
-export const monad: Monad<typeof _URI> = createMonad ({
+export const monad: Monad<URI> = createMonad ({
   ...applicative,
   flat:
     <A>(mma: TaskOption<TaskOption<A>>): TaskOption<A> =>

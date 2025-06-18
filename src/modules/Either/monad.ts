@@ -1,8 +1,8 @@
 import { createMonad2, Monad2 } from "../../types/Monad"
 import { applicative } from "./applicative"
-import { _URI, fromRight, isLeft } from "./either"
+import { URI, fromRight, isLeft } from "./either"
 
-export const monad: Monad2<typeof _URI> = createMonad2 ({
+export const monad: Monad2<URI> = createMonad2 ({
   ...applicative,
   flat: mma => isLeft (mma) ? mma : fromRight (mma),
 })

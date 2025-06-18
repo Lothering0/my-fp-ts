@@ -9,7 +9,8 @@ declare module "../../types/Kind" {
 
 export interface Task<A> extends Io.Io<Promise<A>> {}
 
-export const _URI = "Task" satisfies URIS
+export const URI = "Task" satisfies URIS
+export type URI = typeof URI
 
 type TaskConstructor = <A>(a: A) => Task<A>
 export const task: TaskConstructor = a => () => Promise.resolve (a)

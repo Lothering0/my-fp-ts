@@ -1,11 +1,11 @@
 import * as E from "../Either"
 import { createMonad2, Monad2 } from "../../types/Monad"
-import { _URI, fromIoEither, IoEither } from "./io-either"
+import { URI, fromIoEither, IoEither } from "./io-either"
 import { applicative } from "./applicative"
 import { pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
 
-export const monad: Monad2<typeof _URI> = createMonad2 ({
+export const monad: Monad2<URI> = createMonad2 ({
   ...applicative,
   flat:
     <E, A>(mma: IoEither<E, IoEither<E, A>>) =>

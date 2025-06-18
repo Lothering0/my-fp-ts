@@ -1,9 +1,9 @@
 import { flow, pipe } from "src/utils/flow"
 import { Applicative2, createApplicative2 } from "../../types/Applicative"
 import { functor } from "./functor"
-import { _URI } from "./state"
+import { URI } from "./state"
 
-export const applicative: Applicative2<typeof _URI> = createApplicative2 ({
+export const applicative: Applicative2<URI> = createApplicative2 ({
   ...functor,
   of:
     <S, A>(a: A) =>

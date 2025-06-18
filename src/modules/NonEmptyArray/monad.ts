@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as A from "../Array"
-import { _URI } from "./non-empty-array"
+import { URI } from "./non-empty-array"
 import { Monad } from "../../types/Monad"
 
-export const monad: Monad<typeof _URI> = {
+export const monad: Monad<URI> = {
   ...A.monad,
-  _URI,
+  URI,
 } as any
 
 export const {

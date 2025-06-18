@@ -20,13 +20,13 @@ export const createFoldable2: CreateFoldable2 =
   createFoldable as CreateFoldable2
 
 interface FoldablePointed<URI extends URIS> {
-  readonly _URI: URI
+  readonly URI: URI
   readonly reduce: ReducePointed<URI>
   readonly reduceRight: ReduceRightPointed<URI>
 }
 
 interface FoldablePointed2<URI extends URIS2> {
-  readonly _URI: URI
+  readonly URI: URI
   readonly reduce: Reduce2Pointed<URI>
   readonly reduceRight: ReduceRight2Pointed<URI>
 }

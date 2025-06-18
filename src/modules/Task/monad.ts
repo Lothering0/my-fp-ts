@@ -4,7 +4,7 @@ import { createMonad, Monad, DoObject } from "../../types/Monad"
 import { applicative } from "./applicative"
 import { overload, overload2 } from "../../utils/overloads"
 
-export const monad: Monad<typeof T._URI> = createMonad ({
+export const monad: Monad<T.URI> = createMonad ({
   ...applicative,
   flat:
     <A>(mma: T.Task<T.Task<A>>): T.Task<A> =>

@@ -1,10 +1,10 @@
 import * as O from "../Option"
 import { Applicative, createApplicative } from "../../types/Applicative"
-import { _URI, some, fromTaskOption, TaskOption } from "./task-option"
+import { URI, some, fromTaskOption, TaskOption } from "./task-option"
 import { pipe } from "../../utils/flow"
 import { functor } from "./functor"
 
-export const applicative: Applicative<typeof _URI> = createApplicative ({
+export const applicative: Applicative<URI> = createApplicative ({
   ...functor,
   of: some,
   apply:

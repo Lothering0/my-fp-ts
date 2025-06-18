@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as A from "../Array"
-import { _URI } from "./non-empty-array"
+import { URI } from "./non-empty-array"
 import { Applicative } from "../../types/Applicative"
 import { ApplicativeWithIndex } from "../../types/ApplicativeWithIndex"
 
-export const applicative: Applicative<typeof _URI> = {
+export const applicative: Applicative<URI> = {
   ...A.applicative,
-  _URI,
+  URI,
 } as any
 
-export const applicativeWithIndex: ApplicativeWithIndex<typeof _URI, number> = {
+export const applicativeWithIndex: ApplicativeWithIndex<URI, number> = {
   ...A.applicativeWithIndex,
-  _URI,
+  URI,
 } as any
 
 export const { of, apply, ap, applyWithIndex, apWithIndex } =

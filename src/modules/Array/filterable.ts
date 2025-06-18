@@ -1,4 +1,4 @@
-import { _URI } from "./array"
+import { URI } from "./array"
 import {
   createFilterableWithIndex,
   FilterableWithIndex,
@@ -7,12 +7,12 @@ import { createFilterable, Filterable } from "../../types/Filterable"
 import { compactable } from "./compactable"
 import { functor, functorWithIndex } from "./functor"
 
-export const filterable: Filterable<typeof _URI> = createFilterable ({
+export const filterable: Filterable<URI> = createFilterable ({
   ...compactable,
   ...functor,
 })
 
-export const filterableWithIndex: FilterableWithIndex<typeof _URI, number> =
+export const filterableWithIndex: FilterableWithIndex<URI, number> =
   createFilterableWithIndex ({
     ...filterable,
     ...functorWithIndex,

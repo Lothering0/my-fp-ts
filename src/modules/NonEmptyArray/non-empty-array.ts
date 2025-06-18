@@ -8,7 +8,8 @@ declare module "../../types/Kind" {
 
 export type NonEmptyArray<A> = [A, ...A[]]
 
-export const _URI = "NonEmptyArray" satisfies URIS
+export const URI = "NonEmptyArray" satisfies URIS
+export type URI = typeof URI
 
 type Head = <A>(as: NonEmptyArray<A>) => A
 export const head: Head = as => as.at (0)!

@@ -14,7 +14,8 @@ export interface State<S, A> {
   (s: S): [A, S]
 }
 
-export const _URI = "State" satisfies URIS2
+export const URI = "State" satisfies URIS2
+export type URI = typeof URI
 
 type Gets = <S, A>(f: (s: S) => A) => State<S, A>
 export const gets: Gets = f => s => [f (s), s]

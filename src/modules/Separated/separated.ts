@@ -11,7 +11,8 @@ export interface Separated<E, A> {
   readonly right: A
 }
 
-export const _URI = "Separated" satisfies URIS2
+export const URI = "Separated" satisfies URIS2
+export type URI = typeof URI
 
 type Left = <E>(fe: Separated<E, unknown>) => E
 export const left: Left = fe => fe.left

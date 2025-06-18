@@ -1,7 +1,7 @@
 import * as O from "../Option"
 import * as E from "../Either"
 import * as S from "../Separated"
-import { _URI } from "./array"
+import { URI } from "./array"
 import { Compactable } from "../../types/Compactable"
 import { flatMap } from "./monad"
 import { reduce } from "./foldable"
@@ -12,8 +12,8 @@ const getInitialSeparated: GetInitialSeparated = () => ({
   right: [],
 })
 
-export const compactable: Compactable<typeof _URI> = {
-  _URI,
+export const compactable: Compactable<URI> = {
+  URI,
   compact: flatMap (a => O.isNone (a) ? [] : [O.fromSome (a)]),
   compactEithers: flatMap (a => E.isLeft (a) ? [] : [E.fromRight (a)]),
   separate: reduce (getInitialSeparated (), (b, ma) =>

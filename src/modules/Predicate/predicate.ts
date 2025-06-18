@@ -10,4 +10,5 @@ export interface Predicate<A> {
   (a: A): boolean
 }
 
-export const _URI = "Predicate" satisfies URIS
+export const URI = "Predicate" satisfies URIS
+export type URI = typeof URI

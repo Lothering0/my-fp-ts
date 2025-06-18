@@ -5,11 +5,11 @@ import * as IoE from "../IoEither"
 import { createMonad2, DoObject, Monad2 } from "../../types/Monad"
 import { map } from "./functor"
 import { applicative } from "./applicative"
-import { _URI, TaskEither, fromTaskEither, toTaskEither } from "./task-either"
+import { URI, TaskEither, fromTaskEither, toTaskEither } from "./task-either"
 import { pipe } from "../../utils/flow"
 import { overload, overload2 } from "../../utils/overloads"
 
-export const monad: Monad2<typeof _URI> = createMonad2 ({
+export const monad: Monad2<URI> = createMonad2 ({
   ...applicative,
   flat:
     <E, A>(mma: TaskEither<E, TaskEither<E, A>>): TaskEither<E, A> =>

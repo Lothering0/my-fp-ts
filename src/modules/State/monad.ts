@@ -1,9 +1,9 @@
 import { flow } from "../../utils/flow"
 import { createMonad2, Monad2 } from "../../types/Monad"
 import { applicative } from "./applicative"
-import { _URI } from "./state"
+import { URI } from "./state"
 
-export const monad: Monad2<typeof _URI> = createMonad2 ({
+export const monad: Monad2<URI> = createMonad2 ({
   ...applicative,
   flat: mma => flow (mma, ([ma, s1]) => ma (s1)),
 })

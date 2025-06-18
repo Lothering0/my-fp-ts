@@ -10,7 +10,8 @@ declare module "../../types/Kind" {
 
 export type Either<E, A> = Left<E> | Right<A>
 
-export const _URI = "Either" satisfies URIS2
+export const URI = "Either" satisfies URIS2
+export type URI = typeof URI
 
 export interface Left<E> {
   readonly _tag: "Left"

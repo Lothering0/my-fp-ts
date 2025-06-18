@@ -8,7 +8,8 @@ declare module "../../types/Kind" {
 
 export type Identity<A> = A
 
-export const _URI = "Identity" satisfies URIS
+export const URI = "Identity" satisfies URIS
+export type URI = typeof URI
 
 type IdentityConstructor = <A>(a: A) => Identity<A>
 export const identity: IdentityConstructor = a => a

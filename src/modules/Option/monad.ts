@@ -7,7 +7,7 @@ import { identity } from "../Identity"
 import { pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
 
-export const monad: Monad<typeof O._URI> = createMonad ({
+export const monad: Monad<O.URI> = createMonad ({
   ...applicative,
   flat: O.match (() => O.none, identity),
 })

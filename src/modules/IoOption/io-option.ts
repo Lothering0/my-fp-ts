@@ -14,7 +14,8 @@ declare module "../../types/Kind" {
 
 export interface IoOption<A> extends Io.Io<O.Option<A>> {}
 
-export const _URI = "IoOption" satisfies URIS
+export const URI = "IoOption" satisfies URIS
+export type URI = typeof URI
 
 type NoneConstructor = IoOption<never>
 export const none: NoneConstructor = () => O.none

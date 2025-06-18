@@ -11,7 +11,8 @@ declare module "../../types/Kind" {
 
 export type Option<A> = None | Some<A>
 
-export const _URI = "Option" satisfies URIS
+export const URI = "Option" satisfies URIS
+export type URI = typeof URI
 
 export interface None {
   readonly _tag: "None"

@@ -10,7 +10,8 @@ export interface Io<A> {
   (): A
 }
 
-export const _URI = "Io" satisfies URIS
+export const URI = "Io" satisfies URIS
+export type URI = typeof URI
 
 type IOConstructor = <A>(a: A) => Io<A>
 export const io: IOConstructor = a => () => a
