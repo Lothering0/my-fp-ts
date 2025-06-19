@@ -1,6 +1,7 @@
+import { LazyArg } from "../types/utils"
 import { flip } from "./flip"
 
-type Call0 = <A>(f: () => A) => A
+type Call0 = <A>(f: LazyArg<A>) => A
 export const call0: Call0 = f => f ()
 
 type Call = <A, B>(f: (a: A) => B) => (a: A) => B

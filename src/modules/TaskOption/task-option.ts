@@ -6,7 +6,6 @@ import { URIS } from "../../types/Kind"
 import { identity } from "../Identity"
 import { constant } from "../../utils/constant"
 import { flow } from "../../utils/flow"
-import { overload2 } from "../../utils/overloads"
 
 declare module "../../types/Kind" {
   interface URIToKind<A> {
@@ -39,23 +38,3 @@ export const toTaskOptionFromTaskEither: ToTaskOptionFromTaskEither =
 type FromTaskOption = <A>(ma: TaskOption<A>) => Promise<O.Option<A>>
 export const fromTaskOption: FromTaskOption = mma =>
   mma ().then (identity, constant (O.none))
-
-interface MatchPointed {
-  <A, B>(
-    mma: TaskOption<A>,
-    whenNone: () => B,
-    whenSome: (a: A) => B,
-  ): T.Task<B>
-}
-
-interface Match extends MatchPointed {
-  <A, B>(
-    whenNone: () => B,
-    whenSome: (a: A) => B,
-  ): (mma: TaskOption<A>) => T.Task<B>
-}
-
-const matchPointed: MatchPointed = (mma, f, g) => () =>
-  fromTaskOption (mma).then (O.match (f, g))
-
-export const match: Match = overload2 (matchPointed)

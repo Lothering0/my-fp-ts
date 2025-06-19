@@ -1,6 +1,6 @@
-import { curry } from "../utils/curry"
 import { Monoid } from "../types/Monoid"
 import { Semigroup } from "../types/Semigroup"
+import { overload } from "../utils/overloads"
 
 export const toLowerCase = <A extends string = string>(a: A): Lowercase<A> =>
   a.toLowerCase () as Lowercase<A>
@@ -21,5 +21,14 @@ export const monoid: Monoid<string> = {
   empty: "",
 }
 
-type Concat = (a: string) => (b: string) => string
-export const concat: Concat = curry (semigroup.concat)
+interface ConcatPointed {
+  (start: string, end: string): string
+}
+
+interface ConcatPointFree {
+  (end: string): (start: string) => string
+}
+
+interface Concat extends ConcatPointed, ConcatPointFree {}
+
+export const concat: Concat = overload (semigroup.concat)

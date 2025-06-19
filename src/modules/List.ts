@@ -1,30 +1,36 @@
-type List<A> = Nil | Cons<A>
+import { LazyArg } from "../types/utils"
 
-interface Nil {
+export type List<A> = Nil | Cons<A>
+
+export interface Nil {
   readonly _tag: "Nil"
 }
 
-interface Cons<A> {
+export interface Cons<A> {
   readonly _tag: "Cons"
   readonly head: A
   readonly tail: List<A>
 }
 
-const nil: List<never> = {
+export const nil: List<never> = {
   _tag: "Nil",
 }
 
 type ConsConstructor = <A>(head: A, tail: List<A>) => List<A>
-const cons: ConsConstructor = (head, tail) => ({
+export const cons: ConsConstructor = (head, tail) => ({
   _tag: "Cons",
   head,
   tail,
 })
 
 type IsNil = (xs: List<unknown>) => xs is Nil
-const isNil: IsNil = xs => xs._tag === "Nil"
+export const isNil: IsNil = xs => xs._tag === "Nil"
 
-type Match = <A, B>(xs: List<A>, whenNil: () => B, whenCons: (a: A) => B) => B
+type Match = <A, B>(
+  xs: List<A>,
+  whenNil: LazyArg<B>,
+  whenCons: (a: A) => B,
+) => B
 export const match: Match = (xs, whenNil, whenCons) =>
   isNil (xs) ? whenNil () : whenCons (xs.head)
 

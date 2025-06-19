@@ -5,6 +5,7 @@ import { Semigroup } from "../types/Semigroup"
 import { Monoid } from "../types/Monoid"
 import { Group } from "../types/Group"
 import { flow } from "../utils/flow"
+import { overload } from "../utils/overloads"
 
 export const sumSemigroup: Semigroup<number> = {
   concat: (x, y) => x + y,
@@ -34,21 +35,71 @@ export const productGroup: Group<number> = {
   inverse: a => 1 / a,
 }
 
-type Add = (x: number) => (y: number) => number
-export const add: Add = x => y => x + y
+interface AddPointed {
+  (a: number, b: number): number
+}
 
-type Subtract = (x: number) => (y: number) => number
-export const subtract: Subtract = x => y => x - y
+interface AddPointFree {
+  (b: number): (a: number) => number
+}
 
-type Multiply = (x: number) => (y: number) => number
-export const multiply: Multiply = x => y => x * y
+interface Add extends AddPointed, AddPointFree {}
 
-type Divide = (x: number) => (y: number) => number
-export const divide: Divide = x => y => x / y
+const addPointed: AddPointed = (a, b) => a + b
+export const add: Add = overload (addPointed)
 
-type DivideSafe = (x: number) => (y: number) => O.Option<number>
-export const divideSafe: DivideSafe = x => y =>
-  y === 0 ? O.none : O.some (x / y)
+interface SubtractPointed {
+  (a: number, b: number): number
+}
+
+interface SubtractPointFree {
+  (b: number): (a: number) => number
+}
+
+interface Subtract extends SubtractPointed, SubtractPointFree {}
+
+const subtractPointed: SubtractPointed = (a, b) => a - b
+export const subtract: Subtract = overload (subtractPointed)
+
+interface MultiplyPointed {
+  (a: number, b: number): number
+}
+
+interface MultiplyPointFree {
+  (b: number): (a: number) => number
+}
+
+interface Multiply extends MultiplyPointed, MultiplyPointFree {}
+
+const multiplyPointed: MultiplyPointed = (a, b) => a * b
+export const multiply: Multiply = overload (multiplyPointed)
+
+interface DividePointed {
+  (a: number, b: number): number
+}
+
+interface DividePointFree {
+  (b: number): (a: number) => number
+}
+
+interface Divide extends DividePointed, DividePointFree {}
+
+const dividePointed: DividePointed = (a, b) => a / b
+export const divide: Divide = overload (dividePointed)
+
+interface DivideSafePointed {
+  (a: number, b: number): O.Option<number>
+}
+
+interface DivideSafePointFree {
+  (b: number): (a: number) => O.Option<number>
+}
+
+interface DivideSafe extends DivideSafePointed, DivideSafePointFree {}
+
+const divideSafePointed: DivideSafePointed = (a, b) =>
+  b === 0 ? O.none : O.some (a / b)
+export const divideSafe: DivideSafe = overload (divideSafePointed)
 
 export const isEven: Predicate<number> = a => a % 2 === 0
 

@@ -14,7 +14,7 @@ import {
 } from "./some"
 import { zero, Zero, Zero2, Zero2C } from "./zero"
 
-interface OptionT2C<URI extends URIS2, E> {
+interface OptionTM2C<URI extends URIS2, E> {
   readonly map: Map2C<URI, E>
   readonly ap: Ap2C<URI, E>
   readonly flatMap: FlatMap2C<URI, E>
@@ -24,7 +24,7 @@ interface OptionT2C<URI extends URIS2, E> {
   readonly zero: Zero2C<URI, E>
 }
 
-interface OptionT2<URI extends URIS2> {
+interface OptionTM2<URI extends URIS2> {
   readonly map: Map2<URI>
   readonly ap: Ap2<URI>
   readonly flatMap: FlatMap2<URI>
@@ -34,7 +34,7 @@ interface OptionT2<URI extends URIS2> {
   readonly zero: Zero2<URI>
 }
 
-interface OptionT<URI extends URIS> {
+interface OptionTM<URI extends URIS> {
   readonly map: Map<URI>
   readonly ap: Ap<URI>
   readonly flatMap: FlatMap<URI>
@@ -46,10 +46,12 @@ interface OptionT<URI extends URIS> {
 
 export function getOptionT<URI extends URIS2, E>(
   monad: Monad2C<URI, E>,
-): OptionT2C<URI, E>
-export function getOptionT<URI extends URIS2>(monad: Monad2<URI>): OptionT2<URI>
-export function getOptionT<URI extends URIS>(monad: Monad<URI>): OptionT<URI>
-export function getOptionT<URI extends URIS>(monad: Monad<URI>): OptionT<URI> {
+): OptionTM2C<URI, E>
+export function getOptionT<URI extends URIS2>(
+  monad: Monad2<URI>,
+): OptionTM2<URI>
+export function getOptionT<URI extends URIS>(monad: Monad<URI>): OptionTM<URI>
+export function getOptionT<URI extends URIS>(monad: Monad<URI>): OptionTM<URI> {
   const m: any = monad
   return {
     map: map (m),

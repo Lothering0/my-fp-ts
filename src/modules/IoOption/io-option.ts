@@ -4,7 +4,6 @@ import * as E from "../Either"
 import { URIS } from "../../types/Kind"
 import { tryDo } from "../../utils/exceptions"
 import { pipe } from "../../utils/flow"
-import { overload2 } from "../../utils/overloads"
 
 declare module "../../types/Kind" {
   interface URIToKind<A> {
@@ -39,16 +38,3 @@ export const fromIoOption: FromIoOption = <A>(ma: IoOption<A>) => {
     return O.none
   }
 }
-
-interface MatchPointed {
-  <A, B>(fa: IoOption<A>, b: () => B, f: (a: A) => B): B
-}
-
-interface Match extends MatchPointed {
-  <A, B>(fa: IoOption<A>, b: () => B, f: (a: A) => B): B
-}
-
-const matchPointed: MatchPointed = (fa, whenNone, whenSome) =>
-  pipe (fa, fromIoOption, O.match (whenNone, whenSome))
-
-export const match: Match = overload2 (matchPointed)

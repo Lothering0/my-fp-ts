@@ -2,11 +2,12 @@ import * as O from "../Option"
 import { Kind, Kind2, URIS, URIS2 } from "../../types/Kind"
 import { Functor, Functor2, Functor2C } from "../../types/Functor"
 import { overload2 } from "../../utils/overloads"
+import { LazyArg } from "../../types/utils"
 
 interface Match2CPointed<URI extends URIS2, _> {
   <A, B>(
     ma: Kind2<URI, _, O.Option<A>>,
-    onNone: () => B,
+    onNone: LazyArg<B>,
     onSome: (a: A) => B,
   ): Kind2<URI, _, B>
 }
@@ -14,7 +15,7 @@ interface Match2CPointed<URI extends URIS2, _> {
 interface Match2Pointed<URI extends URIS2> {
   <_, A, B>(
     ma: Kind2<URI, _, O.Option<A>>,
-    onNone: () => B,
+    onNone: LazyArg<B>,
     onSome: (a: A) => B,
   ): Kind2<URI, _, B>
 }
@@ -22,28 +23,28 @@ interface Match2Pointed<URI extends URIS2> {
 interface MatchPointed<URI extends URIS> {
   <A, B>(
     ma: Kind<URI, O.Option<A>>,
-    onNone: () => B,
+    onNone: LazyArg<B>,
     onSome: (a: A) => B,
   ): Kind<URI, B>
 }
 
 interface Match2CPointFree<URI extends URIS2, _> {
   <A, B>(
-    onNone: () => B,
+    onNone: LazyArg<B>,
     onSome: (a: A) => B,
   ): (ma: Kind2<URI, _, O.Option<A>>) => Kind2<URI, _, B>
 }
 
 interface Match2PointFree<URI extends URIS2> {
   <_, A, B>(
-    onNone: () => B,
+    onNone: LazyArg<B>,
     onSome: (a: A) => B,
   ): (ma: Kind2<URI, _, O.Option<A>>) => Kind2<URI, _, B>
 }
 
 interface MatchPointFree<URI extends URIS> {
   <A, B>(
-    onNone: () => B,
+    onNone: LazyArg<B>,
     onSome: (a: A) => B,
   ): (ma: Kind<URI, O.Option<A>>) => Kind<URI, B>
 }

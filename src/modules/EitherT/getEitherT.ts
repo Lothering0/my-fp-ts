@@ -41,7 +41,7 @@ import { match, Match, Match2, Match2C } from "./match"
 import { swap, Swap, Swap2, Swap2C } from "./swap"
 import { toUnion, ToUnion, ToUnion2, ToUnion2C } from "./toUnion"
 
-interface EitherT2C<URI extends URIS2, E> {
+interface EitherTM2C<URI extends URIS2, E> {
   readonly map: Map2C<URI, E>
   readonly mapLeft: MapLeft2C<URI, E>
   readonly bimap: Bimap2C<URI, E>
@@ -56,7 +56,7 @@ interface EitherT2C<URI extends URIS2, E> {
   readonly toUnion: ToUnion2C<URI, E>
 }
 
-interface EitherT2<URI extends URIS2> {
+interface EitherTM2<URI extends URIS2> {
   readonly map: Map2<URI>
   readonly mapLeft: MapLeft2<URI>
   readonly bimap: Bimap2<URI>
@@ -71,7 +71,7 @@ interface EitherT2<URI extends URIS2> {
   readonly toUnion: ToUnion2<URI>
 }
 
-interface EitherT<URI extends URIS> {
+interface EitherTM<URI extends URIS> {
   readonly map: Map<URI>
   readonly mapLeft: MapLeft<URI>
   readonly bimap: Bimap<URI>
@@ -88,10 +88,12 @@ interface EitherT<URI extends URIS> {
 
 export function getEitherT<URI extends URIS2, E>(
   monad: Monad2C<URI, E>,
-): EitherT2C<URI, E>
-export function getEitherT<URI extends URIS2>(monad: Monad2<URI>): EitherT2<URI>
-export function getEitherT<URI extends URIS>(monad: Monad<URI>): EitherT<URI>
-export function getEitherT<URI extends URIS>(monad: Monad<URI>): EitherT<URI> {
+): EitherTM2C<URI, E>
+export function getEitherT<URI extends URIS2>(
+  monad: Monad2<URI>,
+): EitherTM2<URI>
+export function getEitherT<URI extends URIS>(monad: Monad<URI>): EitherTM<URI>
+export function getEitherT<URI extends URIS>(monad: Monad<URI>): EitherTM<URI> {
   const m: any = monad
   return {
     map: map (m),
