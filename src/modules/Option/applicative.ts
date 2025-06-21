@@ -1,7 +1,8 @@
 import { createApplicative, Applicative } from "../../types/Applicative"
-import { URI, match, none, some } from "./option"
+import { URI, none, some } from "./option"
 import { pipe, flow } from "../../utils/flow"
 import { functor } from "./functor"
+import { match } from "./utils"
 
 export const applicative: Applicative<URI> = createApplicative ({
   ...functor,

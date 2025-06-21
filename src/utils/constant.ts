@@ -1,5 +1,3 @@
-import * as O from "../modules/Option"
-import * as L from "../modules/List"
 import { LazyArg } from "../types/utils"
 import { _ } from "./underscore"
 
@@ -20,9 +18,3 @@ export const constUndefined: ConstUndefined = () => undefined
 
 type ConstVoid = LazyArg<void>
 export const constVoid: ConstVoid = () => _
-
-type ConstNone = LazyArg<O.Option<never>>
-export const constNone: ConstNone = () => O.none
-
-type ConstNil = LazyArg<L.List<never>>
-export const constNil: ConstNil = () => L.nil

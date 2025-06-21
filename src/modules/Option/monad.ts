@@ -6,10 +6,11 @@ import { applicative } from "./applicative"
 import { identity } from "../Identity"
 import { pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
+import { match } from "./utils"
 
 export const monad: Monad<O.URI> = createMonad ({
   ...applicative,
-  flat: O.match (() => O.none, identity),
+  flat: match (() => O.none, identity),
 })
 
 export const {

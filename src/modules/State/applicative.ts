@@ -1,4 +1,4 @@
-import { flow, pipe } from "src/utils/flow"
+import { flow, pipe } from "../../utils/flow"
 import { Applicative2, createApplicative2 } from "../../types/Applicative"
 import { functor } from "./functor"
 import { URI } from "./state"

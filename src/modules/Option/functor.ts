@@ -1,6 +1,7 @@
 import { createFunctor, Functor } from "../../types/Functor"
-import { URI, some, none, match } from "./option"
+import { URI, some, none } from "./option"
 import { pipe, flow } from "../../utils/flow"
+import { match } from "./utils"
 
 export const functor: Functor<URI> = createFunctor ({
   URI,

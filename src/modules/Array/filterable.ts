@@ -2,7 +2,7 @@ import { URI } from "./array"
 import {
   createFilterableWithIndex,
   FilterableWithIndex,
-} from "src/types/FilterableWithIndex"
+} from "../../types/FilterableWithIndex"
 import { createFilterable, Filterable } from "../../types/Filterable"
 import { compactable } from "./compactable"
 import { functor, functorWithIndex } from "./functor"

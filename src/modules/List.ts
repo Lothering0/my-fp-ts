@@ -12,16 +12,19 @@ export interface Cons<A> {
   readonly tail: List<A>
 }
 
-export const nil: List<never> = {
-  _tag: "Nil",
-}
-
 type ConsConstructor = <A>(head: A, tail: List<A>) => List<A>
 export const cons: ConsConstructor = (head, tail) => ({
   _tag: "Cons",
   head,
   tail,
 })
+
+export const nil: List<never> = {
+  _tag: "Nil",
+}
+
+type Zero = <A = never>() => List<A>
+export const zero: Zero = () => nil
 
 type IsNil = (xs: List<unknown>) => xs is Nil
 export const isNil: IsNil = xs => xs._tag === "Nil"

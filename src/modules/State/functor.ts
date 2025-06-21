@@ -1,6 +1,7 @@
 import { flow } from "../../utils/flow"
 import { createFunctor2, Functor2 } from "../../types/Functor"
-import { URI, run, State } from "./state"
+import { URI, State } from "./state"
+import { run } from "./utils"
 
 export const functor: Functor2<URI> = createFunctor2 ({
   URI,
