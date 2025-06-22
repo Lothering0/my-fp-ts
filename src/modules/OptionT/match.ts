@@ -1,7 +1,7 @@
 import * as O from "../Option"
 import { Kind, Kind2, URIS, URIS2 } from "../../types/Kind"
 import { Functor, Functor2, Functor2C } from "../../types/Functor"
-import { overload2 } from "../../utils/overloads"
+import { overload } from "../../utils/overloads"
 import { LazyArg } from "../../types/utils"
 
 interface Match2CPointed<URI extends URIS2, _> {
@@ -67,7 +67,8 @@ export function match<URI extends URIS2, E>(
 export function match<URI extends URIS2>(functor: Functor2<URI>): Match2<URI>
 export function match<URI extends URIS>(functor: Functor<URI>): Match<URI>
 export function match<URI extends URIS>(functor: Functor<URI>): Match<URI> {
-  return overload2 ((mm, onNone, onSome) =>
-    functor.map (mm, O.match (onNone, onSome)),
-  )
+  const matchPointed: MatchPointed<URI> = (mm, onNone, onSome) =>
+    functor.map (mm, O.match (onNone, onSome))
+
+  return overload (2, matchPointed)
 }

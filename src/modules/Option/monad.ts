@@ -50,4 +50,4 @@ const tapEitherPointed: TapEitherPointed = <E, A, _>(
     ),
   )
 
-export const tapEither: TapEither = overload (tapEitherPointed)
+export const tapEither: TapEither = overload (1, tapEitherPointed)

@@ -42,10 +42,10 @@ export const createFilterableWithIndex = <URI extends URIS, I>(
 
   return {
     ...filterable,
-    partitionMapWithIndex: overload (partitionMapWithIndexPointed),
-    partitionWithIndex: overload (partitionWithIndexPointed),
-    filterMapWithIndex: overload (filterMapWithIndexPointed),
-    filterWithIndex: overload (filterWithIndexPointed),
+    partitionMapWithIndex: overload (1, partitionMapWithIndexPointed),
+    partitionWithIndex: overload (1, partitionWithIndexPointed),
+    filterMapWithIndex: overload (1, filterMapWithIndexPointed),
+    filterWithIndex: overload (1, filterWithIndexPointed),
   }
 }
 

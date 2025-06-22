@@ -1,4 +1,4 @@
-import { overload2 } from "../utils/overloads"
+import { overload } from "../utils/overloads"
 import { LazyArg } from "../types/utils"
 
 type Not = <T extends boolean>(a: T) => T extends true ? false : true
@@ -14,4 +14,4 @@ interface Match extends MatchPointed {
 
 const matchPointed: MatchPointed = (x, f, g) => x ? g () : f ()
 
-export const match: Match = overload2 (matchPointed)
+export const match: Match = overload (2, matchPointed)

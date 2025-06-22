@@ -1,0 +1,76 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+interface Overload0 {
+  <Point, R>(point: Point): R
+  <Point, R>(): (point: Point) => R
+}
+
+interface Overload1 {
+  <Point, A, R>(point: Point, a: A): R
+  <Point, A, R>(a: A): (point: Point) => R
+}
+
+interface Overload1 {
+  <Point, A, R>(point: Point, a: A): R
+  <Point, A, R>(a: A): (point: Point) => R
+}
+
+interface Overload2 {
+  <Point, A, B, R>(point: Point, a: A, b: B): R
+  <Point, A, B, R>(a: A, b: B): (point: Point) => R
+}
+
+interface Overload3 {
+  <Point, A, B, C, R>(point: Point, a: A, b: B, c: C): R
+  <Point, A, B, C, R>(a: A, b: B, c: C): (point: Point) => R
+}
+
+interface OverloadN {
+  <Point, A extends readonly any[], R>(point: Point, ...as: A): R
+  <Point, A extends readonly any[], R>(...as: A): (point: Point) => R
+}
+
+/**
+ * Overloads `point => r` with `() => point => r`
+ */
+export function overload<A extends Overload0>(
+  n: 0,
+  pointed: (arg: any) => any,
+): A
+/**
+ * Overloads `(point, a) => r` with `a => point => r`
+ */
+export function overload<A extends Overload1>(
+  n: 1,
+  pointed: (...args: [any, any]) => any,
+): A
+/**
+ * Overloads `(point, a, b) => r` with `(a, b) => point => r`
+ */
+export function overload<A extends Overload2>(
+  n: 2,
+  pointed: (...args: [any, any, any]) => any,
+): A
+/**
+ * Overloads `(point, a, b, c) => r` with `(a, b, c) => point => r`
+ */
+export function overload<A extends Overload3>(
+  n: 3,
+  pointed: (...args: [any, any, any, any]) => any,
+): A
+/**
+ * Overloads `(point, ...nargs) => r` with `(...nargs) => point => r`
+ */
+export function overload<A extends OverloadN>(
+  n: number,
+  pointed: (...args: any[]) => any,
+): A
+export function overload<A extends OverloadN>(
+  n: number,
+  pointed: (...args: any[]) => any,
+): A {
+  return ((...args: any[]): any =>
+    args.length < n + 1
+      ? (x: any) => pointed (x, ...args)
+      : pointed (...args)) as any
+}

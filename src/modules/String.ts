@@ -31,7 +31,7 @@ interface ConcatPointFree {
 
 interface Concat extends ConcatPointed, ConcatPointFree {}
 
-export const concat: Concat = overload (semigroup.concat)
+export const concat: Concat = overload (1, semigroup.concat)
 
 interface SplitPointed {
   (a: string, b: string): string[]
@@ -44,4 +44,4 @@ interface SplitPointFree {
 interface Split extends SplitPointed, SplitPointFree {}
 
 const splitPointed: SplitPointed = (a, b) => a.split (b)
-export const split: Split = overload (splitPointed)
+export const split: Split = overload (1, splitPointed)

@@ -12,8 +12,8 @@ type CreateApplicative = <URI extends URIS>(
 ) => Applicative<URI>
 export const createApplicative: CreateApplicative = applicative => ({
   ...applicative,
-  apply: overload (applicative.apply),
-  ap: pipe (applicative.apply, curry, flip, uncurry, overload),
+  apply: overload (1, applicative.apply),
+  ap: pipe (applicative.apply, curry, flip, uncurry, f => overload (1, f)),
 })
 
 type CreateApplicative2 = <URI extends URIS2>(

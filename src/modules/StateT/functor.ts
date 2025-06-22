@@ -55,5 +55,5 @@ export function map<URI extends URIS>(functor: Functor<URI>): Map<URI> {
   const mapPointed: MapPointed<URI> = (fma, f) => s =>
     functor.map (fma (s), ([a, s]) => [f (a), s])
 
-  return overload (mapPointed)
+  return overload (1, mapPointed)
 }

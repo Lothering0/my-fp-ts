@@ -1,6 +1,6 @@
 import * as T from "../Task"
 import * as E from "../Either"
-import { overload2 } from "../../utils/overloads"
+import { overload } from "../../utils/overloads"
 import { fromTaskEither, TaskEither } from "./task-either"
 
 type ToUnion = <E, A>(ma: TaskEither<E, A>) => T.Task<E | A>
@@ -24,4 +24,4 @@ interface Match extends MatchPointed {
 const matchPointed: MatchPointed = (mma, f, g) => () =>
   fromTaskEither (mma).then (E.match (f, g))
 
-export const match: Match = overload2 (matchPointed)
+export const match: Match = overload (2, matchPointed)

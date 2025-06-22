@@ -18,13 +18,9 @@ type CreateApplicativeWithIndex = <URI extends URIS, I>(
 export const createApplicativeWithIndex: CreateApplicativeWithIndex =
   applicative => ({
     ...applicative,
-    applyWithIndex: overload (applicative.applyWithIndex),
-    apWithIndex: pipe (
-      applicative.applyWithIndex,
-      curry,
-      flip,
-      uncurry,
-      overload,
+    applyWithIndex: overload (1, applicative.applyWithIndex),
+    apWithIndex: pipe (applicative.applyWithIndex, curry, flip, uncurry, f =>
+      overload (1, f),
     ),
   })
 

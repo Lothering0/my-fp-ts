@@ -37,6 +37,6 @@ type Match = <A, B>(
 export const match: Match = (xs, whenNil, whenCons) =>
   isNil (xs) ? whenNil () : whenCons (xs.head)
 
-type FromArray = <A>(xs: Array<A>) => List<A>
+type FromArray = <A>(xs: A[]) => List<A>
 export const fromArray: FromArray = xs =>
   xs.reduceRight ((acc, x) => cons (x, acc), nil)

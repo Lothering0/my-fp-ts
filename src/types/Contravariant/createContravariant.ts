@@ -8,7 +8,7 @@ type CreateContravariant = <URI extends URIS>(
 ) => Contravariant<URI>
 export const createContravariant: CreateContravariant = contravariant => ({
   ...contravariant,
-  contramap: overload (contravariant.contramap),
+  contramap: overload (1, contravariant.contramap),
 })
 
 type CreateContravariant2 = <URI extends URIS2>(

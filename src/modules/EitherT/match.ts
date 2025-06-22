@@ -1,7 +1,7 @@
 import * as E from "../Either"
 import { Kind, Kind2, URIS, URIS2 } from "../../types/Kind"
 import { Functor, Functor2, Functor2C } from "../../types/Functor"
-import { overload2 } from "../../utils/overloads"
+import { overload } from "../../utils/overloads"
 
 interface Match2CPointed<URI extends URIS2, KE> {
   <E, A, B>(
@@ -66,7 +66,7 @@ export function match<URI extends URIS2, KE>(
 export function match<URI extends URIS2>(functor: Functor2<URI>): Match2<URI>
 export function match<URI extends URIS>(functor: Functor<URI>): Match<URI>
 export function match<URI extends URIS>(functor: Functor<URI>): Match<URI> {
-  return overload2 ((mm, onLeft, onRight) =>
+  return overload (2, (mm, onLeft, onRight) =>
     functor.map (mm, E.match (onLeft, onRight)),
   )
 }

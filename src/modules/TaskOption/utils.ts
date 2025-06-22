@@ -1,6 +1,6 @@
 import * as T from "../Task"
 import * as O from "../Option"
-import { overload2 } from "../../utils/overloads"
+import { overload } from "../../utils/overloads"
 import { LazyArg } from "../../types/utils"
 import { fromTaskOption, TaskOption } from "./task-option"
 
@@ -22,4 +22,4 @@ interface Match extends MatchPointed {
 const matchPointed: MatchPointed = (mma, f, g) => () =>
   fromTaskOption (mma).then (O.match (f, g))
 
-export const match: Match = overload2 (matchPointed)
+export const match: Match = overload (2, matchPointed)

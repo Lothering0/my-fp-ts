@@ -71,5 +71,5 @@ export function ap<URI extends URIS>(monad: Monad<URI>): Ap<URI> {
       monad.flatMap (([mb, s]) => run_ (s) (mb)),
     )
 
-  return overload (apPointed)
+  return overload (1, apPointed)
 }

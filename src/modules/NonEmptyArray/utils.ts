@@ -26,4 +26,4 @@ interface ConcatPointFree {
 
 interface Concat extends ConcatPointed, ConcatPointFree {}
 
-export const concat: Concat = overload (getSemigroup ().concat)
+export const concat: Concat = overload (1, getSemigroup ().concat)

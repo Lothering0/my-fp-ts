@@ -1,7 +1,7 @@
 import * as E from "../../Either"
 import { Kind, Kind2, URIS, URIS2 } from "../../../types/Kind"
 import { Functor, Functor2, Functor2C } from "../../../types/Functor"
-import { overload2 } from "../../../utils/overloads"
+import { overload } from "../../../utils/overloads"
 
 interface Bimap2CPointed<URI extends URIS2, KE> {
   <E, A, D, B>(
@@ -66,5 +66,8 @@ export function bimap<URI extends URIS2, E>(
 export function bimap<URI extends URIS2>(functor: Functor2<URI>): Bimap2<URI>
 export function bimap<URI extends URIS>(functor: Functor<URI>): Bimap<URI>
 export function bimap<URI extends URIS>(functor: Functor<URI>): Bimap<URI> {
-  return overload2 ((fma, f, g) => functor.map (fma, E.bimap (f, g)))
+  const bimapPointed: BimapPointed<URI> = (fma, f, g) =>
+    functor.map (fma, E.bimap (f, g))
+
+  return overload (2, bimapPointed)
 }

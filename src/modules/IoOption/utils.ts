@@ -1,6 +1,6 @@
 import * as O from "../Option"
 import { pipe } from "../../utils/flow"
-import { overload2 } from "../../utils/overloads"
+import { overload } from "../../utils/overloads"
 import { LazyArg } from "../../types/utils"
 import { fromIoOption, IoOption } from "./io-option"
 
@@ -15,4 +15,4 @@ interface Match extends MatchPointed {
 const matchPointed: MatchPointed = (fa, whenNone, whenSome) =>
   pipe (fa, fromIoOption, O.match (whenNone, whenSome))
 
-export const match: Match = overload2 (matchPointed)
+export const match: Match = overload (2, matchPointed)

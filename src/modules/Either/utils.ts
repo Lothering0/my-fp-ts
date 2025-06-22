@@ -1,5 +1,5 @@
 import { pipe } from "../../utils/flow"
-import { overload2 } from "../../utils/overloads"
+import { overload } from "../../utils/overloads"
 import { Either, left, Left, right, Right } from "./either"
 
 type IsLeft = <E>(ma: Either<E, unknown>) => ma is Left<E>
@@ -28,7 +28,7 @@ interface Match extends MatchPointed {
 const matchPointed: MatchPointed = (ma, onLeft, onRight) =>
   isLeft (ma) ? pipe (ma, fromLeft, onLeft) : pipe (ma, fromRight, onRight)
 
-export const match: Match = overload2 (matchPointed)
+export const match: Match = overload (2, matchPointed)
 
 export const swap = <E, A>(ma: Either<E, A>): Either<A, E> =>
   match<E, A, Either<A, E>> (ma, right, left)

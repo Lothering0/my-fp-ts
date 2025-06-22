@@ -46,7 +46,7 @@ interface AddPointFree {
 interface Add extends AddPointed, AddPointFree {}
 
 const addPointed: AddPointed = (a, b) => a + b
-export const add: Add = overload (addPointed)
+export const add: Add = overload (1, addPointed)
 
 interface SubtractPointed {
   (a: number, b: number): number
@@ -59,7 +59,7 @@ interface SubtractPointFree {
 interface Subtract extends SubtractPointed, SubtractPointFree {}
 
 const subtractPointed: SubtractPointed = (a, b) => a - b
-export const subtract: Subtract = overload (subtractPointed)
+export const subtract: Subtract = overload (1, subtractPointed)
 
 interface MultiplyPointed {
   (a: number, b: number): number
@@ -72,7 +72,7 @@ interface MultiplyPointFree {
 interface Multiply extends MultiplyPointed, MultiplyPointFree {}
 
 const multiplyPointed: MultiplyPointed = (a, b) => a * b
-export const multiply: Multiply = overload (multiplyPointed)
+export const multiply: Multiply = overload (1, multiplyPointed)
 
 interface DividePointed {
   (a: number, b: number): number
@@ -85,7 +85,7 @@ interface DividePointFree {
 interface Divide extends DividePointed, DividePointFree {}
 
 const dividePointed: DividePointed = (a, b) => a / b
-export const divide: Divide = overload (dividePointed)
+export const divide: Divide = overload (1, dividePointed)
 
 interface DivideSafePointed {
   (a: number, b: number): O.Option<number>
@@ -99,7 +99,7 @@ interface DivideSafe extends DivideSafePointed, DivideSafePointFree {}
 
 const divideSafePointed: DivideSafePointed = (a, b) =>
   b === 0 ? O.none : O.some (a / b)
-export const divideSafe: DivideSafe = overload (divideSafePointed)
+export const divideSafe: DivideSafe = overload (1, divideSafePointed)
 
 export const isEven: Predicate<number> = a => a % 2 === 0
 

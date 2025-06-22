@@ -8,7 +8,7 @@ type CreateFunctor = <URI extends URIS>(
 ) => Functor<URI>
 export const createFunctor: CreateFunctor = functor => ({
   ...functor,
-  map: overload (functor.map),
+  map: overload (1, functor.map),
 })
 
 type CreateFunctor2 = <URI extends URIS2>(

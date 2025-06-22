@@ -2,7 +2,7 @@ import * as NEA from "../NonEmptyArray"
 import * as O from "../Option"
 import { flatMap } from "./monad"
 import { filterMap } from "./filterable"
-import { overload, overload2, overloadLast } from "../../utils/overloads"
+import { overload, overloadLast } from "../../utils/overloads"
 import { constant } from "../../utils/constant"
 import { pipe } from "../../utils/flow"
 import { LazyArg } from "../../types/utils"
@@ -36,7 +36,7 @@ interface Match extends MatchPointed {
 const matchPointed: MatchPointed = (as, whenEmpty, whenNonEmpty) =>
   isNonEmpty (as) ? whenNonEmpty (as) : whenEmpty ()
 
-export const match: Match = overload2 (matchPointed)
+export const match: Match = overload (2, matchPointed)
 
 type Head = <A>(as: A[]) => O.Option<A>
 export const head: Head = as =>
@@ -65,7 +65,7 @@ interface PrependPointFree {
 interface Prepend extends PrependPointed, PrependPointFree {}
 
 const prependPointed: PrependPointed = (a, as) => [a, ...as]
-export const prepend: Prepend = overloadLast (prependPointed)
+export const prepend: Prepend = overloadLast (1, prependPointed)
 
 interface PrependAllWithPointed {
   <A>(f: (a: A) => A, as: A[]): A[]
@@ -82,6 +82,7 @@ interface PrependAllWith
 const prependAllWithPointed: PrependAllWithPointed = (f, as) =>
   flatMap (as, x => [f (x), x])
 export const prependAllWith: PrependAllWith = overloadLast (
+  1,
   prependAllWithPointed,
 )
 
@@ -97,7 +98,7 @@ interface PrependAll extends PrependAllPointed, PrependAllPointFree {}
 
 const prependAllPointed: PrependAllPointed = <A>(a: A, as: A[]) =>
   prependAllWith (constant (a), as)
-export const prependAll: PrependAll = overloadLast (prependAllPointed)
+export const prependAll: PrependAll = overloadLast (1, prependAllPointed)
 
 interface AppendPointed {
   <A>(as: A[], a: A): NEA.NonEmptyArray<A>
@@ -111,7 +112,7 @@ interface Append extends AppendPointed, AppendPointFree {}
 
 const appendPointed: AppendPointed = <A>(as: A[], a: A) =>
   [...as, a] as unknown as NEA.NonEmptyArray<A>
-export const append: Append = overload (appendPointed)
+export const append: Append = overload (1, appendPointed)
 
 interface AppendAllWithPointed {
   <A>(as: A[], f: (a: A) => A): A[]
@@ -125,7 +126,7 @@ interface AppendAllWith extends AppendAllWithPointed, AppendAllWithPointFree {}
 
 const appendAllWithPointed: AppendAllWithPointed = (as, f) =>
   flatMap (as, x => [x, f (x)])
-export const appendAllWith: AppendAllWith = overload (appendAllWithPointed)
+export const appendAllWith: AppendAllWith = overload (1, appendAllWithPointed)
 
 interface AppendAllPointed {
   <A>(as: A[], a: A): A[]
@@ -139,7 +140,7 @@ interface AppendAll extends AppendAllPointed, AppendAllPointFree {}
 
 const appendAllPointed: AppendAllPointed = (as, a) =>
   appendAllWith (as, constant (a))
-export const appendAll: AppendAll = overload (appendAllPointed)
+export const appendAll: AppendAll = overload (1, appendAllPointed)
 
 type Range = (from: number) => (to: number) => NEA.NonEmptyArray<number>
 export const range: Range = from => to =>

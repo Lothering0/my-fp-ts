@@ -30,10 +30,10 @@ export const createFilterable = <URI extends URIS>(
 
   return {
     ...filterable,
-    partitionMap: overload (partitionMapPointed),
-    partition: overload (partitionPointed),
-    filterMap: overload (filterMapPointed),
-    filter: overload (filterPointed),
+    partitionMap: overload (1, partitionMapPointed),
+    partition: overload (1, partitionPointed),
+    filterMap: overload (1, filterMapPointed),
+    filter: overload (1, filterPointed),
   }
 }
 

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Applicative, Applicative2 } from "../Applicative"
 import { URIS, URIS2 } from "../Kind"
-import { overload, overload2, overloadLast2 } from "../../utils/overloads"
+import { overload, overloadLast } from "../../utils/overloads"
 import { pipe } from "../../utils/flow"
 import { constant } from "../../utils/constant"
 import { Monad, Monad2 } from "./Monad"
@@ -27,7 +27,7 @@ export const createMonad = <URI extends URIS>(
       map (a => map (fb, b => ({ [name]: b, ...a }) as any)),
       flat,
     )
-  const apS: ApS<URI> = overload2 (apSPointed)
+  const apS: ApS<URI> = overload (2, apSPointed)
 
   const flatMapPointed: FlatMapPointed<URI> = (ma, f) =>
     pipe (
@@ -36,11 +36,11 @@ export const createMonad = <URI extends URIS>(
       map (({ a }) => f (a)),
       flat,
     )
-  const flatMap: FlatMap<URI> = overload (flatMapPointed)
+  const flatMap: FlatMap<URI> = overload (1, flatMapPointed)
 
   const composePointed: ComposePointed<URI> = (g, f, a) =>
     pipe (a, f, flatMap (g))
-  const compose: Compose<URI> = overloadLast2 (composePointed)
+  const compose: Compose<URI> = overloadLast (2, composePointed)
 
   const tapPointed: TapPointed<URI> = (ma, f) =>
     pipe (
@@ -54,7 +54,7 @@ export const createMonad = <URI extends URIS>(
         ),
       ),
     )
-  const tap: Tap<URI> = overload (tapPointed)
+  const tap: Tap<URI> = overload (1, tapPointed)
 
   const tapIoPointed: TapIoPointed<URI> = (ma, f) =>
     pipe (
@@ -70,7 +70,7 @@ export const createMonad = <URI extends URIS>(
         ),
       ),
     )
-  const tapIo: TapIo<URI> = overload (tapIoPointed)
+  const tapIo: TapIo<URI> = overload (1, tapIoPointed)
 
   const mapToPointed: MapToPointed<URI> = (fa, name, f) =>
     flatMap (fa, a =>
@@ -79,11 +79,11 @@ export const createMonad = <URI extends URIS>(
         ...a,
       } as any),
     )
-  const mapTo: MapTo<URI> = overload2 (mapToPointed)
+  const mapTo: MapTo<URI> = overload (2, mapToPointed)
 
   const setToPointed: SetToPointed<URI> = (fa, name, b) =>
     mapToPointed (fa, name, constant (b))
-  const setTo: SetTo<URI> = overload2 (setToPointed)
+  const setTo: SetTo<URI> = overload (2, setToPointed)
 
   const applyToPointed: ApplyToPointed<URI> = (fa, name, ff) =>
     pipe (
@@ -92,7 +92,7 @@ export const createMonad = <URI extends URIS>(
       apS ("f", ff),
       map (({ a, f }) => ({ [name]: f (a), ...a }) as any),
     )
-  const applyTo: ApplyTo<URI> = overload2 (applyToPointed)
+  const applyTo: ApplyTo<URI> = overload (2, applyToPointed)
 
   const flatMapToPointed: FlatMapToPointed<URI> = (ma, name, f) =>
     flatMap (ma, a =>
@@ -107,7 +107,7 @@ export const createMonad = <URI extends URIS>(
         ),
       ),
     )
-  const flatMapTo: FlatMapTo<URI> = overload2 (flatMapToPointed)
+  const flatMapTo: FlatMapTo<URI> = overload (2, flatMapToPointed)
 
   return {
     ...monad,

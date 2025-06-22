@@ -1,6 +1,6 @@
 import { URIS, URIS2 } from "../Kind"
 import { Foldable, Foldable2 } from "../Foldable"
-import { overload2 } from "../../utils/overloads"
+import { overload } from "../../utils/overloads"
 import { FoldableWithIndex, FoldableWithIndex2 } from "./FoldableWithIndex"
 import {
   ReduceWithIndex2Pointed,
@@ -16,8 +16,8 @@ type CreateFoldableWithIndex = <URI extends URIS, I>(
 ) => FoldableWithIndex<URI, I>
 export const createFoldableWithIndex: CreateFoldableWithIndex = foldable => ({
   ...foldable,
-  reduceWithIndex: overload2 (foldable.reduceWithIndex),
-  reduceRightWithIndex: overload2 (foldable.reduceRightWithIndex),
+  reduceWithIndex: overload (2, foldable.reduceWithIndex),
+  reduceRightWithIndex: overload (2, foldable.reduceRightWithIndex),
 })
 
 type CreateFoldableWithIndex2 = <URI extends URIS2, I>(

@@ -62,16 +62,13 @@ export function flatMap<URI extends URIS2, E>(
 export function flatMap<URI extends URIS2>(monad: Monad2<URI>): FlatMap2<URI>
 export function flatMap<URI extends URIS>(monad: Monad<URI>): FlatMap<URI>
 export function flatMap<URI extends URIS>(monad: Monad<URI>): FlatMap<URI> {
-  return overload (
-    <A, B>(
-      fma: Kind<URI, O.Option<A>>,
-      f: (a: A) => Kind<URI, O.Option<B>>,
-    ): Kind<URI, O.Option<B>> =>
-      pipe (
-        monad.Do,
-        monad.apS ("ma", fma),
-        monad.map (({ ma }) => O.map (ma, f)),
-        monad.flatMap (O.match (() => monad.of (O.none), identity)),
-      ),
-  )
+  const flatMapPointed: FlatMapPointed<URI> = (fma, f) =>
+    pipe (
+      monad.Do,
+      monad.apS ("ma", fma),
+      monad.map (({ ma }) => O.map (ma, f)),
+      monad.flatMap (O.match (() => monad.of (O.none), identity)),
+    )
+
+  return overload (1, flatMapPointed)
 }

@@ -2,7 +2,7 @@
 import * as T from "./task"
 import { createMonad, Monad, DoObject } from "../../types/Monad"
 import { applicative } from "./applicative"
-import { overload, overload2 } from "../../utils/overloads"
+import { overload } from "../../utils/overloads"
 
 export const monad: Monad<T.URI> = createMonad ({
   ...applicative,
@@ -42,7 +42,7 @@ interface Parallel extends ParallelPointed {
 const parallelPointed: ParallelPointed = (fa, fb) => () =>
   Promise.all ([T.fromTask (fa), T.fromTask (fb)]).then (([a]) => a as any)
 
-export const parallel: Parallel = overload (parallelPointed)
+export const parallel: Parallel = overload (1, parallelPointed)
 
 interface ParallelToPointed {
   <N extends string | number | symbol, A, B>(
@@ -64,4 +64,4 @@ const parallelToPointed: ParallelToPointed = (fa, name, fb) => () =>
     ([a, b]) => ({ [name]: b, ...a }) as any,
   )
 
-export const parallelTo: ParallelTo = overload2 (parallelToPointed)
+export const parallelTo: ParallelTo = overload (2, parallelToPointed)

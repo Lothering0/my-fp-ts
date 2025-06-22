@@ -1,5 +1,5 @@
 import { URIS2 } from "../Kind"
-import { overload, overload2 } from "../../utils/overloads"
+import { overload } from "../../utils/overloads"
 import { Functor2 } from "../Functor"
 import { Bifunctor } from "./Bifunctor"
 import { BimapPointed } from "./Bimap"
@@ -16,8 +16,8 @@ export const createBifunctor: CreateBifunctor = <URI extends URIS2>(
 
   return {
     ...bifunctor,
-    mapLeft: overload (mapLeft),
-    bimap: overload2 (bimapPointed),
+    mapLeft: overload (1, mapLeft),
+    bimap: overload (2, bimapPointed),
   }
 }
 

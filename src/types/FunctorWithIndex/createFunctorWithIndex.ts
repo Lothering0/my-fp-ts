@@ -9,7 +9,7 @@ type CreateFunctorWithIndex = <URI extends URIS, I>(
 ) => FunctorWithIndex<URI, I>
 export const createFunctorWithIndex: CreateFunctorWithIndex = functor => ({
   ...functor,
-  mapWithIndex: overload (functor.mapWithIndex),
+  mapWithIndex: overload (1, functor.mapWithIndex),
 })
 
 type CreateFunctorWithIndex2 = <URI extends URIS2, I>(

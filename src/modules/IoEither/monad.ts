@@ -40,4 +40,4 @@ interface TapEither extends TapEitherPointed {
 const tapEitherPointed: TapEitherPointed = (mma, f) => () =>
   pipe (mma (), E.tap (f))
 
-export const tapEither: TapEither = overload (tapEitherPointed)
+export const tapEither: TapEither = overload (1, tapEitherPointed)

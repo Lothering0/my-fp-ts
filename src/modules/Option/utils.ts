@@ -1,6 +1,6 @@
 import * as E from "../Either"
 import { pipe } from "../../utils/flow"
-import { overload2 } from "../../utils/overloads"
+import { overload } from "../../utils/overloads"
 import { LazyArg } from "../../types/utils"
 import { None, none, Option, some, Some } from "./option"
 
@@ -27,7 +27,7 @@ interface Match extends MatchPointed {
 const matchPointed: MatchPointed = (fa, whenNone, whenSome) =>
   isNone (fa) ? whenNone () : pipe (fa, fromSome, whenSome)
 
-export const match: Match = overload2 (matchPointed)
+export const match: Match = overload (2, matchPointed)
 
 type ToOption = <A>(a: A) => Option<NonNullable<A>>
 export const toOption: ToOption = a => a == null ? none : some (a)

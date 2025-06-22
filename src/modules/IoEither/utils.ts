@@ -1,7 +1,7 @@
 import * as E from "../Either"
 import * as Io from "../Io"
 import { pipe } from "../../utils/flow"
-import { overload2 } from "../../utils/overloads"
+import { overload } from "../../utils/overloads"
 import { fromIoEither, IoEither } from "./io-either"
 
 type ToUnion = <E, A>(ma: IoEither<E, A>) => Io.Io<E | A>
@@ -25,4 +25,4 @@ interface Match extends MatchPointed {
 const matchPointed: MatchPointed = (mma, f, g) =>
   pipe (mma, fromIoEither, E.match (f, g), Io.of)
 
-export const match: Match = overload2 (matchPointed)
+export const match: Match = overload (2, matchPointed)

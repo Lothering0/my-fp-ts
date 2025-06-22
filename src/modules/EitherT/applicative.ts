@@ -69,15 +69,15 @@ export function ap<URI extends URIS2, E>(
 export function ap<URI extends URIS2>(applicative: Applicative2<URI>): Ap2<URI>
 export function ap<URI extends URIS>(applicative: Applicative<URI>): Ap<URI>
 export function ap<URI extends URIS>(applicative: Applicative<URI>): Ap<URI> {
-  return overload (
-    <E, A, B>(
-      fmf: Kind<URI, E.Either<E, (a: A) => B>>,
-      fma: Kind<URI, E.Either<E, A>>,
-    ) =>
-      pipe (
-        fmf,
-        applicative.map (mf => (mg: E.Either<E, A>) => E.ap (mf, mg)),
-        applicative.ap (fma),
-      ),
-  )
+  const apPointed: ApPointed<URI> = <_, A, B>(
+    fmf: Kind<URI, E.Either<_, (a: A) => B>>,
+    fma: Kind<URI, E.Either<_, A>>,
+  ): Kind<URI, E.Either<_, B>> =>
+    pipe (
+      fmf,
+      applicative.map (mf => (mg: E.Either<_, A>) => E.ap (mf, mg)),
+      applicative.ap (fma),
+    )
+
+  return overload (1, apPointed)
 }

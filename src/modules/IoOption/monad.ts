@@ -42,7 +42,7 @@ interface TapOption extends TapOptionPointed {
 const tapOptionPointed: TapOptionPointed = (mma, f) => () =>
   pipe (mma (), O.tap (f))
 
-export const tapOption: TapOption = overload (tapOptionPointed)
+export const tapOption: TapOption = overload (1, tapOptionPointed)
 
 interface TapEitherPointed {
   <E, A, _>(ma: IoOption<A>, f: (a: A) => Either<E, _>): IoOption<A>
@@ -55,7 +55,7 @@ interface TapEither extends TapEitherPointed {
 const tapEitherPointed: TapEitherPointed = (mma, f) => () =>
   pipe (mma (), O.tapEither (f))
 
-export const tapEither: TapEither = overload (tapEitherPointed)
+export const tapEither: TapEither = overload (1, tapEitherPointed)
 
 interface TapIoEitherPointed {
   <E, A, _>(ma: IoOption<A>, f: (a: A) => IoE.IoEither<E, _>): IoOption<A>
@@ -71,4 +71,4 @@ const tapIoEitherPointed: TapIoEitherPointed = (mma, f) => () =>
     O.tap (a => pipe (a, f, IoE.fromIoEither, O.fromEither)),
   )
 
-export const tapIoEither: TapIoEither = overload (tapIoEitherPointed)
+export const tapIoEither: TapIoEither = overload (1, tapIoEitherPointed)

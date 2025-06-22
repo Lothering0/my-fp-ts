@@ -1,5 +1,5 @@
 import { URIS, URIS2 } from "../Kind"
-import { overload2 } from "../../utils/overloads"
+import { overload } from "../../utils/overloads"
 import { Foldable, Foldable2 } from "./Foldable"
 import { Reduce2Pointed, ReducePointed } from "./Reduce"
 import { ReduceRight2Pointed, ReduceRightPointed } from "./ReduceRight"
@@ -9,8 +9,8 @@ type CreateFoldable = <URI extends URIS>(
 ) => Foldable<URI>
 export const createFoldable: CreateFoldable = foldable => ({
   ...foldable,
-  reduce: overload2 (foldable.reduce),
-  reduceRight: overload2 (foldable.reduceRight),
+  reduce: overload (2, foldable.reduce),
+  reduceRight: overload (2, foldable.reduceRight),
 })
 
 type CreateFoldable2 = <URI extends URIS2>(

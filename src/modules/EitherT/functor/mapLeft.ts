@@ -62,5 +62,8 @@ export function mapLeft<URI extends URIS2>(
 ): MapLeft2<URI>
 export function mapLeft<URI extends URIS>(functor: Functor<URI>): MapLeft<URI>
 export function mapLeft<URI extends URIS>(functor: Functor<URI>): MapLeft<URI> {
-  return overload ((fma, f) => functor.map (fma, E.mapLeft (f)))
+  const mapLeftPointed: MapLeftPointed<URI> = (fma, f) =>
+    functor.map (fma, E.mapLeft (f))
+
+  return overload (1, mapLeftPointed)
 }
