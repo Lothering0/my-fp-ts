@@ -1,3 +1,6 @@
 export * from "./tree"
 export * from "./functor"
+export * from "./applicative"
+export * from "./monad"
+export * from "./foldable"
 export * from "./utils"

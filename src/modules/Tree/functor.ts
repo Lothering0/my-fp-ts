@@ -1,14 +1,12 @@
-export const a = 5
-/* import * as A from "../Array"
-import { fromTree, Tree, URI } from "./tree"
+import * as A from "../Array"
+import { URI } from "./tree"
+import { make, valueOf, forestOf } from "./utils"
 import { Functor, createFunctor } from "../../types/Functor"
+import { pipe } from "../../utils/flow"
 
 export const functor: Functor<URI> = createFunctor ({
   URI,
-  map: <A, B>(fa: Tree<A>, f: (a: A) => B) => ({
-    value: f (fromTree (fa)),
-    forest: A.map (fa.forest, tree => functor.map (tree, f)),
-  }),
+  map: (fa, f) => make (pipe (fa, valueOf, f), A.map (forestOf (fa), map (f))),
 })
 
-export const { map } = functor */
+export const { map } = functor
