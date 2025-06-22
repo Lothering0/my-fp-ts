@@ -19,8 +19,12 @@ export const createApplicativeWithIndex: CreateApplicativeWithIndex =
   applicative => ({
     ...applicative,
     applyWithIndex: overload (1, applicative.applyWithIndex),
-    apWithIndex: pipe (applicative.applyWithIndex, curry, flip, uncurry, f =>
-      overload (1, f),
+    apWithIndex: pipe (
+      applicative.applyWithIndex,
+      curry,
+      flip,
+      uncurry,
+      overload (1),
     ),
   })
 
