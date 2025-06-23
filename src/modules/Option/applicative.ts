@@ -1,22 +1,25 @@
 import { createApplicative, Applicative } from "../../types/Applicative"
 import { URI, none, some } from "./option"
-import { pipe, flow } from "../../utils/flow"
+import { pipe } from "../../utils/flow"
 import { functor } from "./functor"
 import { match } from "./utils"
 
 export const applicative: Applicative<URI> = createApplicative ({
   ...functor,
   of: some,
-  apply: (fa, ff) =>
+  ap: (ff, fa) =>
     match (
-      ff,
+      fa,
       () => none,
-      f =>
+      a =>
         pipe (
-          fa,
-          match (() => none, flow (f, some)),
+          ff,
+          match (
+            () => none,
+            f => pipe (a, f, some),
+          ),
         ),
     ),
 })
 
-export const { of, apply, ap } = applicative
+export const { of, ap, apply, flap, flipApply } = applicative

@@ -14,5 +14,14 @@ export const applicativeWithIndex: ApplicativeWithIndex<URI, number> = {
   URI,
 } as any
 
-export const { of, apply, ap, applyWithIndex, apWithIndex } =
-  applicativeWithIndex
+export const {
+  of,
+  ap,
+  apply,
+  flap,
+  flipApply,
+  apWithIndex,
+  applyWithIndex,
+  flapWithIndex,
+  flipApplyWithIndex,
+} = applicativeWithIndex

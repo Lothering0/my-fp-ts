@@ -7,19 +7,17 @@ import { functor } from "./functor"
 export const applicative: Applicative<URI> = createApplicative ({
   ...functor,
   of: some,
-  apply:
-    <A, B>(fma: TaskOption<A>, fmf: TaskOption<(a: A) => B>): TaskOption<B> =>
+  ap:
+    <A, B>(fmf: TaskOption<(a: A) => B>, fma: TaskOption<A>): TaskOption<B> =>
     () =>
-      fromTaskOption (fma).then (ma =>
-        fromTaskOption (fmf).then (mf =>
-          pipe (
-            O.Do,
-            O.apS ("a", ma),
-            O.apS ("f", mf),
-            O.map (({ f, a }) => f (a)),
-          ),
+      Promise.all ([fromTaskOption (fmf), fromTaskOption (fma)]).then (([mf, ma]) =>
+        pipe (
+          O.Do,
+          O.apS ("a", ma),
+          O.apS ("f", mf),
+          O.map (({ f, a }) => f (a)),
         ),
       ),
 })
 
-export const { of, apply, ap } = applicative
+export const { of, ap, apply, flap, flipApply } = applicative

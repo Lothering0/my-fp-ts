@@ -7,10 +7,10 @@ import { functor } from "./functor"
 export const applicative: Applicative2<URI> = createApplicative2 ({
   ...functor,
   of: right,
-  apply:
+  ap:
     <_, A, B>(
-      fma: IoEither<_, A>,
       fmf: IoEither<_, (a: A) => B>,
+      fma: IoEither<_, A>,
     ): IoEither<_, B> =>
     () =>
       pipe (
@@ -21,4 +21,4 @@ export const applicative: Applicative2<URI> = createApplicative2 ({
       ),
 })
 
-export const { of, apply, ap } = applicative
+export const { of, ap, apply, flap, flipApply } = applicative

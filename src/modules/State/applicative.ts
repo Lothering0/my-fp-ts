@@ -8,8 +8,8 @@ export const applicative: Applicative2<URI> = createApplicative2 ({
   of:
     <S, A>(a: A) =>
     (s: S) => [a, s],
-  apply: (fa, ff) =>
+  ap: (ff, fa) =>
     flow (fa, ([a1, s1]) => pipe (s1, ff, ([a2, s2]) => [a2 (a1), s2])),
 })
 
-export const { of, apply, ap } = applicative
+export const { of, ap, apply, flap, flipApply } = applicative

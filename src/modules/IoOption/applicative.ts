@@ -7,8 +7,8 @@ import { functor } from "./functor"
 export const applicative: Applicative<URI> = createApplicative ({
   ...functor,
   of: some,
-  apply:
-    <A, B>(fma: IoOption<A>, fmf: IoOption<(a: A) => B>): IoOption<B> =>
+  ap:
+    <A, B>(fmf: IoOption<(a: A) => B>, fma: IoOption<A>): IoOption<B> =>
     () =>
       pipe (
         O.Do,
@@ -18,4 +18,4 @@ export const applicative: Applicative<URI> = createApplicative ({
       ),
 })
 
-export const { of, apply, ap } = applicative
+export const { of, ap, apply, flap, flipApply } = applicative

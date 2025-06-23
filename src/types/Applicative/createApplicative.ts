@@ -1,6 +1,6 @@
 import { URIS, URIS2 } from "../Kind"
 import { Applicative, Applicative2 } from "./Applicative"
-import { Apply2Pointed, ApplyPointed } from "./Apply"
+import { Ap2Pointed, ApPointed } from "./Ap"
 import { overload } from "../../utils/overloads"
 import { pipe } from "../../utils/flow"
 import { curry } from "../../utils/curry"
@@ -10,11 +10,18 @@ import { flip } from "../../utils/flip"
 type CreateApplicative = <URI extends URIS>(
   applicative: CreateApplicativeArg<URI>,
 ) => Applicative<URI>
-export const createApplicative: CreateApplicative = applicative => ({
-  ...applicative,
-  apply: overload (1, applicative.apply),
-  ap: pipe (applicative.apply, curry, flip, uncurry, overload (1)),
-})
+export const createApplicative: CreateApplicative = applicative => {
+  const ap = overload (1, applicative.ap)
+  const flap = pipe (applicative.ap, curry, flip, uncurry, overload (1))
+
+  return {
+    ...applicative,
+    ap,
+    apply: ap,
+    flap,
+    flipApply: flap,
+  }
+}
 
 type CreateApplicative2 = <URI extends URIS2>(
   applicative: CreateApplicativeArg2<URI>,
@@ -23,11 +30,11 @@ export const createApplicative2: CreateApplicative2 =
   createApplicative as CreateApplicative2
 
 interface CreateApplicativeArg<URI extends URIS>
-  extends Omit<Applicative<URI>, "apply" | "ap"> {
-  readonly apply: ApplyPointed<URI>
+  extends Omit<Applicative<URI>, "ap" | "apply" | "flap" | "flipApply"> {
+  readonly ap: ApPointed<URI>
 }
 
 interface CreateApplicativeArg2<URI extends URIS2>
-  extends Omit<Applicative2<URI>, "apply" | "ap"> {
-  readonly apply: Apply2Pointed<URI>
+  extends Omit<Applicative2<URI>, "ap" | "apply" | "flap" | "flipApply"> {
+  readonly ap: Ap2Pointed<URI>
 }

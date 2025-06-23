@@ -5,10 +5,10 @@ import { URI, task, fromTask, Task } from "./task"
 export const applicative: Applicative<URI> = createApplicative ({
   ...functor,
   of: task,
-  apply:
-    <A, B>(fa: Task<A>, ff: Task<(a: A) => B>): Task<B> =>
+  ap:
+    <A, B>(ff: Task<(a: A) => B>, fa: Task<A>): Task<B> =>
     () =>
-      fromTask (fa).then (a => fromTask (ff).then (f => f (a))),
+      Promise.all ([fromTask (ff), fromTask (fa)]).then (([f, a]) => f (a)),
 })
 
-export const { of, apply, ap } = applicative
+export const { of, ap, apply, flap, flipApply } = applicative

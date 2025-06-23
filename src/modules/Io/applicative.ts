@@ -6,7 +6,7 @@ import { pipe } from "../../utils/flow"
 export const applicative: Applicative<URI> = createApplicative ({
   ...functor,
   of: io,
-  apply: (fa, ff) => pipe (fa, map (fromIo (ff))),
+  ap: (ff, fa) => pipe (fa, map (fromIo (ff))),
 })
 
-export const { of, apply, ap } = applicative
+export const { of, ap, apply, flap, flipApply } = applicative

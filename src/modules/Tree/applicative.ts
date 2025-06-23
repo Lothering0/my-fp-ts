@@ -7,7 +7,7 @@ import { make, valueOf } from "./utils"
 export const applicative: Applicative<URI> = createApplicative ({
   ...functor,
   of: make,
-  apply: (fa, ff) =>
+  ap: (ff, fa) =>
     pipe (
       fa,
       map (a => map (ff, f => f (a))),
@@ -15,4 +15,4 @@ export const applicative: Applicative<URI> = createApplicative ({
     ),
 })
 
-export const { of, apply, ap } = applicative
+export const { of, ap, apply, flap, flipApply } = applicative
