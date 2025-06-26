@@ -4,13 +4,14 @@ import { createMonad, Monad } from "../../types/Monad"
 import { map } from "./functor"
 import { applicative } from "./applicative"
 import { identity } from "../Identity"
+import { match, zero } from "./utils"
 import { pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
-import { match } from "./utils"
+import { constant } from "../../utils/constant"
 
 export const monad: Monad<O.URI> = createMonad ({
   ...applicative,
-  flat: match (() => O.none, identity),
+  flat: match (zero, identity),
 })
 
 export const {
@@ -38,16 +39,6 @@ interface TapEither extends TapEitherPointed {
 const tapEitherPointed: TapEitherPointed = <E, A, _>(
   ma: O.Option<A>,
   f: (a: A) => E.Either<E, _>,
-): O.Option<A> =>
-  pipe (
-    ma,
-    map (f),
-    flatMap (
-      E.match (
-        () => O.none,
-        () => ma,
-      ),
-    ),
-  )
+): O.Option<A> => pipe (ma, map (f), flatMap (E.match (zero, constant (ma))))
 
 export const tapEither: TapEither = overload (1, tapEitherPointed)

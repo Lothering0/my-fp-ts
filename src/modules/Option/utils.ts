@@ -1,11 +1,12 @@
 import * as E from "../Either"
+import { None, none, Option, some, Some } from "./option"
+import { LazyArg } from "../../types/utils"
 import { pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
-import { LazyArg } from "../../types/utils"
-import { None, none, Option, some, Some } from "./option"
+import { constant } from "../../utils/constant"
 
 type Zero = <A = never>() => Option<A>
-export const zero: Zero = () => none
+export const zero: Zero = constant (none)
 
 type IsSome = <A>(fa: Option<A>) => fa is Some<A>
 export const isSome: IsSome = fa => fa._tag === "Some"
@@ -39,4 +40,4 @@ export const fromOption: FromOption =
     isNone (fa) ? a : fromSome (fa)
 
 type FromEither = <_, A>(ma: E.Either<_, A>) => Option<A>
-export const fromEither: FromEither = E.match (() => none, some)
+export const fromEither: FromEither = E.match (zero, some)
