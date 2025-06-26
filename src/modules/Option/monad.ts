@@ -36,9 +36,7 @@ interface TapEither extends TapEitherPointed {
   <E, A, _>(f: (a: A) => E.Either<E, _>): (ma: O.Option<A>) => O.Option<A>
 }
 
-const tapEitherPointed: TapEitherPointed = <E, A, _>(
-  ma: O.Option<A>,
-  f: (a: A) => E.Either<E, _>,
-): O.Option<A> => pipe (ma, map (f), flatMap (E.match (zero, constant (ma))))
+const tapEitherPointed: TapEitherPointed = (ma, f) =>
+  pipe (ma, map (f), flatMap (E.match (zero, constant (ma))))
 
 export const tapEither: TapEither = overload (1, tapEitherPointed)
