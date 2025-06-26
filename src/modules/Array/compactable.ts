@@ -7,10 +7,7 @@ import { flatMap } from "./monad"
 import { reduce } from "./foldable"
 
 type GetInitialSeparated = <E, A>() => S.Separated<E[], A[]>
-const getInitialSeparated: GetInitialSeparated = () => ({
-  left: [],
-  right: [],
-})
+const getInitialSeparated: GetInitialSeparated = () => S.make ([], [])
 
 export const compactable: Compactable<URI> = {
   URI,
@@ -19,8 +16,8 @@ export const compactable: Compactable<URI> = {
   separate: reduce (getInitialSeparated (), (b, ma) =>
     E.match (
       ma,
-      e => ({ left: [...S.left (b), e], right: S.right (b) }),
-      a => ({ left: S.left (b), right: [...S.right (b), a] }),
+      e => S.make ([...S.left (b), e], S.right (b)),
+      a => S.make (S.left (b), [...S.right (b), a]),
     ),
   ),
 }

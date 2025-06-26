@@ -1,11 +1,13 @@
-import * as NEA from "../NonEmptyArray"
-import * as O from "../Option"
-import { flatMap } from "./monad"
-import { filterMap } from "./filterable"
-import { overload, overloadLast } from "../../utils/overloads"
-import { constant } from "../../utils/constant"
-import { pipe } from "../../utils/flow"
-import { LazyArg } from "../../types/utils"
+import * as NEA from "../../NonEmptyArray"
+import * as O from "../../Option"
+import { flatMap } from "../monad"
+import { filterMap } from "../filterable"
+import { overload, overloadLast } from "../../../utils/overloads"
+import { constant } from "../../../utils/constant"
+import { pipe } from "../../../utils/flow"
+
+type Zero = <A>() => A[]
+export const zero: Zero = () => []
 
 type Length = <A>(as: A[]) => number
 export const length: Length = as => as.length
@@ -17,26 +19,6 @@ export const isNonEmpty = <A>(as: A[]): as is NEA.NonEmptyArray<A> =>
 
 type Copy = <A>(as: A[]) => A[]
 export const copy: Copy = as => [...as]
-
-interface MatchPointed {
-  <A, B>(
-    as: A[],
-    whenEmpty: LazyArg<B>,
-    whenNonEmpty: (as: NEA.NonEmptyArray<A>) => B,
-  ): B
-}
-
-interface Match extends MatchPointed {
-  <A, B>(
-    whenEmpty: LazyArg<B>,
-    whenNonEmpty: (as: NEA.NonEmptyArray<A>) => B,
-  ): (as: A[]) => B
-}
-
-const matchPointed: MatchPointed = (as, whenEmpty, whenNonEmpty) =>
-  isNonEmpty (as) ? whenNonEmpty (as) : whenEmpty ()
-
-export const match: Match = overload (2, matchPointed)
 
 type Head = <A>(as: A[]) => O.Option<A>
 export const head: Head = as =>
@@ -216,3 +198,5 @@ export function comprehension(
     ),
   )
 }
+
+export * from "./matchers"

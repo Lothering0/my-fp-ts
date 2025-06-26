@@ -1,4 +1,6 @@
+import * as A from "./Array"
 import { LazyArg } from "../types/utils"
+import { overload } from "../utils/overloads"
 
 export type List<A> = Nil | Cons<A>
 
@@ -29,14 +31,19 @@ export const zero: Zero = () => nil
 type IsNil = (xs: List<unknown>) => xs is Nil
 export const isNil: IsNil = xs => xs._tag === "Nil"
 
-type Match = <A, B>(
-  xs: List<A>,
-  whenNil: LazyArg<B>,
-  whenCons: (a: A) => B,
-) => B
-export const match: Match = (xs, whenNil, whenCons) =>
+interface MatchPointed {
+  <A, B>(xs: List<A>, whenNil: LazyArg<B>, whenCons: (a: A) => B): B
+}
+
+interface MatchPointFree {
+  <A, B>(whenNil: LazyArg<B>, whenCons: (a: A) => B): (xs: List<A>) => B
+}
+
+interface Match extends MatchPointed, MatchPointFree {}
+
+const matchPointed: MatchPointed = (xs, whenNil, whenCons) =>
   isNil (xs) ? whenNil () : whenCons (xs.head)
+export const match: Match = overload (2, matchPointed)
 
 type FromArray = <A>(xs: A[]) => List<A>
-export const fromArray: FromArray = xs =>
-  xs.reduceRight ((acc, x) => cons (x, acc), nil)
+export const fromArray: FromArray = A.reduceRight (nil, (x, acc) => cons (x, acc))

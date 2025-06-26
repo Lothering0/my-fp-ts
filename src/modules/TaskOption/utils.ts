@@ -2,7 +2,10 @@ import * as T from "../Task"
 import * as O from "../Option"
 import { overload } from "../../utils/overloads"
 import { LazyArg } from "../../types/utils"
-import { fromTaskOption, TaskOption } from "./task-option"
+import { fromTaskOption, none, TaskOption } from "./task-option"
+
+type Zero = <A = never>() => TaskOption<A>
+export const zero: Zero = () => none
 
 interface MatchPointed {
   <A, B>(
