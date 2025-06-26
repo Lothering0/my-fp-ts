@@ -19,9 +19,9 @@ export default [
       "@typescript-eslint/no-unused-vars": [
         "warn",
         {
-          argsIgnorePattern: "^_",
-          varsIgnorePattern: "^_",
-          caughtErrorsIgnorePattern: "^_",
+          argsIgnorePattern: "^_\\d*$",
+          varsIgnorePattern: "^_\\d*$",
+          caughtErrorsIgnorePattern: "^_\\d*$",
         },
       ],
       "@typescript-eslint/no-empty-object-type": "off",
