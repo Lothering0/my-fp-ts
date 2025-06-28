@@ -36,6 +36,35 @@ type Tail = <A>(as: A[]) => O.Option<A[]>
 export const tail: Tail = as =>
   isNonEmpty (as) ? pipe (as, NEA.tail, O.some) : O.none
 
+interface LookupPointed {
+  <A>(i: number, as: A[]): O.Option<A>
+}
+
+interface LookupPointFree {
+  <A>(i: number): (as: A[]) => O.Option<A>
+}
+
+interface Lookup extends LookupPointed, LookupPointFree {}
+
+const lookupPointed: LookupPointed = (i, as) =>
+  i >= 0 && i < length (as) ? pipe (as.at (i)!, O.some) : O.none
+export const lookup: Lookup = overloadLast (1, lookupPointed)
+
+interface AtPointed {
+  <A>(i: number, as: A[]): O.Option<A>
+}
+
+interface AtPointFree {
+  <A>(i: number): (as: A[]) => O.Option<A>
+}
+
+interface At extends AtPointed, AtPointFree {}
+
+const atPointed: AtPointed = (i, as) =>
+  i < length (as) && i >= -length (as) ? pipe (as.at (i)!, O.some) : O.none
+/** Like `lookup` but accepts negative integers where -1 is index of last element, -2 of pre-last and so on. */
+export const at: At = overloadLast (1, atPointed)
+
 interface PrependPointed {
   <A>(a: A, as: A[]): NEA.NonEmptyArray<A>
 }
