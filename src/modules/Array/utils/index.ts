@@ -62,7 +62,7 @@ interface At extends AtPointed, AtPointFree {}
 
 const atPointed: AtPointed = (i, as) =>
   i < length (as) && i >= -length (as) ? pipe (as.at (i)!, O.some) : O.none
-/** Like `lookup` but accepts negative integers where -1 is index of last element, -2 of pre-last and so on. */
+/** Like `lookup` but accepts also negative integers where -1 is index of the last element, -2 of the pre-last and so on. */
 export const at: At = overloadLast (1, atPointed)
 
 interface PrependPointed {
