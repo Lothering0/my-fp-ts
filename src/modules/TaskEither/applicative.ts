@@ -1,26 +1,30 @@
 import * as E from "../Either"
-import { Applicative2, createApplicative2 } from "../../types/Applicative"
-import { URI, right, fromTaskEither, TaskEither } from "./task-either"
+import { Applicative, createApplicative } from "../../types/Applicative"
+import { TaskEitherHKT, right, fromTaskEither, TaskEither } from "./task-either"
 import { pipe } from "../../utils/flow"
 import { functor } from "./functor"
+import { overload } from "../../utils/overloads"
 
-export const applicative: Applicative2<URI> = createApplicative2 ({
+export const applicative: Applicative<TaskEitherHKT> = createApplicative ({
   ...functor,
   of: right,
-  ap:
+  ap: overload (
+    1,
     <_, A, B>(
-      fmf: TaskEither<_, (a: A) => B>,
+      self: TaskEither<_, (a: A) => B>,
       fma: TaskEither<_, A>,
     ): TaskEither<_, B> =>
-    () =>
-      Promise.all ([fromTaskEither (fmf), fromTaskEither (fma)]).then (([mf, ma]) =>
-        pipe (
-          E.Do,
-          E.apS ("a", ma),
-          E.apS ("f", mf),
-          E.map (({ f, a }) => f (a)),
+      () =>
+        Promise.all ([fromTaskEither (self), fromTaskEither (fma)]).then (
+          ([mab, ma]) =>
+            pipe (
+              E.Do,
+              E.apS ("a", ma),
+              E.apS ("ab", mab),
+              E.map (({ ab, a }) => ab (a)),
+            ),
         ),
-      ),
+  ),
 })
 
 export const { of, ap, apply, flap, flipApply } = applicative

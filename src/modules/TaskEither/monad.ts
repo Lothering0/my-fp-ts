@@ -2,14 +2,20 @@
 import * as E from "../Either"
 import * as T from "../Task"
 import * as IoE from "../IoEither"
-import { createMonad2, DoObject, Monad2 } from "../../types/Monad"
+import { createMonad, Monad } from "../../types/Monad"
 import { map } from "./functor"
 import { applicative } from "./applicative"
-import { URI, TaskEither, fromTaskEither, toTaskEither } from "./task-either"
+import {
+  TaskEitherHKT,
+  TaskEither,
+  fromTaskEither,
+  toTaskEither,
+} from "./task-either"
 import { pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
+import { DoObject } from "src/types/DoObject"
 
-export const monad: Monad2<URI> = createMonad2 ({
+export const monad: Monad<TaskEitherHKT> = createMonad ({
   ...applicative,
   flat:
     <E, A>(mma: TaskEither<E, TaskEither<E, A>>): TaskEither<E, A> =>
@@ -33,107 +39,84 @@ export const {
   tapIo,
 } = monad
 
-interface ParallelPointed {
+export const parallel: {
   <N extends string | number | symbol, E, A, B>(
-    fa: TaskEither<E, A>,
+    fb: TaskEither<E, B>,
+  ): (self: TaskEither<E, A>) => TaskEither<E, DoObject<N, A, B>>
+  <N extends string | number | symbol, E, A, B>(
+    self: TaskEither<E, A>,
     fb: TaskEither<E, B>,
   ): TaskEither<E, DoObject<N, A, B>>
-}
+} = overload (
+  1,
+  (self, fb) => () =>
+    Promise.all ([fromTaskEither (self), fromTaskEither (fb)]).then (([ma, mb]) =>
+      E.flatMap (mb, () => ma as any),
+    ),
+)
 
-interface Parallel extends ParallelPointed {
-  <N extends string | number | symbol, E, A, B>(
-    fb: TaskEither<E, B>,
-  ): (fa: TaskEither<E, A>) => TaskEither<E, DoObject<N, A, B>>
-}
-
-const parallelPointed: ParallelPointed = (fa, fb) => () =>
-  Promise.all ([fromTaskEither (fa), fromTaskEither (fb)]).then (([ma, mb]) =>
-    E.flatMap (mb, () => ma as any),
-  )
-
-export const parallel: Parallel = overload (1, parallelPointed)
-
-interface ParallelToPointed {
-  <N extends string | number | symbol, E, A, B>(
-    fa: TaskEither<E, A>,
-    name: Exclude<N, keyof A>,
-    fb: TaskEither<E, B>,
-  ): TaskEither<E, DoObject<N, A, B>>
-}
-
-interface ParallelTo extends ParallelToPointed {
+export const parallelTo: {
   <N extends string | number | symbol, E, A, B>(
     name: Exclude<N, keyof A>,
     fb: TaskEither<E, B>,
-  ): (fa: TaskEither<E, A>) => TaskEither<E, DoObject<N, A, B>>
-}
+  ): (self: TaskEither<E, A>) => TaskEither<E, DoObject<N, A, B>>
+  <N extends string | number | symbol, E, A, B>(
+    self: TaskEither<E, A>,
+    name: Exclude<N, keyof A>,
+    fb: TaskEither<E, B>,
+  ): TaskEither<E, DoObject<N, A, B>>
+} = overload (
+  2,
+  (self, name, fb) => () =>
+    Promise.all ([fromTaskEither (self), fromTaskEither (fb)]).then (([ma, mb]) =>
+      E.apS (ma, name, mb),
+    ),
+)
 
-const parallelToPointed: ParallelToPointed = (fa, name, fb) => () =>
-  Promise.all ([fromTaskEither (fa), fromTaskEither (fb)]).then (([ma, mb]) =>
-    E.apS (ma, name, mb),
-  )
-
-export const parallelTo: ParallelTo = overload (2, parallelToPointed)
-
-interface TapEitherPointed {
-  <E, A, _>(ma: TaskEither<E, A>, f: (a: A) => E.Either<E, _>): TaskEither<E, A>
-}
-
-interface TapEither extends TapEitherPointed {
+export const tapEither: {
   <E, A, _>(
     f: (a: A) => E.Either<E, _>,
-  ): (ma: TaskEither<E, A>) => TaskEither<E, A>
-}
-
-const tapEitherPointed: TapEitherPointed = (ma, f) =>
+  ): (self: TaskEither<E, A>) => TaskEither<E, A>
+  <E, A, _>(
+    self: TaskEither<E, A>,
+    f: (a: A) => E.Either<E, _>,
+  ): TaskEither<E, A>
+} = overload (1, (self, f) =>
   pipe (
     Do,
-    apS ("a", ma),
+    apS ("a", self),
     tap (({ a }) => pipe (a, f, T.of)),
     map (({ a }) => a),
-  )
+  ),
+)
 
-export const tapEither: TapEither = overload (1, tapEitherPointed)
-
-interface TapIoEitherPointed {
+export const tapIoEither: {
   <E, A, _>(
-    ma: TaskEither<E, A>,
+    f: (a: A) => IoE.IoEither<E, _>,
+  ): (self: TaskEither<E, A>) => TaskEither<E, A>
+  <E, A, _>(
+    self: TaskEither<E, A>,
     f: (a: A) => IoE.IoEither<E, _>,
   ): TaskEither<E, A>
-}
-
-interface TapIoEither extends TapIoEitherPointed {
-  <E, A, _>(
-    f: (a: A) => IoE.IoEither<E, _>,
-  ): (ma: TaskEither<E, A>) => TaskEither<E, A>
-}
-
-const tapIoEitherPointed: TapIoEitherPointed = (ma, f) =>
+} = overload (1, (self, f) =>
   pipe (
     Do,
-    apS ("a", ma),
+    apS ("a", self),
     tap (({ a }) => pipe (a, f, IoE.fromIoEither, T.of)),
     map (({ a }) => a),
-  )
+  ),
+)
 
-export const tapIoEither: TapIoEither = overload (1, tapIoEitherPointed)
-
-interface TapTaskPointed {
-  <_, A, _2>(ma: TaskEither<_, A>, f: (a: A) => T.Task<_2>): TaskEither<_, A>
-}
-
-interface TapTask extends TapTaskPointed {
+export const tapTask: {
   <_, A, _2>(
     f: (a: A) => T.Task<_2>,
-  ): (ma: TaskEither<_, A>) => TaskEither<_, A>
-}
-
-const tapTaskPointed: TapTaskPointed = (mma, f) =>
+  ): (self: TaskEither<_, A>) => TaskEither<_, A>
+  <_, A, _2>(self: TaskEither<_, A>, f: (a: A) => T.Task<_2>): TaskEither<_, A>
+} = overload (1, (self, f) =>
   pipe (
     Do,
-    apS ("a", mma),
-    tap (({ a }) => toTaskEither (f (a))),
+    apS ("a", self),
+    tap (({ a }) => pipe (a, f, toTaskEither)),
     map (({ a }) => a),
-  )
-
-export const tapTask: TapTask = overload (1, tapTaskPointed)
+  ),
+)

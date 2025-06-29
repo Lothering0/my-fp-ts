@@ -1,23 +1,27 @@
 import * as O from "../Option"
 import { Applicative, createApplicative } from "../../types/Applicative"
-import { URI, some, fromTaskOption, TaskOption } from "./task-option"
+import { TaskOptionHKT, some, fromTaskOption, TaskOption } from "./task-option"
 import { pipe } from "../../utils/flow"
 import { functor } from "./functor"
+import { overload } from "../../utils/overloads"
 
-export const applicative: Applicative<URI> = createApplicative ({
+export const applicative: Applicative<TaskOptionHKT> = createApplicative ({
   ...functor,
   of: some,
-  ap:
-    <A, B>(fmf: TaskOption<(a: A) => B>, fma: TaskOption<A>): TaskOption<B> =>
-    () =>
-      Promise.all ([fromTaskOption (fmf), fromTaskOption (fma)]).then (([mf, ma]) =>
-        pipe (
-          O.Do,
-          O.apS ("a", ma),
-          O.apS ("f", mf),
-          O.map (({ f, a }) => f (a)),
+  ap: overload (
+    1,
+    <A, B>(self: TaskOption<(a: A) => B>, fma: TaskOption<A>): TaskOption<B> =>
+      () =>
+        Promise.all ([fromTaskOption (self), fromTaskOption (fma)]).then (
+          ([mab, ma]) =>
+            pipe (
+              O.Do,
+              O.apS ("a", ma),
+              O.apS ("ab", mab),
+              O.map (({ ab, a }) => ab (a)),
+            ),
         ),
-      ),
+  ),
 })
 
 export const { of, ap, apply, flap, flipApply } = applicative

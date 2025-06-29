@@ -1,29 +1,27 @@
 import * as T from "../Task"
 import * as E from "../Either"
-import { URIS2 } from "../../types/Kind"
 import { identity } from "../Identity"
 import { flow } from "../../utils/flow"
+import { HKT } from "../../types/HKT"
 
-declare module "../../types/Kind" {
-  interface URIToKind2<E, A> {
-    readonly TaskEither: TaskEither<E, A>
-  }
+export interface TaskEitherHKT extends HKT {
+  readonly type: TaskEither<this["_E"], this["_A"]>
 }
 
 export interface TaskEither<E, A> extends T.Task<E.Either<E, A>> {}
 
-export const URI = "TaskEither" satisfies URIS2
-export type URI = typeof URI
+export const left: {
+  <E>(e: E): TaskEither<E, never>
+} = flow (E.left, T.of)
 
-type LeftConstructor = <E>(e: E) => TaskEither<E, never>
-export const left: LeftConstructor = flow (E.left, T.of)
+export const right: {
+  <A>(a: A): TaskEither<never, A>
+} = flow (E.right, T.of)
 
-type RightConstructor = <A>(a: A) => TaskEither<never, A>
-export const right: RightConstructor = flow (E.right, T.of)
+export const toTaskEither: {
+  <E, A>(ma: T.Task<A>): TaskEither<E, A>
+} = ma => () => ma ().then (E.right, E.left)
 
-type ToTaskEither = <E, A>(ma: T.Task<A>) => TaskEither<E, A>
-export const toTaskEither: ToTaskEither = ma => () => ma ().then (E.right, E.left)
-
-type FromTaskEither = <E, A>(ma: TaskEither<E, A>) => Promise<E.Either<E, A>>
-export const fromTaskEither: FromTaskEither = mma =>
-  mma ().then (identity, E.left)
+export const fromTaskEither: {
+  <E, A>(ma: TaskEither<E, A>): Promise<E.Either<E, A>>
+} = mma => mma ().then (identity, E.left)

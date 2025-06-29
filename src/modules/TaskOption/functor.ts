@@ -1,13 +1,15 @@
 import * as O from "../Option"
-import { createFunctor, Functor } from "../../types/Functor"
-import { URI, TaskOption, fromTaskOption } from "./task-option"
+import { Functor } from "../../types/Functor"
+import { TaskOptionHKT, TaskOption, fromTaskOption } from "./task-option"
+import { overload } from "src/utils/overloads"
 
-export const functor: Functor<URI> = createFunctor ({
-  URI,
-  map:
-    <A, B>(fma: TaskOption<A>, f: (a: A) => B): TaskOption<B> =>
-    () =>
-      fromTaskOption (fma).then (O.map (f)),
-})
+export const functor: Functor<TaskOptionHKT> = {
+  map: overload (
+    1,
+    <A, B>(self: TaskOption<A>, ab: (a: A) => B): TaskOption<B> =>
+      () =>
+        fromTaskOption (self).then (O.map (ab)),
+  ),
+}
 
 export const { map } = functor

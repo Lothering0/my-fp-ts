@@ -4,25 +4,18 @@ import { overload } from "../../utils/overloads"
 import { LazyArg } from "../../types/utils"
 import { fromTaskOption, none, TaskOption } from "./task-option"
 
-type Zero = <A = never>() => TaskOption<A>
-export const zero: Zero = () => none
+export const zero: {
+  <A = never>(): TaskOption<A>
+} = () => none
 
-interface MatchPointed {
+export const match: {
+  <A, B>(
+    whenNone: LazyArg<B>,
+    whenSome: (a: A) => B,
+  ): (self: TaskOption<A>) => T.Task<B>
   <A, B>(
     mma: TaskOption<A>,
     whenNone: LazyArg<B>,
     whenSome: (a: A) => B,
   ): T.Task<B>
-}
-
-interface Match extends MatchPointed {
-  <A, B>(
-    whenNone: LazyArg<B>,
-    whenSome: (a: A) => B,
-  ): (mma: TaskOption<A>) => T.Task<B>
-}
-
-const matchPointed: MatchPointed = (mma, f, g) => () =>
-  fromTaskOption (mma).then (O.match (f, g))
-
-export const match: Match = overload (2, matchPointed)
+} = overload (2, (mma, f, g) => () => fromTaskOption (mma).then (O.match (f, g)))

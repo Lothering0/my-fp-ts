@@ -1,7 +1,8 @@
 import { TaskOption, fromTaskOption } from "./task-option"
 import { Semigroup } from "../../types/Semigroup"
 
-type GetRaceSemigroup = <A>() => Semigroup<TaskOption<A>>
-export const getRaceSemigroup: GetRaceSemigroup = () => ({
+export const getRaceSemigroup: {
+  <A>(): Semigroup<TaskOption<A>>
+} = () => ({
   concat: (x, y) => () => Promise.race ([fromTaskOption (x), fromTaskOption (y)]),
 })

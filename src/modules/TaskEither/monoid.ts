@@ -4,8 +4,9 @@ import { TaskEither } from "./task-either"
 import { right } from "../Either"
 import { _ } from "../../utils/underscore"
 
-type GetRaceMonoid = <E, A>() => Monoid<TaskEither<E, A>>
-export const getRaceMonoid: GetRaceMonoid = () => ({
+export const getRaceMonoid: {
+  <E, A>(): Monoid<TaskEither<E, A>>
+} = () => ({
   ...getRaceSemigroup (),
   empty: () => new Promise (() => right (_)),
 })

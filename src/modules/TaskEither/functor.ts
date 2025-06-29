@@ -1,22 +1,26 @@
 import * as E from "../Either"
-import { createFunctor2, Functor2 } from "../../types/Functor"
+import { Functor } from "../../types/Functor"
 import { Bifunctor, createBifunctor } from "../../types/Bifunctor"
-import { URI, fromTaskEither, TaskEither } from "./task-either"
+import { TaskEitherHKT, fromTaskEither, TaskEither } from "./task-either"
+import { overload } from "../../utils/overloads"
 
-export const functor: Functor2<URI> = createFunctor2 ({
-  URI,
-  map:
-    <_, A, B>(fma: TaskEither<_, A>, f: (a: A) => B): TaskEither<_, B> =>
-    () =>
-      fromTaskEither (fma).then (E.map (f)),
-})
+export const functor: Functor<TaskEitherHKT> = {
+  map: overload (
+    1,
+    <_, A, B>(self: TaskEither<_, A>, ab: (a: A) => B): TaskEither<_, B> =>
+      () =>
+        fromTaskEither (self).then (E.map (ab)),
+  ),
+}
 
-export const bifunctor: Bifunctor<URI> = createBifunctor ({
+export const bifunctor: Bifunctor<TaskEitherHKT> = createBifunctor ({
   ...functor,
-  mapLeft:
-    <E, _, D>(fma: TaskEither<E, _>, f: (e: E) => D): TaskEither<D, _> =>
-    () =>
-      fromTaskEither (fma).then (E.mapLeft (f)),
+  mapLeft: overload (
+    1,
+    <E, _, D>(self: TaskEither<E, _>, ed: (e: E) => D): TaskEither<D, _> =>
+      () =>
+        fromTaskEither (self).then (E.mapLeft (ed)),
+  ),
 })
 
 export const { map, mapLeft, bimap } = bifunctor
