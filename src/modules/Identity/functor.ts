@@ -1,9 +1,9 @@
-import { URI } from "./identity"
-import { createFunctor, Functor } from "../../types/Functor"
+import { IdentityHKT } from "./identity"
+import { Functor } from "../../types/Functor"
+import { overload } from "../../utils/overloads"
 
-export const functor: Functor<URI> = createFunctor ({
-  URI,
-  map: (fa, f) => f (fa),
-})
+export const functor: Functor<IdentityHKT> = {
+  map: overload (1, (self, ab) => ab (self)),
+}
 
 export const { map } = functor

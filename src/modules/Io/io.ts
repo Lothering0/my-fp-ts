@@ -1,20 +1,17 @@
-import { URIS } from "../../types/Kind"
+import { HKT } from "../../types/HKT"
 
-declare module "../../types/Kind" {
-  interface URIToKind<A> {
-    readonly Io: Io<A>
-  }
+export interface IoHKT extends HKT {
+  readonly type: Io<this["_A"]>
 }
 
 export interface Io<A> {
   (): A
 }
 
-export const URI = "Io" satisfies URIS
-export type URI = typeof URI
+export const io: {
+  <A>(a: A): Io<A>
+} = a => () => a
 
-type IOConstructor = <A>(a: A) => Io<A>
-export const io: IOConstructor = a => () => a
-
-type FromIO = <A>(ma: Io<A>) => A
-export const fromIo: FromIO = ma => ma ()
+export const fromIo: {
+  <A>(ma: Io<A>): A
+} = ma => ma ()

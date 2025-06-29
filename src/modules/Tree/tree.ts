@@ -1,9 +1,7 @@
-import { URIS } from "../../types/Kind"
+import { HKT } from "../../types/HKT"
 
-declare module "../../types/Kind" {
-  interface URIToKind<A> {
-    readonly Tree: Tree<A>
-  }
+export interface TreeHKT extends HKT {
+  readonly type: Tree<this["_A"]>
 }
 
 export interface Tree<A> {
@@ -12,6 +10,3 @@ export interface Tree<A> {
 }
 
 export type Forest<A> = Tree<A>[]
-
-export const URI = "Tree" satisfies URIS
-export type URI = typeof URI

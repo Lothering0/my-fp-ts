@@ -1,18 +1,18 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as A from "../Array"
-import { URI } from "./non-empty-array"
+import { NonEmptyArrayHKT } from "./non-empty-array"
 import { Applicative } from "../../types/Applicative"
 import { ApplicativeWithIndex } from "../../types/ApplicativeWithIndex"
 
-export const applicative: Applicative<URI> = {
+export const applicative: Applicative<NonEmptyArrayHKT> = {
   ...A.applicative,
-  URI,
-} as any
+} as Applicative<NonEmptyArrayHKT>
 
-export const applicativeWithIndex: ApplicativeWithIndex<URI, number> = {
+export const applicativeWithIndex: ApplicativeWithIndex<
+  NonEmptyArrayHKT,
+  number
+> = {
   ...A.applicativeWithIndex,
-  URI,
-} as any
+} as ApplicativeWithIndex<NonEmptyArrayHKT, number>
 
 export const {
   of,

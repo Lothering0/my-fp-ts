@@ -30,69 +30,93 @@ interface OverloadedLastN {
  */
 export function overloadLast<A extends OverloadedLast0>(
   n: 0,
-  pointed: (arg: any) => any,
+  pointed: (arg: Parameters<A>[0]) => ReturnType<A>,
 ): A
 /**
  * Overloads `point => r` with `() => point => r`
  */
 export function overloadLast<A extends OverloadedLast0>(
   n: 0,
-): (pointed: (arg: any) => any) => A
+): (pointed: (arg: Parameters<A>[0]) => ReturnType<A>) => A
 /**
  * Overloads `(a, point) => r` with `a => point => r`
  */
 export function overloadLast<A extends OverloadedLast1>(
   n: 1,
-  pointed: (...args: [any, any]) => any,
+  pointed: (...args: [Parameters<A>[0], Parameters<A>[1]]) => ReturnType<A>,
 ): A
 /**
  * Overloads `(a, point) => r` with `a => point => r`
  */
 export function overloadLast<A extends OverloadedLast1>(
   n: 1,
-): (pointed: (...args: [any, any]) => any) => A
+): (
+  pointed: (...args: [Parameters<A>[0], Parameters<A>[1]]) => ReturnType<A>,
+) => A
 /**
  * Overloads `(a, b, point) => r` with `(a, b) => point => r`
  */
 export function overloadLast<A extends OverloadedLast2>(
   n: 2,
-  pointed: (...args: [any, any, any]) => any,
+  pointed: (
+    ...args: [Parameters<A>[0], Parameters<A>[1], Parameters<A>[2]]
+  ) => ReturnType<A>,
 ): A
 /**
  * Overloads `(a, b, point) => r` with `(a, b) => point => r`
  */
 export function overloadLast<A extends OverloadedLast2>(
   n: 2,
-): (pointed: (...args: [any, any, any]) => any) => A
+): (
+  pointed: (
+    ...args: [Parameters<A>[0], Parameters<A>[1], Parameters<A>[2]]
+  ) => ReturnType<A>,
+) => A
 /**
  * Overloads `(a, b, c, point) => r` with `(a, b, c) => point => r`
  */
 export function overloadLast<A extends OverloadedLast3>(
   n: 3,
-  pointed: (...args: [any, any, any, any]) => any,
+  pointed: (
+    ...args: [
+      Parameters<A>[0],
+      Parameters<A>[1],
+      Parameters<A>[2],
+      Parameters<A>[3],
+    ]
+  ) => ReturnType<A>,
 ): A
 /**
  * Overloads `(a, b, c, point) => r` with `(a, b, c) => point => r`
  */
 export function overloadLast<A extends OverloadedLast3>(
   n: 3,
-): (pointed: (...args: [any, any, any, any]) => any) => A
+): (
+  pointed: (
+    ...args: [
+      Parameters<A>[0],
+      Parameters<A>[1],
+      Parameters<A>[2],
+      Parameters<A>[3],
+    ]
+  ) => ReturnType<A>,
+) => A
 /**
  * Overloads `(...nargs, point) => r` with `(...nargs) => point => r`
  */
 export function overloadLast<A extends OverloadedLastN>(
   n: number,
-  pointed: (...args: any[]) => any,
+  pointed: (...args: Parameters<A>) => ReturnType<A>,
 ): A
 /**
  * Overloads `(...nargs, point) => r` with `(...nargs) => point => r`
  */
 export function overloadLast<A extends OverloadedLastN>(
   n: number,
-): (pointed: (...args: any[]) => any) => A
+): (pointed: (...args: Parameters<A>) => ReturnType<A>) => A
 export function overloadLast<A extends OverloadedLastN>(
   n: number,
-  pointed?: (...args: any[]) => any,
+  pointed?: (...args: Parameters<A>) => ReturnType<A>,
 ): A {
   const overloadLast_ =
     (pointed: (...args: any[]) => any) =>

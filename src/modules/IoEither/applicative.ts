@@ -1,24 +1,27 @@
 import * as E from "../Either"
-import { Applicative2, createApplicative2 } from "../../types/Applicative"
-import { URI, right, fromIoEither, IoEither } from "./io-either"
+import { Applicative, createApplicative } from "../../types/Applicative"
+import { right, fromIoEither, IoEither, IoEitherHKT } from "./io-either"
 import { pipe } from "../../utils/flow"
 import { functor } from "./functor"
+import { overload } from "src/utils/overloads"
 
-export const applicative: Applicative2<URI> = createApplicative2 ({
+export const applicative: Applicative<IoEitherHKT> = createApplicative ({
   ...functor,
   of: right,
-  ap:
+  ap: overload (
+    1,
     <_, A, B>(
-      fmf: IoEither<_, (a: A) => B>,
-      fma: IoEither<_, A>,
+      self: IoEither<_, (a: A) => B>,
+      fa: IoEither<_, A>,
     ): IoEither<_, B> =>
-    () =>
-      pipe (
-        E.Do,
-        E.apS ("a", fromIoEither (fma)),
-        E.apS ("f", fromIoEither (fmf)),
-        E.map (({ a, f }) => f (a)),
-      ),
+      () =>
+        pipe (
+          E.Do,
+          E.apS ("a", fromIoEither (fa)),
+          E.apS ("ab", fromIoEither (self)),
+          E.map (({ a, ab }) => ab (a)),
+        ),
+  ),
 })
 
 export const { of, ap, apply, flap, flipApply } = applicative

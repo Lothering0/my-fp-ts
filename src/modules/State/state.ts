@@ -1,15 +1,10 @@
-import { URIS2 } from "../../types/Kind"
+import { HKT } from "../../types/HKT"
 import { _ } from "../../utils/underscore"
 
-declare module "../../types/Kind" {
-  interface URIToKind2<E, A> {
-    readonly State: State<E, A>
-  }
+export interface StateHKT extends HKT {
+  readonly type: State<this["_E"], this["_A"]>
 }
 
 export interface State<S, A> {
   (s: S): [A, S]
 }
-
-export const URI = "State" satisfies URIS2
-export type URI = typeof URI

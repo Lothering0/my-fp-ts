@@ -3,8 +3,9 @@ import { Either, right } from "./either"
 import { isLeft, fromRight } from "./utils"
 import { pipe } from "../../utils/flow"
 
-type GetSemigroup = <E, A>(semigroup: Semigroup<A>) => Semigroup<Either<E, A>>
-export const getSemigroup: GetSemigroup = s => ({
+export const getSemigroup: {
+  <E, A>(semigroup: Semigroup<A>): Semigroup<Either<E, A>>
+} = s => ({
   concat: (mx, my) =>
     isLeft (mx)
       ? isLeft (my)

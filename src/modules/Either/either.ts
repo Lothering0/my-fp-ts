@@ -1,15 +1,10 @@
-import { URIS2 } from "../../types/Kind"
+import { HKT } from "../../types/HKT"
 
-declare module "../../types/Kind" {
-  interface URIToKind2<E, A> {
-    readonly Either: Either<E, A>
-  }
+export interface EitherHKT extends HKT {
+  readonly type: Either<this["_E"], this["_A"]>
 }
 
 export type Either<E, A> = Left<E> | Right<A>
-
-export const URI = "Either" satisfies URIS2
-export type URI = typeof URI
 
 export interface Left<E> {
   readonly _tag: "Left"
@@ -21,14 +16,16 @@ export interface Right<A> {
   readonly value: A
 }
 
-type LeftConstructor = <E = never, A = never>(e: E) => Either<E, A>
-export const left: LeftConstructor = value => ({
+export const left: {
+  <E = never, A = never>(e: E): Either<E, A>
+} = value => ({
   _tag: "Left",
   value,
 })
 
-type RightConstructor = <E = never, A = never>(a: A) => Either<E, A>
-export const right: RightConstructor = value => ({
+export const right: {
+  <E = never, A = never>(a: A): Either<E, A>
+} = value => ({
   _tag: "Right",
   value,
 })

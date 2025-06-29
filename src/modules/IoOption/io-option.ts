@@ -1,37 +1,34 @@
 import * as Io from "../Io"
 import * as O from "../Option"
 import * as E from "../Either"
-import { URIS } from "../../types/Kind"
 import { tryDo } from "../../utils/exceptions"
 import { pipe } from "../../utils/flow"
+import { HKT } from "../../types/HKT"
 
-declare module "../../types/Kind" {
-  interface URIToKind<A> {
-    readonly IoOption: IoOption<A>
-  }
+export interface IoOptionHKT extends HKT {
+  readonly type: IoOption<this["_A"]>
 }
 
 export interface IoOption<A> extends Io.Io<O.Option<A>> {}
 
-export const URI = "IoOption" satisfies URIS
-export type URI = typeof URI
+export const none: IoOption<never> = () => O.none
 
-type NoneConstructor = IoOption<never>
-export const none: NoneConstructor = () => O.none
+export const some: {
+  <A>(a: A): IoOption<A>
+} = a => () => O.some (a)
 
-type SomeConstructor = <A>(a: A) => IoOption<A>
-export const some: SomeConstructor = a => () => O.some (a)
-
-type ToIoOption = <A>(ma: Io.Io<A>) => IoOption<A>
-export const toIoOption: ToIoOption = ma => () =>
+export const toIoOption: {
+  <A>(ma: Io.Io<A>): IoOption<A>
+} = ma => () =>
   pipe (
     ma,
     tryDo,
     E.match (() => O.none, O.some),
   )
 
-type FromIoOption = <A>(ma: IoOption<A>) => O.Option<A>
-export const fromIoOption: FromIoOption = <A>(ma: IoOption<A>) => {
+export const fromIoOption: {
+  <A>(ma: IoOption<A>): O.Option<A>
+} = <A>(ma: IoOption<A>) => {
   try {
     return ma ()
   } catch {

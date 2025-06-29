@@ -1,9 +1,7 @@
-import { URIS2 } from "../../types/Kind"
+import { HKT } from "../../types/HKT"
 
-declare module "../../types/Kind" {
-  interface URIToKind2<E, A> {
-    readonly Separated: Separated<E, A>
-  }
+export interface SeparatedHKT extends HKT {
+  readonly type: Separated<this["_E"], this["_A"]>
 }
 
 export interface Separated<E, A> {
@@ -11,11 +9,10 @@ export interface Separated<E, A> {
   readonly right: A
 }
 
-export const URI = "Separated" satisfies URIS2
-export type URI = typeof URI
+export const left: {
+  <E>(fe: Separated<E, unknown>): E
+} = fe => fe.left
 
-type Left = <E>(fe: Separated<E, unknown>) => E
-export const left: Left = fe => fe.left
-
-type Right = <A>(fa: Separated<unknown, A>) => A
-export const right: Right = fa => fa.right
+export const right: {
+  <A>(fa: Separated<unknown, A>): A
+} = fa => fa.right

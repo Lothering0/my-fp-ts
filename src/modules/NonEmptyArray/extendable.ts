@@ -1,11 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as A from "../Array"
 import { Extendable } from "../../types/Extendable"
-import { URI } from "./non-empty-array"
+import { NonEmptyArrayHKT } from "./non-empty-array"
 
-export const extendable: Extendable<URI> = {
+export const extendable: Extendable<NonEmptyArrayHKT> = {
   ...A.extendable,
-  URI,
-} as any
+} as Extendable<NonEmptyArrayHKT>
 
 export const { extend } = extendable

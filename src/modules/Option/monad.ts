@@ -9,7 +9,7 @@ import { pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
 import { constant } from "../../utils/constant"
 
-export const monad: Monad<O.URI> = createMonad ({
+export const monad: Monad<O.OptionHKT> = createMonad ({
   ...applicative,
   flat: match (zero, identity),
 })
@@ -28,15 +28,11 @@ export const {
   tapIo,
 } = monad
 
-interface TapEitherPointed {
-  <E, A, _>(ma: O.Option<A>, f: (a: A) => E.Either<E, _>): O.Option<A>
-}
-
-interface TapEither extends TapEitherPointed {
-  <E, A, _>(f: (a: A) => E.Either<E, _>): (ma: O.Option<A>) => O.Option<A>
-}
-
-const tapEitherPointed: TapEitherPointed = (ma, f) =>
-  pipe (ma, map (f), flatMap (E.match (zero, constant (ma))))
-
-export const tapEither: TapEither = overload (1, tapEitherPointed)
+export const tapEither: {
+  <E, A, _>(afe: (a: A) => E.Either<E, _>): (self: O.Option<A>) => O.Option<A>
+  <E, A, _>(self: O.Option<A>, afe: (a: A) => E.Either<E, _>): O.Option<A>
+} = overload (
+  1,
+  <E, A, _>(self: O.Option<A>, afe: (a: A) => E.Either<E, _>): O.Option<A> =>
+    pipe (self, map (afe), flatMap (E.match (zero, constant (self)))),
+)

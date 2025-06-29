@@ -1,12 +1,14 @@
-import { createFunctor, Functor } from "../../types/Functor"
-import { URI, Task, fromTask } from "./task"
+import { Functor } from "../../types/Functor"
+import { TaskHKT, Task, fromTask } from "./task"
+import { overload } from "../../utils/overloads"
 
-export const functor: Functor<URI> = createFunctor ({
-  URI,
-  map:
-    <A, B>(fa: Task<A>, f: (a: A) => B): Task<B> =>
-    () =>
-      fromTask (fa).then (f),
-})
+export const functor: Functor<TaskHKT> = {
+  map: overload (
+    1,
+    <A, B>(self: Task<A>, ab: (a: A) => B): Task<B> =>
+      () =>
+        fromTask (self).then (ab),
+  ),
+}
 
 export const { map } = functor

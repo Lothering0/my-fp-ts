@@ -1,12 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as A from "../Array"
-import { URI } from "./non-empty-array"
+import { NonEmptyArrayHKT } from "./non-empty-array"
 import { Monad } from "../../types/Monad"
 
-export const monad: Monad<URI> = {
+export const monad: Monad<NonEmptyArrayHKT> = {
   ...A.monad,
-  URI,
-} as any
+} as Monad<NonEmptyArrayHKT>
 
 export const {
   Do,

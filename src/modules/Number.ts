@@ -35,71 +35,30 @@ export const productGroup: Group<number> = {
   inverse: a => 1 / a,
 }
 
-interface AddPointed {
-  (a: number, b: number): number
-}
-
-interface AddPointFree {
+export const add: {
   (b: number): (a: number) => number
-}
-
-interface Add extends AddPointed, AddPointFree {}
-
-const addPointed: AddPointed = (a, b) => a + b
-export const add: Add = overload (1, addPointed)
-
-interface SubtractPointed {
   (a: number, b: number): number
-}
+} = overload (1, (a, b) => a + b)
 
-interface SubtractPointFree {
+export const subtract: {
   (b: number): (a: number) => number
-}
-
-interface Subtract extends SubtractPointed, SubtractPointFree {}
-
-const subtractPointed: SubtractPointed = (a, b) => a - b
-export const subtract: Subtract = overload (1, subtractPointed)
-
-interface MultiplyPointed {
   (a: number, b: number): number
-}
+} = overload (1, (a, b) => a - b)
 
-interface MultiplyPointFree {
+export const multiply: {
   (b: number): (a: number) => number
-}
-
-interface Multiply extends MultiplyPointed, MultiplyPointFree {}
-
-const multiplyPointed: MultiplyPointed = (a, b) => a * b
-export const multiply: Multiply = overload (1, multiplyPointed)
-
-interface DividePointed {
   (a: number, b: number): number
-}
+} = overload (1, (a, b) => a * b)
 
-interface DividePointFree {
+export const divide: {
   (b: number): (a: number) => number
-}
+  (a: number, b: number): number
+} = overload (1, (a, b) => a / b)
 
-interface Divide extends DividePointed, DividePointFree {}
-
-const dividePointed: DividePointed = (a, b) => a / b
-export const divide: Divide = overload (1, dividePointed)
-
-interface DivideSafePointed {
-  (a: number, b: number): O.Option<number>
-}
-
-interface DivideSafePointFree {
+export const divideSafe: {
   (b: number): (a: number) => O.Option<number>
-}
-
-interface DivideSafe extends DivideSafePointed, DivideSafePointFree {}
-
-const divideSafePointed: DivideSafePointed = (a, b) =>
-  b === 0 ? O.none : O.some (a / b)
-export const divideSafe: DivideSafe = overload (1, divideSafePointed)
+  (a: number, b: number): O.Option<number>
+} = overload (1, (a, b) => b === 0 ? O.none : O.some (a / b))
 
 export const isEven: Predicate<number> = a => a % 2 === 0
 

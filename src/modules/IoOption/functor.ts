@@ -1,14 +1,16 @@
 import * as O from "../Option"
-import { createFunctor, Functor } from "../../types/Functor"
-import { URI, fromIoOption, IoOption } from "./io-option"
+import { Functor } from "../../types/Functor"
+import { IoOptionHKT, fromIoOption, IoOption } from "./io-option"
 import { pipe } from "../../utils/flow"
+import { overload } from "../../utils/overloads"
 
-export const functor: Functor<URI> = createFunctor ({
-  URI,
-  map:
-    <A, B>(fma: IoOption<A>, f: (a: A) => B): IoOption<B> =>
-    () =>
-      pipe (fma, fromIoOption, O.map (f)),
-})
+export const functor: Functor<IoOptionHKT> = {
+  map: overload (
+    1,
+    <A, B>(self: IoOption<A>, ab: (a: A) => B): IoOption<B> =>
+      () =>
+        pipe (self, fromIoOption, O.map (ab)),
+  ),
+}
 
 export const { map } = functor

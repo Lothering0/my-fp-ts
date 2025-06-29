@@ -4,8 +4,9 @@ import { Semigroup } from "../../types/Semigroup"
 import { pipe } from "../../utils/flow"
 import { fromSome, isNone } from "./utils"
 
-type GetMonoid = <A>(semigroup: Semigroup<A>) => Monoid<Option<A>>
-export const getMonoid: GetMonoid = s => ({
+export const getMonoid: {
+  <A>(semigroup: Semigroup<A>): Monoid<Option<A>>
+} = s => ({
   empty: none,
   concat: (mx, my) =>
     isNone (mx)

@@ -1,9 +1,9 @@
 import { Comonad } from "../../types/Comonad"
-import { URI } from "./tree"
+import { TreeHKT } from "./tree"
 import { valueOf } from "./utils"
 import { extendable } from "./extendable"
 
-export const comonad: Comonad<URI> = {
+export const comonad: Comonad<TreeHKT> = {
   ...extendable,
   extract: valueOf,
 }

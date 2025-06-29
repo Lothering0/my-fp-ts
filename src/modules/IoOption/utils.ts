@@ -4,18 +4,13 @@ import { overload } from "../../utils/overloads"
 import { LazyArg } from "../../types/utils"
 import { fromIoOption, IoOption, none } from "./io-option"
 
-type Zero = <A = never>() => IoOption<A>
-export const zero: Zero = () => none
+export const zero: {
+  <A = never>(): IoOption<A>
+} = () => none
 
-interface MatchPointed {
-  <A, B>(fa: IoOption<A>, b: LazyArg<B>, f: (a: A) => B): B
-}
-
-interface Match extends MatchPointed {
-  <A, B>(fa: IoOption<A>, b: LazyArg<B>, f: (a: A) => B): B
-}
-
-const matchPointed: MatchPointed = (fa, whenNone, whenSome) =>
-  pipe (fa, fromIoOption, O.match (whenNone, whenSome))
-
-export const match: Match = overload (2, matchPointed)
+export const match: {
+  <A, B>(b: LazyArg<B>, f: (a: A) => B): (self: IoOption<A>) => B
+  <A, B>(self: IoOption<A>, b: LazyArg<B>, f: (a: A) => B): B
+} = overload (2, (fa, whenNone, whenSome) =>
+  pipe (fa, fromIoOption, O.match (whenNone, whenSome)),
+)

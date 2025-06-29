@@ -1,10 +1,5 @@
-import { URIS } from "../../types/Kind"
+import { HKT } from "../../types/HKT"
 
-declare module "../../types/Kind" {
-  interface URIToKind<A> {
-    readonly Array: Array<A>
-  }
+export interface ArrayHKT extends HKT {
+  readonly type: Array<this["_A"]>
 }
-
-export const URI = "Array" satisfies URIS
-export type URI = typeof URI

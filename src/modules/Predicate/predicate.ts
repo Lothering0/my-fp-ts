@@ -1,14 +1,9 @@
-import { URIS } from "../../types/Kind"
+import { HKT } from "../../types/HKT"
 
-declare module "../../types/Kind" {
-  interface URIToKind<A> {
-    readonly Predicate: Predicate<A>
-  }
+export interface PredicateHKT extends HKT {
+  readonly type: Predicate<this["_A"]>
 }
 
 export interface Predicate<A> {
   (a: A): boolean
 }
-
-export const URI = "Predicate" satisfies URIS
-export type URI = typeof URI

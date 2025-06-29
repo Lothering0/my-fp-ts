@@ -1,15 +1,10 @@
-import { URIS } from "../../types/Kind"
+import { HKT } from "../../types/HKT"
 
-declare module "../../types/Kind" {
-  interface URIToKind<A> {
-    readonly Option: Option<A>
-  }
+export interface OptionHKT extends HKT {
+  readonly type: Option<this["_A"]>
 }
 
 export type Option<A> = None | Some<A>
-
-export const URI = "Option" satisfies URIS
-export type URI = typeof URI
 
 export interface None {
   readonly _tag: "None"
@@ -20,8 +15,9 @@ export interface Some<A> {
   readonly value: A
 }
 
-type SomeConstructor = <A>(a: A) => Option<A>
-export const some: SomeConstructor = value => ({
+export const some: {
+  <A>(a: A): Option<A>
+} = value => ({
   _tag: "Some",
   value,
 })

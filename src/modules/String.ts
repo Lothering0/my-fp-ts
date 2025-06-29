@@ -9,8 +9,10 @@ export const toUpperCase = <A extends string = string>(
   a: A,
 ): Uppercase<string> => a.toUpperCase () as Uppercase<A>
 
-type Repeat = (n: number) => (s: string) => string
-export const repeat: Repeat = count => string => string.repeat (count)
+export const repeat: {
+  (n: number): (s: string) => string
+  (s: string, n: number): string
+} = overload (1, (string, count) => string.repeat (count))
 
 export const semigroup: Semigroup<string> = {
   concat: (x, y) => x.concat (y),
@@ -21,27 +23,12 @@ export const monoid: Monoid<string> = {
   empty: "",
 }
 
-interface ConcatPointed {
-  (start: string, end: string): string
-}
-
-interface ConcatPointFree {
+export const concat: {
   (end: string): (start: string) => string
-}
+  (start: string, end: string): string
+} = overload (1, semigroup.concat)
 
-interface Concat extends ConcatPointed, ConcatPointFree {}
-
-export const concat: Concat = overload (1, semigroup.concat)
-
-interface SplitPointed {
-  (a: string, b: string): string[]
-}
-
-interface SplitPointFree {
+export const split: {
   (b: string): (a: string) => string[]
-}
-
-interface Split extends SplitPointed, SplitPointFree {}
-
-const splitPointed: SplitPointed = (a, b) => a.split (b)
-export const split: Split = overload (1, splitPointed)
+  (a: string, b: string): string[]
+} = overload (1, (a, b) => a.split (b))

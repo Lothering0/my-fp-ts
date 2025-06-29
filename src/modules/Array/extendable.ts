@@ -1,16 +1,18 @@
-import { Extendable, createExtendable } from "../../types/Extendable"
-import { URI } from "./array"
+import { overload } from "src/utils/overloads"
+import { Extendable } from "../../types/Extendable"
+import { ArrayHKT } from "./array"
 import { functor } from "./functor"
 import { matchLeft, prepend } from "./utils"
 
-export const extendable: Extendable<URI> = createExtendable ({
+export const extendable: Extendable<ArrayHKT> = {
   ...functor,
-  extend: (fa, f) =>
+  extend: overload (1, <A, B>(self: A[], fab: (fa: A[]) => B): B[] =>
     matchLeft (
-      fa,
+      self,
       () => [],
-      (head, tail) => [f (prepend (head, tail)), ...extend (tail, f)],
+      (head, tail) => [fab (prepend (head, tail)), ...extend (tail, fab)],
     ),
-})
+  ),
+}
 
 export const { extend } = extendable

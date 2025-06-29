@@ -1,10 +1,15 @@
-import { Extendable2, createExtendable2 } from "../../types/Extendable"
-import { URI } from "./either"
+import { overload } from "../../utils/overloads"
+import { Extendable } from "../../types/Extendable"
+import { Either, EitherHKT } from "./either"
 import { functor, map } from "./functor"
 
-export const extendable: Extendable2<URI> = createExtendable2 ({
+export const extendable: Extendable<EitherHKT> = {
   ...functor,
-  extend: (fa, f) => map (fa, () => f (fa)),
-})
+  extend: overload (
+    1,
+    <_, A, B>(self: Either<_, A>, fab: (fa: Either<_, A>) => B): Either<_, B> =>
+      map (self, () => fab (self)),
+  ),
+}
 
 export const { extend } = extendable

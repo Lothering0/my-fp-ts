@@ -1,13 +1,16 @@
 import { Forest, Tree } from "./tree"
 
-type ValueOf = <A>(tree: Tree<A>) => A
-export const valueOf: ValueOf = tree => tree.value
+export const valueOf: {
+  <A>(tree: Tree<A>): A
+} = tree => tree.value
 
-type ForestOf = <A>(tree: Tree<A>) => Forest<A>
-export const forestOf: ForestOf = tree => tree.forest
+export const forestOf: {
+  <A>(tree: Tree<A>): Forest<A>
+} = tree => tree.forest
 
-type Make = <A>(a: A, forest?: Forest<A>) => Tree<A>
-export const make: Make = (value, forest) => ({
+export const make: {
+  <A>(a: A, forest?: Forest<A>): Tree<A>
+} = (value, forest) => ({
   value,
   forest: forest ?? [],
 })

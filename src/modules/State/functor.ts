@@ -1,15 +1,18 @@
-import { flow } from "../../utils/flow"
-import { createFunctor2, Functor2 } from "../../types/Functor"
-import { URI, State } from "./state"
+import { Functor } from "../../types/Functor"
+import { StateHKT, State } from "./state"
 import { run } from "./utils"
+import { flow } from "../../utils/flow"
+import { overload } from "src/utils/overloads"
 
-export const functor: Functor2<URI> = createFunctor2 ({
-  URI,
-  map: <S, A, B>(fa: State<S, A>, f: (a: A) => B) =>
-    flow (
-      (s: S) => run (s) (fa),
-      ([a1, s1]) => [f (a1), s1],
-    ),
-})
+export const functor: Functor<StateHKT> = {
+  map: overload (
+    1,
+    <S, A, B>(self: State<S, A>, ab: (a: A) => B): State<S, B> =>
+      flow (
+        (s: S) => run (s) (self),
+        ([a1, s1]) => [ab (a1), s1],
+      ),
+  ),
+}
 
 export const { map } = functor

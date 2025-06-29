@@ -1,13 +1,15 @@
-import { createFunctor, Functor } from "../../types/Functor"
-import { URI, Io, fromIo } from "./io"
+import { Functor } from "../../types/Functor"
+import { IoHKT, Io, fromIo } from "./io"
 import { pipe } from "../../utils/flow"
+import { overload } from "../../utils/overloads"
 
-export const functor: Functor<URI> = createFunctor ({
-  URI,
-  map:
-    <A, B>(fa: Io<A>, f: (a: A) => B) =>
-    () =>
-      pipe (fa, fromIo, f),
-})
+export const functor: Functor<IoHKT> = {
+  map: overload (
+    1,
+    <A, B>(self: Io<A>, ab: (a: A) => B): Io<B> =>
+      () =>
+        pipe (self, fromIo, ab),
+  ),
+}
 
 export const { map } = functor

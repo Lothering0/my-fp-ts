@@ -1,11 +1,11 @@
 import * as A from "../Array"
-import { URI } from "./tree"
+import { TreeHKT } from "./tree"
 import { createMonad, Monad } from "../../types/Monad"
 import { applicative } from "./applicative"
 import { make, valueOf, forestOf } from "./utils"
-import { pipe } from "src/utils/flow"
+import { pipe } from "../../utils/flow"
 
-export const monad: Monad<URI> = createMonad ({
+export const monad: Monad<TreeHKT> = createMonad ({
   ...applicative,
   flat: mma =>
     make (

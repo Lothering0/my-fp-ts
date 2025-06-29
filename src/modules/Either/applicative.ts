@@ -1,12 +1,17 @@
-import { Applicative2, createApplicative2 } from "../../types/Applicative"
+import { Applicative, createApplicative } from "../../types/Applicative"
 import { functor, map } from "./functor"
-import { URI, right } from "./either"
+import { Either, EitherHKT, right } from "./either"
 import { isLeft, fromRight } from "./utils"
+import { overload } from "../../utils/overloads"
 
-export const applicative: Applicative2<URI> = createApplicative2 ({
+export const applicative: Applicative<EitherHKT> = createApplicative ({
   ...functor,
   of: right,
-  ap: (ff, fa) => isLeft (ff) ? ff : map (fa, fromRight (ff)),
+  ap: overload (
+    1,
+    <_, A, B>(self: Either<_, (a: A) => B>, fa: Either<_, A>): Either<_, B> =>
+      isLeft (self) ? self : map (fa, fromRight (self)),
+  ),
 })
 
 export const { of, ap, apply, flap, flipApply } = applicative

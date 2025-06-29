@@ -1,18 +1,15 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as A from "../Array"
-import { URI } from "./non-empty-array"
+import { NonEmptyArrayHKT } from "./non-empty-array"
 import { Foldable } from "../../types/Foldable"
 import { FoldableWithIndex } from "../../types/FoldableWithIndex"
 
-export const foldable: Foldable<URI> = {
+export const foldable: Foldable<NonEmptyArrayHKT> = {
   ...A.foldable,
-  URI,
-} as any
+} as Foldable<NonEmptyArrayHKT>
 
-export const foldableWithIndex: FoldableWithIndex<URI, number> = {
+export const foldableWithIndex: FoldableWithIndex<NonEmptyArrayHKT, number> = {
   ...A.foldableWithIndex,
-  URI,
-} as any
+} as FoldableWithIndex<NonEmptyArrayHKT, number>
 
 export const { reduce, reduceRight, reduceWithIndex, reduceRightWithIndex } =
   foldableWithIndex

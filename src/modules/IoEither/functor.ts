@@ -1,23 +1,27 @@
 import * as E from "../Either"
-import { Functor2, createFunctor2 } from "../../types/Functor"
+import { Functor } from "../../types/Functor"
 import { Bifunctor, createBifunctor } from "../../types/Bifunctor"
-import { URI, IoEither, fromIoEither } from "./io-either"
+import { IoEitherHKT, IoEither, fromIoEither } from "./io-either"
 import { pipe } from "../../utils/flow"
+import { overload } from "../../utils/overloads"
 
-export const functor: Functor2<URI> = createFunctor2 ({
-  URI,
-  map:
-    <_, A, B>(fma: IoEither<_, A>, f: (a: A) => B): IoEither<_, B> =>
-    () =>
-      pipe (fma, fromIoEither, E.map (f)),
-})
+export const functor: Functor<IoEitherHKT> = {
+  map: overload (
+    1,
+    <_, A, B>(self: IoEither<_, A>, ab: (a: A) => B): IoEither<_, B> =>
+      () =>
+        pipe (self, fromIoEither, E.map (ab)),
+  ),
+}
 
-export const bifunctor: Bifunctor<URI> = createBifunctor ({
+export const bifunctor: Bifunctor<IoEitherHKT> = createBifunctor ({
   ...functor,
-  mapLeft:
-    <E, _, D>(fma: IoEither<E, _>, f: (e: E) => D): IoEither<D, _> =>
-    () =>
-      pipe (fma, fromIoEither, E.mapLeft (f)),
+  mapLeft: overload (
+    1,
+    <E, _, D>(self: IoEither<E, _>, ed: (e: E) => D): IoEither<D, _> =>
+      () =>
+        pipe (self, fromIoEither, E.mapLeft (ed)),
+  ),
 })
 
 export const { map, mapLeft, bimap } = bifunctor

@@ -1,12 +1,11 @@
 import * as E from "../Either"
 import * as S from "../Separated"
-import { URI, some } from "./option"
+import { OptionHKT, some } from "./option"
 import { Compactable } from "../../types/Compactable"
 import { flat, flatMap } from "./monad"
 import { fromEither, zero } from "./utils"
 
-export const compactable: Compactable<URI> = {
-  URI,
+export const compactable: Compactable<OptionHKT> = {
   compact: flat,
   compactEithers: flatMap (fromEither),
   separate: mma =>

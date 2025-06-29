@@ -1,8 +1,8 @@
 import { createMonad, Monad } from "../../types/Monad"
 import { applicative } from "./applicative"
-import { URI, fromIo } from "./io"
+import { IoHKT, fromIo } from "./io"
 
-export const monad: Monad<URI> = createMonad ({
+export const monad: Monad<IoHKT> = createMonad ({
   ...applicative,
   flat: fromIo,
 })

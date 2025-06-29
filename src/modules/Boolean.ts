@@ -1,17 +1,11 @@
 import { overload } from "../utils/overloads"
 import { LazyArg } from "../types/utils"
 
-type Not = <T extends boolean>(a: T) => T extends true ? false : true
-export const not: Not = <T>(a: T) => !a as T extends true ? false : true
+export const not: {
+  <T extends boolean>(a: T): T extends true ? false : true
+} = <T>(a: T) => !a as T extends true ? false : true
 
-interface MatchPointed {
-  <A>(x: boolean, whenFalse: LazyArg<A>, whenTrue: LazyArg<A>): A
-}
-
-interface Match extends MatchPointed {
-  <A>(whenFalse: LazyArg<A>, whenTrue: LazyArg<A>): (x: boolean) => A
-}
-
-const matchPointed: MatchPointed = (x, f, g) => x ? g () : f ()
-
-export const match: Match = overload (2, matchPointed)
+export const match: {
+  <A>(whenFalse: LazyArg<A>, whenTrue: LazyArg<A>): (self: boolean) => A
+  <A>(self: boolean, whenFalse: LazyArg<A>, whenTrue: LazyArg<A>): A
+} = overload (2, (x, whenFalse, whenTrue) => x ? whenTrue () : whenFalse ())

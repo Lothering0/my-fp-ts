@@ -5,39 +5,39 @@ import { pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
 import { constant } from "../../utils/constant"
 
-type Zero = <A = never>() => Option<A>
-export const zero: Zero = constant (none)
+export const zero: {
+  <A = never>(): Option<A>
+} = constant (none)
 
-type IsSome = <A>(fa: Option<A>) => fa is Some<A>
-export const isSome: IsSome = fa => fa._tag === "Some"
+export const isSome: {
+  <A>(fa: Option<A>): fa is Some<A>
+} = fa => fa._tag === "Some"
 
-type IsNone = <A>(fa: Option<A>) => fa is None
-export const isNone: IsNone = fa => fa._tag === "None"
+export const isNone: {
+  <A>(fa: Option<A>): fa is None
+} = fa => fa._tag === "None"
 
-type FromSome = <A>(fa: Some<A>) => A
-export const fromSome: FromSome = fa => fa.value
+export const fromSome: {
+  <A>(fa: Some<A>): A
+} = fa => fa.value
 
-interface MatchPointed {
-  <A, B>(fa: Option<A>, b: LazyArg<B>, f: (a: A) => B): B
-}
+export const match: {
+  <A, B>(whenNone: LazyArg<B>, whenSome: (a: A) => B): (self: Option<A>) => B
+  <A, B>(self: Option<A>, whenNone: LazyArg<B>, whenSome: (a: A) => B): B
+} = overload (
+  2,
+  <A, B>(self: Option<A>, whenNone: LazyArg<B>, whenSome: (a: A) => B) =>
+    isNone (self) ? whenNone () : pipe (self, fromSome, whenSome),
+)
 
-interface Match extends MatchPointed {
-  <A, B>(b: LazyArg<B>, f: (a: A) => B): (fa: Option<A>) => B
-}
+export const toOption: {
+  <A>(a: A): Option<NonNullable<A>>
+} = a => a == null ? none : some (a)
 
-const matchPointed: MatchPointed = (fa, whenNone, whenSome) =>
-  isNone (fa) ? whenNone () : pipe (fa, fromSome, whenSome)
+export const fromOption: {
+  <A>(a: A): (fa: Option<A>) => A
+} = a => fa => isNone (fa) ? a : fromSome (fa)
 
-export const match: Match = overload (2, matchPointed)
-
-type ToOption = <A>(a: A) => Option<NonNullable<A>>
-export const toOption: ToOption = a => a == null ? none : some (a)
-
-type FromOption = <A>(a: A) => (fa: Option<A>) => A
-export const fromOption: FromOption =
-  <A>(a: A) =>
-  (fa: Option<A>) =>
-    isNone (fa) ? a : fromSome (fa)
-
-type FromEither = <_, A>(ma: E.Either<_, A>) => Option<A>
-export const fromEither: FromEither = E.match (zero, some)
+export const fromEither: {
+  <_, A>(ma: E.Either<_, A>): Option<A>
+} = E.match (zero, some)

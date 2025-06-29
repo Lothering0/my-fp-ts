@@ -1,17 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as A from "../Array"
-import { URI } from "./non-empty-array"
+import { NonEmptyArrayHKT } from "./non-empty-array"
 import { Functor } from "../../types/Functor"
 import { FunctorWithIndex } from "../../types/FunctorWithIndex"
 
-export const functor: Functor<URI> = {
+export const functor: Functor<NonEmptyArrayHKT> = {
   ...A.functor,
-  URI,
-} as any
+} as Functor<NonEmptyArrayHKT>
 
-export const functorWithIndex: FunctorWithIndex<URI, number> = {
+export const functorWithIndex: FunctorWithIndex<NonEmptyArrayHKT, number> = {
   ...A.functorWithIndex,
-  URI,
-} as any
+} as FunctorWithIndex<NonEmptyArrayHKT, number>
 
 export const { map, mapWithIndex } = functorWithIndex

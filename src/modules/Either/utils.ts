@@ -2,33 +2,39 @@ import { pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
 import { Either, left, Left, right, Right } from "./either"
 
-type IsLeft = <E>(ma: Either<E, unknown>) => ma is Left<E>
-export const isLeft: IsLeft = ma => ma._tag === "Left"
+export const isLeft: {
+  <E>(ma: Either<E, unknown>): ma is Left<E>
+} = ma => ma._tag === "Left"
 
-type IsRight = <A>(ma: Either<unknown, A>) => ma is Right<A>
-export const isRight: IsRight = ma => ma._tag === "Right"
+export const isRight: {
+  <A>(ma: Either<unknown, A>): ma is Right<A>
+} = ma => ma._tag === "Right"
 
-type FromLeft = <E>(ma: Left<E>) => E
-export const fromLeft: FromLeft = ma => ma.value
+export const fromLeft: {
+  <E>(ma: Left<E>): E
+} = ma => ma.value
 
-type FromRight = <A>(ma: Right<A>) => A
-export const fromRight: FromRight = ma => ma.value
+export const fromRight: {
+  <A>(ma: Right<A>): A
+} = ma => ma.value
 
-type ToUnion = <E, A>(ma: Either<E, A>) => E | A
-export const toUnion: ToUnion = ma => ma.value
+export const toUnion: {
+  <E, A>(ma: Either<E, A>): E | A
+} = ma => ma.value
 
-interface MatchPointed {
-  <E, A, B>(ma: Either<E, A>, onLeft: (e: E) => B, onRight: (a: A) => B): B
-}
-
-interface Match extends MatchPointed {
-  <E, A, B>(onLeft: (e: E) => B, onRight: (a: A) => B): (ma: Either<E, A>) => B
-}
-
-const matchPointed: MatchPointed = (ma, onLeft, onRight) =>
-  isLeft (ma) ? pipe (ma, fromLeft, onLeft) : pipe (ma, fromRight, onRight)
-
-export const match: Match = overload (2, matchPointed)
+export const match: {
+  <E, A, B>(
+    onLeft: (e: E) => B,
+    onRight: (a: A) => B,
+  ): (self: Either<E, A>) => B
+  <E, A, B>(self: Either<E, A>, onLeft: (e: E) => B, onRight: (a: A) => B): B
+} = overload (
+  2,
+  <E, A, B>(self: Either<E, A>, onLeft: (e: E) => B, onRight: (a: A) => B) =>
+    isLeft (self)
+      ? pipe (self, fromLeft, onLeft)
+      : pipe (self, fromRight, onRight),
+)
 
 export const swap = <E, A>(ma: Either<E, A>): Either<A, E> =>
   match<E, A, Either<A, E>> (ma, right, left)

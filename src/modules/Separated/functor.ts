@@ -1,19 +1,21 @@
-import { URI, Separated, left, right } from "./separated"
-import { Functor2, createFunctor2 } from "../../types/Functor"
+import { SeparatedHKT, Separated, left, right } from "./separated"
+import { Functor } from "../../types/Functor"
 import { Bifunctor, createBifunctor } from "../../types/Bifunctor"
-import { pipe } from "../../utils/flow"
 import { make } from "./utils"
+import { pipe } from "../../utils/flow"
+import { overload } from "../../utils/overloads"
 
-export const functor: Functor2<URI> = createFunctor2 ({
-  URI,
-  map: <_, A, B>(fa: Separated<_, A>, f: (a: A) => B) =>
-    make (left (fa), pipe (fa, right, f)),
-})
+export const functor: Functor<SeparatedHKT> = {
+  map: overload (1, <_, A, B>(self: Separated<_, A>, ab: (a: A) => B) =>
+    make (left (self), pipe (self, right, ab)),
+  ),
+}
 
-export const bifunctor: Bifunctor<URI> = createBifunctor ({
+export const bifunctor: Bifunctor<SeparatedHKT> = createBifunctor ({
   ...functor,
-  mapLeft: <E, _, D>(fe: Separated<E, _>, f: (e: E) => D) =>
-    make (pipe (fe, left, f), right (fe)),
+  mapLeft: overload (1, <E, _, D>(self: Separated<E, _>, ed: (e: E) => D) =>
+    make (pipe (self, left, ed), right (self)),
+  ),
 })
 
 export const { map, mapLeft, bimap } = bifunctor

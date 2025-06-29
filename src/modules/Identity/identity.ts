@@ -1,15 +1,11 @@
-import { URIS } from "../../types/Kind"
+import { HKT } from "../../types/HKT"
 
-declare module "../../types/Kind" {
-  interface URIToKind<A> {
-    readonly Identity: Identity<A>
-  }
+export interface IdentityHKT extends HKT {
+  readonly type: Identity<this["_A"]>
 }
 
 export type Identity<A> = A
 
-export const URI = "Identity" satisfies URIS
-export type URI = typeof URI
-
-type IdentityConstructor = <A>(a: A) => Identity<A>
-export const identity: IdentityConstructor = a => a
+export const identity: {
+  <A>(a: A): Identity<A>
+} = a => a
