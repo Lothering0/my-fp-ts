@@ -1,16 +1,18 @@
 import { LazyArg } from "../types/utils"
 import * as E from "../modules/Either"
 
-type Raise = <A>(a: A) => never
-export const raise: Raise = a => {
+export const raise: {
+  <A>(a: A): never
+} = a => {
   throw a
 }
 
-type TryDo = <E, A>(f: LazyArg<A>) => E.Either<E, A>
-export const tryDo: TryDo = <E, A>(f: LazyArg<A>) => {
+export const tryDo: {
+  <E, A>(a: LazyArg<A>): E.Either<E, A>
+} = a => {
   try {
-    return E.right (f ())
+    return E.right (a ())
   } catch (exception) {
-    return E.left (exception as E)
+    return E.left (exception)
   }
 }

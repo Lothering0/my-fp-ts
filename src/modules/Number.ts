@@ -18,7 +18,7 @@ export const sumMonoid: Monoid<number> = {
 
 export const sumGroup: Group<number> = {
   ...sumMonoid,
-  inverse: a => -a,
+  inverse: x => -x,
 }
 
 export const productSemigroup: Semigroup<number> = {
@@ -32,34 +32,34 @@ export const productMonoid: Monoid<number> = {
 
 export const productGroup: Group<number> = {
   ...productMonoid,
-  inverse: a => 1 / a,
+  inverse: x => 1 / x,
 }
 
 export const add: {
-  (b: number): (a: number) => number
-  (a: number, b: number): number
-} = overload (1, (a, b) => a + b)
+  (y: number): (x: number) => number
+  (x: number, y: number): number
+} = overload (1, (x, y) => x + y)
 
 export const subtract: {
-  (b: number): (a: number) => number
-  (a: number, b: number): number
-} = overload (1, (a, b) => a - b)
+  (y: number): (x: number) => number
+  (x: number, y: number): number
+} = overload (1, (x, y) => x - y)
 
 export const multiply: {
-  (b: number): (a: number) => number
-  (a: number, b: number): number
-} = overload (1, (a, b) => a * b)
+  (y: number): (x: number) => number
+  (x: number, y: number): number
+} = overload (1, (x, y) => x * y)
 
 export const divide: {
-  (b: number): (a: number) => number
-  (a: number, b: number): number
-} = overload (1, (a, b) => a / b)
+  (y: number): (x: number) => number
+  (x: number, y: number): number
+} = overload (1, (x, y) => x / y)
 
 export const divideSafe: {
-  (b: number): (a: number) => O.Option<number>
-  (a: number, b: number): O.Option<number>
-} = overload (1, (a, b) => b === 0 ? O.none : O.some (a / b))
+  (y: number): (x: number) => O.Option<number>
+  (x: number, y: number): O.Option<number>
+} = overload (1, (x, y) => y === 0 ? O.none : O.some (x / y))
 
-export const isEven: Predicate<number> = a => a % 2 === 0
+export const isEven: Predicate<number> = x => x % 2 === 0
 
 export const isOdd: Predicate<number> = flow (isEven, not)

@@ -1,2 +1,3 @@
-type Flip = <A, B, C>(abc: (a: A) => (b: B) => C) => (b: B) => (a: A) => C
-export const flip: Flip = abc => b => a => abc (a) (b)
+export const flip: {
+  <A, B, C>(abc: (a: A) => (b: B) => C): (b: B) => (a: A) => C
+} = abc => b => a => abc (a) (b)

@@ -7,15 +7,17 @@ export const random: Io.Io<number> = () => Math.random ()
 
 export const randomBool: Io.Io<boolean> = Io.map (random, n => n > 0.5)
 
-type RandomFloat = (min: number, max: number) => Io.Io<number>
-export const randomFloat: RandomFloat = (min, max) =>
-  Io.map (random, n => n * (max - min) + min)
+export const randomFloat: {
+  (min: number, max: number): Io.Io<number>
+} = (min, max) => Io.map (random, n => n * (max - min) + min)
 
-type RandomInt = (min: number, max: number) => Io.Io<number>
-export const randomInt: RandomInt = flow (randomFloat, Io.map (Math.round))
+export const randomInt: {
+  (min: number, max: number): Io.Io<number>
+} = flow (randomFloat, Io.map (Math.round))
 
-type RandomElem = <A>(as: NonEmptyArray<A>) => Io.Io<A>
-export const randomElem: RandomElem = as =>
+export const randomElem: {
+  <A>(as: NonEmptyArray<A>): Io.Io<A>
+} = as =>
   pipe (
     randomInt (0, A.length (as)),
     Io.map (n => as.at (n)!),

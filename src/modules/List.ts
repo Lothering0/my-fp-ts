@@ -36,11 +36,11 @@ export const isNil: {
 
 export const match: {
   <A, B>(whenNil: LazyArg<B>, whenCons: (a: A) => B): (xs: List<A>) => B
-  <A, B>(xs: List<A>, whenNil: LazyArg<B>, whenCons: (a: A) => B): B
+  <A, B>(as: List<A>, whenNil: LazyArg<B>, whenCons: (a: A) => B): B
 } = overload (2, (xs, whenNil, whenCons) =>
   isNil (xs) ? whenNil () : whenCons (xs.head),
 )
 
 export const fromArray: {
-  <A>(xs: A[]): List<A>
+  <A>(as: A[]): List<A>
 } = A.reduceRight (nil, (x, acc) => cons (x, acc))

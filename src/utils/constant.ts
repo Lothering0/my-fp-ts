@@ -1,20 +1,16 @@
 import { LazyArg } from "../types/utils"
 import { _ } from "./underscore"
 
-type Constant = <A>(a: A) => LazyArg<A>
-export const constant: Constant = a => () => a
+export const constant: {
+  <A>(a: A): LazyArg<A>
+} = a => () => a
 
-type ConstFalse = LazyArg<false>
-export const constFalse: ConstFalse = () => false
+export const constFalse: LazyArg<false> = constant (false)
 
-type ConstTrue = LazyArg<true>
-export const constTrue: ConstTrue = () => true
+export const constTrue: LazyArg<true> = constant (true)
 
-type ConstNull = LazyArg<null>
-export const constNull: ConstNull = () => null
+export const constNull: LazyArg<null> = constant (null)
 
-type ConstUndefined = LazyArg<undefined>
-export const constUndefined: ConstUndefined = () => undefined
+export const constUndefined: LazyArg<undefined> = constant (undefined)
 
-type ConstVoid = LazyArg<void>
-export const constVoid: ConstVoid = () => _
+export const constVoid: LazyArg<void> = constant (_)
