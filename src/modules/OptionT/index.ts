@@ -1,43 +1,43 @@
 import * as O from "../Option"
 import { overload } from "../../utils/overloads"
-import { Functor } from "../../types/Functor"
 import { HKT, Kind } from "../../types/HKT"
-import { createMonad, Monad } from "../../types/Monad"
+import { Functor } from "../../types/Functor"
 import { createApplicative } from "../../types/Applicative"
+import { createMonad, Monad } from "../../types/Monad"
 import { flow, pipe } from "../../utils/flow"
 import { identity } from "../Identity"
 import { LazyArg } from "../../types/utils"
 
 export interface OptionT<F extends HKT> extends HKT {
-  readonly type: Kind<F, this["_E"], O.Option<this["_A"]>>
+  readonly type: Kind<F, this["_R"], this["_E"], O.Option<this["_A"]>>
 }
 
 export const getOptionT = <F extends HKT>(F: Monad<F>) => {
   type TransformedHKT = OptionT<F>
 
   const some: {
-    <_, A>(a: A): Kind<TransformedHKT, _, A>
+    <_, _2, A>(a: A): Kind<TransformedHKT, _, _2, A>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } = flow (O.some, F.of) as any
 
   const zero: {
-    <E, A = never>(): Kind<TransformedHKT, E, A>
+    <_, E, A = never>(): Kind<TransformedHKT, _, E, A>
   } = () => F.of (O.none)
 
   const fromF: {
-    <_, A>(ma: Kind<F, _, A>): Kind<TransformedHKT, _, A>
+    <_, _2, A>(ma: Kind<F, _, _2, A>): Kind<TransformedHKT, _, _2, A>
   } = F.map (O.some)
 
   const match: {
-    <_, A, B>(
+    <_, _2, A, B>(
       onNone: LazyArg<B>,
       onSome: (a: A) => B,
-    ): (self: Kind<TransformedHKT, _, A>) => Kind<F, _, B>
-    <_, A, B>(
-      self: Kind<TransformedHKT, _, A>,
+    ): (self: Kind<TransformedHKT, _, _2, A>) => Kind<F, _, _2, B>
+    <_, _2, A, B>(
+      self: Kind<TransformedHKT, _, _2, A>,
       onNone: LazyArg<B>,
       onSome: (a: A) => B,
-    ): Kind<F, _, B>
+    ): Kind<F, _, _2, B>
   } = overload (2, (self, onNone, onSome) =>
     F.map (self, O.match (onNone, onSome)),
   )
@@ -51,10 +51,10 @@ export const getOptionT = <F extends HKT>(F: Monad<F>) => {
     of: some,
     ap: overload (
       1,
-      <_, A, B>(
-        fmf: Kind<TransformedHKT, _, (a: A) => B>,
-        fma: Kind<TransformedHKT, _, A>,
-      ): Kind<TransformedHKT, _, B> =>
+      <_, _2, A, B>(
+        fmf: Kind<TransformedHKT, _, _2, (a: A) => B>,
+        fma: Kind<TransformedHKT, _, _2, A>,
+      ): Kind<TransformedHKT, _, _2, B> =>
         pipe (
           fmf,
           F.map (mf => (mg: O.Option<A>) => O.ap (mf, mg)),

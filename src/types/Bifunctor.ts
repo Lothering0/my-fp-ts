@@ -4,20 +4,22 @@ import { overload } from "src/utils/overloads"
 
 export interface Bifunctor<F extends HKT> extends Functor<F> {
   readonly mapLeft: {
-    <E, _, D>(ed: (e: E) => D): (self: Kind<F, E, _>) => Kind<F, D, _>
-    <E, _, D>(self: Kind<F, E, _>, ed: (e: E) => D): Kind<F, D, _>
+    <_, E, _2, D>(
+      ed: (e: E) => D,
+    ): (self: Kind<F, _, E, _2>) => Kind<F, _, D, _2>
+    <_, E, _2, D>(self: Kind<F, _, E, _2>, ed: (e: E) => D): Kind<F, _, D, _2>
   }
 
   readonly bimap: {
-    <E, A, D, B>(
+    <_, E, A, D, B>(
       ed: (e: E) => D,
       ab: (a: A) => B,
-    ): (self: Kind<F, E, A>) => Kind<F, D, B>
-    <E, A, D, B>(
-      self: Kind<F, E, A>,
+    ): (self: Kind<F, _, E, A>) => Kind<F, _, D, B>
+    <_, E, A, D, B>(
+      self: Kind<F, _, E, A>,
       ed: (e: E) => D,
       ab: (a: A) => B,
-    ): Kind<F, D, B>
+    ): Kind<F, _, D, B>
   }
 }
 
@@ -30,11 +32,11 @@ export const createBifunctor = <F extends HKT>(
     ...bifunctor,
     bimap: overload (
       2,
-      <E, A, D, B>(
-        self: Kind<F, E, A>,
+      <_, E, A, D, B>(
+        self: Kind<F, _, E, A>,
         ed: (e: E) => D,
         ab: (a: A) => B,
-      ): Kind<F, D, B> => mapLeft (map (self, ab), ed),
+      ): Kind<F, _, D, B> => mapLeft (map (self, ab), ed),
     ),
   }
 }

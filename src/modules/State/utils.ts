@@ -18,7 +18,7 @@ export const modify: {
 
 export const put: {
   <S>(s: S): State<S, void>
-} = <S>(s: S) => pipe (s, constant, modify<S>)
+} = s => pipe (s, constant, modify)
 
 export const run: {
   <S>(s: S): <A>(ma: State<S, A>) => [A, S]
