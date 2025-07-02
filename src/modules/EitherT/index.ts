@@ -13,7 +13,7 @@ export interface EitherT<F extends HKT> extends HKT {
   readonly type: Kind<F, never, this["_R"], E.Either<this["_E"], this["_A"]>>
 }
 
-export const getOptionT = <F extends HKT>(F: Monad<F>) => {
+export const getEitherT = <F extends HKT>(F: Monad<F>) => {
   type TransformedHKT = EitherT<F>
 
   const right: {
