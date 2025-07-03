@@ -19,6 +19,6 @@ export const randomElem: {
   <A>(as: NonEmptyArray<A>): Io.Io<A>
 } = as =>
   pipe (
-    randomInt (0, A.length (as)),
+    randomInt (0, A.length (as) - 1),
     Io.map (n => as.at (n)!),
   )

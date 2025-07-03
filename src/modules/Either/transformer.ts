@@ -10,7 +10,7 @@ import { flow, pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
 
 export interface EitherT<F extends HKT> extends HKT {
-  readonly type: Kind<F, never, this["_R"], E.Either<this["_E"], this["_A"]>>
+  readonly type: Kind<F, any, this["_R"], E.Either<this["_E"], this["_A"]>>
 }
 
 export const getEitherT = <F extends HKT>(F: Monad<F>) => {
@@ -37,15 +37,15 @@ export const getEitherT = <F extends HKT>(F: Monad<F>) => {
   } = F.map (E.left)
 
   const match: {
-    <KE, E, A, B>(
+    <KE, R, E, A, B>(
       onLeft: (e: E) => B,
       onRight: (a: A) => B,
-    ): (self: Kind<TransformedHKT, KE, E, A>) => Kind<F, never, KE, B>
-    <KE, E, A, B>(
+    ): (self: Kind<TransformedHKT, KE, E, A>) => Kind<F, R, KE, B>
+    <KE, R, E, A, B>(
       self: Kind<TransformedHKT, KE, E, A>,
       onLeft: (e: E) => B,
       onRight: (a: A) => B,
-    ): Kind<F, never, KE, B>
+    ): Kind<F, R, KE, B>
   } = overload (2, (mm, onLeft, onRight) => F.map (mm, E.match (onLeft, onRight)))
 
   const swap: {
@@ -55,7 +55,7 @@ export const getEitherT = <F extends HKT>(F: Monad<F>) => {
   } = F.map (E.swap)
 
   const toUnion: {
-    <KE, E, A>(ma: Kind<TransformedHKT, KE, E, A>): Kind<F, never, KE, E | A>
+    <KE, R, E, A>(ma: Kind<TransformedHKT, KE, E, A>): Kind<F, R, KE, E | A>
   } = F.map (E.toUnion)
 
   const functor: Functor<TransformedHKT> = {
@@ -86,8 +86,7 @@ export const getEitherT = <F extends HKT>(F: Monad<F>) => {
 
   const monad = createMonad<TransformedHKT> ({
     ...applicative,
-    // TODO: try to do without `any`
-    flat: flow (F.flatMap (E.match (flow (E.left, F.of), identity as any))) as any,
+    flat: flow (F.flatMap (E.match (flow (E.left, F.of) as any, identity))),
   })
 
   return {
