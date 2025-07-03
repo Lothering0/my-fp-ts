@@ -4,6 +4,8 @@ export interface EitherHKT extends HKT {
   readonly type: Either<this["_E"], this["_A"]>
 }
 
+export declare const _F: EitherHKT
+
 export type Either<E, A> = Left<E> | Right<A>
 
 export interface Left<E> {

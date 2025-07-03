@@ -9,6 +9,8 @@ export interface IoOptionHKT extends HKT {
   readonly type: IoOption<this["_A"]>
 }
 
+export declare const _F: IoOptionHKT
+
 export interface IoOption<A> extends Io.Io<O.Option<A>> {}
 
 export const none: IoOption<never> = () => O.none

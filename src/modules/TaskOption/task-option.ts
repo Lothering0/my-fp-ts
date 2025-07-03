@@ -11,6 +11,8 @@ export interface TaskOptionHKT extends HKT {
   readonly type: TaskOption<this["_A"]>
 }
 
+export declare const _F: TaskOptionHKT
+
 export interface TaskOption<A> extends T.Task<O.Option<A>> {}
 
 export const none: TaskOption<never> = T.of (O.none)

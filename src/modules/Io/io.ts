@@ -4,6 +4,8 @@ export interface IoHKT extends HKT {
   readonly type: Io<this["_A"]>
 }
 
+export declare const _F: IoHKT
+
 export interface Io<A> {
   (): A
 }

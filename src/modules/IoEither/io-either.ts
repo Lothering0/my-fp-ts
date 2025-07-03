@@ -7,6 +7,8 @@ export interface IoEitherHKT extends HKT {
   readonly type: IoEither<this["_E"], this["_A"]>
 }
 
+export declare const _F: IoEitherHKT
+
 export interface IoEither<E, A> extends Io.Io<E.Either<E, A>> {}
 
 export const left: {

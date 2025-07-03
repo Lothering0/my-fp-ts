@@ -8,6 +8,8 @@ export interface TaskEitherHKT extends HKT {
   readonly type: TaskEither<this["_E"], this["_A"]>
 }
 
+export declare const _F: TaskEitherHKT
+
 export interface TaskEither<E, A> extends T.Task<E.Either<E, A>> {}
 
 export const left: {

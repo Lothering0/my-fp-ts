@@ -5,6 +5,8 @@ export interface TaskHKT extends HKT {
   readonly type: Task<this["_A"]>
 }
 
+export declare const _F: TaskHKT
+
 export interface Task<A> extends Io.Io<Promise<A>> {}
 
 export const task: {

@@ -4,6 +4,8 @@ export interface TreeHKT extends HKT {
   readonly type: Tree<this["_A"]>
 }
 
+export declare const _F: TreeHKT
+
 export interface Tree<A> {
   readonly value: A
   readonly forest: Forest<A>
