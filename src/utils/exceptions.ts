@@ -1,5 +1,5 @@
 import { LazyArg } from "../types/utils"
-import * as E from "../modules/Either"
+import * as R from "../modules/Result"
 
 export const raise: {
   <A>(a: A): never
@@ -8,11 +8,11 @@ export const raise: {
 }
 
 export const tryDo: {
-  <E, A>(a: LazyArg<A>): E.Either<E, A>
+  <E, A>(a: LazyArg<A>): R.Result<E, A>
 } = a => {
   try {
-    return E.right (a ())
+    return R.success (a ())
   } catch (exception) {
-    return E.left (exception)
+    return R.failure (exception)
   }
 }

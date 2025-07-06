@@ -1,6 +1,6 @@
 import { Separated } from "../modules/Separated"
 import { Option, some, none } from "../modules/Option"
-import { Either, left, right } from "../modules/Either"
+import { Result, failure, success } from "../modules/Result"
 import { HKT, Kind } from "./HKT"
 import { FunctorWithIndex } from "./FunctorWithIndex"
 import { Filterable } from "./Filterable"
@@ -13,11 +13,11 @@ export interface FilterableWithIndex<F extends HKT, I>
   /** Partitions and maps elements to new values */
   readonly partitionMapWithIndex: {
     <_, E, A, B, C>(
-      p: (i: I, a: A) => Either<B, C>,
+      p: (i: I, a: A) => Result<B, C>,
     ): (self: Kind<F, _, E, A>) => Separated<Kind<F, _, E, B>, Kind<F, _, E, C>>
     <_, E, A, B, C>(
       self: Kind<F, _, E, A>,
-      p: (i: I, a: A) => Either<B, C>,
+      p: (i: I, a: A) => Result<B, C>,
     ): Separated<Kind<F, _, E, B>, Kind<F, _, E, C>>
   }
 
@@ -84,7 +84,7 @@ export const createFilterableWithIndex = <F extends HKT, I>(
     1,
     <_, E, A, B, C>(
       self: Kind<F, _, E, A>,
-      p: (i: I, a: A) => Either<B, C>,
+      p: (i: I, a: A) => Result<B, C>,
     ): Separated<Kind<F, _, E, B>, Kind<F, _, E, C>> =>
       pipe (self, mapWithIndex (p), separate),
   )
@@ -96,7 +96,9 @@ export const createFilterableWithIndex = <F extends HKT, I>(
         self: Kind<F, _, E, A>,
         p: (i: I, a: A) => boolean,
       ): Separated<Kind<F, _, E, A>, Kind<F, _, E, A>> =>
-        partitionMapWithIndex (self, (i, a) => p (i, a) ? right (a) : left (a)),
+        partitionMapWithIndex (self, (i, a) =>
+          p (i, a) ? success (a) : failure (a),
+        ),
     )
 
   return {

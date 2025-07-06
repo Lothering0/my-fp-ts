@@ -1,9 +1,9 @@
 import { flow } from "../../utils/flow"
-import { createMonad, Monad } from "../../types/Monad"
+import { createMonad } from "../../types/Monad"
 import { applicative } from "./applicative"
 import { StateHKT } from "./state"
 
-export const monad: Monad<StateHKT> = createMonad ({
+export const monad = createMonad<StateHKT> ({
   ...applicative,
   flat: self => flow (self, ([ma, s1]) => ma (s1)),
 })
@@ -19,5 +19,5 @@ export const {
   apS,
   flatMapTo,
   tap,
-  tapIo,
+  tapSync,
 } = monad

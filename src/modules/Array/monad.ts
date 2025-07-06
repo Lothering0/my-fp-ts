@@ -1,8 +1,8 @@
 import { ArrayHKT } from "./array"
-import { createMonad, Monad } from "../../types/Monad"
+import { createMonad } from "../../types/Monad"
 import { applicative } from "./applicative"
 
-export const monad: Monad<ArrayHKT> = createMonad ({
+export const monad = createMonad<ArrayHKT> ({
   ...applicative,
   flat: self => self.flat (),
 })
@@ -18,5 +18,5 @@ export const {
   apS,
   flatMapTo,
   tap,
-  tapIo,
+  tapSync,
 } = monad

@@ -1,6 +1,6 @@
 import * as O from "./option"
-import * as E from "../Either"
-import { createMonad, Monad } from "../../types/Monad"
+import * as R from "../Result"
+import { createMonad } from "../../types/Monad"
 import { map } from "./functor"
 import { applicative } from "./applicative"
 import { identity } from "../Identity"
@@ -9,7 +9,7 @@ import { pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
 import { constant } from "../../utils/constant"
 
-export const monad: Monad<O.OptionHKT> = createMonad ({
+export const monad = createMonad<O.OptionHKT> ({
   ...applicative,
   flat: match (zero, identity),
 })
@@ -25,14 +25,14 @@ export const {
   apS,
   flatMapTo,
   tap,
-  tapIo,
+  tapSync,
 } = monad
 
-export const tapEither: {
-  <E, A, _>(afe: (a: A) => E.Either<E, _>): (self: O.Option<A>) => O.Option<A>
-  <E, A, _>(self: O.Option<A>, afe: (a: A) => E.Either<E, _>): O.Option<A>
+export const tapResult: {
+  <E, A, _>(afe: (a: A) => R.Result<E, _>): (self: O.Option<A>) => O.Option<A>
+  <E, A, _>(self: O.Option<A>, afe: (a: A) => R.Result<E, _>): O.Option<A>
 } = overload (
   1,
-  <E, A, _>(self: O.Option<A>, afe: (a: A) => E.Either<E, _>): O.Option<A> =>
-    pipe (self, map (afe), flatMap (E.match (zero, constant (self)))),
+  <E, A, _>(self: O.Option<A>, afe: (a: A) => R.Result<E, _>): O.Option<A> =>
+    pipe (self, map (afe), flatMap (R.match (zero, constant (self)))),
 )

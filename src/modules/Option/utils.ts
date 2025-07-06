@@ -1,4 +1,4 @@
-import * as E from "../Either"
+import * as R from "../Result"
 import { None, none, Option, some, Some } from "./option"
 import { LazyArg } from "../../types/utils"
 import { pipe } from "../../utils/flow"
@@ -22,12 +22,12 @@ export const fromSome: {
 } = self => self.value
 
 export const match: {
-  <A, B>(whenNone: LazyArg<B>, whenSome: (a: A) => B): (self: Option<A>) => B
-  <A, B>(self: Option<A>, whenNone: LazyArg<B>, whenSome: (a: A) => B): B
+  <A, B>(onNone: LazyArg<B>, onSome: (a: A) => B): (self: Option<A>) => B
+  <A, B>(self: Option<A>, onNone: LazyArg<B>, onSome: (a: A) => B): B
 } = overload (
   2,
-  <A, B>(self: Option<A>, whenNone: LazyArg<B>, whenSome: (a: A) => B) =>
-    isNone (self) ? whenNone () : pipe (self, fromSome, whenSome),
+  <A, B>(self: Option<A>, onNone: LazyArg<B>, onSome: (a: A) => B) =>
+    isNone (self) ? onNone () : pipe (self, fromSome, onSome),
 )
 
 export const toOption: {
@@ -39,6 +39,6 @@ export const getOrElse: {
   <A>(self: Option<A>, a: A): A
 } = overload (1, (self, a) => isNone (self) ? a : fromSome (self))
 
-export const fromEither: {
-  <_, A>(ma: E.Either<_, A>): Option<A>
-} = E.match (zero, some)
+export const fromResult: {
+  <_, A>(ma: R.Result<_, A>): Option<A>
+} = R.match (zero, some)

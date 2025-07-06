@@ -1,3 +1,3 @@
-import { Io } from "../modules/Io"
+import { Sync } from "../modules/Sync"
 
-export const now: Io<number> = () => Date.now ()
+export const now: Sync<number> = () => Date.now ()

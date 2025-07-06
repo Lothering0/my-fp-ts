@@ -17,5 +17,5 @@ export const {
   apS,
   flatMapTo,
   tap,
-  tapIo,
+  tapSync,
 } = monad

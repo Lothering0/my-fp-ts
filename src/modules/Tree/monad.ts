@@ -5,7 +5,7 @@ import { applicative } from "./applicative"
 import { make, valueOf, forestOf } from "./utils"
 import { pipe } from "../../utils/flow"
 
-export const monad: Monad<TreeHKT> = createMonad ({
+export const monad: Monad<TreeHKT> = createMonad<TreeHKT> ({
   ...applicative,
   flat: mma =>
     make (
@@ -25,5 +25,5 @@ export const {
   apS,
   flatMapTo,
   tap,
-  tapIo,
+  tapSync,
 } = monad

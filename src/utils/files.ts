@@ -1,12 +1,12 @@
 import * as fs from "node:fs"
 import * as fsPromises from "node:fs/promises"
-import * as IoE from "../modules/IoEither"
-import * as TE from "../modules/TaskEither"
+import * as SR from "../modules/SyncResult"
+import * as AR from "../modules/AsyncResult"
 
 export const readFileSync: {
-  (path: string): IoE.IoEither<unknown, Buffer>
-} = path => IoE.toIoEither (() => fs.readFileSync (path))
+  (path: string): SR.SyncResult<unknown, Buffer>
+} = path => SR.toSyncResult (() => fs.readFileSync (path))
 
 export const readFile: {
-  (path: string): TE.TaskEither<unknown, Buffer>
-} = path => TE.toTaskEither (() => fsPromises.readFile (path))
+  (path: string): AR.AsyncResult<unknown, Buffer>
+} = path => AR.toAsyncResult (() => fsPromises.readFile (path))

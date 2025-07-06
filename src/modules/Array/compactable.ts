@@ -1,5 +1,5 @@
 import * as O from "../Option"
-import * as E from "../Either"
+import * as R from "../Result"
 import * as S from "../Separated"
 import { ArrayHKT } from "./array"
 import { Compactable } from "../../types/Compactable"
@@ -11,9 +11,9 @@ const getInitialSeparated: GetInitialSeparated = () => S.make ([], [])
 
 export const compactable: Compactable<ArrayHKT> = {
   compact: flatMap (a => O.isNone (a) ? [] : [O.fromSome (a)]),
-  compactEithers: flatMap (a => E.isLeft (a) ? [] : [E.fromRight (a)]),
+  compactResults: flatMap (a => R.isFailure (a) ? [] : [R.fromSuccess (a)]),
   separate: reduce (getInitialSeparated (), (b, ma) =>
-    E.match (
+    R.match (
       ma,
       e => S.make ([...S.left (b), e], S.right (b)),
       a => S.make (S.left (b), [...S.right (b), a]),
@@ -21,4 +21,4 @@ export const compactable: Compactable<ArrayHKT> = {
   ),
 }
 
-export const { compact, compactEithers, separate } = compactable
+export const { compact, compactResults, separate } = compactable

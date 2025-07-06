@@ -1,6 +1,0 @@
-export * from "./io-option"
-export * from "./functor"
-export * from "./applicative"
-export * from "./monad"
-export * from "./compactable"
-export * from "./utils"

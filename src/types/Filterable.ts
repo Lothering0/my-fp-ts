@@ -1,6 +1,6 @@
 import { Separated } from "../modules/Separated"
 import { Option, some, none } from "../modules/Option"
-import { Either, left, right } from "../modules/Either"
+import { Result, failure, success } from "../modules/Result"
 import { Compactable } from "./Compactable"
 import { Functor } from "./Functor"
 import { HKT, Kind } from "./HKT"
@@ -12,11 +12,11 @@ export interface Filterable<F extends HKT> extends Functor<F>, Compactable<F> {
   /** Partitions and maps elements to new values */
   readonly partitionMap: {
     <_, E, A, B, C>(
-      p: (a: A) => Either<B, C>,
+      p: (a: A) => Result<B, C>,
     ): (self: Kind<F, _, E, A>) => Separated<Kind<F, _, E, B>, Kind<F, _, E, C>>
     <_, E, A, B, C>(
       self: Kind<F, _, E, A>,
-      p: (a: A) => Either<B, C>,
+      p: (a: A) => Result<B, C>,
     ): Separated<Kind<F, _, E, B>, Kind<F, _, E, C>>
   }
 
@@ -70,7 +70,7 @@ export const createFilterable = <F extends HKT>(
     1,
     <_, E, A, B, C>(
       self: Kind<F, _, E, A>,
-      p: (a: A) => Either<B, C>,
+      p: (a: A) => Result<B, C>,
     ): Separated<Kind<F, _, E, B>, Kind<F, _, E, C>> =>
       pipe (self, map (p), separate),
   )
@@ -81,7 +81,7 @@ export const createFilterable = <F extends HKT>(
       self: Kind<F, _, E, A>,
       p: Predicate<A>,
     ): Separated<Kind<F, _, E, A>, Kind<F, _, E, A>> =>
-      partitionMap (self, a => p (a) ? right (a) : left (a)),
+      partitionMap (self, a => p (a) ? success (a) : failure (a)),
   )
 
   return {

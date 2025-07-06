@@ -1,7 +1,0 @@
-export * from "./task-either"
-export * from "./functor"
-export * from "./applicative"
-export * from "./monad"
-export * from "./semigroup"
-export * from "./monoid"
-export * from "./utils"

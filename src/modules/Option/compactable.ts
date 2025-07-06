@@ -1,18 +1,18 @@
-import * as E from "../Either"
+import * as R from "../Result"
 import * as S from "../Separated"
 import { OptionHKT, some } from "./option"
 import { Compactable } from "../../types/Compactable"
 import { flat, flatMap } from "./monad"
-import { fromEither, zero } from "./utils"
+import { fromResult, zero } from "./utils"
 
 export const compactable: Compactable<OptionHKT> = {
   compact: flat,
-  compactEithers: flatMap (fromEither),
+  compactResults: flatMap (fromResult),
   separate: self =>
     S.make (
-      flatMap (self, E.match (some, zero)),
-      flatMap (self, E.match (zero, some)),
+      flatMap (self, R.match (some, zero)),
+      flatMap (self, R.match (zero, some)),
     ),
 }
 
-export const { compact, compactEithers, separate } = compactable
+export const { compact, compactResults, separate } = compactable

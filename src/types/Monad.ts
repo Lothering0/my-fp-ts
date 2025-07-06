@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Io } from "../modules/Io"
+import { Sync } from "../modules/Sync"
 import { Applicative } from "./Applicative"
 import { DoObject } from "./DoObject"
 import { HKT, Kind } from "./HKT"
@@ -106,13 +106,13 @@ export interface Monad<F extends HKT> extends Applicative<F> {
     ): Kind<F, _, _2, A>
   }
 
-  readonly tapIo: {
+  readonly tapSync: {
     <_, _2, A, _3>(
-      am_: (a: A) => Io<_3>,
+      am_: (a: A) => Sync<_3>,
     ): (self: Kind<F, _, _2, A>) => Kind<F, _, _2, A>
     <_, _2, A, _3>(
       self: Kind<F, _, _2, A>,
-      am_: (a: A) => Io<_3>,
+      am_: (a: A) => Sync<_3>,
     ): Kind<F, _, _2, A>
   }
 }
@@ -179,11 +179,11 @@ export const createMonad = <F extends HKT>(
       ),
   )
 
-  const tapIo: Monad<F>["tapIo"] = overload (
+  const tapSync: Monad<F>["tapSync"] = overload (
     1,
     <_, _2, A, _3>(
       self: Kind<F, _, _2, A>,
-      am_: (a: A) => Io<_3>,
+      am_: (a: A) => Sync<_3>,
     ): Kind<F, _, _2, A> =>
       pipe (
         Do,
@@ -266,7 +266,7 @@ export const createMonad = <F extends HKT>(
     flatMap,
     compose,
     tap,
-    tapIo,
+    tapSync,
     setTo,
     mapTo,
     applyTo,

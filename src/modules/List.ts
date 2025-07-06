@@ -35,10 +35,10 @@ export const isNil: {
 } = xs => xs._tag === "Nil"
 
 export const match: {
-  <A, B>(whenNil: LazyArg<B>, whenCons: (a: A) => B): (xs: List<A>) => B
-  <A, B>(as: List<A>, whenNil: LazyArg<B>, whenCons: (a: A) => B): B
-} = overload (2, (xs, whenNil, whenCons) =>
-  isNil (xs) ? whenNil () : whenCons (xs.head),
+  <A, B>(onNil: LazyArg<B>, onCons: (a: A) => B): (self: List<A>) => B
+  <A, B>(self: List<A>, onNil: LazyArg<B>, onCons: (a: A) => B): B
+} = overload (2, (self, onNil, onCons) =>
+  isNil (self) ? onNil () : onCons (self.head),
 )
 
 export const fromArray: {
