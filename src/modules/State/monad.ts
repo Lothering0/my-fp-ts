@@ -5,7 +5,7 @@ import { StateHKT } from "./state"
 
 export const monad: Monad<StateHKT> = createMonad ({
   ...applicative,
-  flat: mma => flow (mma, ([ma, s1]) => ma (s1)),
+  flat: self => flow (self, ([ma, s1]) => ma (s1)),
 })
 
 export const {

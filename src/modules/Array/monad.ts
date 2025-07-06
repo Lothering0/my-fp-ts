@@ -4,7 +4,7 @@ import { applicative } from "./applicative"
 
 export const monad: Monad<ArrayHKT> = createMonad ({
   ...applicative,
-  flat: xs => xs.flat (),
+  flat: self => self.flat (),
 })
 
 export const {

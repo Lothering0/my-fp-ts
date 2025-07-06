@@ -3,24 +3,24 @@ import { overload } from "../../utils/overloads"
 import { Either, left, Left, right, Right } from "./either"
 
 export const isLeft: {
-  <E>(ma: Either<E, unknown>): ma is Left<E>
-} = ma => ma._tag === "Left"
+  <E>(self: Either<E, unknown>): self is Left<E>
+} = self => self._tag === "Left"
 
 export const isRight: {
-  <A>(ma: Either<unknown, A>): ma is Right<A>
-} = ma => ma._tag === "Right"
+  <A>(self: Either<unknown, A>): self is Right<A>
+} = self => self._tag === "Right"
 
 export const fromLeft: {
-  <E>(ma: Left<E>): E
-} = ma => ma.value
+  <E>(self: Left<E>): E
+} = self => self.value
 
 export const fromRight: {
-  <A>(ma: Right<A>): A
-} = ma => ma.value
+  <A>(self: Right<A>): A
+} = self => self.value
 
 export const toUnion: {
-  <E, A>(ma: Either<E, A>): E | A
-} = ma => ma.value
+  <E, A>(self: Either<E, A>): E | A
+} = self => self.value
 
 export const match: {
   <E, A, B>(
@@ -36,5 +36,5 @@ export const match: {
       : pipe (self, fromRight, onRight),
 )
 
-export const swap = <E, A>(ma: Either<E, A>): Either<A, E> =>
-  match<E, A, Either<A, E>> (ma, right, left)
+export const swap = <E, A>(self: Either<E, A>): Either<A, E> =>
+  match<E, A, Either<A, E>> (self, right, left)

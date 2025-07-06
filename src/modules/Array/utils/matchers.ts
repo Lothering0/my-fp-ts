@@ -7,37 +7,37 @@ export const match: {
   <A, B>(
     whenEmpty: LazyArg<B>,
     whenNonEmpty: (as: NEA.NonEmptyArray<A>) => B,
-  ): (as: A[]) => B
+  ): (self: A[]) => B
   <A, B>(
-    as: A[],
+    self: A[],
     whenEmpty: LazyArg<B>,
     whenNonEmpty: (as: NEA.NonEmptyArray<A>) => B,
   ): B
-} = overload (2, (as, whenEmpty, whenNonEmpty) =>
-  isNonEmpty (as) ? whenNonEmpty (as) : whenEmpty (),
+} = overload (2, (self, whenEmpty, whenNonEmpty) =>
+  isNonEmpty (self) ? whenNonEmpty (self) : whenEmpty (),
 )
 
 export const matchLeft: {
   <A, B>(
     whenEmpty: LazyArg<B>,
-    whenNonEmpty: (as: NEA.NonEmptyArray<A>) => B,
-  ): (as: A[]) => B
+    whenNonEmpty: (head: A, tail: A[]) => B,
+  ): (self: A[]) => B
   <A, B>(
-    as: A[],
+    self: A[],
     whenEmpty: LazyArg<B>,
     whenNonEmpty: (head: A, tail: A[]) => B,
   ): B
-} = overload (2, (as, whenEmpty, whenNonEmpty) =>
-  isNonEmpty (as) ? whenNonEmpty (NEA.head (as), NEA.tail (as)) : whenEmpty (),
+} = overload (2, (self, whenEmpty, whenNonEmpty) =>
+  isNonEmpty (self) ? whenNonEmpty (NEA.head (self), NEA.tail (self)) : whenEmpty (),
 )
 
 export const matchRight: {
   <A, B>(
     whenEmpty: LazyArg<B>,
-    whenNonEmpty: (as: NEA.NonEmptyArray<A>) => B,
-  ): (init: A[], last: A) => B
+    whenNonEmpty: (init: A[], last: A) => B,
+  ): (self: A[]) => B
   <A, B>(
-    as: A[],
+    self: A[],
     whenEmpty: LazyArg<B>,
     whenNonEmpty: (init: A[], last: A) => B,
   ): B

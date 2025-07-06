@@ -10,10 +10,10 @@ export const applicative: Applicative<OptionHKT> = createApplicative ({
   of: some,
   ap: overload (
     1,
-    <_, A, B>(fab: Option<(a: A) => B>, self: Option<A>): Option<B> =>
-      match (self, zero, a =>
+    <_, A, B>(self: Option<(a: A) => B>, fa: Option<A>): Option<B> =>
+      match (fa, zero, a =>
         pipe (
-          fab,
+          self,
           match (zero, ab => pipe (a, ab, some)),
         ),
       ),

@@ -42,7 +42,9 @@ export const transform = <F extends HKT>(F: Monad<F>) => {
       onLeft: (e: E) => B,
       onRight: (a: A) => B,
     ): Kind<F, R, KE, B>
-  } = overload (2, (mm, onLeft, onRight) => F.map (mm, E.match (onLeft, onRight)))
+  } = overload (2, (self, onLeft, onRight) =>
+    F.map (self, E.match (onLeft, onRight)),
+  )
 
   const swap: {
     <KE, E, A>(self: Kind<THKT, KE, E, A>): Kind<THKT, KE, A, E>
@@ -53,12 +55,12 @@ export const transform = <F extends HKT>(F: Monad<F>) => {
   } = F.map (E.toUnion)
 
   const functor: Functor<THKT> = {
-    map: overload (1, (fma, f) => F.map (fma, E.map (f))),
+    map: overload (1, (self, f) => F.map (self, E.map (f))),
   }
 
   const bifunctor = createBifunctor<THKT> ({
     ...functor,
-    mapLeft: overload (1, (fma, f) => F.map (fma, E.mapLeft (f))),
+    mapLeft: overload (1, (self, f) => F.map (self, E.mapLeft (f))),
   })
 
   const applicative = createApplicative<THKT> ({
@@ -67,11 +69,11 @@ export const transform = <F extends HKT>(F: Monad<F>) => {
     ap: overload (
       1,
       <_, _2, A, B>(
-        fmf: Kind<THKT, _, _2, (a: A) => B>,
+        self: Kind<THKT, _, _2, (a: A) => B>,
         fma: Kind<THKT, _, _2, A>,
       ): Kind<THKT, _, _2, B> =>
         pipe (
-          fmf,
+          self,
           F.map (mf => (mg: E.Either<_2, A>) => E.ap (mf, mg)),
           F.ap (fma),
         ),

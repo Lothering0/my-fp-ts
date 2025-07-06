@@ -10,16 +10,16 @@ export const zero: {
 } = constant (none)
 
 export const isSome: {
-  <A>(fa: Option<A>): fa is Some<A>
-} = fa => fa._tag === "Some"
+  <A>(self: Option<A>): self is Some<A>
+} = self => self._tag === "Some"
 
 export const isNone: {
-  <A>(fa: Option<A>): fa is None
-} = fa => fa._tag === "None"
+  <A>(self: Option<A>): self is None
+} = self => self._tag === "None"
 
 export const fromSome: {
-  <A>(fa: Some<A>): A
-} = fa => fa.value
+  <A>(self: Some<A>): A
+} = self => self.value
 
 export const match: {
   <A, B>(whenNone: LazyArg<B>, whenSome: (a: A) => B): (self: Option<A>) => B
@@ -34,9 +34,10 @@ export const toOption: {
   <A>(a: A): Option<NonNullable<A>>
 } = a => a == null ? none : some (a)
 
-export const fromOption: {
-  <A>(a: A): (fa: Option<A>) => A
-} = a => fa => isNone (fa) ? a : fromSome (fa)
+export const getOrElse: {
+  <A>(a: A): (self: Option<A>) => A
+  <A>(self: Option<A>, a: A): A
+} = overload (1, (self, a) => isNone (self) ? a : fromSome (self))
 
 export const fromEither: {
   <_, A>(ma: E.Either<_, A>): Option<A>

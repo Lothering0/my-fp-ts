@@ -11,81 +11,81 @@ export const zero: {
 } = () => []
 
 export const length: {
-  <A>(as: A[]): number
-} = as => as.length
+  <A>(self: A[]): number
+} = self => self.length
 
-export const isEmpty = <A>(as: A[]): as is [] => length (as) === 0
+export const isEmpty = <A>(self: A[]): self is [] => length (self) === 0
 
-export const isNonEmpty = <A>(as: A[]): as is NEA.NonEmptyArray<A> =>
-  !isEmpty (as)
+export const isNonEmpty = <A>(self: A[]): self is NEA.NonEmptyArray<A> =>
+  !isEmpty (self)
 
 export const copy: {
-  <A>(as: A[]): A[]
-} = as => [...as]
+  <A>(self: A[]): A[]
+} = self => [...self]
 
 export const head: {
-  <A>(as: A[]): O.Option<A>
-} = as => isNonEmpty (as) ? pipe (as, NEA.head, O.some) : O.none
+  <A>(self: A[]): O.Option<A>
+} = self => isNonEmpty (self) ? pipe (self, NEA.head, O.some) : O.none
 
 export const init: {
-  <A>(as: A[]): O.Option<A[]>
-} = as => isNonEmpty (as) ? pipe (as, NEA.init, O.some) : O.none
+  <A>(self: A[]): O.Option<A[]>
+} = self => isNonEmpty (self) ? pipe (self, NEA.init, O.some) : O.none
 
 export const last: {
-  <A>(as: A[]): O.Option<A>
-} = as => isNonEmpty (as) ? pipe (as, NEA.last, O.some) : O.none
+  <A>(self: A[]): O.Option<A>
+} = self => isNonEmpty (self) ? pipe (self, NEA.last, O.some) : O.none
 
 export const tail: {
-  <A>(as: A[]): O.Option<A[]>
-} = as => isNonEmpty (as) ? pipe (as, NEA.tail, O.some) : O.none
+  <A>(self: A[]): O.Option<A[]>
+} = self => isNonEmpty (self) ? pipe (self, NEA.tail, O.some) : O.none
 
 export const lookup: {
-  <A>(i: number): (as: A[]) => O.Option<A>
-  <A>(i: number, as: A[]): O.Option<A>
-} = overloadLast (1, (i, as) =>
-  i >= 0 && i < length (as) ? pipe (as.at (i)!, O.some) : O.none,
+  <A>(i: number): (self: A[]) => O.Option<A>
+  <A>(i: number, self: A[]): O.Option<A>
+} = overloadLast (1, (i, self) =>
+  i >= 0 && i < length (self) ? pipe (self.at (i)!, O.some) : O.none,
 )
 
 /** Like `lookup` but accepts also negative integers where -1 is index of the last element, -2 of the pre-last and so on. */
 export const at: {
-  <A>(i: number): (as: A[]) => O.Option<A>
-  <A>(i: number, as: A[]): O.Option<A>
-} = overloadLast (1, (i, as) =>
-  i < length (as) && i >= -length (as) ? pipe (as.at (i)!, O.some) : O.none,
+  <A>(i: number): (self: A[]) => O.Option<A>
+  <A>(i: number, self: A[]): O.Option<A>
+} = overloadLast (1, (i, self) =>
+  i < length (self) && i >= -length (self) ? pipe (self.at (i)!, O.some) : O.none,
 )
 
 export const prepend: {
-  <A>(a: A): (as: A[]) => NEA.NonEmptyArray<A>
-  <A>(a: A, as: A[]): NEA.NonEmptyArray<A>
-} = overloadLast (1, (a, as) => [a, ...as])
+  <A>(a: A): (self: A[]) => NEA.NonEmptyArray<A>
+  <A>(a: A, self: A[]): NEA.NonEmptyArray<A>
+} = overloadLast (1, (a, self) => [a, ...self])
 
 export const prependAllWith: {
-  <A>(f: (a: A) => A): (as: A[]) => A[]
-  <A>(f: (a: A) => A, as: A[]): A[]
-} = overloadLast (1, (f, as) => flatMap (as, x => [f (x), x]))
+  <A>(f: (a: A) => A): (self: A[]) => A[]
+  <A>(f: (a: A) => A, self: A[]): A[]
+} = overloadLast (1, (f, self) => flatMap (self, x => [f (x), x]))
 
 export const prependAll: {
-  <A>(a: A): (as: A[]) => A[]
-  <A>(a: A, as: A[]): A[]
-} = overloadLast (1, <A>(a: A, as: A[]) => prependAllWith (constant (a), as))
+  <A>(a: A): (self: A[]) => A[]
+  <A>(a: A, self: A[]): A[]
+} = overloadLast (1, <A>(a: A, self: A[]) => prependAllWith (constant (a), self))
 
 export const append: {
-  <A>(a: A): (as: A[]) => NEA.NonEmptyArray<A>
-  <A>(as: A[], a: A): NEA.NonEmptyArray<A>
+  <A>(a: A): (self: A[]) => NEA.NonEmptyArray<A>
+  <A>(self: A[], a: A): NEA.NonEmptyArray<A>
 } = overload (
   1,
-  <A>(as: A[], a: A) => [...as, a] as unknown as NEA.NonEmptyArray<A>,
+  <A>(self: A[], a: A) => [...self, a] as unknown as NEA.NonEmptyArray<A>,
 )
 
 export const appendAllWith: {
-  <A>(f: (a: A) => A): (as: A[]) => A[]
-  <A>(as: A[], f: (a: A) => A): A[]
-} = overload (1, (as, f) => flatMap (as, x => [x, f (x)]))
+  <A>(f: (a: A) => A): (self: A[]) => A[]
+  <A>(self: A[], f: (a: A) => A): A[]
+} = overload (1, (self, f) => flatMap (self, x => [x, f (x)]))
 
 export const appendAll: {
-  <A>(a: A): (as: A[]) => A[]
-  <A>(as: A[], a: A): A[]
-} = overload (1, (as, a) => appendAllWith (as, constant (a)))
+  <A>(a: A): (self: A[]) => A[]
+  <A>(self: A[], a: A): A[]
+} = overload (1, (self, a) => appendAllWith (self, constant (a)))
 
 export const range: {
   (from: number): (to: number) => NEA.NonEmptyArray<number>
@@ -97,8 +97,8 @@ export const range: {
       : [from, ...range (from - 1) (to)]
 
 export const reverse: {
-  <A>(a: A[]): A[]
-} = as => as.toReversed ()
+  <A>(self: A[]): A[]
+} = self => self.toReversed ()
 
 export const concat: {
   <A>(end: A[]): (start: A[]) => A[]

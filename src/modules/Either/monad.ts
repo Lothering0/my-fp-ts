@@ -5,7 +5,7 @@ import { isLeft, fromRight } from "./utils"
 
 export const monad: Monad<EitherHKT> = createMonad ({
   ...applicative,
-  flat: mma => isLeft (mma) ? mma : fromRight (mma),
+  flat: self => isLeft (self) ? self : fromRight (self),
 })
 
 export const {

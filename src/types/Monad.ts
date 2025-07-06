@@ -11,7 +11,7 @@ export interface Monad<F extends HKT> extends Applicative<F> {
   readonly Do: Kind<F, unknown, unknown, {}>
 
   readonly flat: <R, E, A>(
-    mma: Kind<F, R, E, Kind<F, R, E, A>>,
+    self: Kind<F, R, E, Kind<F, R, E, A>>,
   ) => Kind<F, R, E, A>
 
   readonly flatMap: {

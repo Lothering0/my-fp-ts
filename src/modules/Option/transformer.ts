@@ -43,7 +43,7 @@ export const transform = <F extends HKT>(F: Monad<F>) => {
   )
 
   const functor: Functor<THKT> = {
-    map: overload (1, (fma, f) => F.map (fma, O.map (f))),
+    map: overload (1, (self, f) => F.map (self, O.map (f))),
   }
 
   const applicative = createApplicative<THKT> ({
@@ -52,11 +52,11 @@ export const transform = <F extends HKT>(F: Monad<F>) => {
     ap: overload (
       1,
       <_, _2, A, B>(
-        fmf: Kind<THKT, _, _2, (a: A) => B>,
+        self: Kind<THKT, _, _2, (a: A) => B>,
         fma: Kind<THKT, _, _2, A>,
       ): Kind<THKT, _, _2, B> =>
         pipe (
-          fmf,
+          self,
           F.map (mf => (mg: O.Option<A>) => O.ap (mf, mg)),
           F.ap (fma),
         ),

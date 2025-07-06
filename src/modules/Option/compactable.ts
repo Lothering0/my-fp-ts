@@ -8,10 +8,10 @@ import { fromEither, zero } from "./utils"
 export const compactable: Compactable<OptionHKT> = {
   compact: flat,
   compactEithers: flatMap (fromEither),
-  separate: mma =>
+  separate: self =>
     S.make (
-      flatMap (mma, E.match (some, zero)),
-      flatMap (mma, E.match (zero, some)),
+      flatMap (self, E.match (some, zero)),
+      flatMap (self, E.match (zero, some)),
     ),
 }
 
