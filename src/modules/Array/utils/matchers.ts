@@ -1,7 +1,7 @@
 import * as NEA from "../../NonEmptyArray"
 import { overload } from "../../../utils/overloads"
 import { LazyArg } from "../../../types/utils"
-import { isNonEmpty } from "."
+import { isNonEmpty } from "./utils"
 
 export const match: {
   <A, B>(
