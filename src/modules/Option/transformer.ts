@@ -12,29 +12,29 @@ export interface OptionT<F extends HKT> extends HKT {
   readonly type: Kind<F, this["_R"], this["_E"], O.Option<this["_A"]>>
 }
 
-export const getOptionT = <F extends HKT>(F: Monad<F>) => {
-  type TransformedHKT = OptionT<F>
+export const transform = <F extends HKT>(F: Monad<F>) => {
+  type THKT = OptionT<F>
 
   const some: {
-    <_, _2, A>(a: A): Kind<TransformedHKT, _, _2, A>
+    <_, _2, A>(a: A): Kind<THKT, _, _2, A>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } = flow (O.some, F.of) as any
 
   const zero: {
-    <_, E, A = never>(): Kind<TransformedHKT, _, E, A>
+    <_, E, A = never>(): Kind<THKT, _, E, A>
   } = () => F.of (O.none)
 
   const fromF: {
-    <_, _2, A>(ma: Kind<F, _, _2, A>): Kind<TransformedHKT, _, _2, A>
+    <_, _2, A>(ma: Kind<F, _, _2, A>): Kind<THKT, _, _2, A>
   } = F.map (O.some)
 
   const match: {
     <_, _2, A, B>(
       onNone: LazyArg<B>,
       onSome: (a: A) => B,
-    ): (self: Kind<TransformedHKT, _, _2, A>) => Kind<F, _, _2, B>
+    ): (self: Kind<THKT, _, _2, A>) => Kind<F, _, _2, B>
     <_, _2, A, B>(
-      self: Kind<TransformedHKT, _, _2, A>,
+      self: Kind<THKT, _, _2, A>,
       onNone: LazyArg<B>,
       onSome: (a: A) => B,
     ): Kind<F, _, _2, B>
@@ -42,19 +42,19 @@ export const getOptionT = <F extends HKT>(F: Monad<F>) => {
     F.map (self, O.match (onNone, onSome)),
   )
 
-  const functor: Functor<TransformedHKT> = {
-    map: overload (1, (fma, f) => functor.map (fma, F.map (f))),
+  const functor: Functor<THKT> = {
+    map: overload (1, (fma, f) => F.map (fma, O.map (f))),
   }
 
-  const applicative = createApplicative<TransformedHKT> ({
+  const applicative = createApplicative<THKT> ({
     ...functor,
     of: some,
     ap: overload (
       1,
       <_, _2, A, B>(
-        fmf: Kind<TransformedHKT, _, _2, (a: A) => B>,
-        fma: Kind<TransformedHKT, _, _2, A>,
-      ): Kind<TransformedHKT, _, _2, B> =>
+        fmf: Kind<THKT, _, _2, (a: A) => B>,
+        fma: Kind<THKT, _, _2, A>,
+      ): Kind<THKT, _, _2, B> =>
         pipe (
           fmf,
           F.map (mf => (mg: O.Option<A>) => O.ap (mf, mg)),
@@ -63,7 +63,7 @@ export const getOptionT = <F extends HKT>(F: Monad<F>) => {
     ),
   })
 
-  const monad = createMonad<TransformedHKT> ({
+  const monad = createMonad<THKT> ({
     ...applicative,
     flat: flow (F.flatMap (O.match (() => F.of (O.none), identity))),
   })

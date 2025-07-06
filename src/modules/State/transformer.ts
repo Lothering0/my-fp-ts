@@ -13,36 +13,34 @@ export interface StateT<F extends HKT> extends HKT {
   ) => Kind<F, any, this["_E"], [this["_A"], this["_R"]]>
 }
 
-export const getStateT = <F extends HKT>(F: Monad<F>) => {
-  type TransformedHKT = StateT<F>
+export const transform = <F extends HKT>(F: Monad<F>) => {
+  type THKT = StateT<F>
 
   const fromState: {
-    <S, E, A>(ma: S.State<S, A>): Kind<TransformedHKT, S, E, A>
+    <S, E, A>(ma: S.State<S, A>): Kind<THKT, S, E, A>
   } = ma => s => F.of (S.run (s) (ma))
 
   const fromF: {
-    <S, R, E, A>(ma: Kind<F, R, E, A>): Kind<TransformedHKT, S, E, A>
+    <S, R, E, A>(ma: Kind<F, R, E, A>): Kind<THKT, S, E, A>
   } = ma => s => F.map (ma, a => [a, s])
 
   const run: {
-    <S>(
-      s: S,
-    ): <R, E, A>(ma: Kind<TransformedHKT, S, E, A>) => Kind<F, R, E, [A, S]>
+    <S>(s: S): <R, E, A>(ma: Kind<THKT, S, E, A>) => Kind<F, R, E, [A, S]>
   } = s => ma => ma (s)
 
   const evaluate: {
-    <S>(s: S): <R, E, A>(ma: Kind<TransformedHKT, S, E, A>) => Kind<F, R, E, A>
+    <S>(s: S): <R, E, A>(ma: Kind<THKT, S, E, A>) => Kind<F, R, E, A>
   } = s => ma => F.map (run (s) (ma), ([a]) => a)
 
   const execute: {
-    <S>(s: S): <R, E, A>(ma: Kind<TransformedHKT, S, E, A>) => Kind<F, R, E, S>
+    <S>(s: S): <R, E, A>(ma: Kind<THKT, S, E, A>) => Kind<F, R, E, S>
   } = s => ma => F.map (run (s) (ma), ([, s]) => s)
 
-  const functor: Functor<TransformedHKT> = {
+  const functor: Functor<THKT> = {
     map: overload (1, (fma, f) => s => F.map (fma (s), ([a, s]) => [f (a), s])),
   }
 
-  const applicative = createApplicative<TransformedHKT> ({
+  const applicative = createApplicative<THKT> ({
     ...functor,
     of: a => s => F.of ([a, s]),
     ap: overload (
@@ -57,7 +55,7 @@ export const getStateT = <F extends HKT>(F: Monad<F>) => {
     ),
   })
 
-  const monad = createMonad<TransformedHKT> ({
+  const monad = createMonad<THKT> ({
     ...applicative,
     flat: self => s => F.flatMap (run (s) (self), ([mb, s]) => run (s) (mb)),
   })
