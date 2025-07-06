@@ -7,10 +7,10 @@ import { pipe } from "../../utils/flow"
 
 export const monad: Monad<TreeHKT> = createMonad<TreeHKT> ({
   ...applicative,
-  flat: mma =>
+  flat: self =>
     make (
-      pipe (mma, valueOf, valueOf),
-      A.concat (pipe (mma, valueOf, forestOf), A.map (forestOf (mma), flat)),
+      pipe (self, valueOf, valueOf),
+      A.concat (pipe (self, valueOf, forestOf), A.map (forestOf (self), flat)),
     ),
 })
 

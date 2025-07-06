@@ -8,8 +8,8 @@ import { flatMap } from "./monad"
 import { flow } from "../../utils/flow"
 
 export const compactable: Compactable<AsyncOptionHKT> = {
-  compact: mma => () => fromAsyncOption (mma).then (O.compact),
-  compactResults: mma => () => fromAsyncOption (mma).then (O.compactResults),
+  compact: self => () => fromAsyncOption (self).then (O.compact),
+  compactResults: self => () => fromAsyncOption (self).then (O.compactResults),
   separate: flow (
     fromAsyncOption,
     ma => () => ma,

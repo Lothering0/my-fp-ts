@@ -32,23 +32,27 @@ export const {
 export const tapOption: {
   <A, _>(f: (a: A) => O.Option<_>): (self: SyncOption<A>) => SyncOption<A>
   <A, _>(self: SyncOption<A>, f: (a: A) => O.Option<_>): SyncOption<A>
-} = overload (1, (mma, f) => () => pipe (mma (), O.tap (f)))
+} = overload (1, (self, f) => () => pipe (self, fromSyncOption, O.tap (f)))
 
 export const tapResult: {
   <E, A, _>(f: (a: A) => Result<E, _>): (self: SyncOption<A>) => SyncOption<A>
   <E, A, _>(self: SyncOption<A>, f: (a: A) => Result<E, _>): SyncOption<A>
-} = overload (1, (mma, f) => () => pipe (mma (), O.tapResult (f)))
+} = overload (1, (self, f) => () => pipe (self, fromSyncOption, O.tapResult (f)))
 
 export const tapSyncResult: {
   <E, A, _>(
     f: (a: A) => SR.SyncResult<E, _>,
-  ): (ma: SyncOption<A>) => SyncOption<A>
-  <E, A, _>(ma: SyncOption<A>, f: (a: A) => SR.SyncResult<E, _>): SyncOption<A>
+  ): (self: SyncOption<A>) => SyncOption<A>
+  <E, A, _>(
+    self: SyncOption<A>,
+    f: (a: A) => SR.SyncResult<E, _>,
+  ): SyncOption<A>
 } = overload (
   1,
-  (mma, f) => () =>
+  (self, f) => () =>
     pipe (
-      mma (),
+      self,
+      fromSyncOption,
       O.tap (a => pipe (a, f, SR.fromSyncResult, O.fromResult)),
     ),
 )

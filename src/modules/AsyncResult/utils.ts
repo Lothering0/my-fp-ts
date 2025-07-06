@@ -4,8 +4,8 @@ import { overload } from "../../utils/overloads"
 import { fromAsyncResult, AsyncResult } from "./async-result"
 
 export const toUnion: {
-  <E, A>(ma: AsyncResult<E, A>): Async<E | A>
-} = mma => () => fromAsyncResult (mma).then (R.toUnion)
+  <E, A>(self: AsyncResult<E, A>): Async<E | A>
+} = self => () => fromAsyncResult (self).then (R.toUnion)
 
 export const match: {
   <E, A, B>(
