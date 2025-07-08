@@ -1,0 +1,21 @@
+import { Contravariant } from "./Contravariant"
+import { HKT } from "./HKT"
+import { overload } from "../utils/overloads"
+import { flow } from "../utils/flow"
+
+export interface Show<A> {
+  readonly show: (a: A) => string
+}
+
+export interface ShowHKT extends HKT {
+  readonly type: Show<this["_A"]>
+}
+
+export const contravariant: Contravariant<ShowHKT> = {
+  contramap: overload (
+    2,
+    <A, B>(self: Show<A>, ba: (b: B) => A): Show<B> => ({
+      show: flow (ba, self.show),
+    }),
+  ),
+}

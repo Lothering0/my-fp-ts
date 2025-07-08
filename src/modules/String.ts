@@ -1,3 +1,4 @@
+import { Show } from "../types/Show"
 import { Monoid } from "../types/Monoid"
 import { Semigroup } from "../types/Semigroup"
 import { overload } from "../utils/overloads"
@@ -32,3 +33,11 @@ export const split: {
   (separator: string): (self: string) => string[]
   (self: string, separator: string): string[]
 } = overload (1, (self, separator) => self.split (separator))
+
+export const show: {
+  <S extends string>(self: S): `"${S}"`
+} = self => `"${self}"`
+
+const Show: Show<string> = { show }
+
+export { Show }

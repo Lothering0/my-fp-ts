@@ -6,6 +6,7 @@ import { Monoid } from "../types/Monoid"
 import { Group } from "../types/Group"
 import { flow } from "../utils/flow"
 import { overload } from "../utils/overloads"
+import { Show } from "../types/Show"
 
 export const sumSemigroup: Semigroup<number> = {
   concat: (x, y) => x + y,
@@ -34,6 +35,14 @@ export const productGroup: Group<number> = {
   ...productMonoid,
   inverse: x => 1 / x,
 }
+
+export const show: {
+  <N extends number>(self: N): `${N}`
+} = self => `${self}`
+
+const Show: Show<number> = { show }
+
+export { Show }
 
 export const add: {
   (y: number): (x: number) => number

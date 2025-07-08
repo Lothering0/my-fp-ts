@@ -105,6 +105,11 @@ export const concat: {
   <A>(start: A[], end: A[]): A[]
 } = NEA.concat
 
+export const join: {
+  <A>(separator: string): (self: A[]) => string
+  <A>(self: A[], separator: string): string
+} = overload (1, <A>(self: A[], separator: string) => self.join (separator))
+
 /** [f (a, b, ...) | a <- as, b <- bs, ..., p (a, b, ...)] */
 export function comprehension<A, R>(
   input: [A[]],

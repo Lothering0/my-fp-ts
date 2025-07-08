@@ -1,4 +1,7 @@
+import { NonEmptyArray } from "../NonEmptyArray"
+import { isNonEmpty } from "../Array"
 import { Forest, Tree } from "./tree"
+import { pipe } from "../../utils/flow"
 
 export const valueOf: {
   <A>(tree: Tree<A>): A
@@ -14,3 +17,8 @@ export const make: {
   value,
   forest: forest ?? [],
 })
+
+export const hasForest = <A>(
+  tree: Tree<A>,
+): tree is Tree<A> & { readonly forest: NonEmptyArray<A> } =>
+  pipe (tree, forestOf, isNonEmpty)
