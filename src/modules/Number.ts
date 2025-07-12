@@ -45,6 +45,8 @@ export const Show: S.Show<number> = { show }
 
 export const Eq: E.Eq<number> = E.EqStrict
 
+export const { equals } = Eq
+
 export const add: {
   (y: number): (x: number) => number
   (x: number, y: number): number

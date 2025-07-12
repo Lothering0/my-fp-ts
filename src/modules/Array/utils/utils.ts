@@ -68,10 +68,8 @@ export const findMap: {
 } = overload (
   1,
   <A, B>(self: A[], amb: (a: A) => O.Option<B>): O.Option<B> =>
-    matchLeft (
-      self,
-      () => O.none,
-      (head, tail) => O.match (amb (head), () => findMap (tail, amb), O.some),
+    matchLeft (self, O.zero, (head, tail) =>
+      O.match (amb (head), () => findMap (tail, amb), O.some),
     ),
 )
 
@@ -86,19 +84,6 @@ export const find: {
     findMap (self, a => pipe (a, p, B.match (O.zero, flow (constant (a), O.some)))),
 )
 
-export const findLastMap: {
-  <A, B>(amb: (a: A) => O.Option<B>): (self: A[]) => O.Option<B>
-  <A, B>(self: A[], amb: (a: A) => O.Option<B>): O.Option<B>
-} = overload (
-  1,
-  <A, B>(self: A[], amb: (a: A) => O.Option<B>): O.Option<B> =>
-    matchRight (
-      self,
-      () => O.none,
-      (init, last) => O.match (amb (last), () => findLastMap (init, amb), O.some),
-    ),
-)
-
 export const findIndex: {
   <A>(p: Predicate<A>): (self: A[]) => O.Option<number>
   <A>(self: A[], p: Predicate<A>): O.Option<number>
@@ -107,6 +92,17 @@ export const findIndex: {
     self.findIndex (a => p (a)),
     i => i > -1 ? O.some (i) : O.none,
   ),
+)
+
+export const findLastMap: {
+  <A, B>(amb: (a: A) => O.Option<B>): (self: A[]) => O.Option<B>
+  <A, B>(self: A[], amb: (a: A) => O.Option<B>): O.Option<B>
+} = overload (
+  1,
+  <A, B>(self: A[], amb: (a: A) => O.Option<B>): O.Option<B> =>
+    matchRight (self, O.zero, (init, last) =>
+      O.match (amb (last), () => findLastMap (init, amb), O.some),
+    ),
 )
 
 export const findLast: {

@@ -19,3 +19,5 @@ export const show: {
 export const Show: S.Show<boolean> = { show }
 
 export const Eq: E.Eq<boolean> = E.EqStrict
+
+export const { equals } = Eq

@@ -41,4 +41,6 @@ export const show: {
 
 export const Show: Sh.Show<string> = { show }
 
-export const Eq: E.Eq<number> = E.EqStrict
+export const Eq: E.Eq<string> = E.EqStrict
+
+export const { equals } = Eq
