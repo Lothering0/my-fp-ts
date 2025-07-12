@@ -1,22 +1,18 @@
 import { ArrayHKT } from "./array"
-import {
-  createFilterableWithIndex,
-  FilterableWithIndex,
-} from "../../types/FilterableWithIndex"
-import { createFilterable, Filterable } from "../../types/Filterable"
-import { compactable } from "./compactable"
-import { functor, functorWithIndex } from "./functor"
+import { createFilterableWithIndex } from "../../types/FilterableWithIndex"
+import { createFilterable } from "../../types/Filterable"
+import { Compactable } from "./compactable"
+import { Functor, FunctorWithIndex } from "./functor"
 
-export const filterable: Filterable<ArrayHKT> = createFilterable ({
-  ...compactable,
-  ...functor,
+export const Filterable = createFilterable<ArrayHKT> ({
+  ...Compactable,
+  ...Functor,
 })
 
-export const filterableWithIndex: FilterableWithIndex<ArrayHKT, number> =
-  createFilterableWithIndex ({
-    ...filterable,
-    ...functorWithIndex,
-  })
+export const FilterableWithIndex = createFilterableWithIndex<ArrayHKT, number> ({
+  ...Filterable,
+  ...FunctorWithIndex,
+})
 
 export const {
   filterMap,
@@ -27,4 +23,4 @@ export const {
   partitionMapWithIndex,
   partition,
   partitionWithIndex,
-} = filterableWithIndex
+} = FilterableWithIndex

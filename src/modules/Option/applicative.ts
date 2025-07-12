@@ -1,12 +1,12 @@
-import { createApplicative, Applicative } from "../../types/Applicative"
+import { createApplicative } from "../../types/Applicative"
 import { OptionHKT, Option, some } from "./option"
 import { pipe } from "../../utils/flow"
-import { functor } from "./functor"
+import { Functor } from "./functor"
 import { match, zero } from "./utils"
 import { overload } from "../../utils/overloads"
 
-export const applicative: Applicative<OptionHKT> = createApplicative ({
-  ...functor,
+export const Applicative = createApplicative<OptionHKT> ({
+  ...Functor,
   of: some,
   ap: overload (
     1,
@@ -20,4 +20,4 @@ export const applicative: Applicative<OptionHKT> = createApplicative ({
   ),
 })
 
-export const { of, ap, apply, flap, flipApply } = applicative
+export const { of, ap, apply, flap, flipApply } = Applicative

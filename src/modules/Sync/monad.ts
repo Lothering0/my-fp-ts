@@ -1,9 +1,9 @@
 import { createMonad } from "../../types/Monad"
-import { applicative } from "./applicative"
+import { Applicative } from "./applicative"
 import { SyncHKT, fromSync } from "./sync"
 
-export const monad = createMonad<SyncHKT> ({
-  ...applicative,
+export const Monad = createMonad<SyncHKT> ({
+  ...Applicative,
   flat: fromSync,
 })
 
@@ -19,4 +19,4 @@ export const {
   flatMapTo,
   tap,
   tapSync,
-} = monad
+} = Monad

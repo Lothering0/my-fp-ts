@@ -1,30 +1,29 @@
 import { ArrayHKT } from "./array"
-import { Applicative, createApplicative } from "../../types/Applicative"
-import {
-  ApplicativeWithIndex,
-  createApplicativeWithIndex,
-} from "../../types/ApplicativeWithIndex"
-import { functor, functorWithIndex, map, mapWithIndex } from "./functor"
+import { createApplicative } from "../../types/Applicative"
+import { createApplicativeWithIndex } from "../../types/ApplicativeWithIndex"
+import { Functor, FunctorWithIndex, map, mapWithIndex } from "./functor"
 import { overload } from "src/utils/overloads"
 
-export const applicative: Applicative<ArrayHKT> = createApplicative ({
-  ...functor,
+export const Applicative = createApplicative<ArrayHKT> ({
+  ...Functor,
   of: a => [a],
   ap: overload (1, <A, B>(self: Array<(a: A) => B>, fa: A[]) =>
     map (fa, a => map (self, ab => ab (a))).flat (),
   ),
 })
 
-export const applicativeWithIndex: ApplicativeWithIndex<ArrayHKT, number> =
-  createApplicativeWithIndex ({
-    ...functorWithIndex,
-    ...applicative,
-    apWithIndex: overload (
-      1,
-      <A, B>(self: Array<(i: number, a: A) => B>, fa: A[]) =>
-        mapWithIndex (fa, (i, a) => map (self, ab => ab (i, a))).flat (),
-    ),
-  })
+export const ApplicativeWithIndex = createApplicativeWithIndex<
+  ArrayHKT,
+  number
+> ({
+  ...FunctorWithIndex,
+  ...Applicative,
+  apWithIndex: overload (
+    1,
+    <A, B>(self: Array<(i: number, a: A) => B>, fa: A[]) =>
+      mapWithIndex (fa, (i, a) => map (self, ab => ab (i, a))).flat (),
+  ),
+})
 
 export const {
   of,
@@ -36,4 +35,4 @@ export const {
   applyWithIndex,
   flapWithIndex,
   flipApplyWithIndex,
-} = applicativeWithIndex
+} = ApplicativeWithIndex

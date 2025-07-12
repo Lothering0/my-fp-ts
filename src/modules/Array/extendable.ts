@@ -1,11 +1,11 @@
-import { overload } from "src/utils/overloads"
-import { Extendable } from "../../types/Extendable"
+import * as E from "../../types/Extendable"
+import { overload } from "../../utils/overloads"
 import { ArrayHKT } from "./array"
-import { functor } from "./functor"
+import { Functor } from "./functor"
 import { matchLeft, prepend } from "./utils"
 
-export const extendable: Extendable<ArrayHKT> = {
-  ...functor,
+export const Extendable: E.Extendable<ArrayHKT> = {
+  ...Functor,
   extend: overload (1, <A, B>(self: A[], fab: (fa: A[]) => B): B[] =>
     matchLeft (
       self,
@@ -15,4 +15,4 @@ export const extendable: Extendable<ArrayHKT> = {
   ),
 }
 
-export const { extend } = extendable
+export const { extend } = Extendable

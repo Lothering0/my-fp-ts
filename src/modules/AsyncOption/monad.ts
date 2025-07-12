@@ -13,13 +13,13 @@ import {
   toAsyncOptionFromAsync,
 } from "./async-option"
 import { map } from "./functor"
-import { applicative } from "./applicative"
+import { Applicative } from "./applicative"
 import { pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
 import { DoObject } from "../../types/DoObject"
 
-export const monad = createMonad<AsyncOptionHKT> ({
-  ...applicative,
+export const Monad = createMonad<AsyncOptionHKT> ({
+  ...Applicative,
   flat: self => () =>
     fromAsyncOption (self).then (ma =>
       O.isNone (ma) ? ma : pipe (ma, O.fromSome, fromAsyncOption),
@@ -38,7 +38,7 @@ export const {
   flatMapTo,
   tap,
   tapSync,
-} = monad
+} = Monad
 
 export const parallel: {
   <N extends string | number | symbol, A, B>(

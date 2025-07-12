@@ -1,14 +1,16 @@
 import { Option, none, some } from "./option"
+import { isNone } from "./refinements"
+import { fromSome } from "./utils"
 import { Monoid } from "../../types/Monoid"
 import { Semigroup } from "../../types/Semigroup"
 import { pipe } from "../../utils/flow"
-import { fromSome, isNone } from "./utils"
+import { overload } from "../../utils/overloads"
 
 export const getMonoid: {
   <A>(semigroup: Semigroup<A>): Monoid<Option<A>>
 } = s => ({
   empty: none,
-  concat: (mx, my) =>
+  concat: overload (1, (mx, my) =>
     isNone (mx)
       ? isNone (my)
         ? none
@@ -16,4 +18,5 @@ export const getMonoid: {
       : isNone (my)
         ? mx
         : pipe (s.concat (fromSome (mx), fromSome (my)), some),
+  ),
 })

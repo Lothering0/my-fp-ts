@@ -1,12 +1,12 @@
 import * as A from "../Array"
+import * as M from "../../types/Monad"
 import { TreeHKT } from "./tree"
-import { createMonad, Monad } from "../../types/Monad"
-import { applicative } from "./applicative"
+import { Applicative } from "./applicative"
 import { make, valueOf, forestOf } from "./utils"
 import { pipe } from "../../utils/flow"
 
-export const monad: Monad<TreeHKT> = createMonad<TreeHKT> ({
-  ...applicative,
+export const Monad: M.Monad<TreeHKT> = M.createMonad<TreeHKT> ({
+  ...Applicative,
   flat: self =>
     make (
       pipe (self, valueOf, valueOf),
@@ -26,4 +26,4 @@ export const {
   flatMapTo,
   tap,
   tapSync,
-} = monad
+} = Monad

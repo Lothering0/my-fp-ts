@@ -2,7 +2,7 @@
 import * as R from "../Result"
 import * as A from "../Async"
 import * as SR from "../SyncResult"
-import { createMonad, Monad } from "../../types/Monad"
+import { createMonad } from "../../types/Monad"
 import { map } from "./functor"
 import { applicative } from "./applicative"
 import {
@@ -15,7 +15,7 @@ import { pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
 import { DoObject } from "src/types/DoObject"
 
-export const monad = createMonad<AsyncResultHKT> ({
+export const Monad = createMonad<AsyncResultHKT> ({
   ...applicative,
   flat: self => () =>
     fromAsyncResult (self).then (ma =>
@@ -35,7 +35,7 @@ export const {
   flatMapTo,
   tap,
   tapSync,
-} = monad
+} = Monad
 
 export const parallel: {
   <N extends string | number | symbol, E, A, B>(

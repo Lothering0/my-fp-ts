@@ -14,3 +14,5 @@ export const constNull: LazyArg<null> = constant (null)
 export const constUndefined: LazyArg<undefined> = constant (undefined)
 
 export const constVoid: LazyArg<void> = constant (_)
+
+export const constEmptyArray: LazyArg<[]> = constant ([])

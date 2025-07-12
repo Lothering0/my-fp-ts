@@ -1,10 +1,10 @@
 import * as R from "../Result"
-import { Functor } from "../../types/Functor"
-import { Bifunctor, createBifunctor } from "../../types/Bifunctor"
+import * as F from "../../types/Functor"
+import { createBifunctor } from "../../types/Bifunctor"
 import { AsyncResultHKT, fromAsyncResult, AsyncResult } from "./async-result"
 import { overload } from "../../utils/overloads"
 
-export const functor: Functor<AsyncResultHKT> = {
+export const Functor: F.Functor<AsyncResultHKT> = {
   map: overload (
     1,
     <_, A, B>(self: AsyncResult<_, A>, ab: (a: A) => B): AsyncResult<_, B> =>
@@ -13,8 +13,8 @@ export const functor: Functor<AsyncResultHKT> = {
   ),
 }
 
-export const bifunctor: Bifunctor<AsyncResultHKT> = createBifunctor ({
-  ...functor,
+export const Bifunctor = createBifunctor<AsyncResultHKT> ({
+  ...Functor,
   mapLeft: overload (
     1,
     <E, _, D>(self: AsyncResult<E, _>, ed: (e: E) => D): AsyncResult<D, _> =>
@@ -23,4 +23,4 @@ export const bifunctor: Bifunctor<AsyncResultHKT> = createBifunctor ({
   ),
 })
 
-export const { map, mapLeft, bimap } = bifunctor
+export const { map, mapLeft, bimap } = Bifunctor

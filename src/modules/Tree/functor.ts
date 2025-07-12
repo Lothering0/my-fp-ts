@@ -1,11 +1,11 @@
 import * as A from "../Array"
+import * as F from "../../types/Functor"
 import { Tree, TreeHKT } from "./tree"
 import { make, valueOf, forestOf } from "./utils"
-import { Functor } from "../../types/Functor"
 import { pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
 
-export const functor: Functor<TreeHKT> = {
+export const Functor: F.Functor<TreeHKT> = {
   map: overload (
     1,
     <A, B>(self: Tree<A>, ab: (a: A) => B): Tree<B> =>
@@ -13,4 +13,4 @@ export const functor: Functor<TreeHKT> = {
   ),
 }
 
-export const { map } = functor
+export const { map } = Functor

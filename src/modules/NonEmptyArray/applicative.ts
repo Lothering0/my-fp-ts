@@ -1,18 +1,15 @@
 import * as A from "../Array"
+import * as Ap from "../../types/Applicative"
+import * as ApI from "../../types/ApplicativeWithIndex"
 import { NonEmptyArrayHKT } from "./non-empty-array"
-import { Applicative } from "../../types/Applicative"
-import { ApplicativeWithIndex } from "../../types/ApplicativeWithIndex"
 
-export const applicative: Applicative<NonEmptyArrayHKT> = {
-  ...A.applicative,
-} as Applicative<NonEmptyArrayHKT>
+export const Applicative = {
+  ...A.Applicative,
+} as Ap.Applicative<NonEmptyArrayHKT>
 
-export const applicativeWithIndex: ApplicativeWithIndex<
-  NonEmptyArrayHKT,
-  number
-> = {
-  ...A.applicativeWithIndex,
-} as ApplicativeWithIndex<NonEmptyArrayHKT, number>
+export const ApplicativeWithIndex = {
+  ...A.ApplicativeWithIndex,
+} as ApI.ApplicativeWithIndex<NonEmptyArrayHKT, number>
 
 export const {
   of,
@@ -24,4 +21,4 @@ export const {
   applyWithIndex,
   flapWithIndex,
   flipApplyWithIndex,
-} = applicativeWithIndex
+} = ApplicativeWithIndex

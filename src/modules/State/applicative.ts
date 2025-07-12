@@ -1,11 +1,11 @@
 import { flow, pipe } from "../../utils/flow"
-import { Applicative, createApplicative } from "../../types/Applicative"
-import { functor } from "./functor"
+import { createApplicative } from "../../types/Applicative"
+import { Functor } from "./functor"
 import { State, StateHKT } from "./state"
 import { overload } from "src/utils/overloads"
 
-export const applicative: Applicative<StateHKT> = createApplicative ({
-  ...functor,
+export const Applicative = createApplicative<StateHKT> ({
+  ...Functor,
   of:
     <S, A>(a: A) =>
     (s: S) => [a, s],
@@ -16,4 +16,4 @@ export const applicative: Applicative<StateHKT> = createApplicative ({
   ),
 })
 
-export const { of, ap, apply, flap, flipApply } = applicative
+export const { of, ap, apply, flap, flipApply } = Applicative

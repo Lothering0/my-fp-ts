@@ -13,7 +13,7 @@ export interface ShowHKT extends HKT {
 
 export const contravariant: Contravariant<ShowHKT> = {
   contramap: overload (
-    2,
+    1,
     <A, B>(self: Show<A>, ba: (b: B) => A): Show<B> => ({
       show: flow (ba, self.show),
     }),

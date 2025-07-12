@@ -1,10 +1,10 @@
 import * as A from "../Array"
+import * as F from "../../types/Foldable"
 import { Tree, TreeHKT } from "./tree"
-import { Foldable } from "../../types/Foldable"
 import { forestOf, valueOf } from "./utils"
 import { overload } from "src/utils/overloads"
 
-export const foldable: Foldable<TreeHKT> = {
+export const Foldable: F.Foldable<TreeHKT> = {
   reduce: overload (
     2,
     <A, B>(self: Tree<A>, b: B, bab: (b: B, a: A) => B): B =>
@@ -24,4 +24,4 @@ export const foldable: Foldable<TreeHKT> = {
   ),
 }
 
-export const { reduce, reduceRight } = foldable
+export const { reduce, reduceRight } = Foldable

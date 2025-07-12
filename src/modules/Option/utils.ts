@@ -1,21 +1,15 @@
 import * as R from "../Result"
-import { None, none, Option, some, Some } from "./option"
+import { none, Option, some, Some } from "./option"
 import { LazyArg } from "../../types/utils"
 import { pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
 import { constant } from "../../utils/constant"
+import { identity } from "../Identity"
+import { isNone } from "./refinements"
 
 export const zero: {
   <A = never>(): Option<A>
 } = constant (none)
-
-export const isSome: {
-  <A>(self: Option<A>): self is Some<A>
-} = self => self._tag === "Some"
-
-export const isNone: {
-  <A>(self: Option<A>): self is None
-} = self => self._tag === "None"
 
 export const fromSome: {
   <A>(self: Some<A>): A
@@ -35,9 +29,21 @@ export const toOption: {
 } = a => a == null ? none : some (a)
 
 export const getOrElse: {
-  <A>(a: A): (self: Option<A>) => A
-  <A>(self: Option<A>, a: A): A
-} = overload (1, (self, a) => isNone (self) ? a : fromSome (self))
+  <A>(onNone: LazyArg<A>): (self: Option<A>) => A
+  <A>(self: Option<A>, onNone: LazyArg<A>): A
+} = overload (1, <A>(self: Option<A>, onNone: LazyArg<A>) =>
+  match (self, onNone, identity),
+)
+
+export const getOrElseW: {
+  <A, B>(onNone: LazyArg<B>): (self: Option<A>) => A | B
+  <A, B>(self: Option<A>, onNone: LazyArg<B>): A | B
+} = getOrElse
+
+export const orElse: {
+  <A, B>(that: LazyArg<Option<B>>): (self: Option<A>) => Option<A | B>
+  <A, B>(self: Option<A>, that: LazyArg<Option<B>>): Option<A | B>
+} = overload (1, (self, that) => match (self, that, some))
 
 export const fromResult: {
   <_, A>(ma: R.Result<_, A>): Option<A>

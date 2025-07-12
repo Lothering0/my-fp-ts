@@ -1,10 +1,10 @@
-import { Functor } from "../../types/Functor"
+import * as F from "../../types/Functor"
 import { OptionHKT, Option, some } from "./option"
 import { pipe, flow } from "../../utils/flow"
 import { match, zero } from "./utils"
 import { overload } from "../../utils/overloads"
 
-export const functor: Functor<OptionHKT> = {
+export const Functor: F.Functor<OptionHKT> = {
   map: overload (
     1,
     <_, A, B>(self: Option<A>, fab: (a: A) => B): Option<B> =>
@@ -12,4 +12,4 @@ export const functor: Functor<OptionHKT> = {
   ),
 }
 
-export const { map } = functor
+export const { map } = Functor

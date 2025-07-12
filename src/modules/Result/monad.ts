@@ -1,11 +1,12 @@
+import { Applicative } from "./applicative"
+import { failure, ResultHKT } from "./result"
+import { match } from "./utils"
 import { createMonad } from "../../types/Monad"
-import { applicative } from "./applicative"
-import { ResultHKT } from "./result"
-import { isFailure, fromSuccess } from "./utils"
+import { identity } from "../Identity"
 
-export const monad = createMonad<ResultHKT> ({
-  ...applicative,
-  flat: self => isFailure (self) ? self : fromSuccess (self),
+export const Monad = createMonad<ResultHKT> ({
+  ...Applicative,
+  flat: match (failure, identity),
 })
 
 export const {
@@ -20,4 +21,4 @@ export const {
   flatMapTo,
   tap,
   tapSync,
-} = monad
+} = Monad

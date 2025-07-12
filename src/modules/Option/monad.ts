@@ -2,15 +2,15 @@ import * as O from "./option"
 import * as R from "../Result"
 import { createMonad } from "../../types/Monad"
 import { map } from "./functor"
-import { applicative } from "./applicative"
+import { Applicative } from "./applicative"
 import { identity } from "../Identity"
 import { match, zero } from "./utils"
 import { pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
 import { constant } from "../../utils/constant"
 
-export const monad = createMonad<O.OptionHKT> ({
-  ...applicative,
+export const Monad = createMonad<O.OptionHKT> ({
+  ...Applicative,
   flat: match (zero, identity),
 })
 
@@ -26,7 +26,7 @@ export const {
   flatMapTo,
   tap,
   tapSync,
-} = monad
+} = Monad
 
 export const tapResult: {
   <E, A, _>(afe: (a: A) => R.Result<E, _>): (self: O.Option<A>) => O.Option<A>

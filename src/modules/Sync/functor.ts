@@ -1,9 +1,9 @@
-import { Functor } from "../../types/Functor"
+import * as F from "../../types/Functor"
 import { SyncHKT, Sync, fromSync } from "./sync"
 import { pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
 
-export const functor: Functor<SyncHKT> = {
+export const Functor: F.Functor<SyncHKT> = {
   map: overload (
     1,
     <A, B>(self: Sync<A>, ab: (a: A) => B): Sync<B> =>
@@ -12,4 +12,4 @@ export const functor: Functor<SyncHKT> = {
   ),
 }
 
-export const { map } = functor
+export const { map } = Functor

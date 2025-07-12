@@ -9,7 +9,7 @@ export const wait_: {
 } = ms => {
   const start = S.fromSync (now)
   const predicate: Predicate<void> = () => S.fromSync (now) - start < ms
-  const doWhile_ = getDoWhile (S.applicative)
+  const doWhile_ = getDoWhile (S.Applicative)
 
   return doWhile_ (predicate) (() => _)
 }

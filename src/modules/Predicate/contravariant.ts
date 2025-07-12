@@ -1,10 +1,10 @@
+import * as C from "../../types/Contravariant"
 import { PredicateHKT } from "./predicate"
-import { Contravariant } from "../../types/Contravariant"
 import { compose } from "../Identity"
 import { overload } from "../../utils/overloads"
 
-export const contravariant: Contravariant<PredicateHKT> = {
+export const Contravariant: C.Contravariant<PredicateHKT> = {
   contramap: overload (1, compose),
 }
 
-export const { contramap } = contravariant
+export const { contramap } = Contravariant

@@ -1,9 +1,9 @@
 import * as A from "../Array"
-import { Extendable } from "../../types/Extendable"
+import * as E from "../../types/Extendable"
 import { NonEmptyArrayHKT } from "./non-empty-array"
 
-export const extendable: Extendable<NonEmptyArrayHKT> = {
-  ...A.extendable,
-} as Extendable<NonEmptyArrayHKT>
+export const Extendable = {
+  ...A.Extendable,
+} as E.Extendable<NonEmptyArrayHKT>
 
-export const { extend } = extendable
+export const { extend } = Extendable

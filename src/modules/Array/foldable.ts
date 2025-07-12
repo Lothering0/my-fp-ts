@@ -1,9 +1,9 @@
+import * as F from "../../types/Foldable"
+import * as FI from "../../types/FoldableWithIndex"
 import { ArrayHKT } from "./array"
-import { Foldable } from "../../types/Foldable"
-import { FoldableWithIndex } from "../../types/FoldableWithIndex"
 import { overload } from "../../utils/overloads"
 
-export const foldable: Foldable<ArrayHKT> = {
+export const Foldable: F.Foldable<ArrayHKT> = {
   reduce: overload (
     2,
     <A, B>(self: A[], b: B, bab: (b: B, a: A) => B): B =>
@@ -16,8 +16,8 @@ export const foldable: Foldable<ArrayHKT> = {
   ),
 }
 
-export const foldableWithIndex: FoldableWithIndex<ArrayHKT, number> = {
-  ...foldable,
+export const FoldableWithIndex: FI.FoldableWithIndex<ArrayHKT, number> = {
+  ...Foldable,
   reduceWithIndex: overload (
     2,
     <A, B>(self: A[], b: B, ibab: (i: number, b: B, a: A) => B): B =>
@@ -31,4 +31,4 @@ export const foldableWithIndex: FoldableWithIndex<ArrayHKT, number> = {
 }
 
 export const { reduce, reduceRight, reduceWithIndex, reduceRightWithIndex } =
-  foldableWithIndex
+  FoldableWithIndex

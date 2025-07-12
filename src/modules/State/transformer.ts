@@ -36,27 +36,27 @@ export const transform = <F extends HKT>(F: Monad<F>) => {
     <S>(s: S): <R, E, A>(ma: Kind<THKT, S, E, A>) => Kind<F, R, E, S>
   } = s => ma => F.map (run (s) (ma), ([, s]) => s)
 
-  const functor: Functor<THKT> = {
+  const Functor: Functor<THKT> = {
     map: overload (1, (self, f) => s => F.map (self (s), ([a, s]) => [f (a), s])),
   }
 
-  const applicative = createApplicative<THKT> ({
-    ...functor,
+  const Applicative = createApplicative<THKT> ({
+    ...Functor,
     of: a => s => F.of ([a, s]),
     ap: overload (
       1,
       (self, fa) => s =>
         pipe (
           self,
-          functor.map (f => functor.map (fa, f)),
+          Functor.map (f => Functor.map (fa, f)),
           run (s),
           F.flatMap (([mb, s]) => run (s) (mb)),
         ),
     ),
   })
 
-  const monad = createMonad<THKT> ({
-    ...applicative,
+  const Monad = createMonad<THKT> ({
+    ...Applicative,
     flat: self => s => F.flatMap (run (s) (self), ([mb, s]) => run (s) (mb)),
   })
 
@@ -66,11 +66,11 @@ export const transform = <F extends HKT>(F: Monad<F>) => {
     run,
     evaluate,
     execute,
-    functor,
-    ...functor,
-    applicative,
-    ...applicative,
-    monad,
-    ...monad,
+    Functor,
+    ...Functor,
+    Applicative,
+    ...Applicative,
+    Monad,
+    ...Monad,
   }
 }

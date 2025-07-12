@@ -1,5 +1,5 @@
 import * as O from "../Option"
-import { Applicative, createApplicative } from "../../types/Applicative"
+import { createApplicative } from "../../types/Applicative"
 import {
   AsyncOptionHKT,
   some,
@@ -7,11 +7,11 @@ import {
   AsyncOption,
 } from "./async-option"
 import { pipe } from "../../utils/flow"
-import { functor } from "./functor"
+import { Functor } from "./functor"
 import { overload } from "../../utils/overloads"
 
-export const applicative: Applicative<AsyncOptionHKT> = createApplicative ({
-  ...functor,
+export const Applicative = createApplicative<AsyncOptionHKT> ({
+  ...Functor,
   of: some,
   ap: overload (
     1,
@@ -32,4 +32,4 @@ export const applicative: Applicative<AsyncOptionHKT> = createApplicative ({
   ),
 })
 
-export const { of, ap, apply, flap, flipApply } = applicative
+export const { of, ap, apply, flap, flipApply } = Applicative

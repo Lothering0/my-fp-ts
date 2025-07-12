@@ -1,10 +1,10 @@
 import * as A from "../Array"
+import * as M from "../../types/Monad"
 import { NonEmptyArrayHKT } from "./non-empty-array"
-import { Monad } from "../../types/Monad"
 
-export const monad: Monad<NonEmptyArrayHKT> = {
-  ...A.monad,
-} as Monad<NonEmptyArrayHKT>
+export const Monad = {
+  ...A.Monad,
+} as M.Monad<NonEmptyArrayHKT>
 
 export const {
   Do,
@@ -18,4 +18,4 @@ export const {
   flatMapTo,
   tap,
   tapSync,
-} = monad
+} = Monad

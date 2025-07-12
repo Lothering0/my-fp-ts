@@ -2,13 +2,13 @@ import * as SR from "../SyncResult"
 import * as O from "../Option"
 import { Result } from "../Result"
 import { createMonad } from "../../types/Monad"
-import { applicative } from "./applicative"
+import { Applicative } from "./applicative"
 import { pipe } from "../../utils/flow"
 import { SyncOptionHKT, fromSyncOption, SyncOption } from "./sync-option"
 import { overload } from "../../utils/overloads"
 
-export const monad = createMonad<SyncOptionHKT> ({
-  ...applicative,
+export const Monad = createMonad<SyncOptionHKT> ({
+  ...Applicative,
   flat: self => () =>
     pipe (self, fromSyncOption, ma =>
       O.isNone (ma) ? ma : pipe (ma, O.fromSome, fromSyncOption),
@@ -27,7 +27,7 @@ export const {
   flatMapTo,
   tap,
   tapSync,
-} = monad
+} = Monad
 
 export const tapOption: {
   <A, _>(f: (a: A) => O.Option<_>): (self: SyncOption<A>) => SyncOption<A>

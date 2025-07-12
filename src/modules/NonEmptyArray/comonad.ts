@@ -1,11 +1,11 @@
-import { Comonad } from "../../types/Comonad"
+import * as C from "../../types/Comonad"
 import { NonEmptyArrayHKT } from "./non-empty-array"
 import { head } from "./utils"
-import { extendable } from "./extendable"
+import { Extendable } from "./extendable"
 
-export const comonad: Comonad<NonEmptyArrayHKT> = {
-  ...extendable,
+export const Comonad: C.Comonad<NonEmptyArrayHKT> = {
+  ...Extendable,
   extract: head,
 }
 
-export const { extract } = comonad
+export const { extract } = Comonad

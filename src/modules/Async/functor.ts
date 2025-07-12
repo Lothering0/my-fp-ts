@@ -1,8 +1,8 @@
-import { Functor } from "../../types/Functor"
+import * as F from "../../types/Functor"
 import { AsyncHKT, Async, fromAsync } from "./async"
 import { overload } from "../../utils/overloads"
 
-export const functor: Functor<AsyncHKT> = {
+export const Functor: F.Functor<AsyncHKT> = {
   map: overload (
     1,
     <A, B>(self: Async<A>, ab: (a: A) => B): Async<B> =>
@@ -11,4 +11,4 @@ export const functor: Functor<AsyncHKT> = {
   ),
 }
 
-export const { map } = functor
+export const { map } = Functor

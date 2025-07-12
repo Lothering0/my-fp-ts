@@ -1,12 +1,12 @@
 import * as R from "../Result"
 import { createMonad } from "../../types/Monad"
 import { SyncResultHKT, fromSyncResult, SyncResult } from "./sync-result"
-import { applicative } from "./applicative"
+import { Applicative } from "./applicative"
 import { pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
 
-export const monad = createMonad<SyncResultHKT> ({
-  ...applicative,
+export const Monad = createMonad<SyncResultHKT> ({
+  ...Applicative,
   flat: self => () =>
     pipe (self, fromSyncResult, ma =>
       R.isFailure (ma) ? ma : pipe (ma, R.fromSuccess, fromSyncResult),
@@ -25,7 +25,7 @@ export const {
   flatMapTo,
   tap,
   tapSync,
-} = monad
+} = Monad
 
 export const tapResult: {
   <E, A, _>(

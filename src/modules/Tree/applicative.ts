@@ -1,12 +1,12 @@
 import { Tree, TreeHKT } from "./tree"
-import { Applicative, createApplicative } from "../../types/Applicative"
-import { functor, map } from "./functor"
+import { createApplicative } from "../../types/Applicative"
+import { Functor, map } from "./functor"
 import { pipe } from "../../utils/flow"
 import { make, valueOf } from "./utils"
 import { overload } from "../../utils/overloads"
 
-export const applicative: Applicative<TreeHKT> = createApplicative ({
-  ...functor,
+export const Applicative = createApplicative<TreeHKT> ({
+  ...Functor,
   of: make,
   ap: overload (
     1,
@@ -19,4 +19,4 @@ export const applicative: Applicative<TreeHKT> = createApplicative ({
   ),
 })
 
-export const { of, ap, apply, flap, flipApply } = applicative
+export const { of, ap, apply, flap, flipApply } = Applicative

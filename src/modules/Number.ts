@@ -1,4 +1,6 @@
 import * as O from "./Option"
+import * as E from "../types/Eq"
+import * as S from "../types/Show"
 import { not } from "./Boolean"
 import { Predicate } from "./Predicate"
 import { Semigroup } from "../types/Semigroup"
@@ -6,33 +8,32 @@ import { Monoid } from "../types/Monoid"
 import { Group } from "../types/Group"
 import { flow } from "../utils/flow"
 import { overload } from "../utils/overloads"
-import { Show } from "../types/Show"
 
-export const sumSemigroup: Semigroup<number> = {
-  concat: (x, y) => x + y,
+export const SemigroupSum: Semigroup<number> = {
+  concat: overload (1, (x, y) => x + y),
 }
 
-export const sumMonoid: Monoid<number> = {
-  ...sumSemigroup,
+export const MonoidSum: Monoid<number> = {
+  ...SemigroupSum,
   empty: 0,
 }
 
-export const sumGroup: Group<number> = {
-  ...sumMonoid,
+export const GroupSum: Group<number> = {
+  ...MonoidSum,
   inverse: x => -x,
 }
 
-export const productSemigroup: Semigroup<number> = {
-  concat: (x, y) => x * y,
+export const SemigroupProduct: Semigroup<number> = {
+  concat: overload (1, (x, y) => x * y),
 }
 
-export const productMonoid: Monoid<number> = {
-  ...productSemigroup,
+export const MonoidProduct: Monoid<number> = {
+  ...SemigroupProduct,
   empty: 1,
 }
 
-export const productGroup: Group<number> = {
-  ...productMonoid,
+export const GroupProduct: Group<number> = {
+  ...MonoidProduct,
   inverse: x => 1 / x,
 }
 
@@ -40,9 +41,9 @@ export const show: {
   <N extends number>(self: N): `${N}`
 } = self => `${self}`
 
-const Show: Show<number> = { show }
+export const Show: S.Show<number> = { show }
 
-export { Show }
+export const Eq: E.Eq<number> = E.EqStrict
 
 export const add: {
   (y: number): (x: number) => number

@@ -1,6 +1,7 @@
-import { Show } from "../types/Show"
-import { Monoid } from "../types/Monoid"
-import { Semigroup } from "../types/Semigroup"
+import * as S from "../types/Semigroup"
+import * as M from "../types/Monoid"
+import * as Sh from "../types/Show"
+import * as E from "../types/Eq"
 import { overload } from "../utils/overloads"
 
 export const toLowerCase = <S extends string = string>(self: S): Lowercase<S> =>
@@ -15,19 +16,19 @@ export const repeat: {
   (self: string, count: number): string
 } = overload (1, (self, count) => self.repeat (count))
 
-export const semigroup: Semigroup<string> = {
-  concat: (x, y) => x.concat (y),
+export const Semigroup: S.Semigroup<string> = {
+  concat: overload (1, (x, y) => x.concat (y)),
 }
 
-export const monoid: Monoid<string> = {
-  ...semigroup,
+export const Monoid: M.Monoid<string> = {
+  ...Semigroup,
   empty: "",
 }
 
 export const concat: {
   (end: string): (start: string) => string
   (start: string, end: string): string
-} = overload (1, semigroup.concat)
+} = Semigroup.concat
 
 export const split: {
   (separator: string): (self: string) => string[]
@@ -38,6 +39,6 @@ export const show: {
   <S extends string>(self: S): `"${S}"`
 } = self => `"${self}"`
 
-const Show: Show<string> = { show }
+export const Show: Sh.Show<string> = { show }
 
-export { Show }
+export const Eq: E.Eq<number> = E.EqStrict

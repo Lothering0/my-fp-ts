@@ -1,5 +1,5 @@
 import * as R from "../Result"
-import { Applicative, createApplicative } from "../../types/Applicative"
+import { createApplicative } from "../../types/Applicative"
 import {
   success,
   fromSyncResult,
@@ -7,11 +7,11 @@ import {
   SyncResultHKT,
 } from "./sync-result"
 import { pipe } from "../../utils/flow"
-import { functor } from "./functor"
+import { Functor } from "./functor"
 import { overload } from "src/utils/overloads"
 
-export const applicative: Applicative<SyncResultHKT> = createApplicative ({
-  ...functor,
+export const Applicative = createApplicative<SyncResultHKT> ({
+  ...Functor,
   of: success,
   ap: overload (
     1,
@@ -29,4 +29,4 @@ export const applicative: Applicative<SyncResultHKT> = createApplicative ({
   ),
 })
 
-export const { of, ap, apply, flap, flipApply } = applicative
+export const { of, ap, apply, flap, flipApply } = Applicative

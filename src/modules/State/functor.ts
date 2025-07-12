@@ -1,10 +1,10 @@
-import { Functor } from "../../types/Functor"
+import * as F from "../../types/Functor"
 import { StateHKT, State } from "./state"
 import { run } from "./utils"
 import { flow } from "../../utils/flow"
 import { overload } from "src/utils/overloads"
 
-export const functor: Functor<StateHKT> = {
+export const Functor: F.Functor<StateHKT> = {
   map: overload (
     1,
     <S, A, B>(self: State<S, A>, ab: (a: A) => B): State<S, B> =>
@@ -15,4 +15,4 @@ export const functor: Functor<StateHKT> = {
   ),
 }
 
-export const { map } = functor
+export const { map } = Functor

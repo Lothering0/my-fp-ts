@@ -1,10 +1,10 @@
-import { Extendable } from "../../types/Extendable"
+import * as E from "../../types/Extendable"
 import { Option, OptionHKT } from "./option"
-import { functor, map } from "./functor"
+import { Functor, map } from "./functor"
 import { overload } from "../../utils/overloads"
 
-export const extendable: Extendable<OptionHKT> = {
-  ...functor,
+export const Extendable: E.Extendable<OptionHKT> = {
+  ...Functor,
   extend: overload (
     1,
     <_, A, B>(self: Option<A>, fab: (fa: Option<A>) => B): Option<B> =>
@@ -12,4 +12,4 @@ export const extendable: Extendable<OptionHKT> = {
   ),
 }
 
-export const { extend } = extendable
+export const { extend } = Extendable

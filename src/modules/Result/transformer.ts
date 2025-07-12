@@ -54,17 +54,17 @@ export const transform = <F extends HKT>(F: Monad<F>) => {
     <KE, R, E, A>(self: Kind<THKT, KE, E, A>): Kind<F, R, KE, E | A>
   } = F.map (R.toUnion)
 
-  const functor: Functor<THKT> = {
+  const Functor: Functor<THKT> = {
     map: overload (1, (self, f) => F.map (self, R.map (f))),
   }
 
-  const bifunctor = createBifunctor<THKT> ({
-    ...functor,
+  const Bifunctor = createBifunctor<THKT> ({
+    ...Functor,
     mapLeft: overload (1, (self, f) => F.map (self, R.mapLeft (f))),
   })
 
-  const applicative = createApplicative<THKT> ({
-    ...functor,
+  const Applicative = createApplicative<THKT> ({
+    ...Functor,
     of: success,
     ap: overload (
       1,
@@ -80,8 +80,8 @@ export const transform = <F extends HKT>(F: Monad<F>) => {
     ),
   })
 
-  const monad = createMonad<THKT> ({
-    ...applicative,
+  const Monad = createMonad<THKT> ({
+    ...Applicative,
     flat: flow (F.flatMap (R.match (flow (R.failure, F.of) as any, identity))),
   })
 
@@ -93,13 +93,13 @@ export const transform = <F extends HKT>(F: Monad<F>) => {
     match,
     swap,
     toUnion,
-    functor,
-    ...functor,
-    bifunctor,
-    ...bifunctor,
-    applicative,
-    ...applicative,
-    monad,
-    ...monad,
+    Functor,
+    ...Functor,
+    Bifunctor,
+    ...Bifunctor,
+    Applicative,
+    ...Applicative,
+    Monad,
+    ...Monad,
   }
 }

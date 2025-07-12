@@ -42,12 +42,12 @@ export const transform = <F extends HKT>(F: Monad<F>) => {
     F.map (self, O.match (onNone, onSome)),
   )
 
-  const functor: Functor<THKT> = {
+  const Functor: Functor<THKT> = {
     map: overload (1, (self, f) => F.map (self, O.map (f))),
   }
 
-  const applicative = createApplicative<THKT> ({
-    ...functor,
+  const Applicative = createApplicative<THKT> ({
+    ...Functor,
     of: some,
     ap: overload (
       1,
@@ -63,8 +63,8 @@ export const transform = <F extends HKT>(F: Monad<F>) => {
     ),
   })
 
-  const monad = createMonad<THKT> ({
-    ...applicative,
+  const Monad = createMonad<THKT> ({
+    ...Applicative,
     flat: flow (F.flatMap (O.match (() => F.of (O.none), identity))),
   })
 
@@ -73,11 +73,11 @@ export const transform = <F extends HKT>(F: Monad<F>) => {
     zero,
     fromF,
     match,
-    functor,
-    ...functor,
-    applicative,
-    ...applicative,
-    monad,
-    ...monad,
+    Functor,
+    ...Functor,
+    Applicative,
+    ...Applicative,
+    Monad,
+    ...Monad,
   }
 }

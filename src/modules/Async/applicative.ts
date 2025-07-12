@@ -1,10 +1,10 @@
-import { Applicative, createApplicative } from "../../types/Applicative"
-import { functor } from "./functor"
+import { createApplicative } from "../../types/Applicative"
+import { Functor } from "./functor"
 import { AsyncHKT, async, fromAsync, Async } from "./async"
 import { overload } from "../../utils/overloads"
 
-export const applicative: Applicative<AsyncHKT> = createApplicative ({
-  ...functor,
+export const Applicative = createApplicative<AsyncHKT> ({
+  ...Functor,
   of: async,
   ap: overload (
     1,
@@ -14,4 +14,4 @@ export const applicative: Applicative<AsyncHKT> = createApplicative ({
   ),
 })
 
-export const { of, ap, apply, flap, flipApply } = applicative
+export const { of, ap, apply, flap, flipApply } = Applicative

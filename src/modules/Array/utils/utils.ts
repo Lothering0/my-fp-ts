@@ -1,10 +1,18 @@
 import * as NEA from "../../NonEmptyArray"
 import * as O from "../../Option"
+import * as R from "../../Result"
+import * as B from "../../Boolean"
+import * as E from "../../../types/Eq"
+import { Refinement } from "../../../types/utils"
+import { Predicate } from "../../../modules/Predicate"
 import { flatMap } from "../monad"
 import { filterMap } from "../filterable"
 import { overload, overloadLast } from "../../../utils/overloads"
-import { constant } from "../../../utils/constant"
-import { pipe } from "../../../utils/flow"
+import { constant, constEmptyArray } from "../../../utils/constant"
+import { flow, pipe } from "../../../utils/flow"
+import { match, matchLeft, matchRight } from "./matchers"
+import { isNonEmpty } from "../refinements"
+import { of } from "../applicative"
 
 export const zero: {
   <A>(): A[]
@@ -14,30 +22,25 @@ export const length: {
   <A>(self: A[]): number
 } = self => self.length
 
-export const isEmpty = <A>(self: A[]): self is [] => length (self) === 0
-
-export const isNonEmpty = <A>(self: A[]): self is NEA.NonEmptyArray<A> =>
-  !isEmpty (self)
-
 export const copy: {
   <A>(self: A[]): A[]
 } = self => [...self]
 
 export const head: {
   <A>(self: A[]): O.Option<A>
-} = self => isNonEmpty (self) ? pipe (self, NEA.head, O.some) : O.none
+} = match (O.zero, flow (NEA.head, O.some))
 
 export const init: {
   <A>(self: A[]): O.Option<A[]>
-} = self => isNonEmpty (self) ? pipe (self, NEA.init, O.some) : O.none
+} = match (O.zero, flow (NEA.init, O.some))
 
 export const last: {
   <A>(self: A[]): O.Option<A>
-} = self => isNonEmpty (self) ? pipe (self, NEA.last, O.some) : O.none
+} = match (O.zero, flow (NEA.last, O.some))
 
 export const tail: {
   <A>(self: A[]): O.Option<A[]>
-} = self => isNonEmpty (self) ? pipe (self, NEA.tail, O.some) : O.none
+} = match (O.zero, flow (NEA.tail, O.some))
 
 export const lookup: {
   <A>(i: number): (self: A[]) => O.Option<A>
@@ -53,6 +56,112 @@ export const at: {
 } = overloadLast (1, (i, self) =>
   i < length (self) && i >= -length (self) ? pipe (self.at (i)!, O.some) : O.none,
 )
+
+export const isOutOfBounds: {
+  <A>(i: number): (self: A[]) => boolean
+  <A>(self: A[], i: number): boolean
+} = overload (1, (self, i) => !Object.hasOwn (self, Number (i)))
+
+export const findMap: {
+  <A, B>(amb: (a: A) => O.Option<B>): (self: A[]) => O.Option<B>
+  <A, B>(self: A[], amb: (a: A) => O.Option<B>): O.Option<B>
+} = overload (
+  1,
+  <A, B>(self: A[], amb: (a: A) => O.Option<B>): O.Option<B> =>
+    matchLeft (
+      self,
+      () => O.none,
+      (head, tail) => O.match (amb (head), () => findMap (tail, amb), O.some),
+    ),
+)
+
+export const find: {
+  <A, B extends A>(p: Refinement<A, B>): (self: A[]) => O.Option<B>
+  <A, B extends A>(self: A[], p: Refinement<A, B>): O.Option<B>
+  <A>(p: Predicate<A>): (self: A[]) => O.Option<A>
+  <A>(self: A[], p: Predicate<A>): O.Option<A>
+} = overload (
+  1,
+  <A>(self: A[], p: Predicate<A>): O.Option<A> =>
+    findMap (self, a => pipe (a, p, B.match (O.zero, flow (constant (a), O.some)))),
+)
+
+export const findLastMap: {
+  <A, B>(amb: (a: A) => O.Option<B>): (self: A[]) => O.Option<B>
+  <A, B>(self: A[], amb: (a: A) => O.Option<B>): O.Option<B>
+} = overload (
+  1,
+  <A, B>(self: A[], amb: (a: A) => O.Option<B>): O.Option<B> =>
+    matchRight (
+      self,
+      () => O.none,
+      (init, last) => O.match (amb (last), () => findLastMap (init, amb), O.some),
+    ),
+)
+
+export const findIndex: {
+  <A>(p: Predicate<A>): (self: A[]) => O.Option<number>
+  <A>(self: A[], p: Predicate<A>): O.Option<number>
+} = overload (1, (self, p) =>
+  pipe (
+    self.findIndex (a => p (a)),
+    i => i > -1 ? O.some (i) : O.none,
+  ),
+)
+
+export const findLast: {
+  <A, B extends A>(p: Refinement<A, B>): (self: A[]) => O.Option<B>
+  <A, B extends A>(self: A[], p: Refinement<A, B>): O.Option<B>
+  <A>(p: Predicate<A>): (self: A[]) => O.Option<A>
+  <A>(self: A[], p: Predicate<A>): O.Option<A>
+} = overload (
+  1,
+  <A>(self: A[], p: Predicate<A>): O.Option<A> =>
+    findLastMap (self, a =>
+      pipe (a, p, B.match (O.zero, flow (constant (a), O.some))),
+    ),
+)
+
+export const findLastIndex: {
+  <A>(p: Predicate<A>): (self: A[]) => O.Option<number>
+  <A>(self: A[], p: Predicate<A>): O.Option<number>
+} = overload (1, (self, p) =>
+  pipe (
+    self.findLastIndex (a => p (a)),
+    i => i > -1 ? O.some (i) : O.none,
+  ),
+)
+
+/** Is `a` element of an array by `Eq` instance */
+export const elem = <A>(
+  E: E.Eq<A>,
+): {
+  (a: A): (self: A[]) => boolean
+  (self: A[], a: A): boolean
+} => overload (1, (self, a) => pipe (self, find (E.equals (a)), O.isSome))
+
+export const every: {
+  <A, B extends A>(p: Refinement<A, B>): Refinement<A[], B[]>
+  <A, B extends A>(self: A[], p: Refinement<A, B>): self is B[]
+  <A>(p: Predicate<A>): Predicate<A[]>
+  <A>(self: A[], p: Predicate<A>): boolean
+} = overload (1, (self, p) => self.every (a => p (a)))
+
+export const exists: {
+  <A>(p: Predicate<A>): (self: A[]) => self is NEA.NonEmptyArray<A>
+  <A>(self: A[], p: Predicate<A>): self is NEA.NonEmptyArray<A>
+} = overload (1, (self, p) => self.some (a => p (a)))
+
+/** Alias for exists */
+export const some = exists
+
+export const failures: {
+  <E, A>(self: R.Result<E, A>[]): E[]
+} = flatMap (R.match (of, constEmptyArray))
+
+export const successes: {
+  <E, A>(self: R.Result<E, A>[]): A[]
+} = flatMap (R.match (constEmptyArray, of))
 
 export const prepend: {
   <A>(a: A): (self: A[]) => NEA.NonEmptyArray<A>
@@ -138,8 +247,9 @@ export function comprehension(
     true,
   ),
 ): unknown[] {
-  type GetArgs = (args: unknown[]) => (input: unknown[][]) => unknown[]
-  const getArgs: GetArgs = args => input =>
+  const getArgs: {
+    (args: unknown[]): (input: unknown[][]) => unknown[]
+  } = args => input =>
     isNonEmpty (input)
       ? pipe (
           input,
@@ -161,5 +271,3 @@ export function comprehension(
     ),
   )
 }
-
-export * from "./matchers"

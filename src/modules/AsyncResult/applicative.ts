@@ -1,5 +1,5 @@
 import * as R from "../Result"
-import { Applicative, createApplicative } from "../../types/Applicative"
+import { createApplicative } from "../../types/Applicative"
 import {
   AsyncResultHKT,
   success,
@@ -7,11 +7,11 @@ import {
   AsyncResult,
 } from "./async-result"
 import { pipe } from "../../utils/flow"
-import { functor } from "./functor"
+import { Functor } from "./functor"
 import { overload } from "../../utils/overloads"
 
-export const applicative: Applicative<AsyncResultHKT> = createApplicative ({
-  ...functor,
+export const applicative = createApplicative<AsyncResultHKT> ({
+  ...Functor,
   of: success,
   ap: overload (
     1,

@@ -1,10 +1,10 @@
 import * as O from "../Option"
-import { Functor } from "../../types/Functor"
+import * as F from "../../types/Functor"
 import { SyncOptionHKT, fromSyncOption, SyncOption } from "./sync-option"
 import { pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
 
-export const functor: Functor<SyncOptionHKT> = {
+export const Functor: F.Functor<SyncOptionHKT> = {
   map: overload (
     1,
     <A, B>(self: SyncOption<A>, ab: (a: A) => B): SyncOption<B> =>
@@ -13,4 +13,4 @@ export const functor: Functor<SyncOptionHKT> = {
   ),
 }
 
-export const { map } = functor
+export const { map } = Functor

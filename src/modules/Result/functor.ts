@@ -1,25 +1,25 @@
+import * as F from "../../types/Functor"
 import { Result, ResultHKT, failure, success } from "./result"
-import { Functor } from "../../types/Functor"
-import { Bifunctor, createBifunctor } from "../../types/Bifunctor"
-import { fromFailure, fromSuccess, isFailure, isSuccess } from "./utils"
-import { pipe } from "../../utils/flow"
+import { createBifunctor } from "../../types/Bifunctor"
+import { match } from "./utils"
+import { flow } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
 
-export const functor: Functor<ResultHKT> = {
+export const Functor: F.Functor<ResultHKT> = {
   map: overload (
     1,
     <_, A, B>(self: Result<_, A>, ab: (a: A) => B): Result<_, B> =>
-      isFailure (self) ? self : pipe (self, fromSuccess, ab, success),
+      match (self, failure<_, B>, flow (ab, success)),
   ),
 }
 
-export const bifunctor: Bifunctor<ResultHKT> = createBifunctor ({
-  ...functor,
+export const Bifunctor = createBifunctor<ResultHKT> ({
+  ...Functor,
   mapLeft: overload (
     1,
     <E, _, D>(self: Result<E, _>, ed: (e: E) => D): Result<D, _> =>
-      isSuccess (self) ? self : pipe (self, fromFailure, ed, failure),
+      match (self, flow (ed, failure), success<D, _>),
   ),
 })
 
-export const { map, mapLeft, bimap } = bifunctor
+export const { map, mapLeft, bimap } = Bifunctor

@@ -1,17 +1,21 @@
 import * as O from "../Option"
 import * as R from "../Result"
 import * as S from "../Separated"
+import * as C from "../../types/Compactable"
 import { ArrayHKT } from "./array"
-import { Compactable } from "../../types/Compactable"
+import { of } from "./applicative"
 import { flatMap } from "./monad"
 import { reduce } from "./foldable"
+import { successes } from "./utils"
+import { constEmptyArray } from "../../utils/constant"
 
-type GetInitialSeparated = <E, A>() => S.Separated<E[], A[]>
-const getInitialSeparated: GetInitialSeparated = () => S.make ([], [])
+const getInitialSeparated: {
+  <E, A>(): S.Separated<E[], A[]>
+} = () => S.make ([], [])
 
-export const compactable: Compactable<ArrayHKT> = {
-  compact: flatMap (a => O.isNone (a) ? [] : [O.fromSome (a)]),
-  compactResults: flatMap (a => R.isFailure (a) ? [] : [R.fromSuccess (a)]),
+export const Compactable: C.Compactable<ArrayHKT> = {
+  compact: flatMap (O.match (constEmptyArray, of)),
+  compactResults: successes,
   separate: reduce (getInitialSeparated (), (b, ma) =>
     R.match (
       ma,
@@ -21,4 +25,4 @@ export const compactable: Compactable<ArrayHKT> = {
   ),
 }
 
-export const { compact, compactResults, separate } = compactable
+export const { compact, compactResults, separate } = Compactable

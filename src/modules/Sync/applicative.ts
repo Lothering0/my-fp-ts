@@ -1,11 +1,11 @@
-import { functor, map } from "./functor"
+import { Functor, map } from "./functor"
 import { SyncHKT, sync, fromSync, Sync } from "./sync"
-import { Applicative, createApplicative } from "../../types/Applicative"
+import { createApplicative } from "../../types/Applicative"
 import { pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
 
-export const applicative: Applicative<SyncHKT> = createApplicative ({
-  ...functor,
+export const Applicative = createApplicative<SyncHKT> ({
+  ...Functor,
   of: sync,
   ap: overload (
     1,
@@ -14,4 +14,4 @@ export const applicative: Applicative<SyncHKT> = createApplicative ({
   ),
 })
 
-export const { of, ap, apply, flap, flipApply } = applicative
+export const { of, ap, apply, flap, flipApply } = Applicative

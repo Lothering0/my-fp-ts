@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as A from "./async"
 import { createMonad } from "../../types/Monad"
-import { applicative } from "./applicative"
+import { Applicative } from "./applicative"
 import { DoObject } from "../../types/DoObject"
 import { overload } from "../../utils/overloads"
 
-export const monad = createMonad<A.AsyncHKT> ({
-  ...applicative,
+export const Monad = createMonad<A.AsyncHKT> ({
+  ...Applicative,
   flat: self => () => A.fromAsync (self).then (A.fromAsync),
 })
 
@@ -22,7 +22,7 @@ export const {
   flatMapTo,
   tap,
   tapSync,
-} = monad
+} = Monad
 
 export const parallel: {
   <N extends string | number | symbol, A, B>(

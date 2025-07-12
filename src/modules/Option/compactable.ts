@@ -1,11 +1,11 @@
 import * as R from "../Result"
 import * as S from "../Separated"
+import * as C from "../../types/Compactable"
 import { OptionHKT, some } from "./option"
-import { Compactable } from "../../types/Compactable"
 import { flat, flatMap } from "./monad"
 import { fromResult, zero } from "./utils"
 
-export const compactable: Compactable<OptionHKT> = {
+export const Compactable: C.Compactable<OptionHKT> = {
   compact: flat,
   compactResults: flatMap (fromResult),
   separate: self =>
@@ -15,4 +15,4 @@ export const compactable: Compactable<OptionHKT> = {
     ),
 }
 
-export const { compact, compactResults, separate } = compactable
+export const { compact, compactResults, separate } = Compactable
