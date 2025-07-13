@@ -13,7 +13,8 @@
     "start:tsc": "clear && npm run tsc && npm run build && clear && node ./dist/index.cjs",
     "watch": "nodemon dist/index.cjs",
     "nodemon": "nodemon",
-    "lint": "eslint --fix"
+    "lint": "eslint --fix",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +29,7 @@
     "@types/node": "^20.11.0",
     "esbuild": "^0.25.1",
     "eslint": "^9.20.1",
+    "husky": "^9.1.7",
     "jest": "^30.0.4",
     "nodemon": "^3.0.2",
     "ts-jest": "^29.4.0",
