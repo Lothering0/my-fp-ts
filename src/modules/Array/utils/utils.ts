@@ -211,9 +211,9 @@ export const concat: {
 } = NEA.concat
 
 export const join: {
-  <A>(separator: string): (self: A[]) => string
-  <A>(self: A[], separator: string): string
-} = overload (1, <A>(self: A[], separator: string) => self.join (separator))
+  (separator: string): (self: string[]) => string
+  (self: string[], separator: string): string
+} = overload (1, (self: string[], separator: string) => self.join (separator))
 
 /** [f (a, b, ...) | a <- as, b <- bs, ..., p (a, b, ...)] */
 export function comprehension<A, R>(
