@@ -1,6 +1,6 @@
 import { HKT, Kind } from "./HKT"
 import { Functor } from "./Functor"
-import { overload } from "src/utils/overloads"
+import { overload } from "../utils/overloads"
 
 export interface Bifunctor<F extends HKT> extends Functor<F> {
   readonly mapLeft: {

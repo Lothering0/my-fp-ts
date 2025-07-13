@@ -5,8 +5,8 @@ import { Compactable } from "./Compactable"
 import { Functor } from "./Functor"
 import { HKT, Kind } from "./HKT"
 import { Predicate } from "../modules/Predicate"
-import { overload } from "src/utils/overloads"
-import { pipe } from "src/utils/flow"
+import { overload } from "../utils/overloads"
+import { pipe } from "../utils/flow"
 
 export interface Filterable<F extends HKT> extends Functor<F>, Compactable<F> {
   /** Partitions and maps elements to new values */

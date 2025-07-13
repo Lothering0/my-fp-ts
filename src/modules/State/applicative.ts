@@ -2,7 +2,7 @@ import { flow, pipe } from "../../utils/flow"
 import { createApplicative } from "../../types/Applicative"
 import { Functor } from "./functor"
 import { State, StateHKT } from "./state"
-import { overload } from "src/utils/overloads"
+import { overload } from "../../utils/overloads"
 
 export const Applicative = createApplicative<StateHKT> ({
   ...Functor,

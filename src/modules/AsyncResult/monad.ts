@@ -13,7 +13,7 @@ import {
 } from "./async-result"
 import { pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
-import { DoObject } from "src/types/DoObject"
+import { DoObject } from "../../types/DoObject"
 
 export const Monad = createMonad<AsyncResultHKT> ({
   ...applicative,

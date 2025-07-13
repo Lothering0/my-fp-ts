@@ -1,9 +1,9 @@
 import * as O from "../Option"
 import { createApplicative } from "../../types/Applicative"
 import { SyncOptionHKT, some, fromSyncOption, SyncOption } from "./sync-option"
-import { pipe } from "../../utils/flow"
 import { Functor } from "./functor"
-import { overload } from "src/utils/overloads"
+import { pipe } from "../../utils/flow"
+import { overload } from "../../utils/overloads"
 
 export const Applicative = createApplicative<SyncOptionHKT> ({
   ...Functor,

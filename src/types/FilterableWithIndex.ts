@@ -4,8 +4,8 @@ import { Result, failure, success } from "../modules/Result"
 import { HKT, Kind } from "./HKT"
 import { FunctorWithIndex } from "./FunctorWithIndex"
 import { Filterable } from "./Filterable"
-import { pipe } from "src/utils/flow"
-import { overload } from "src/utils/overloads"
+import { pipe } from "../utils/flow"
+import { overload } from "../utils/overloads"
 
 export interface FilterableWithIndex<F extends HKT, I>
   extends FunctorWithIndex<F, I>,

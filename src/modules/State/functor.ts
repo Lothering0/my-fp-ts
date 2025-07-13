@@ -2,7 +2,7 @@ import * as F from "../../types/Functor"
 import { StateHKT, State } from "./state"
 import { run } from "./utils"
 import { flow } from "../../utils/flow"
-import { overload } from "src/utils/overloads"
+import { overload } from "../../utils/overloads"
 
 export const Functor: F.Functor<StateHKT> = {
   map: overload (

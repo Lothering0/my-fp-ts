@@ -1,4 +1,4 @@
-import { overload } from "src/utils/overloads"
+import { overload } from "../../utils/overloads"
 import { createApplicative } from "../../types/Applicative"
 import { Functor } from "./functor"
 import { IdentityHKT, identity } from "./identity"

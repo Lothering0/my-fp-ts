@@ -8,7 +8,7 @@ import {
 } from "./sync-result"
 import { pipe } from "../../utils/flow"
 import { Functor } from "./functor"
-import { overload } from "src/utils/overloads"
+import { overload } from "../../utils/overloads"
 
 export const Applicative = createApplicative<SyncResultHKT> ({
   ...Functor,

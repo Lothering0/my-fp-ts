@@ -2,7 +2,7 @@ import { ArrayHKT } from "./array"
 import { createApplicative } from "../../types/Applicative"
 import { createApplicativeWithIndex } from "../../types/ApplicativeWithIndex"
 import { Functor, FunctorWithIndex, map, mapWithIndex } from "./functor"
-import { overload } from "src/utils/overloads"
+import { overload } from "../../utils/overloads"
 
 export const Applicative = createApplicative<ArrayHKT> ({
   ...Functor,
