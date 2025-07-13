@@ -14,6 +14,7 @@
     "watch": "nodemon dist/index.cjs",
     "nodemon": "nodemon",
     "lint": "eslint --fix",
+    "prettier": "prettier . --write",
     "prepare": "husky"
   },
   "keywords": [],
@@ -32,6 +33,7 @@
     "husky": "^9.1.7",
     "jest": "^30.0.4",
     "nodemon": "^3.0.2",
+    "prettier": "3.6.2",
     "ts-jest": "^29.4.0",
     "typescript": "^5.3.3",
     "typescript-eslint": "^8.24.0"

@@ -1,28 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 interface Overloaded0 {
-  <Point, R>(point: Point): R
   <Point, R>(): (point: Point) => R
+  <Point, R>(point: Point): R
 }
 
 interface Overloaded1 {
-  <Point, A, R>(point: Point, a: A): R
   <Point, A, R>(a: A): (point: Point) => R
+  <Point, A, R>(point: Point, a: A): R
 }
 
 interface Overloaded2 {
-  <Point, A, B, R>(point: Point, a: A, b: B): R
   <Point, A, B, R>(a: A, b: B): (point: Point) => R
+  <Point, A, B, R>(point: Point, a: A, b: B): R
 }
 
 interface Overloaded3 {
-  <Point, A, B, C, R>(point: Point, a: A, b: B, c: C): R
   <Point, A, B, C, R>(a: A, b: B, c: C): (point: Point) => R
+  <Point, A, B, C, R>(point: Point, a: A, b: B, c: C): R
 }
 
 interface OverloadedN {
-  <Point, A extends readonly any[], R>(point: Point, ...as: A): R
   <Point, A extends readonly any[], R>(...as: A): (point: Point) => R
+  <Point, A extends readonly any[], R>(point: Point, ...as: A): R
 }
 
 /**
