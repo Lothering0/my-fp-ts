@@ -14,18 +14,22 @@ const permutations = [
 describe ("Eq", () => {
   describe ("EqStrict", () => {
     describe ("equals", () => {
-      permutations.forEach (({ a, b, c }) => {
-        it ("should satisfy reflexivity law", () => {
+      it ("should satisfy reflexivity law", () => {
+        permutations.forEach (({ a }) => {
           expect (Eq.EqStrict.equals (a, a) === true).toBe (true)
         })
+      })
 
-        it ("should satisfy symmetry law", () => {
+      it ("should satisfy symmetry law", () => {
+        permutations.forEach (({ a, b }) => {
           expect (Eq.EqStrict.equals (a, b) === Eq.EqStrict.equals (b, a)).toBe (
             true,
           )
         })
+      })
 
-        it ("should satisfy transitivity law", () => {
+      it ("should satisfy transitivity law", () => {
+        permutations.forEach (({ a, b, c }) => {
           const ab = Eq.EqStrict.equals (a, b) === true
           const bc = Eq.EqStrict.equals (b, c) === true
           const ac = Eq.EqStrict.equals (a, c) === true
