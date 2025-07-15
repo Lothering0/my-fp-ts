@@ -2,7 +2,7 @@ import { HKT, Kind } from "../../src/types/HKT"
 import { Functor } from "../../src/types/Functor"
 import { identity } from "../../src/modules/Identity"
 
-export const describeFunctor: {
+export const describeFunctorLaws: {
   <F extends HKT>(F: Functor<F>, fas: Kind<F, unknown, unknown, number>[]): void
 } = (F, fas) => {
   describe ("functor", () => {

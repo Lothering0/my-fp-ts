@@ -1,4 +1,20 @@
 import * as R from "../../../src/modules/Result"
-import { describeFunctor } from "../../_utils/describeFunctor"
+import * as N from "../../../src/modules/Number"
+import { describeFunctorLaws } from "../../_utils/describeFunctorLaws"
 
-describeFunctor (R, [R.failure ("a"), R.success (1)])
+describeFunctorLaws (R, [R.failure ("a"), R.success (1)])
+
+describe ("functor", () => {
+  describe ("map", () => {
+    it ("should return `failure` if it was provided", () => {
+      const fe = R.failure ("a")
+      expect (R.map (fe, N.add (1))).toEqual (fe)
+    })
+
+    it ("should apply function to `success` value", () => {
+      const x = 1
+      const n = 1
+      expect (R.map (R.success (x), N.add (n))).toEqual (R.success (N.add (x, n)))
+    })
+  })
+})
