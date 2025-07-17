@@ -54,9 +54,9 @@ export interface FilterableWithIndex<F extends HKT, I>
 }
 
 export const createFilterableWithIndex = <F extends HKT, I>(
-  filterable: FunctorWithIndex<F, I> & Filterable<F>,
+  Filterable: FunctorWithIndex<F, I> & Filterable<F>,
 ): FilterableWithIndex<F, I> => {
-  const { compact, separate, mapWithIndex } = filterable
+  const { compact, separate, mapWithIndex } = Filterable
 
   const filterMapWithIndex: FilterableWithIndex<F, I>["filterMapWithIndex"] =
     overload (
@@ -102,7 +102,7 @@ export const createFilterableWithIndex = <F extends HKT, I>(
     )
 
   return {
-    ...filterable,
+    ...Filterable,
     partitionMapWithIndex,
     partitionWithIndex,
     filterMapWithIndex,

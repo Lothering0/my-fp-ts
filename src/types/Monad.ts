@@ -118,9 +118,9 @@ export interface Monad<F extends HKT> extends Applicative<F> {
 }
 
 export const createMonad = <F extends HKT>(
-  monad: Applicative<F> & Pick<Monad<F>, "flat">,
+  Monad: Applicative<F> & Pick<Monad<F>, "flat">,
 ): Monad<F> => {
-  const { of, map, flat } = monad
+  const { of, map, flat } = Monad
   const Do = of ({})
 
   const apS: Monad<F>["apS"] = overload (
@@ -192,7 +192,7 @@ export const createMonad = <F extends HKT>(
           pipe (
             a,
             am_,
-            io => io (), // From IO
+            sync => sync (), // From `Sync`
             of<_, _2, _3>,
             flatMap (() => of (a)),
           ),
@@ -261,7 +261,7 @@ export const createMonad = <F extends HKT>(
   )
 
   return {
-    ...monad,
+    ...Monad,
     Do,
     flatMap,
     compose,

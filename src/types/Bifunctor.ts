@@ -24,12 +24,12 @@ export interface Bifunctor<F extends HKT> extends Functor<F> {
 }
 
 export const createBifunctor = <F extends HKT>(
-  bifunctor: Functor<F> & Pick<Bifunctor<F>, "mapLeft">,
+  Bifunctor: Functor<F> & Pick<Bifunctor<F>, "mapLeft">,
 ): Bifunctor<F> => {
-  const { map, mapLeft } = bifunctor
+  const { map, mapLeft } = Bifunctor
 
   return {
-    ...bifunctor,
+    ...Bifunctor,
     bimap: overload (
       2,
       <_, E, A, D, B>(

@@ -29,15 +29,15 @@ export interface Applicative<F extends HKT> extends Functor<F> {
 }
 
 export const createApplicative = <F extends HKT>(
-  applicative: Functor<F> & Pick<Applicative<F>, "of" | "ap">,
+  Applicative: Functor<F> & Pick<Applicative<F>, "of" | "ap">,
 ): Applicative<F> => {
   const flap: Applicative<F>["flap"] = overload (1, (self, fab) =>
-    applicative.ap (fab, self),
+    Applicative.ap (fab, self),
   )
 
   return {
-    ...applicative,
-    apply: applicative.ap,
+    ...Applicative,
+    apply: Applicative.ap,
     flap,
     flipApply: flap,
   }

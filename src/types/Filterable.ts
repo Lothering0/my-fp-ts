@@ -48,9 +48,9 @@ export interface Filterable<F extends HKT> extends Functor<F>, Compactable<F> {
 }
 
 export const createFilterable = <F extends HKT>(
-  filterable: Functor<F> & Compactable<F>,
+  Filterable: Functor<F> & Compactable<F>,
 ): Filterable<F> => {
-  const { compact, separate, map } = filterable
+  const { compact, separate, map } = Filterable
 
   const filterMap: Filterable<F>["filterMap"] = overload (
     1,
@@ -85,7 +85,7 @@ export const createFilterable = <F extends HKT>(
   )
 
   return {
-    ...filterable,
+    ...Filterable,
     partitionMap,
     partition,
     filterMap,

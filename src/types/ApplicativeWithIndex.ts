@@ -31,18 +31,18 @@ export interface ApplicativeWithIndex<F extends HKT, I>
 }
 
 export const createApplicativeWithIndex = <F extends HKT, I>(
-  applicative: Applicative<F> &
+  Applicative: Applicative<F> &
     FunctorWithIndex<F, I> &
     Pick<ApplicativeWithIndex<F, I>, "apWithIndex">,
 ): ApplicativeWithIndex<F, I> => {
   const flapWithIndex: ApplicativeWithIndex<F, I>["flapWithIndex"] = overload (
     1,
-    (self, fab) => applicative.apWithIndex (fab, self),
+    (self, fab) => Applicative.apWithIndex (fab, self),
   )
 
   return {
-    ...applicative,
-    applyWithIndex: applicative.apWithIndex,
+    ...Applicative,
+    applyWithIndex: Applicative.apWithIndex,
     flapWithIndex,
     flipApplyWithIndex: flapWithIndex,
   }
