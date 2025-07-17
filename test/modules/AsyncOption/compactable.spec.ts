@@ -3,7 +3,7 @@ import * as O from "../../../src/modules/Option"
 
 describe ("separate", () => {
   it ("should call `AsyncOption` instance only once", async () => {
-    const asyncOption: AO.AsyncOption<never> = jest.fn ().mockImplementation (
+    const asyncOption: AO.AsyncOption<never> = jest.fn (
       () =>
         new Promise (resolve => {
           setTimeout (() => {

@@ -1,4 +1,4 @@
-import * as A from "../../../src/modules/Async"
+import * as S from "../../../src/modules/Sync"
 import { identity } from "../../../src/modules/Identity"
 import { pipe } from "../../../src/utils/flow"
 
@@ -6,9 +6,9 @@ describe ("functor", () => {
   describe ("map", () => {
     it ("should satisfy identity law", async () => {
       const x = 1
-      const fa: A.Async<number> = jest.fn (A.of (x))
+      const fa: S.Sync<number> = jest.fn (S.of (x))
 
-      const result = await pipe (A.map (fa, identity), A.fromAsync)
+      const result = S.fromSync (S.map (fa, identity))
       expect (result).toEqual (x)
       expect (fa).toHaveBeenCalledTimes (1)
     })
@@ -22,16 +22,16 @@ describe ("functor", () => {
       } = n => n / 2
 
       const x = 1
-      const getFa = () => A.of (x)
+      const getFa = () => S.of (x)
 
-      const fa1: A.Async<number> = jest.fn (getFa ())
-      const fa2: A.Async<number> = jest.fn (getFa ())
+      const fa1: S.Sync<number> = jest.fn (getFa ())
+      const fa2: S.Sync<number> = jest.fn (getFa ())
 
-      const result1 = await pipe (
-        A.map (fa1, a => bc (ab (a))),
-        A.fromAsync,
+      const result1 = pipe (
+        S.map (fa1, a => bc (ab (a))),
+        S.fromSync,
       )
-      const result2 = await pipe (A.map (A.map (fa2, ab), bc), A.fromAsync)
+      const result2 = pipe (S.map (S.map (fa2, ab), bc), S.fromSync)
 
       expect (result1).toEqual (result2)
       expect (fa1).toHaveBeenCalledTimes (1)

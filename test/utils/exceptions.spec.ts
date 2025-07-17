@@ -5,7 +5,7 @@ describe ("exceptions", () => {
   describe ("raise", () => {
     it ("should throw passed argument", () => {
       const x = "a"
-      const f = jest.fn ().mockImplementation (raise)
+      const f = jest.fn (raise)
       expect (() => f (x)).toThrow (x)
     })
   })
@@ -13,8 +13,8 @@ describe ("exceptions", () => {
   describe ("tryDo", () => {
     it ("should return correct `Result` instance", () => {
       const x = "a"
-      const fail = jest.fn ().mockImplementation (() => raise (x))
-      const pass = jest.fn ().mockImplementation (() => x)
+      const fail = jest.fn (() => raise (x))
+      const pass = jest.fn (() => x)
 
       expect (tryDo (fail)).toEqual (failure (x))
       expect (tryDo (pass)).toEqual (success (x))

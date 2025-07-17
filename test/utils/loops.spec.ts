@@ -10,8 +10,8 @@ describe ("getDoWhile", () => {
 
     const unsafeInsert: {
       <A>(xs: A[], x: A): Sync<void>
-    } = (xs, x) => jest.fn ().mockImplementation (() => xs.push (x))
-    const p = jest.fn ().mockImplementation (() => A.length (xs) < iterationsCount)
+    } = (xs, x) => jest.fn (() => xs.push (x))
+    const p = jest.fn (() => A.length (xs) < iterationsCount)
     const f: Sync<void> = unsafeInsert (xs, 0)
 
     const result = doWhile (p) (f)
