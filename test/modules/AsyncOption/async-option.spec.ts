@@ -8,7 +8,7 @@ describe ("toAsyncOptionFromAsync", () => {
     const x = 1
     const fa: A.Async<never> = jest.fn (() => Promise.reject (x))
     const result = await pipe (AO.toAsyncOptionFromAsync (fa), AO.fromAsyncOption)
-    expect (result).toEqual (O.none)
+    expect (result).toEqual<O.Option<never>> (O.none)
     expect (fa).toHaveBeenCalledTimes (1)
   })
 
@@ -16,7 +16,7 @@ describe ("toAsyncOptionFromAsync", () => {
     const x = 1
     const fa: A.Async<typeof x> = jest.fn (() => Promise.resolve (x))
     const result = await pipe (AO.toAsyncOptionFromAsync (fa), AO.fromAsyncOption)
-    expect (result).toEqual (O.some (x))
+    expect (result).toEqual<O.Option<typeof x>> (O.some (x))
     expect (fa).toHaveBeenCalledTimes (1)
   })
 })

@@ -7,7 +7,7 @@ describe ("functor", () => {
   describe ("map", () => {
     it ("should satisfy identity law", async () => {
       const x = 1
-      const fa: A.Async<number> = jest.fn (A.of (x))
+      const fa: A.Async<typeof x> = jest.fn (A.of (x))
 
       const result = await pipe (A.map (fa, identity), A.fromAsync)
       expect (result).toEqual (x)
@@ -19,10 +19,10 @@ describe ("functor", () => {
       const bc = N.divide (2)
 
       const x = 1
-      const getFa = () => A.of (x)
+      const getFa = () => A.of<never, never, typeof x> (x)
 
-      const fa1: A.Async<number> = jest.fn (getFa ())
-      const fa2: A.Async<number> = jest.fn (getFa ())
+      const fa1: A.Async<typeof x> = jest.fn (getFa ())
+      const fa2: A.Async<typeof x> = jest.fn (getFa ())
 
       const result1 = await pipe (
         A.map (fa1, a => bc (ab (a))),

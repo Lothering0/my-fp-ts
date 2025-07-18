@@ -12,10 +12,6 @@ export const fromSuccess: {
   <A>(self: Success<A>): A
 } = self => self.success
 
-export const toUnion: {
-  <E, A>(self: Result<E, A>): E | A
-} = self => isFailure (self) ? self.failure : self.success
-
 export const match: {
   <E, A, B>(
     onFailure: (e: E) => B,
@@ -37,6 +33,9 @@ export const match: {
       ? pipe (self, fromFailure, onFailure)
       : pipe (self, fromSuccess, onSuccess),
 )
+
+export const toUnion = <E, A>(self: Result<E, A>): E | A =>
+  match<E, A, E | A> (self, identity, identity)
 
 export const swap = <E, A>(self: Result<E, A>): Result<A, E> =>
   match<E, A, Result<A, E>> (self, success, failure)

@@ -8,10 +8,10 @@ describe ("functor", () => {
   describe ("map", () => {
     it ("should satisfy identity law", async () => {
       const x = 1
-      const fa: AO.AsyncOption<number> = jest.fn (AO.of (x))
+      const fa: AO.AsyncOption<typeof x> = jest.fn (AO.of (x))
 
       const result = await pipe (AO.map (fa, identity), AO.fromAsyncOption)
-      expect (result).toEqual (O.some (x))
+      expect (result).toEqual<O.Option<typeof x>> (O.some (x))
       expect (fa).toHaveBeenCalledTimes (1)
     })
 
@@ -20,10 +20,10 @@ describe ("functor", () => {
       const bc = N.divide (2)
 
       const x = 1
-      const getFa = () => AO.of (x)
+      const getFa = () => AO.of<never, never, typeof x> (x)
 
-      const fa1: AO.AsyncOption<number> = jest.fn (getFa ())
-      const fa2: AO.AsyncOption<number> = jest.fn (getFa ())
+      const fa1: AO.AsyncOption<typeof x> = jest.fn (getFa ())
+      const fa2: AO.AsyncOption<typeof x> = jest.fn (getFa ())
 
       const result1 = await pipe (
         AO.map (fa1, a => bc (ab (a))),
@@ -43,7 +43,7 @@ describe ("functor", () => {
       const n = 1
       const fa: AO.AsyncOption<never> = jest.fn (AO.none)
       const result = await pipe (AO.map (fa, N.add (n)), AO.fromAsyncOption)
-      expect (result).toEqual (O.none)
+      expect (result).toEqual<O.Option<never>> (O.none)
       expect (fa).toHaveBeenCalledTimes (1)
     })
 

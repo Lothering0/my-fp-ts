@@ -6,24 +6,24 @@ import { pipe } from "../../../src/utils/flow"
 
 describe ("functor", () => {
   describe ("map", () => {
-    it ("should satisfy identity law", async () => {
+    it ("should satisfy identity law", () => {
       const x = 1
-      const fa: SO.SyncOption<number> = jest.fn (SO.of (x))
+      const fa: SO.SyncOption<typeof x> = jest.fn (SO.of (x))
 
       const result = pipe (SO.map (fa, identity), SO.fromSyncOption)
-      expect (result).toEqual (O.some (x))
+      expect (result).toEqual<O.Option<typeof x>> (O.some (x))
       expect (fa).toHaveBeenCalledTimes (1)
     })
 
-    it ("should satisfy composition law", async () => {
+    it ("should satisfy composition law", () => {
       const ab = N.add (5)
       const bc = N.divide (2)
 
       const x = 1
-      const getFa = () => SO.of (x)
+      const getFa = () => SO.of<never, never, typeof x> (x)
 
-      const fa1: SO.SyncOption<number> = jest.fn (getFa ())
-      const fa2: SO.SyncOption<number> = jest.fn (getFa ())
+      const fa1: SO.SyncOption<typeof x> = jest.fn (getFa ())
+      const fa2: SO.SyncOption<typeof x> = jest.fn (getFa ())
 
       const result1 = pipe (
         SO.map (fa1, a => bc (ab (a))),
@@ -36,15 +36,15 @@ describe ("functor", () => {
       expect (fa2).toHaveBeenCalledTimes (1)
     })
 
-    it ("should return function containing `none` if the same was provided", async () => {
+    it ("should return function containing `none` if the same was provided", () => {
       const n = 1
       const fa: SO.SyncOption<never> = jest.fn (SO.none)
       const result = pipe (SO.map (fa, N.add (n)), SO.fromSyncOption)
-      expect (result).toEqual (O.none)
+      expect (result).toEqual<O.Option<never>> (O.none)
       expect (fa).toHaveBeenCalledTimes (1)
     })
 
-    it ("should return function containing `some` if it was provided", async () => {
+    it ("should return function containing `some` if it was provided", () => {
       const x = 1
       const n = 1
       const fa: SO.SyncOption<typeof x> = jest.fn (SO.some (x))
