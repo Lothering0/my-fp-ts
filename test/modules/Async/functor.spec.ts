@@ -1,4 +1,5 @@
 import * as A from "../../../src/modules/Async"
+import * as N from "../../../src/modules/Number"
 import { identity } from "../../../src/modules/Identity"
 import { pipe } from "../../../src/utils/flow"
 
@@ -14,12 +15,8 @@ describe ("functor", () => {
     })
 
     it ("should satisfy composition law", async () => {
-      const ab: {
-        (n: number): number
-      } = n => n + 5
-      const bc: {
-        (n: number): number
-      } = n => n / 2
+      const ab = N.add (5)
+      const bc = N.divide (2)
 
       const x = 1
       const getFa = () => A.of (x)

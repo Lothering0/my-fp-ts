@@ -47,7 +47,7 @@ describe ("functor", () => {
       expect (fa).toHaveBeenCalledTimes (1)
     })
 
-    it ("should return function containing promise of `some` with applied function to its value if async some was provided", async () => {
+    it ("should return function containing promise of `some` if it was provided", async () => {
       const x = 1
       const n = 1
       const fa: AO.AsyncOption<typeof x> = jest.fn (AO.some (x))
