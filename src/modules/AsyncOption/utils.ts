@@ -2,11 +2,7 @@ import * as O from "../Option"
 import { Async } from "../Async"
 import { overload } from "../../utils/overloads"
 import { LazyArg } from "../../types/utils"
-import { fromAsyncOption, none, AsyncOption } from "./async-option"
-
-export const zero: {
-  <A = never>(): AsyncOption<A>
-} = () => none
+import { toPromise, AsyncOption } from "./async-option"
 
 export const match: {
   <A, B>(
@@ -16,6 +12,5 @@ export const match: {
   <A, B>(mma: AsyncOption<A>, onNone: LazyArg<B>, onSome: (a: A) => B): Async<B>
 } = overload (
   2,
-  (self, onNone, onSome) => () =>
-    fromAsyncOption (self).then (O.match (onNone, onSome)),
+  (self, onNone, onSome) => () => toPromise (self).then (O.match (onNone, onSome)),
 )

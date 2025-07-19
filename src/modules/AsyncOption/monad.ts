@@ -9,7 +9,7 @@ import { createMonad } from "../../types/Monad"
 import {
   AsyncOptionHKT,
   AsyncOption,
-  fromAsyncOption,
+  toPromise,
   toAsyncOptionFromAsync,
 } from "./async-option"
 import { map } from "./functor"
@@ -21,8 +21,8 @@ import { DoObject } from "../../types/DoObject"
 export const Monad = createMonad<AsyncOptionHKT> ({
   ...Applicative,
   flat: self => () =>
-    fromAsyncOption (self).then (ma =>
-      O.isNone (ma) ? ma : pipe (ma, O.fromSome, fromAsyncOption),
+    toPromise (self).then (ma =>
+      O.isNone (ma) ? ma : pipe (ma, O.fromSome, toPromise),
     ),
 })
 
@@ -51,7 +51,7 @@ export const parallel: {
 } = overload (
   1,
   (fa, fb) => () =>
-    Promise.all ([fromAsyncOption (fa), fromAsyncOption (fb)]).then (([ma, mb]) =>
+    Promise.all ([toPromise (fa), toPromise (fb)]).then (([ma, mb]) =>
       O.flatMap (mb, () => ma as any),
     ),
 )
@@ -69,7 +69,7 @@ export const parallelTo: {
 } = overload (
   2,
   (fa, name, fb) => () =>
-    Promise.all ([fromAsyncOption (fa), fromAsyncOption (fb)]).then (([ma, mb]) =>
+    Promise.all ([toPromise (fa), toPromise (fb)]).then (([ma, mb]) =>
       O.apS (ma, name, mb),
     ),
 )

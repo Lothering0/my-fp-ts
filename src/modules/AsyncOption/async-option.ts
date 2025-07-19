@@ -21,6 +21,10 @@ export const some: {
   <A>(a: A): AsyncOption<A>
 } = flow (O.some, A.of)
 
+export const toPromise: {
+  <A>(ma: AsyncOption<A>): Promise<O.Option<A>>
+} = mma => mma ().then (identity, constant (O.none))
+
 export const toAsyncOptionFromAsync: {
   <A>(ma: A.Async<A>): AsyncOption<A>
 } = ma => () => ma ().then (O.some, () => O.none)
@@ -28,7 +32,3 @@ export const toAsyncOptionFromAsync: {
 export const toAsyncOptionFromAsyncResult: {
   <E, A>(ma: AR.AsyncResult<E, A>): AsyncOption<A>
 } = ma => () => ma ().then (R.match (constant (O.none), O.some), constant (O.none))
-
-export const fromAsyncOption: {
-  <A>(ma: AsyncOption<A>): Promise<O.Option<A>>
-} = mma => mma ().then (identity, constant (O.none))

@@ -1,7 +1,7 @@
 import * as R from "../Result"
 import * as F from "../../types/Functor"
 import { createBifunctor } from "../../types/Bifunctor"
-import { AsyncResultHKT, fromAsyncResult, AsyncResult } from "./async-result"
+import { AsyncResultHKT, toPromise, AsyncResult } from "./async-result"
 import { overload } from "../../utils/overloads"
 
 export const Functor: F.Functor<AsyncResultHKT> = {
@@ -9,7 +9,7 @@ export const Functor: F.Functor<AsyncResultHKT> = {
     1,
     <_, A, B>(self: AsyncResult<_, A>, ab: (a: A) => B): AsyncResult<_, B> =>
       () =>
-        fromAsyncResult (self).then (R.map (ab)),
+        toPromise (self).then (R.map (ab)),
   ),
 }
 
@@ -19,7 +19,7 @@ export const Bifunctor = createBifunctor<AsyncResultHKT> ({
     1,
     <E, _, D>(self: AsyncResult<E, _>, ed: (e: E) => D): AsyncResult<D, _> =>
       () =>
-        fromAsyncResult (self).then (R.mapLeft (ed)),
+        toPromise (self).then (R.mapLeft (ed)),
   ),
 })
 

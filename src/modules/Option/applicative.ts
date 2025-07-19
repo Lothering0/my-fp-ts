@@ -2,8 +2,9 @@ import { createApplicative } from "../../types/Applicative"
 import { OptionHKT, Option, some } from "./option"
 import { pipe } from "../../utils/flow"
 import { Functor } from "./functor"
-import { match, zero } from "./utils"
+import { match } from "./utils"
 import { overload } from "../../utils/overloads"
+import { zero } from "./alternative"
 
 export const Applicative = createApplicative<OptionHKT> ({
   ...Functor,

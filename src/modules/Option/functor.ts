@@ -1,7 +1,8 @@
 import * as F from "../../types/Functor"
 import { OptionHKT, Option, some } from "./option"
 import { pipe, flow } from "../../utils/flow"
-import { match, zero } from "./utils"
+import { match } from "./utils"
+import { zero } from "./alternative"
 import { overload } from "../../utils/overloads"
 
 export const Functor: F.Functor<OptionHKT> = {

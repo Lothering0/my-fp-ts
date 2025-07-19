@@ -8,7 +8,7 @@ import { applicative } from "./applicative"
 import {
   AsyncResultHKT,
   AsyncResult,
-  fromAsyncResult,
+  toPromise,
   toAsyncResult,
 } from "./async-result"
 import { pipe } from "../../utils/flow"
@@ -18,8 +18,8 @@ import { DoObject } from "../../types/DoObject"
 export const Monad = createMonad<AsyncResultHKT> ({
   ...applicative,
   flat: self => () =>
-    fromAsyncResult (self).then (ma =>
-      R.isFailure (ma) ? ma : pipe (ma, R.fromSuccess, fromAsyncResult),
+    toPromise (self).then (ma =>
+      R.isFailure (ma) ? ma : pipe (ma, R.fromSuccess, toPromise),
     ),
 })
 
@@ -48,7 +48,7 @@ export const parallel: {
 } = overload (
   1,
   (self, fb) => () =>
-    Promise.all ([fromAsyncResult (self), fromAsyncResult (fb)]).then (([ma, mb]) =>
+    Promise.all ([toPromise (self), toPromise (fb)]).then (([ma, mb]) =>
       R.flatMap (mb, () => ma as any),
     ),
 )
@@ -66,7 +66,7 @@ export const parallelTo: {
 } = overload (
   2,
   (self, name, fb) => () =>
-    Promise.all ([fromAsyncResult (self), fromAsyncResult (fb)]).then (([ma, mb]) =>
+    Promise.all ([toPromise (self), toPromise (fb)]).then (([ma, mb]) =>
       R.apS (ma, name, mb),
     ),
 )

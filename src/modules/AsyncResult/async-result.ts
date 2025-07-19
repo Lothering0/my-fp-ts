@@ -24,6 +24,6 @@ export const toAsyncResult: {
   <E, A>(ma: A.Async<A>): AsyncResult<E, A>
 } = ma => () => ma ().then (R.success, R.failure)
 
-export const fromAsyncResult: {
+export const toPromise: {
   <E, A>(ma: AsyncResult<E, A>): Promise<R.Result<E, A>>
 } = mma => mma ().then (identity, R.failure)

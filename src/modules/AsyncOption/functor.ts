@@ -1,6 +1,6 @@
 import * as O from "../Option"
 import * as F from "../../types/Functor"
-import { AsyncOptionHKT, AsyncOption, fromAsyncOption } from "./async-option"
+import { AsyncOptionHKT, AsyncOption, toPromise } from "./async-option"
 import { overload } from "../../utils/overloads"
 
 export const Functor: F.Functor<AsyncOptionHKT> = {
@@ -8,7 +8,7 @@ export const Functor: F.Functor<AsyncOptionHKT> = {
     1,
     <A, B>(self: AsyncOption<A>, ab: (a: A) => B): AsyncOption<B> =>
       () =>
-        fromAsyncOption (self).then (O.map (ab)),
+        toPromise (self).then (O.map (ab)),
   ),
 }
 

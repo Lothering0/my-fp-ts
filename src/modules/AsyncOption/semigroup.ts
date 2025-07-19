@@ -1,4 +1,4 @@
-import { AsyncOption, fromAsyncOption } from "./async-option"
+import { AsyncOption, toPromise } from "./async-option"
 import { Semigroup } from "../../types/Semigroup"
 import { overload } from "../../utils/overloads"
 
@@ -7,6 +7,6 @@ export const getRaceSemigroup: {
 } = () => ({
   concat: overload (
     1,
-    (x, y) => () => Promise.race ([fromAsyncOption (x), fromAsyncOption (y)]),
+    (x, y) => () => Promise.race ([toPromise (x), toPromise (y)]),
   ),
 })

@@ -4,7 +4,7 @@ import * as S from "../Separated"
 import * as C from "../../types/Compactable"
 import { SyncOptionHKT, fromSyncOption, some, none } from "./sync-option"
 import { flow, pipe } from "../../utils/flow"
-import { zero } from "./utils"
+import { zero } from "./alternative"
 
 export const Compactable: C.Compactable<SyncOptionHKT> = {
   compact: self => () => pipe (self, fromSyncOption, O.compact),

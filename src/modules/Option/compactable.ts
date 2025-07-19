@@ -3,7 +3,8 @@ import * as S from "../Separated"
 import * as C from "../../types/Compactable"
 import { OptionHKT, some } from "./option"
 import { flat, flatMap } from "./monad"
-import { fromResult, zero } from "./utils"
+import { fromResult } from "./utils"
+import { zero } from "./alternative"
 
 export const Compactable: C.Compactable<OptionHKT> = {
   compact: flat,

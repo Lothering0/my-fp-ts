@@ -14,10 +14,6 @@ import { match, matchLeft, matchRight } from "./matchers"
 import { isNonEmpty } from "../refinements"
 import { of } from "../applicative"
 
-export const zero: {
-  <A>(): A[]
-} = () => []
-
 export const length: {
   <A>(self: A[]): number
 } = self => self.length
