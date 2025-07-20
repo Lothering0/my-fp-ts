@@ -10,7 +10,7 @@ describe ("functor", () => {
       const x = 1
       const fa: SO.SyncOption<typeof x> = jest.fn (SO.of (x))
 
-      const result = pipe (SO.map (fa, identity), SO.fromSyncOption)
+      const result = pipe (SO.map (fa, identity), SO.execute)
       expect (result).toEqual<O.Option<typeof x>> (O.some (x))
       expect (fa).toHaveBeenCalledTimes (1)
     })
@@ -27,9 +27,9 @@ describe ("functor", () => {
 
       const result1 = pipe (
         SO.map (fa1, a => bc (ab (a))),
-        SO.fromSyncOption,
+        SO.execute,
       )
-      const result2 = pipe (SO.map (SO.map (fa2, ab), bc), SO.fromSyncOption)
+      const result2 = pipe (SO.map (SO.map (fa2, ab), bc), SO.execute)
 
       expect (result1).toEqual (result2)
       expect (fa1).toHaveBeenCalledTimes (1)
@@ -39,7 +39,7 @@ describe ("functor", () => {
     it ("should return function containing `none` if the same was provided", () => {
       const n = 1
       const fa: SO.SyncOption<never> = jest.fn (SO.none)
-      const result = pipe (SO.map (fa, N.add (n)), SO.fromSyncOption)
+      const result = pipe (SO.map (fa, N.add (n)), SO.execute)
       expect (result).toEqual<O.Option<never>> (O.none)
       expect (fa).toHaveBeenCalledTimes (1)
     })
@@ -48,7 +48,7 @@ describe ("functor", () => {
       const x = 1
       const n = 1
       const fa: SO.SyncOption<typeof x> = jest.fn (SO.some (x))
-      const result = pipe (SO.map (fa, N.add (n)), SO.fromSyncOption)
+      const result = pipe (SO.map (fa, N.add (n)), SO.execute)
       expect (result).toEqual (O.some (N.add (x, n)))
       expect (fa).toHaveBeenCalledTimes (1)
     })

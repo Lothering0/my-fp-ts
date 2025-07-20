@@ -1,10 +1,10 @@
 import { createMonad } from "../../types/Monad"
 import { Applicative } from "./applicative"
-import { SyncHKT, fromSync } from "./sync"
+import { SyncHKT, execute } from "./sync"
 
 export const Monad = createMonad<SyncHKT> ({
   ...Applicative,
-  flat: fromSync,
+  flat: execute,
 })
 
 export const {

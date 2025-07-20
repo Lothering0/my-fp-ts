@@ -19,11 +19,11 @@ export const success: {
   <A>(a: A): SyncResult<never, A>
 } = a => () => R.success (a)
 
-export const toSyncResult: {
+export const fromSync: {
   <E, A>(ma: S.Sync<A>): SyncResult<E, A>
 } = ma => () => tryDo (ma)
 
-export const fromSyncResult: {
+export const execute: {
   <E, A>(ma: SyncResult<E, A>): R.Result<E, A>
 } = ma => {
   try {

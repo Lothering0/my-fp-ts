@@ -9,7 +9,7 @@ describe ("functor", () => {
       const x = 1
       const fa: A.Async<typeof x> = jest.fn (A.of (x))
 
-      const result = await pipe (A.map (fa, identity), A.fromAsync)
+      const result = await pipe (A.map (fa, identity), A.toPromise)
       expect (result).toEqual (x)
       expect (fa).toHaveBeenCalledTimes (1)
     })
@@ -26,9 +26,9 @@ describe ("functor", () => {
 
       const result1 = await pipe (
         A.map (fa1, a => bc (ab (a))),
-        A.fromAsync,
+        A.toPromise,
       )
-      const result2 = await pipe (A.map (A.map (fa2, ab), bc), A.fromAsync)
+      const result2 = await pipe (A.map (A.map (fa2, ab), bc), A.toPromise)
 
       expect (result1).toEqual (result2)
       expect (fa1).toHaveBeenCalledTimes (1)

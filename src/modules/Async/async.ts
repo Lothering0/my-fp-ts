@@ -13,6 +13,6 @@ export const async: {
   <A>(a: A): Async<A>
 } = a => () => Promise.resolve (a)
 
-export const fromAsync: {
+export const toPromise: {
   <A>(ma: Async<A>): Promise<A>
 } = ma => ma ()

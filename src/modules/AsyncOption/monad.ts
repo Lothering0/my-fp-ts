@@ -10,7 +10,7 @@ import {
   AsyncOptionHKT,
   AsyncOption,
   toPromise,
-  toAsyncOptionFromAsync,
+  fromAsync,
 } from "./async-option"
 import { map } from "./functor"
 import { Applicative } from "./applicative"
@@ -107,7 +107,7 @@ export const tapAsync: {
   pipe (
     Do,
     apS ("a", self),
-    tap (({ a }) => pipe (a, f, toAsyncOptionFromAsync)),
+    tap (({ a }) => pipe (a, f, fromAsync)),
     map (({ a }) => a),
   ),
 )
@@ -147,7 +147,7 @@ export const tapSyncOption: {
   pipe (
     Do,
     apS ("a", self),
-    tapOption (({ a }) => pipe (a, f, SO.fromSyncOption)),
+    tapOption (({ a }) => pipe (a, f, SO.execute)),
     map (({ a }) => a),
   ),
 )
@@ -164,7 +164,7 @@ export const tapSyncResult: {
   pipe (
     Do,
     apS ("a", self),
-    tapResult (({ a }) => pipe (a, f, SR.fromSyncResult)),
+    tapResult (({ a }) => pipe (a, f, SR.execute)),
     map (({ a }) => a),
   ),
 )

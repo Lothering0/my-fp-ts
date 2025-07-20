@@ -1,6 +1,6 @@
 import * as R from "../Result"
 import { createMonad } from "../../types/Monad"
-import { SyncResultHKT, fromSyncResult, SyncResult } from "./sync-result"
+import { SyncResultHKT, execute, SyncResult } from "./sync-result"
 import { Applicative } from "./applicative"
 import { pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
@@ -8,8 +8,8 @@ import { overload } from "../../utils/overloads"
 export const Monad = createMonad<SyncResultHKT> ({
   ...Applicative,
   flat: self => () =>
-    pipe (self, fromSyncResult, ma =>
-      R.isFailure (ma) ? ma : pipe (ma, R.fromSuccess, fromSyncResult),
+    pipe (self, execute, ma =>
+      R.isFailure (ma) ? ma : pipe (ma, R.fromSuccess, execute),
     ),
 })
 
@@ -35,4 +35,4 @@ export const tapResult: {
     self: SyncResult<E, A>,
     f: (a: A) => R.Result<E, _>,
   ): SyncResult<E, A>
-} = overload (1, (self, f) => () => pipe (self, fromSyncResult, R.tap (f)))
+} = overload (1, (self, f) => () => pipe (self, execute, R.tap (f)))

@@ -25,10 +25,10 @@ export const toPromise: {
   <A>(ma: AsyncOption<A>): Promise<O.Option<A>>
 } = mma => mma ().then (identity, constant (O.none))
 
-export const toAsyncOptionFromAsync: {
+export const fromAsync: {
   <A>(ma: A.Async<A>): AsyncOption<A>
 } = ma => () => ma ().then (O.some, () => O.none)
 
-export const toAsyncOptionFromAsyncResult: {
+export const fromAsyncResult: {
   <E, A>(ma: AR.AsyncResult<E, A>): AsyncOption<A>
 } = ma => () => ma ().then (R.match (constant (O.none), O.some), constant (O.none))

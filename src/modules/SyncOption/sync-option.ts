@@ -18,11 +18,11 @@ export const some: {
   <A>(a: A): SyncOption<A>
 } = a => () => O.some (a)
 
-export const toSyncOption: {
+export const fromSync: {
   <A>(ma: S.Sync<A>): SyncOption<A>
 } = ma => () => pipe (ma, tryDo, O.fromResult)
 
-export const fromSyncOption: {
+export const execute: {
   <A>(ma: SyncOption<A>): O.Option<A>
 } = <A>(ma: SyncOption<A>) => {
   try {

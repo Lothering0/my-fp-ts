@@ -4,11 +4,11 @@ import * as O from "../../../src/modules/Option"
 import { pipe } from "../../../src/utils/flow"
 import { raise } from "../../../src/utils/exceptions"
 
-describe ("toSyncOption", () => {
+describe ("fromSync", () => {
   it ("should return `none` if function threw an error", () => {
     const x = 1
     const fa: S.Sync<never> = jest.fn (() => raise (x))
-    const result = pipe (SO.toSyncOption (fa), SO.fromSyncOption)
+    const result = pipe (SO.fromSync (fa), SO.execute)
     expect (result).toEqual<O.Option<never>> (O.none)
     expect (fa).toHaveBeenCalledTimes (1)
   })
@@ -16,7 +16,7 @@ describe ("toSyncOption", () => {
   it ("should return `some` if function returned a value", () => {
     const x = 1
     const fa: S.Sync<typeof x> = jest.fn (() => x)
-    const result = pipe (SO.toSyncOption (fa), SO.fromSyncOption)
+    const result = pipe (SO.fromSync (fa), SO.execute)
     expect (result).toEqual<O.Option<typeof x>> (O.some (x))
     expect (fa).toHaveBeenCalledTimes (1)
   })

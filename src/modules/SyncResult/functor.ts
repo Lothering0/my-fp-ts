@@ -1,7 +1,7 @@
 import * as R from "../Result"
 import * as F from "../../types/Functor"
 import { createBifunctor } from "../../types/Bifunctor"
-import { SyncResultHKT, SyncResult, fromSyncResult } from "./sync-result"
+import { SyncResultHKT, SyncResult, execute } from "./sync-result"
 import { pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
 
@@ -10,7 +10,7 @@ export const Functor: F.Functor<SyncResultHKT> = {
     1,
     <_, A, B>(self: SyncResult<_, A>, ab: (a: A) => B): SyncResult<_, B> =>
       () =>
-        pipe (self, fromSyncResult, R.map (ab)),
+        pipe (self, execute, R.map (ab)),
   ),
 }
 
@@ -20,7 +20,7 @@ export const Bifunctor = createBifunctor<SyncResultHKT> ({
     1,
     <E, _, D>(self: SyncResult<E, _>, ed: (e: E) => D): SyncResult<D, _> =>
       () =>
-        pipe (self, fromSyncResult, R.mapLeft (ed)),
+        pipe (self, execute, R.mapLeft (ed)),
   ),
 })
 

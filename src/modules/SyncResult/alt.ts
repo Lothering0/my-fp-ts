@@ -1,12 +1,7 @@
 import * as A from "../../types/Alt"
 import * as R from "../Result"
 import { identity } from "../Identity"
-import {
-  SyncResult,
-  SyncResultHKT,
-  fromSyncResult,
-  success,
-} from "./sync-result"
+import { SyncResult, SyncResultHKT, execute, success } from "./sync-result"
 import { match } from "./utils"
 import { constant } from "../../utils/constant"
 import { overload } from "../../utils/overloads"
@@ -26,7 +21,7 @@ export const orElse: {
     onFailure: SyncResult<E2, A>,
   ): SyncResult<E2, A>
 } = overload (1, (self, onFailure) =>
-  pipe (self, fromSyncResult, R.match (constant (onFailure), success)),
+  pipe (self, execute, R.match (constant (onFailure), success)),
 )
 
 export const catchAll: {
@@ -38,7 +33,7 @@ export const catchAll: {
     onFailure: (e: E1) => SyncResult<E2, B>,
   ): SyncResult<E2, A | B>
 } = overload (1, (self, onFailure) =>
-  pipe (self, fromSyncResult, R.match (onFailure, success)),
+  pipe (self, execute, R.match (onFailure, success)),
 )
 
 export const Alt: A.Alt<SyncResultHKT> = {

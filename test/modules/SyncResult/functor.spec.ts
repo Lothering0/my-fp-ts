@@ -10,7 +10,7 @@ describe ("functor", () => {
       const x = 1
       const fa: SR.SyncResult<never, number> = jest.fn (SR.of (x))
 
-      const result = pipe (SR.map (fa, identity), SR.fromSyncResult)
+      const result = pipe (SR.map (fa, identity), SR.execute)
       expect (result).toEqual (R.success (x))
       expect (fa).toHaveBeenCalledTimes (1)
     })
@@ -27,9 +27,9 @@ describe ("functor", () => {
 
       const result1 = pipe (
         SR.map (fa1, a => bc (ab (a))),
-        SR.fromSyncResult,
+        SR.execute,
       )
-      const result2 = pipe (SR.map (SR.map (fa2, ab), bc), SR.fromSyncResult)
+      const result2 = pipe (SR.map (SR.map (fa2, ab), bc), SR.execute)
 
       expect (result1).toEqual (result2)
       expect (fa1).toHaveBeenCalledTimes (1)
@@ -40,7 +40,7 @@ describe ("functor", () => {
       const x = 1
       const n = 1
       const fe: SR.SyncResult<typeof x, never> = jest.fn (SR.failure (x))
-      const result = pipe (SR.map (fe, N.add (n)), SR.fromSyncResult)
+      const result = pipe (SR.map (fe, N.add (n)), SR.execute)
       expect (result).toEqual (R.failure (x))
       expect (fe).toHaveBeenCalledTimes (1)
     })
@@ -49,7 +49,7 @@ describe ("functor", () => {
       const x = 1
       const n = 1
       const fa: SR.SyncResult<never, typeof x> = jest.fn (SR.success (x))
-      const result = pipe (SR.map (fa, N.add (n)), SR.fromSyncResult)
+      const result = pipe (SR.map (fa, N.add (n)), SR.execute)
       expect (result).toEqual (R.success (N.add (x, n)))
       expect (fa).toHaveBeenCalledTimes (1)
     })

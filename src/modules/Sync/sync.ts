@@ -14,6 +14,6 @@ export const sync: {
   <A>(a: A): Sync<A>
 } = a => () => a
 
-export const fromSync: {
+export const execute: {
   <A>(self: Sync<A>): A
 } = self => self ()

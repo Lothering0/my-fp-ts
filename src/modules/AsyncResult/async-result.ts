@@ -20,7 +20,7 @@ export const success: {
   <A>(a: A): AsyncResult<never, A>
 } = flow (R.success, A.of)
 
-export const toAsyncResult: {
+export const fromAsync: {
   <E, A>(ma: A.Async<A>): AsyncResult<E, A>
 } = ma => () => ma ().then (R.success, R.failure)
 

@@ -1,5 +1,5 @@
 import * as F from "../../types/Functor"
-import { AsyncHKT, Async, fromAsync } from "./async"
+import { AsyncHKT, Async, toPromise } from "./async"
 import { overload } from "../../utils/overloads"
 
 export const Functor: F.Functor<AsyncHKT> = {
@@ -7,7 +7,7 @@ export const Functor: F.Functor<AsyncHKT> = {
     1,
     <A, B>(self: Async<A>, ab: (a: A) => B): Async<B> =>
       () =>
-        fromAsync (self).then (ab),
+        toPromise (self).then (ab),
   ),
 }
 

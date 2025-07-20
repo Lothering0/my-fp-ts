@@ -1,5 +1,5 @@
 import { Semigroup } from "../../types/Semigroup"
-import { Async, fromAsync } from "./async"
+import { Async, toPromise } from "./async"
 import { overload } from "../../utils/overloads"
 
 export const getRaceSemigroup: {
@@ -7,6 +7,6 @@ export const getRaceSemigroup: {
 } = () => ({
   concat: overload (
     1,
-    (x, y) => () => Promise.race ([fromAsync (x), fromAsync (y)]),
+    (x, y) => () => Promise.race ([toPromise (x), toPromise (y)]),
   ),
 })

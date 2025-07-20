@@ -1,6 +1,6 @@
 import * as O from "../Option"
 import { createApplicative } from "../../types/Applicative"
-import { SyncOptionHKT, some, fromSyncOption, SyncOption } from "./sync-option"
+import { SyncOptionHKT, some, execute, SyncOption } from "./sync-option"
 import { Functor } from "./functor"
 import { pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
@@ -14,8 +14,8 @@ export const Applicative = createApplicative<SyncOptionHKT> ({
       () =>
         pipe (
           O.Do,
-          O.apS ("a", fromSyncOption (fma)),
-          O.apS ("ab", fromSyncOption (self)),
+          O.apS ("a", execute (fma)),
+          O.apS ("ab", execute (self)),
           O.map (({ a, ab }) => ab (a)),
         ),
   ),

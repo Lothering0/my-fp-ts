@@ -1,5 +1,5 @@
 import { Functor, map } from "./functor"
-import { SyncHKT, sync, fromSync, Sync } from "./sync"
+import { SyncHKT, sync, execute, Sync } from "./sync"
 import { createApplicative } from "../../types/Applicative"
 import { pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
@@ -10,7 +10,7 @@ export const Applicative = createApplicative<SyncHKT> ({
   ap: overload (
     1,
     <A, B>(self: Sync<(a: A) => B>, fa: Sync<A>): Sync<B> =>
-      pipe (fa, map (fromSync (self))),
+      pipe (fa, map (execute (self))),
   ),
 })
 

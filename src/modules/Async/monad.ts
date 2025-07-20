@@ -7,7 +7,7 @@ import { overload } from "../../utils/overloads"
 
 export const Monad = createMonad<A.AsyncHKT> ({
   ...Applicative,
-  flat: self => () => A.fromAsync (self).then (A.fromAsync),
+  flat: self => () => A.toPromise (self).then (A.toPromise),
 })
 
 export const {
@@ -35,7 +35,7 @@ export const parallel: {
 } = overload (
   1,
   (fa, fb) => () =>
-    Promise.all ([A.fromAsync (fa), A.fromAsync (fb)]).then (([a]) => a as any),
+    Promise.all ([A.toPromise (fa), A.toPromise (fb)]).then (([a]) => a as any),
 )
 
 export const parallelTo: {
@@ -56,7 +56,7 @@ export const parallelTo: {
     fb: A.Async<B>,
   ): A.Async<DoObject<N, A, B>> =>
     () =>
-      Promise.all ([A.fromAsync (fa), A.fromAsync (fb)]).then (
+      Promise.all ([A.toPromise (fa), A.toPromise (fb)]).then (
         ([a, b]) => ({ [name]: b, ...a }) as any,
       ),
 )

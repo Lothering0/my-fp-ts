@@ -9,7 +9,7 @@ import {
   AsyncResultHKT,
   AsyncResult,
   toPromise,
-  toAsyncResult,
+  fromAsync,
 } from "./async-result"
 import { pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
@@ -100,7 +100,7 @@ export const tapSyncResult: {
   pipe (
     Do,
     apS ("a", self),
-    tap (({ a }) => pipe (a, f, SR.fromSyncResult, A.of)),
+    tap (({ a }) => pipe (a, f, SR.execute, A.of)),
     map (({ a }) => a),
   ),
 )
@@ -117,7 +117,7 @@ export const tapAsync: {
   pipe (
     Do,
     apS ("a", self),
-    tap (({ a }) => pipe (a, f, toAsyncResult)),
+    tap (({ a }) => pipe (a, f, fromAsync)),
     map (({ a }) => a),
   ),
 )

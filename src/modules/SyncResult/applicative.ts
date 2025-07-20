@@ -1,11 +1,6 @@
 import * as R from "../Result"
 import { createApplicative } from "../../types/Applicative"
-import {
-  success,
-  fromSyncResult,
-  SyncResult,
-  SyncResultHKT,
-} from "./sync-result"
+import { success, execute, SyncResult, SyncResultHKT } from "./sync-result"
 import { pipe } from "../../utils/flow"
 import { Functor } from "./functor"
 import { overload } from "../../utils/overloads"
@@ -22,8 +17,8 @@ export const Applicative = createApplicative<SyncResultHKT> ({
       () =>
         pipe (
           R.Do,
-          R.apS ("a", fromSyncResult (fa)),
-          R.apS ("ab", fromSyncResult (self)),
+          R.apS ("a", execute (fa)),
+          R.apS ("ab", execute (self)),
           R.map (({ a, ab }) => ab (a)),
         ),
   ),
