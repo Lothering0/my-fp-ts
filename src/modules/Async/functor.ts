@@ -11,4 +11,7 @@ export const Functor: F.Functor<AsyncHKT> = {
   ),
 }
 
-export const { map } = Functor
+export const map: {
+  <A, B>(ab: (a: A) => B): (self: Async<A>) => Async<B>
+  <A, B>(self: Async<A>, ab: (a: A) => B): Async<B>
+} = Functor.map

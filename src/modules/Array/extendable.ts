@@ -15,4 +15,11 @@ export const Extendable = createExtendable<ArrayHKT> ({
   ),
 })
 
-export const { extend, duplicate } = Extendable
+export const extend: {
+  <A, B>(fab: (fa: A[]) => B): (self: A[]) => B[]
+  <A, B>(self: A[], fab: (fa: A[]) => B): B[]
+} = Extendable.extend
+
+export const duplicate: {
+  <A>(self: A[]): A[][]
+} = Extendable.duplicate

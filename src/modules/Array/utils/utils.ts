@@ -201,11 +201,6 @@ export const reverse: {
   <A>(self: A[]): A[]
 } = self => self.toReversed ()
 
-export const concat: {
-  <A>(end: A[]): (start: A[]) => A[]
-  <A>(start: A[], end: A[]): A[]
-} = NEA.concat
-
 export const join: {
   (separator: string): (self: string[]) => string
   (self: string[], separator: string): string

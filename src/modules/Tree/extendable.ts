@@ -14,4 +14,11 @@ export const Extendable = createExtendable<TreeHKT> ({
   ),
 })
 
-export const { extend, duplicate } = Extendable
+export const extend: {
+  <A, B>(fab: (fa: Tree<A>) => B): (self: Tree<A>) => Tree<B>
+  <A, B>(self: Tree<A>, fab: (fa: Tree<A>) => B): Tree<B>
+} = Extendable.extend
+
+export const duplicate: {
+  <A>(self: Tree<A>): Tree<Tree<A>>
+} = Extendable.duplicate

@@ -13,4 +13,7 @@ export const Functor: F.Functor<TreeHKT> = {
   ),
 }
 
-export const { map } = Functor
+export const map: {
+  <A, B>(ab: (a: A) => B): (self: Tree<A>) => Tree<B>
+  <A, B>(self: Tree<A>, ab: (a: A) => B): Tree<B>
+} = Functor.map

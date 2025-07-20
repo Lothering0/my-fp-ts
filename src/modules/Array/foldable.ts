@@ -30,5 +30,22 @@ export const FoldableWithIndex: FI.FoldableWithIndex<ArrayHKT, number> = {
   ),
 }
 
-export const { reduce, reduceRight, reduceWithIndex, reduceRightWithIndex } =
-  FoldableWithIndex
+export const reduce: {
+  <A, B>(b: B, bab: (b: B, a: A) => B): (self: A[]) => B
+  <A, B>(self: A[], b: B, bab: (b: B, a: A) => B): B
+} = Foldable.reduce
+
+export const reduceWithIndex: {
+  <A, B>(b: B, ibab: (i: number, b: B, a: A) => B): (self: A[]) => B
+  <A, B>(self: A[], b: B, ibab: (i: number, b: B, a: A) => B): B
+} = FoldableWithIndex.reduceWithIndex
+
+export const reduceRight: {
+  <A, B>(b: B, abb: (a: A, b: B) => B): (self: A[]) => B
+  <A, B>(self: A[], b: B, abb: (a: A, b: B) => B): B
+} = Foldable.reduceRight
+
+export const reduceRightWithIndex: {
+  <A, B>(b: B, iabb: (i: number, a: A, b: B) => B): (self: A[]) => B
+  <A, B>(self: A[], b: B, iabb: (i: number, a: A, b: B) => B): B
+} = FoldableWithIndex.reduceRightWithIndex

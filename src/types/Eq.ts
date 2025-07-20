@@ -29,7 +29,10 @@ export const Contravariant: C.Contravariant<EqHKT> = {
   ),
 }
 
-export const { contramap } = Contravariant
+export const contramap: {
+  <A, B>(ba: (b: B) => A): (self: Eq<A>) => Eq<B>
+  <A, B>(self: Eq<A>, ba: (b: B) => A): Eq<B>
+} = Contravariant.contramap
 
 export const getSemigroup: {
   <A>(): Semigroup<Eq<A>>

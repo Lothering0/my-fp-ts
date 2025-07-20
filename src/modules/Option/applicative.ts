@@ -21,4 +21,28 @@ export const Applicative = createApplicative<OptionHKT> ({
   ),
 })
 
-export const { of, ap, apply, flap, flipApply } = Applicative
+export const of: {
+  <A>(a: A): Option<A>
+} = Applicative.of
+
+export const ap: {
+  <A, B>(fa: Option<A>): (self: Option<(a: A) => B>) => Option<B>
+  <A, B>(self: Option<(a: A) => B>, fa: Option<A>): Option<B>
+} = Applicative.ap
+
+/** Alias for `ap` */
+export const apply: {
+  <A, B>(fa: Option<A>): (self: Option<(a: A) => B>) => Option<B>
+  <A, B>(self: Option<(a: A) => B>, fa: Option<A>): Option<B>
+} = Applicative.apply
+
+export const flap: {
+  <A, B>(fab: Option<(a: A) => B>): (self: Option<A>) => Option<B>
+  <A, B>(self: Option<A>, fab: Option<(a: A) => B>): Option<B>
+} = Applicative.flap
+
+/** Alias for `flap` */
+export const flipApply: {
+  <A, B>(fab: Option<(a: A) => B>): (self: Option<A>) => Option<B>
+  <A, B>(self: Option<A>, fab: Option<(a: A) => B>): Option<B>
+} = Applicative.flipApply

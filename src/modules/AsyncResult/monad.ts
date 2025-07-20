@@ -2,9 +2,10 @@
 import * as R from "../Result"
 import * as A from "../Async"
 import * as SR from "../SyncResult"
+import { Sync } from "../Sync"
 import { createMonad } from "../../types/Monad"
 import { map } from "./functor"
-import { applicative } from "./applicative"
+import { Applicative } from "./applicative"
 import {
   AsyncResultHKT,
   AsyncResult,
@@ -16,26 +17,120 @@ import { overload } from "../../utils/overloads"
 import { DoObject } from "../../types/DoObject"
 
 export const Monad = createMonad<AsyncResultHKT> ({
-  ...applicative,
+  ...Applicative,
   flat: self => () =>
     toPromise (self).then (ma =>
       R.isFailure (ma) ? ma : pipe (ma, R.fromSuccess, toPromise),
     ),
 })
 
-export const {
-  Do,
-  flat,
-  flatMap,
-  compose,
-  setTo,
-  mapTo,
-  applyTo,
-  apS,
-  flatMapTo,
-  tap,
-  tapSync,
-} = Monad
+export const Do = Monad.Do
+
+export const flat: {
+  <_, A>(self: AsyncResult<_, AsyncResult<_, A>>): AsyncResult<_, A>
+} = Monad.flat
+
+export const flatMap: {
+  <_, A, B>(
+    amb: (a: A) => AsyncResult<_, B>,
+  ): (self: AsyncResult<_, A>) => AsyncResult<_, B>
+  <_, A, B>(
+    self: AsyncResult<_, A>,
+    amb: (a: A) => AsyncResult<_, B>,
+  ): AsyncResult<_, B>
+} = Monad.flatMap
+
+export const compose: {
+  <_, A, B, C>(
+    bmc: (b: B) => AsyncResult<_, C>,
+    amb: (a: A) => AsyncResult<_, B>,
+  ): (a: A) => AsyncResult<_, C>
+  <_, A, B, C>(
+    bmc: (b: B) => AsyncResult<_, C>,
+    amb: (a: A) => AsyncResult<_, B>,
+    a: A,
+  ): AsyncResult<_, C>
+} = Monad.compose
+
+export const setTo: {
+  <N extends string | number | symbol, _, A, B>(
+    name: Exclude<N, keyof A>,
+    b: B,
+  ): (self: AsyncResult<_, A>) => AsyncResult<_, DoObject<N, A, B>>
+  <N extends string | number | symbol, _, A, B>(
+    self: AsyncResult<_, A>,
+    name: Exclude<N, keyof A>,
+    b: B,
+  ): AsyncResult<_, DoObject<N, A, B>>
+} = Monad.setTo
+
+export const mapTo: {
+  <N extends string | number | symbol, _, A, B>(
+    name: Exclude<N, keyof A>,
+    ab: (a: A) => B,
+  ): (self: AsyncResult<_, A>) => AsyncResult<_, DoObject<N, A, B>>
+  <N extends string | number | symbol, _, A, B>(
+    self: AsyncResult<_, A>,
+    name: Exclude<N, keyof A>,
+    ab: (a: A) => B,
+  ): AsyncResult<_, DoObject<N, A, B>>
+} = Monad.mapTo
+
+export const flapTo: {
+  <N extends string | number | symbol, _, A, B>(
+    name: Exclude<N, keyof A>,
+    fab: AsyncResult<_, (a: A) => B>,
+  ): (self: AsyncResult<_, A>) => AsyncResult<_, DoObject<N, A, B>>
+  <N extends string | number | symbol, _, A, B>(
+    self: AsyncResult<_, A>,
+    name: Exclude<N, keyof A>,
+    fab: AsyncResult<_, (a: A) => B>,
+  ): AsyncResult<_, DoObject<N, A, B>>
+} = Monad.flapTo
+
+export const apS: {
+  <N extends string | number | symbol, _, A, B>(
+    name: Exclude<N, keyof A>,
+    fb: AsyncResult<_, B>,
+  ): (self: AsyncResult<_, A>) => AsyncResult<_, DoObject<N, A, B>>
+  <N extends string | number | symbol, _, A, B>(
+    self: AsyncResult<_, A>,
+    name: Exclude<N, keyof A>,
+    fb: AsyncResult<_, B>,
+  ): AsyncResult<_, DoObject<N, A, B>>
+} = Monad.apS
+
+export const flatMapTo: {
+  <N extends string | number | symbol, _, A, B>(
+    name: Exclude<N, keyof A>,
+    amb: (a: A) => AsyncResult<_, B>,
+  ): (self: AsyncResult<_, A>) => AsyncResult<_, DoObject<N, A, B>>
+  <N extends string | number | symbol, _, A, B>(
+    self: AsyncResult<_, A>,
+    name: Exclude<N, keyof A>,
+    amb: (a: A) => AsyncResult<_, B>,
+  ): AsyncResult<_, DoObject<N, A, B>>
+} = Monad.flatMapTo
+
+export const tap: {
+  <_, A, _2>(
+    am_: (a: A) => AsyncResult<_, _2>,
+  ): (self: AsyncResult<_, A>) => AsyncResult<_, A>
+  <_, A, _2>(
+    self: AsyncResult<_, A>,
+    am_: (a: A) => AsyncResult<_, _2>,
+  ): AsyncResult<_, A>
+} = Monad.tap
+
+export const tapSync: {
+  <_, A, _2>(
+    am_: (a: A) => Sync<_2>,
+  ): (self: AsyncResult<_, A>) => AsyncResult<_, A>
+  <_, A, _2>(
+    self: AsyncResult<_, A>,
+    am_: (a: A) => Sync<_2>,
+  ): AsyncResult<_, A>
+} = Monad.tapSync
 
 export const parallel: {
   <N extends string | number | symbol, E, A, B>(

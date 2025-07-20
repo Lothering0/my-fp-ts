@@ -15,4 +15,7 @@ export const Functor: F.Functor<StateHKT> = {
   ),
 }
 
-export const { map } = Functor
+export const map: {
+  <S, A, B>(ab: (a: A) => B): (self: State<S, A>) => State<S, B>
+  <S, A, B>(self: State<S, A>, ab: (a: A) => B): State<S, B>
+} = Functor.map

@@ -24,4 +24,12 @@ export const Foldable: F.Foldable<TreeHKT> = {
   ),
 }
 
-export const { reduce, reduceRight } = Foldable
+export const reduce: {
+  <A, B>(b: B, bab: (b: B, a: A) => B): (self: Tree<A>) => B
+  <A, B>(self: Tree<A>, b: B, bab: (b: B, a: A) => B): B
+} = Foldable.reduce
+
+export const reduceRight: {
+  <A, B>(b: B, abb: (a: A, b: B) => B): (self: Tree<A>) => B
+  <A, B>(self: Tree<A>, b: B, abb: (a: A, b: B) => B): B
+} = Foldable.reduceRight

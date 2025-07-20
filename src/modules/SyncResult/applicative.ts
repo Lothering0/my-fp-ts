@@ -24,4 +24,48 @@ export const Applicative = createApplicative<SyncResultHKT> ({
   ),
 })
 
-export const { of, ap, apply, flap, flipApply } = Applicative
+export const of: {
+  <_, A>(a: A): SyncResult<_, A>
+} = Applicative.of
+
+export const ap: {
+  <_, A, B>(
+    fa: SyncResult<_, A>,
+  ): (self: SyncResult<_, (a: A) => B>) => SyncResult<_, B>
+  <_, A, B>(
+    self: SyncResult<_, (a: A) => B>,
+    fa: SyncResult<_, A>,
+  ): SyncResult<_, B>
+} = Applicative.ap
+
+/** Alias for `ap` */
+export const apply: {
+  <_, A, B>(
+    fa: SyncResult<_, A>,
+  ): (self: SyncResult<_, (a: A) => B>) => SyncResult<_, B>
+  <_, A, B>(
+    self: SyncResult<_, (a: A) => B>,
+    fa: SyncResult<_, A>,
+  ): SyncResult<_, B>
+} = Applicative.apply
+
+export const flap: {
+  <_, A, B>(
+    fab: SyncResult<_, (a: A) => B>,
+  ): (self: SyncResult<_, A>) => SyncResult<_, B>
+  <_, A, B>(
+    self: SyncResult<_, A>,
+    fab: SyncResult<_, (a: A) => B>,
+  ): SyncResult<_, B>
+} = Applicative.flap
+
+/** Alias for `flap` */
+export const flipApply: {
+  <_, A, B>(
+    fab: SyncResult<_, (a: A) => B>,
+  ): (self: SyncResult<_, A>) => SyncResult<_, B>
+  <_, A, B>(
+    self: SyncResult<_, A>,
+    fab: SyncResult<_, (a: A) => B>,
+  ): SyncResult<_, B>
+} = Applicative.flipApply

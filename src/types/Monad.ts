@@ -60,7 +60,7 @@ export interface Monad<F extends HKT> extends Applicative<F> {
     ): Kind<F, _, _2, DoObject<N, A, B>>
   }
 
-  readonly applyTo: {
+  readonly flapTo: {
     <N extends string | number | symbol, _, _2, A, B>(
       name: Exclude<N, keyof A>,
       fab: Kind<F, _, _2, (a: A) => B>,
@@ -224,7 +224,7 @@ export const createMonad = <F extends HKT>(
     ): Kind<F, _, _2, DoObject<N, A, B>> => mapTo (self, name, constant (b)),
   )
 
-  const applyTo: Monad<F>["applyTo"] = overload (
+  const flapTo: Monad<F>["flapTo"] = overload (
     2,
     <N extends string | number | symbol, _, _2, A, B>(
       self: Kind<F, _, _2, A>,
@@ -269,7 +269,7 @@ export const createMonad = <F extends HKT>(
     tapSync,
     setTo,
     mapTo,
-    applyTo,
+    flapTo,
     apS,
     flatMapTo,
   }

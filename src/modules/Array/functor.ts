@@ -14,4 +14,12 @@ export const FunctorWithIndex: FI.FunctorWithIndex<ArrayHKT, number> = {
   ),
 }
 
-export const { map, mapWithIndex } = FunctorWithIndex
+export const map: {
+  <A, B>(ab: (a: A) => B): (self: A[]) => B[]
+  <A, B>(self: A[], ab: (a: A) => B): B[]
+} = Functor.map
+
+export const mapWithIndex: {
+  <A, B>(iab: (i: number, a: A) => B): (self: A[]) => B[]
+  <A, B>(self: A[], iab: (i: number, a: A) => B): B[]
+} = FunctorWithIndex.mapWithIndex

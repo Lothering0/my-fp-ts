@@ -26,4 +26,32 @@ export const Applicative = createApplicative<AsyncOptionHKT> ({
   ),
 })
 
-export const { of, ap, apply, flap, flipApply } = Applicative
+export const of: {
+  <A>(a: A): AsyncOption<A>
+} = Applicative.of
+
+export const ap: {
+  <A, B>(fa: AsyncOption<A>): (self: AsyncOption<(a: A) => B>) => AsyncOption<B>
+  <A, B>(self: AsyncOption<(a: A) => B>, fa: AsyncOption<A>): AsyncOption<B>
+} = Applicative.ap
+
+/** Alias for `ap` */
+export const apply: {
+  <A, B>(fa: AsyncOption<A>): (self: AsyncOption<(a: A) => B>) => AsyncOption<B>
+  <A, B>(self: AsyncOption<(a: A) => B>, fa: AsyncOption<A>): AsyncOption<B>
+} = Applicative.apply
+
+export const flap: {
+  <A, B>(
+    fab: AsyncOption<(a: A) => B>,
+  ): (self: AsyncOption<A>) => AsyncOption<B>
+  <A, B>(self: AsyncOption<A>, fab: AsyncOption<(a: A) => B>): AsyncOption<B>
+} = Applicative.flap
+
+/** Alias for `flap` */
+export const flipApply: {
+  <A, B>(
+    fab: AsyncOption<(a: A) => B>,
+  ): (self: AsyncOption<A>) => AsyncOption<B>
+  <A, B>(self: AsyncOption<A>, fab: AsyncOption<(a: A) => B>): AsyncOption<B>
+} = Applicative.flipApply

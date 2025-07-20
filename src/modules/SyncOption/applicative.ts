@@ -21,4 +21,28 @@ export const Applicative = createApplicative<SyncOptionHKT> ({
   ),
 })
 
-export const { of, ap, apply, flap, flipApply } = Applicative
+export const of: {
+  <A>(a: A): SyncOption<A>
+} = Applicative.of
+
+export const ap: {
+  <A, B>(fa: SyncOption<A>): (self: SyncOption<(a: A) => B>) => SyncOption<B>
+  <A, B>(self: SyncOption<(a: A) => B>, fa: SyncOption<A>): SyncOption<B>
+} = Applicative.ap
+
+/** Alias for `ap` */
+export const apply: {
+  <A, B>(fa: SyncOption<A>): (self: SyncOption<(a: A) => B>) => SyncOption<B>
+  <A, B>(self: SyncOption<(a: A) => B>, fa: SyncOption<A>): SyncOption<B>
+} = Applicative.apply
+
+export const flap: {
+  <A, B>(fab: SyncOption<(a: A) => B>): (self: SyncOption<A>) => SyncOption<B>
+  <A, B>(self: SyncOption<A>, fab: SyncOption<(a: A) => B>): SyncOption<B>
+} = Applicative.flap
+
+/** Alias for `flap` */
+export const flipApply: {
+  <A, B>(fab: SyncOption<(a: A) => B>): (self: SyncOption<A>) => SyncOption<B>
+  <A, B>(self: SyncOption<A>, fab: SyncOption<(a: A) => B>): SyncOption<B>
+} = Applicative.flipApply

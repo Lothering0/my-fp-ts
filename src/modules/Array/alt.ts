@@ -1,5 +1,5 @@
 import * as A from "../../types/Alt"
-import { concat } from "./utils"
+import { concat } from "./semigroup"
 import { ArrayHKT } from "./array"
 
 export const orElse: {

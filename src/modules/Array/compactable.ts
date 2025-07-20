@@ -25,4 +25,14 @@ export const Compactable: C.Compactable<ArrayHKT> = {
   ),
 }
 
-export const { compact, compactResults, separate } = Compactable
+export const compact: {
+  <A>(self: O.Option<A>[]): A[]
+} = Compactable.compact
+
+export const compactResults: {
+  <A>(self: R.Result<unknown, A>[]): A[]
+} = Compactable.compactResults
+
+export const separate: {
+  <E, A>(self: R.Result<E, A>[]): S.Separated<E[], A[]>
+} = Compactable.separate

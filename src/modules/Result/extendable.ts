@@ -12,4 +12,11 @@ export const Extendable = createExtendable<ResultHKT> ({
   ),
 })
 
-export const { extend, duplicate } = Extendable
+export const extend: {
+  <_, A, B>(fab: (fa: Result<_, A>) => B): (self: Result<_, A>) => Result<_, B>
+  <_, A, B>(self: Result<_, A>, fab: (fa: Result<_, A>) => B): Result<_, B>
+} = Extendable.extend
+
+export const duplicate: {
+  <_, A>(self: Result<_, A>): Result<_, Result<_, A>>
+} = Extendable.duplicate

@@ -12,4 +12,7 @@ export const Functor: F.Functor<SyncHKT> = {
   ),
 }
 
-export const { map } = Functor
+export const map: {
+  <A, B>(ab: (a: A) => B): (self: Sync<A>) => Sync<B>
+  <A, B>(self: Sync<A>, ab: (a: A) => B): Sync<B>
+} = Functor.map

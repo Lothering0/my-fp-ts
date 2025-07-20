@@ -13,4 +13,7 @@ export const Functor: F.Functor<OptionHKT> = {
   ),
 }
 
-export const { map } = Functor
+export const map: {
+  <A, B>(ab: (a: A) => B): (self: Option<A>) => Option<B>
+  <A, B>(self: Option<A>, ab: (a: A) => B): Option<B>
+} = Functor.map

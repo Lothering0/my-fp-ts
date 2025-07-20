@@ -1,5 +1,5 @@
 import * as C from "../../types/Comonad"
-import { NonEmptyArrayHKT } from "./non-empty-array"
+import { NonEmptyArray, NonEmptyArrayHKT } from "./non-empty-array"
 import { head } from "./utils"
 import { Extendable } from "./extendable"
 
@@ -8,4 +8,6 @@ export const Comonad: C.Comonad<NonEmptyArrayHKT> = {
   extract: head,
 }
 
-export const { extract } = Comonad
+export const extract: {
+  <A>(self: NonEmptyArray<A>): A
+} = Comonad.extract

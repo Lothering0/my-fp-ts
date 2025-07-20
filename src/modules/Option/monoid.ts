@@ -7,8 +7,8 @@ import { pipe } from "../../utils/flow"
 import { overload } from "../../utils/overloads"
 
 export const getMonoid: {
-  <A>(semigroup: Semigroup<A>): Monoid<Option<A>>
-} = s => ({
+  <A>(Semigroup: Semigroup<A>): Monoid<Option<A>>
+} = S => ({
   empty: none,
   concat: overload (1, (mx, my) =>
     isNone (mx)
@@ -17,6 +17,6 @@ export const getMonoid: {
         : my
       : isNone (my)
         ? mx
-        : pipe (s.concat (fromSome (mx), fromSome (my)), some),
+        : pipe (S.concat (fromSome (mx), fromSome (my)), some),
   ),
 })

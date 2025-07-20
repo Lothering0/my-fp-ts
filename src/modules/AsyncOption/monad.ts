@@ -5,6 +5,7 @@ import * as R from "../Result"
 import * as O from "../Option"
 import * as SO from "../SyncOption"
 import * as SR from "../SyncResult"
+import { Sync } from "../Sync"
 import { createMonad } from "../../types/Monad"
 import {
   AsyncOptionHKT,
@@ -26,19 +27,102 @@ export const Monad = createMonad<AsyncOptionHKT> ({
     ),
 })
 
-export const {
-  Do,
-  flat,
-  flatMap,
-  compose,
-  setTo,
-  mapTo,
-  applyTo,
-  apS,
-  flatMapTo,
-  tap,
-  tapSync,
-} = Monad
+export const Do = Monad.Do
+
+export const flat: {
+  <A>(self: AsyncOption<AsyncOption<A>>): AsyncOption<A>
+} = Monad.flat
+
+export const flatMap: {
+  <A, B>(
+    amb: (a: A) => AsyncOption<B>,
+  ): (self: AsyncOption<A>) => AsyncOption<B>
+  <A, B>(self: AsyncOption<A>, amb: (a: A) => AsyncOption<B>): AsyncOption<B>
+} = Monad.flatMap
+
+export const compose: {
+  <A, B, C>(
+    bmc: (b: B) => AsyncOption<C>,
+    amb: (a: A) => AsyncOption<B>,
+  ): (a: A) => AsyncOption<C>
+  <A, B, C>(
+    bmc: (b: B) => AsyncOption<C>,
+    amb: (a: A) => AsyncOption<B>,
+    a: A,
+  ): AsyncOption<C>
+} = Monad.compose
+
+export const setTo: {
+  <N extends string | number | symbol, A, B>(
+    name: Exclude<N, keyof A>,
+    b: B,
+  ): (self: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
+  <N extends string | number | symbol, A, B>(
+    self: AsyncOption<A>,
+    name: Exclude<N, keyof A>,
+    b: B,
+  ): AsyncOption<DoObject<N, A, B>>
+} = Monad.setTo
+
+export const mapTo: {
+  <N extends string | number | symbol, A, B>(
+    name: Exclude<N, keyof A>,
+    ab: (a: A) => B,
+  ): (self: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
+  <N extends string | number | symbol, A, B>(
+    self: AsyncOption<A>,
+    name: Exclude<N, keyof A>,
+    ab: (a: A) => B,
+  ): AsyncOption<DoObject<N, A, B>>
+} = Monad.mapTo
+
+export const flapTo: {
+  <N extends string | number | symbol, A, B>(
+    name: Exclude<N, keyof A>,
+    fab: AsyncOption<(a: A) => B>,
+  ): (self: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
+  <N extends string | number | symbol, A, B>(
+    self: AsyncOption<A>,
+    name: Exclude<N, keyof A>,
+    fab: AsyncOption<(a: A) => B>,
+  ): AsyncOption<DoObject<N, A, B>>
+} = Monad.flapTo
+
+export const apS: {
+  <N extends string | number | symbol, A, B>(
+    name: Exclude<N, keyof A>,
+    fb: AsyncOption<B>,
+  ): (self: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
+  <N extends string | number | symbol, A, B>(
+    self: AsyncOption<A>,
+    name: Exclude<N, keyof A>,
+    fb: AsyncOption<B>,
+  ): AsyncOption<DoObject<N, A, B>>
+} = Monad.apS
+
+export const flatMapTo: {
+  <N extends string | number | symbol, A, B>(
+    name: Exclude<N, keyof A>,
+    amb: (a: A) => AsyncOption<B>,
+  ): (self: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
+  <N extends string | number | symbol, A, B>(
+    self: AsyncOption<A>,
+    name: Exclude<N, keyof A>,
+    amb: (a: A) => AsyncOption<B>,
+  ): AsyncOption<DoObject<N, A, B>>
+} = Monad.flatMapTo
+
+export const tap: {
+  <A, _>(
+    am_: (a: A) => AsyncOption<_>,
+  ): (self: AsyncOption<A>) => AsyncOption<A>
+  <A, _>(self: AsyncOption<A>, am_: (a: A) => AsyncOption<_>): AsyncOption<A>
+} = Monad.tap
+
+export const tapSync: {
+  <A, _>(am_: (a: A) => Sync<_>): (self: AsyncOption<A>) => AsyncOption<A>
+  <A, _>(self: AsyncOption<A>, am_: (a: A) => Sync<_>): AsyncOption<A>
+} = Monad.tapSync
 
 export const parallel: {
   <N extends string | number | symbol, A, B>(

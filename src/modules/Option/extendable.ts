@@ -12,4 +12,11 @@ export const Extendable = createExtendable<OptionHKT> ({
   ),
 })
 
-export const { extend, duplicate } = Extendable
+export const extend: {
+  <A, B>(fab: (fa: Option<A>) => B): (self: Option<A>) => Option<B>
+  <A, B>(self: Option<A>, fab: (fa: Option<A>) => B): Option<B>
+} = Extendable.extend
+
+export const duplicate: {
+  <A>(self: Option<A>): Option<Option<A>>
+} = Extendable.duplicate

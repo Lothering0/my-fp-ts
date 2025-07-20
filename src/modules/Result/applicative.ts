@@ -15,4 +15,28 @@ export const Applicative = createApplicative<ResultHKT> ({
   ),
 })
 
-export const { of, ap, apply, flap, flipApply } = Applicative
+export const of: {
+  <_, A>(a: A): Result<_, A>
+} = Applicative.of
+
+export const ap: {
+  <_, A, B>(fa: Result<_, A>): (self: Result<_, (a: A) => B>) => Result<_, B>
+  <_, A, B>(self: Result<_, (a: A) => B>, fa: Result<_, A>): Result<_, B>
+} = Applicative.ap
+
+/** Alias for `ap` */
+export const apply: {
+  <_, A, B>(fa: Result<_, A>): (self: Result<_, (a: A) => B>) => Result<_, B>
+  <_, A, B>(self: Result<_, (a: A) => B>, fa: Result<_, A>): Result<_, B>
+} = Applicative.apply
+
+export const flap: {
+  <_, A, B>(fab: Result<_, (a: A) => B>): (self: Result<_, A>) => Result<_, B>
+  <_, A, B>(self: Result<_, A>, fab: Result<_, (a: A) => B>): Result<_, B>
+} = Applicative.flap
+
+/** Alias for `flap` */
+export const flipApply: {
+  <_, A, B>(fab: Result<_, (a: A) => B>): (self: Result<_, A>) => Result<_, B>
+  <_, A, B>(self: Result<_, A>, fab: Result<_, (a: A) => B>): Result<_, B>
+} = Applicative.flipApply

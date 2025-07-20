@@ -5,7 +5,7 @@ import { pipe } from "../../utils/flow"
 import { Functor } from "./functor"
 import { overload } from "../../utils/overloads"
 
-export const applicative = createApplicative<AsyncResultHKT> ({
+export const Applicative = createApplicative<AsyncResultHKT> ({
   ...Functor,
   of: success,
   ap: overload (
@@ -26,4 +26,48 @@ export const applicative = createApplicative<AsyncResultHKT> ({
   ),
 })
 
-export const { of, ap, apply, flap, flipApply } = applicative
+export const of: {
+  <_, A>(a: A): AsyncResult<_, A>
+} = Applicative.of
+
+export const ap: {
+  <_, A, B>(
+    fa: AsyncResult<_, A>,
+  ): (self: AsyncResult<_, (a: A) => B>) => AsyncResult<_, B>
+  <_, A, B>(
+    self: AsyncResult<_, (a: A) => B>,
+    fa: AsyncResult<_, A>,
+  ): AsyncResult<_, B>
+} = Applicative.ap
+
+/** Alias for `ap` */
+export const apply: {
+  <_, A, B>(
+    fa: AsyncResult<_, A>,
+  ): (self: AsyncResult<_, (a: A) => B>) => AsyncResult<_, B>
+  <_, A, B>(
+    self: AsyncResult<_, (a: A) => B>,
+    fa: AsyncResult<_, A>,
+  ): AsyncResult<_, B>
+} = Applicative.apply
+
+export const flap: {
+  <_, A, B>(
+    fab: AsyncResult<_, (a: A) => B>,
+  ): (self: AsyncResult<_, A>) => AsyncResult<_, B>
+  <_, A, B>(
+    self: AsyncResult<_, A>,
+    fab: AsyncResult<_, (a: A) => B>,
+  ): AsyncResult<_, B>
+} = Applicative.flap
+
+/** Alias for `flap` */
+export const flipApply: {
+  <_, A, B>(
+    fab: AsyncResult<_, (a: A) => B>,
+  ): (self: AsyncResult<_, A>) => AsyncResult<_, B>
+  <_, A, B>(
+    self: AsyncResult<_, A>,
+    fab: AsyncResult<_, (a: A) => B>,
+  ): AsyncResult<_, B>
+} = Applicative.flipApply

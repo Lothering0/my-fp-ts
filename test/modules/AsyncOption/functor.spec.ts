@@ -20,7 +20,7 @@ describe ("functor", () => {
       const bc = N.divide (2)
 
       const x = 1
-      const getFa = () => AO.of<never, never, typeof x> (x)
+      const getFa = () => AO.of<typeof x> (x)
 
       const fa1: AO.AsyncOption<typeof x> = jest.fn (getFa ())
       const fa2: AO.AsyncOption<typeof x> = jest.fn (getFa ())

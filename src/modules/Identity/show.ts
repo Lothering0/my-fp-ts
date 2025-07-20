@@ -1,6 +1,6 @@
 import { Show } from "../../types/Show"
-import { identity } from "./identity"
+import { Identity, identity } from "./identity"
 
 export const getShow: {
-  <A>(S: Show<A>): Show<A>
+  <A>(S: Show<A>): Show<Identity<A>>
 } = identity
