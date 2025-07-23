@@ -1,8 +1,8 @@
+import * as A from "../Array"
 import { Tree, TreeHKT } from "./tree"
 import { createApplicative } from "../../types/Applicative"
-import { Functor, map } from "./functor"
-import { pipe } from "../../utils/flow"
-import { make, valueOf } from "./utils"
+import { Functor } from "./functor"
+import { make, valueOf, forestOf } from "./utils"
 import { overload } from "../../utils/overloads"
 
 export const Applicative = createApplicative<TreeHKT> ({
@@ -11,10 +11,12 @@ export const Applicative = createApplicative<TreeHKT> ({
   ap: overload (
     1,
     <A, B>(self: Tree<(a: A) => B>, fa: Tree<A>): Tree<B> =>
-      pipe (
-        fa,
-        map (a => map (self, f => f (a))),
-        valueOf,
+      make (
+        valueOf (self) (valueOf (fa)),
+        A.concat (
+          A.map (forestOf (self), ap (fa)),
+          A.map (forestOf (fa), tree => ap (self, tree)),
+        ),
       ),
   ),
 })

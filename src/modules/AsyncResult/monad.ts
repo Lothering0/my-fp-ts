@@ -132,40 +132,6 @@ export const tapSync: {
   ): AsyncResult<_, A>
 } = Monad.tapSync
 
-export const parallel: {
-  <N extends string | number | symbol, E, A, B>(
-    fb: AsyncResult<E, B>,
-  ): (self: AsyncResult<E, A>) => AsyncResult<E, DoObject<N, A, B>>
-  <N extends string | number | symbol, E, A, B>(
-    self: AsyncResult<E, A>,
-    fb: AsyncResult<E, B>,
-  ): AsyncResult<E, DoObject<N, A, B>>
-} = overload (
-  1,
-  (self, fb) => () =>
-    Promise.all ([toPromise (self), toPromise (fb)]).then (([ma, mb]) =>
-      R.flatMap (mb, () => ma as any),
-    ),
-)
-
-export const parallelTo: {
-  <N extends string | number | symbol, E, A, B>(
-    name: Exclude<N, keyof A>,
-    fb: AsyncResult<E, B>,
-  ): (self: AsyncResult<E, A>) => AsyncResult<E, DoObject<N, A, B>>
-  <N extends string | number | symbol, E, A, B>(
-    self: AsyncResult<E, A>,
-    name: Exclude<N, keyof A>,
-    fb: AsyncResult<E, B>,
-  ): AsyncResult<E, DoObject<N, A, B>>
-} = overload (
-  2,
-  (self, name, fb) => () =>
-    Promise.all ([toPromise (self), toPromise (fb)]).then (([ma, mb]) =>
-      R.apS (ma, name, mb),
-    ),
-)
-
 export const tapResult: {
   <E, A, _>(
     f: (a: A) => R.Result<E, _>,
@@ -215,4 +181,38 @@ export const tapAsync: {
     tap (({ a }) => pipe (a, f, fromAsync)),
     map (({ a }) => a),
   ),
+)
+
+export const parallel: {
+  <N extends string | number | symbol, E, A, B>(
+    fb: AsyncResult<E, B>,
+  ): (self: AsyncResult<E, A>) => AsyncResult<E, DoObject<N, A, B>>
+  <N extends string | number | symbol, E, A, B>(
+    self: AsyncResult<E, A>,
+    fb: AsyncResult<E, B>,
+  ): AsyncResult<E, DoObject<N, A, B>>
+} = overload (
+  1,
+  (self, fb) => () =>
+    Promise.all ([toPromise (self), toPromise (fb)]).then (([ma, mb]) =>
+      R.flatMap (mb, () => ma as any),
+    ),
+)
+
+export const parallelTo: {
+  <N extends string | number | symbol, E, A, B>(
+    name: Exclude<N, keyof A>,
+    fb: AsyncResult<E, B>,
+  ): (self: AsyncResult<E, A>) => AsyncResult<E, DoObject<N, A, B>>
+  <N extends string | number | symbol, E, A, B>(
+    self: AsyncResult<E, A>,
+    name: Exclude<N, keyof A>,
+    fb: AsyncResult<E, B>,
+  ): AsyncResult<E, DoObject<N, A, B>>
+} = overload (
+  2,
+  (self, name, fb) => () =>
+    Promise.all ([toPromise (self), toPromise (fb)]).then (([ma, mb]) =>
+      R.apS (ma, name, mb),
+    ),
 )

@@ -124,40 +124,6 @@ export const tapSync: {
   <A, _>(self: AsyncOption<A>, am_: (a: A) => Sync<_>): AsyncOption<A>
 } = Monad.tapSync
 
-export const parallel: {
-  <N extends string | number | symbol, A, B>(
-    fb: AsyncOption<B>,
-  ): (fa: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
-  <N extends string | number | symbol, A, B>(
-    fa: AsyncOption<A>,
-    fb: AsyncOption<B>,
-  ): AsyncOption<DoObject<N, A, B>>
-} = overload (
-  1,
-  (fa, fb) => () =>
-    Promise.all ([toPromise (fa), toPromise (fb)]).then (([ma, mb]) =>
-      O.flatMap (mb, () => ma as any),
-    ),
-)
-
-export const parallelTo: {
-  <N extends string | number | symbol, A, B>(
-    name: Exclude<N, keyof A>,
-    fb: AsyncOption<B>,
-  ): (fa: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
-  <N extends string | number | symbol, A, B>(
-    fa: AsyncOption<A>,
-    name: Exclude<N, keyof A>,
-    fb: AsyncOption<B>,
-  ): AsyncOption<DoObject<N, A, B>>
-} = overload (
-  2,
-  (fa, name, fb) => () =>
-    Promise.all ([toPromise (fa), toPromise (fb)]).then (([ma, mb]) =>
-      O.apS (ma, name, mb),
-    ),
-)
-
 export const tapOption: {
   <A, _>(f: (a: A) => O.Option<_>): (self: AsyncOption<A>) => AsyncOption<A>
   <A, _>(self: AsyncOption<A>, f: (a: A) => O.Option<_>): AsyncOption<A>
@@ -251,4 +217,38 @@ export const tapSyncResult: {
     tapResult (({ a }) => pipe (a, f, SR.execute)),
     map (({ a }) => a),
   ),
+)
+
+export const parallel: {
+  <N extends string | number | symbol, A, B>(
+    fb: AsyncOption<B>,
+  ): (fa: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
+  <N extends string | number | symbol, A, B>(
+    fa: AsyncOption<A>,
+    fb: AsyncOption<B>,
+  ): AsyncOption<DoObject<N, A, B>>
+} = overload (
+  1,
+  (fa, fb) => () =>
+    Promise.all ([toPromise (fa), toPromise (fb)]).then (([ma, mb]) =>
+      O.flatMap (mb, () => ma as any),
+    ),
+)
+
+export const parallelTo: {
+  <N extends string | number | symbol, A, B>(
+    name: Exclude<N, keyof A>,
+    fb: AsyncOption<B>,
+  ): (fa: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
+  <N extends string | number | symbol, A, B>(
+    fa: AsyncOption<A>,
+    name: Exclude<N, keyof A>,
+    fb: AsyncOption<B>,
+  ): AsyncOption<DoObject<N, A, B>>
+} = overload (
+  2,
+  (fa, name, fb) => () =>
+    Promise.all ([toPromise (fa), toPromise (fb)]).then (([ma, mb]) =>
+      O.apS (ma, name, mb),
+    ),
 )
