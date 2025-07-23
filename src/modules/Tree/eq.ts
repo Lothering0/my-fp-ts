@@ -1,4 +1,4 @@
-import * as A from "../Array"
+import * as RA from "../ReadonlyArray"
 import { Tree } from "./tree"
 import { Eq } from "../../types/Eq"
 import { overload } from "../../utils/overloads"
@@ -11,6 +11,6 @@ export const getEq: {
     1,
     (mx, my) =>
       Eq.equals (valueOf (mx), valueOf (my)) &&
-      A.getEq (getEq (Eq)).equals (forestOf (mx), forestOf (my)),
+      RA.getEq (getEq (Eq)).equals (forestOf (mx), forestOf (my)),
   ),
 })

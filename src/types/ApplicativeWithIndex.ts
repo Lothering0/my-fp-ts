@@ -8,11 +8,11 @@ export interface ApplicativeWithIndex<F extends HKT, I>
     Applicative<F> {
   readonly apWithIndex: {
     <_, _2, A, B>(
-      fiab: Kind<F, _, _2, (i: I, a: A) => B>,
-    ): (self: Kind<F, _, _2, A>) => Kind<F, _, _2, B>
+      fa: Kind<F, _, _2, A>,
+    ): (self: Kind<F, _, _2, (i: I, a: A) => B>) => Kind<F, _, _2, B>
     <_, _2, A, B>(
-      fiab: Kind<F, _, _2, (i: I, a: A) => B>,
-      self: Kind<F, _, _2, A>,
+      self: Kind<F, _, _2, (i: I, a: A) => B>,
+      fa: Kind<F, _, _2, A>,
     ): Kind<F, _, _2, B>
   }
   /** Alias for `apWithIndex` */

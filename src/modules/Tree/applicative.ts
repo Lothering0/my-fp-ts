@@ -1,4 +1,4 @@
-import * as A from "../Array"
+import * as RA from "../ReadonlyArray"
 import { Tree, TreeHKT } from "./tree"
 import { createApplicative } from "../../types/Applicative"
 import { Functor } from "./functor"
@@ -13,9 +13,9 @@ export const Applicative = createApplicative<TreeHKT> ({
     <A, B>(self: Tree<(a: A) => B>, fa: Tree<A>): Tree<B> =>
       make (
         valueOf (self) (valueOf (fa)),
-        A.concat (
-          A.map (forestOf (self), ap (fa)),
-          A.map (forestOf (fa), tree => ap (self, tree)),
+        RA.concat (
+          RA.map (forestOf (self), ap (fa)),
+          RA.map (forestOf (fa), tree => ap (self, tree)),
         ),
       ),
   ),

@@ -11,4 +11,4 @@ export interface Tree<A> {
   readonly forest: Forest<A>
 }
 
-export type Forest<A> = Tree<A>[]
+export type Forest<A> = ReadonlyArray<Tree<A>>

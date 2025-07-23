@@ -1,5 +1,5 @@
-import { NonEmptyArray } from "../NonEmptyArray"
-import { isNonEmpty } from "../Array"
+import { NonEmptyReadonlyArray } from "../NonEmptyReadonlyArray"
+import { isNonEmpty } from "../ReadonlyArray"
 import { Forest, Tree } from "./tree"
 import { pipe } from "../../utils/flow"
 
@@ -20,5 +20,5 @@ export const make: {
 
 export const hasForest = <A>(
   tree: Tree<A>,
-): tree is Tree<A> & { readonly forest: NonEmptyArray<A> } =>
+): tree is Tree<A> & { readonly forest: NonEmptyReadonlyArray<A> } =>
   pipe (tree, forestOf, isNonEmpty)

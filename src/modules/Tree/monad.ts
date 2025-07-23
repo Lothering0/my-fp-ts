@@ -1,4 +1,4 @@
-import * as A from "../Array"
+import * as RA from "../ReadonlyArray"
 import * as M from "../../types/Monad"
 import { Sync } from "../Sync"
 import { DoObject } from "../../types/DoObject"
@@ -12,7 +12,7 @@ export const Monad: M.Monad<TreeHKT> = M.createMonad<TreeHKT> ({
   flat: self =>
     make (
       pipe (self, valueOf, valueOf),
-      A.concat (pipe (self, valueOf, forestOf), A.map (forestOf (self), flat)),
+      RA.concat (pipe (self, valueOf, forestOf), RA.map (forestOf (self), flat)),
     ),
 })
 

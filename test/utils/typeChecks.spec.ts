@@ -24,12 +24,12 @@ describe ("typeChecks", () => {
   })
 
   interface TestCase {
-    readonly f: (...args: unknown[]) => unknown
+    readonly f: (...args: ReadonlyArray<unknown>) => unknown
     /** `f` should return `true` if applied with one of these values */
-    readonly values: unknown[]
+    readonly values: ReadonlyArray<unknown>
   }
 
-  const testCases: TestCase[] = [
+  const testCases: ReadonlyArray<TestCase> = [
     {
       f: T.isNumber,
       values: [typeByName.number],

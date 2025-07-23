@@ -1,4 +1,4 @@
-import * as A from "../../../src/modules/Array"
+import * as RA from "../../../src/modules/ReadonlyArray"
 import { overload } from "../../../src/utils/overloads"
 
 describe ("overload", () => {
@@ -11,7 +11,7 @@ describe ("overload", () => {
   })
 
   it ("should correctly overload function with 1 parameter", () => {
-    const f = jest.fn ((point: string, a: string) => A.join ([point, a], ""))
+    const f = jest.fn ((point: string, a: string) => RA.join ([point, a], ""))
 
     expect (overload (1, f) ("b") ("a")).toBe ("ab")
     expect (overload (1) (f) ("b") ("a")).toBe ("ab")
@@ -20,7 +20,7 @@ describe ("overload", () => {
 
   it ("should correctly overload function with 2 parameters", () => {
     const f = jest.fn ((point: string, a: string, b: string) =>
-      A.join ([point, a, b], ""),
+      RA.join ([point, a, b], ""),
     )
 
     expect (overload (2, f) ("b", "c") ("a")).toBe ("abc")
@@ -29,7 +29,7 @@ describe ("overload", () => {
   })
 
   it ("should correctly overload function with any count of parameters", () => {
-    const f = jest.fn ((...args: string[]) => A.join (args, ""))
+    const f = jest.fn ((...args: ReadonlyArray<string>) => RA.join (args, ""))
 
     expect (
       overload (10, f) ("b", "c", "d", "e", "f", "g", "h", "i", "j") ("a"),

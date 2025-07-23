@@ -1,4 +1,4 @@
-import * as A from "./Array"
+import * as RA from "./ReadonlyArray"
 import { LazyArg } from "../types/utils"
 import { overload } from "../utils/overloads"
 
@@ -42,5 +42,5 @@ export const match: {
 )
 
 export const fromArray: {
-  <A>(as: A[]): List<A>
-} = A.reduceRight (nil, (x, acc) => cons (x, acc))
+  <A>(as: ReadonlyArray<A>): List<A>
+} = RA.reduceRight (nil, (x, acc) => cons (x, acc))

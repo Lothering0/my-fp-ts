@@ -1,6 +1,6 @@
-import * as A from "../modules/Array"
+import * as RA from "../modules/ReadonlyArray"
 import * as S from "../modules/Sync"
-import { NonEmptyArray } from "../modules/NonEmptyArray"
+import { NonEmptyReadonlyArray } from "../modules/NonEmptyReadonlyArray"
 import { pipe, flow } from "./flow"
 
 export const random: S.Sync<number> = () => Math.random ()
@@ -16,9 +16,9 @@ export const randomInt: {
 } = flow (randomFloat, S.map (Math.round))
 
 export const randomElem: {
-  <A>(as: NonEmptyArray<A>): S.Sync<A>
+  <A>(as: NonEmptyReadonlyArray<A>): S.Sync<A>
 } = as =>
   pipe (
-    randomInt (0, A.length (as) - 1),
+    randomInt (0, RA.length (as) - 1),
     S.map (n => as.at (n)!),
   )

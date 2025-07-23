@@ -1,4 +1,4 @@
-import * as A from "../Array"
+import * as RA from "../ReadonlyArray"
 import * as F from "../../types/Foldable"
 import { Tree, TreeHKT } from "./tree"
 import { forestOf, valueOf } from "./utils"
@@ -8,7 +8,7 @@ export const Foldable: F.Foldable<TreeHKT> = {
   reduce: overload (
     2,
     <A, B>(self: Tree<A>, b: B, bab: (b: B, a: A) => B): B =>
-      A.reduce (forestOf (self), bab (b, valueOf (self)), (b, tree) =>
+      RA.reduce (forestOf (self), bab (b, valueOf (self)), (b, tree) =>
         reduce (tree, b, bab),
       ),
   ),
@@ -17,7 +17,7 @@ export const Foldable: F.Foldable<TreeHKT> = {
     <A, B>(self: Tree<A>, b: B, abb: (a: A, b: B) => B): B =>
       abb (
         valueOf (self),
-        A.reduceRight (forestOf (self), b, (tree, b) =>
+        RA.reduceRight (forestOf (self), b, (tree, b) =>
           reduceRight (tree, b, abb),
         ),
       ),
