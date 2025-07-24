@@ -5,12 +5,12 @@ import { Functor } from "./functor"
 import { forestOf, make } from "./utils"
 import { overload } from "../../utils/overloads"
 
-export const Extendable = createExtendable<TreeHKT>({
+export const Extendable = createExtendable<TreeHKT> ({
   ...Functor,
-  extend: overload(
+  extend: overload (
     1,
     <A, B>(self: Tree<A>, fab: (fa: Tree<A>) => B): Tree<B> =>
-      make(fab(self), RA.map(forestOf(self), extend(fab))),
+      make (fab (self), RA.map (forestOf (self), extend (fab))),
   ),
 })
 

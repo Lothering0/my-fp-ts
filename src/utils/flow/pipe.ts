@@ -260,6 +260,9 @@ export function pipe<
   rs: (r: R) => S,
   st: (s: S) => T,
 ): T
-export function pipe(a: unknown, ...rest: ((a: unknown) => unknown)[]) {
+export function pipe(
+  a: unknown,
+  ...rest: ReadonlyArray<(a: unknown) => unknown>
+) {
   return rest.reduce ((prev, f) => f (prev), a)
 }

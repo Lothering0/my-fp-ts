@@ -43,7 +43,9 @@ export function overload<A extends Overloaded0>(
  */
 export function overload<A extends Overloaded1>(
   n: 1,
-  pointed: (...args: [Parameters<A>[0], Parameters<A>[1]]) => ReturnType<A>,
+  pointed: (
+    ...args: readonly [Parameters<A>[0], Parameters<A>[1]]
+  ) => ReturnType<A>,
 ): A
 /**
  * Overloads `(point, a) => r` with `a => point => r`
@@ -51,7 +53,9 @@ export function overload<A extends Overloaded1>(
 export function overload<A extends Overloaded1>(
   n: 1,
 ): (
-  pointed: (...args: [Parameters<A>[0], Parameters<A>[1]]) => ReturnType<A>,
+  pointed: (
+    ...args: readonly [Parameters<A>[0], Parameters<A>[1]]
+  ) => ReturnType<A>,
 ) => A
 /**
  * Overloads `(point, a, b) => r` with `(a, b) => point => r`
@@ -59,7 +63,7 @@ export function overload<A extends Overloaded1>(
 export function overload<A extends Overloaded2>(
   n: 2,
   pointed: (
-    ...args: [Parameters<A>[0], Parameters<A>[1], Parameters<A>[2]]
+    ...args: readonly [Parameters<A>[0], Parameters<A>[1], Parameters<A>[2]]
   ) => ReturnType<A>,
 ): A
 /**
@@ -69,7 +73,7 @@ export function overload<A extends Overloaded2>(
   n: 2,
 ): (
   pointed: (
-    ...args: [Parameters<A>[0], Parameters<A>[1], Parameters<A>[2]]
+    ...args: readonly [Parameters<A>[0], Parameters<A>[1], Parameters<A>[2]]
   ) => ReturnType<A>,
 ) => A
 /**
@@ -78,7 +82,7 @@ export function overload<A extends Overloaded2>(
 export function overload<A extends Overloaded3>(
   n: 3,
   pointed: (
-    ...args: [
+    ...args: readonly [
       Parameters<A>[0],
       Parameters<A>[1],
       Parameters<A>[2],
@@ -93,7 +97,7 @@ export function overload<A extends Overloaded3>(
   n: 3,
 ): (
   pointed: (
-    ...args: [
+    ...args: readonly [
       Parameters<A>[0],
       Parameters<A>[1],
       Parameters<A>[2],
@@ -119,15 +123,15 @@ export function overload<A extends OverloadedN>(
   pointed?: (...args: Parameters<A>) => ReturnType<A>,
 ): A {
   const overload_ =
-    (pointed: (...args: any[]) => any) =>
-    (...args: any[]): any =>
+    (pointed: (...args: ReadonlyArray<any>) => any) =>
+    (...args: ReadonlyArray<any>): any =>
       args.length < n + 1
         ? (point: any) => pointed (point, ...args)
         : pointed (...args)
 
   return (
     typeof pointed === "undefined"
-      ? (pointed: (...args: any[]) => any) => overload_ (pointed)
+      ? (pointed: (...args: ReadonlyArray<any>) => any) => overload_ (pointed)
       : overload_ (pointed)
   ) as any
 }

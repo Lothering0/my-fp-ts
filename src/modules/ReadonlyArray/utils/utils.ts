@@ -173,7 +173,7 @@ export const successes: {
 export const prepend: {
   <A>(a: A): (self: ReadonlyArray<A>) => NERA.NonEmptyReadonlyArray<A>
   <A>(a: A, self: ReadonlyArray<A>): NERA.NonEmptyReadonlyArray<A>
-} = overloadLast (1, (a, self) => [a, ...self])
+} = overloadLast (1, (a, self) => NERA.concat ([a], self))
 
 export const prependAllWith: {
   <A>(f: (a: A) => A): (self: ReadonlyArray<A>) => ReadonlyArray<A>
@@ -190,11 +190,7 @@ export const prependAll: {
 export const append: {
   <A>(a: A): (self: ReadonlyArray<A>) => NERA.NonEmptyReadonlyArray<A>
   <A>(self: ReadonlyArray<A>, a: A): NERA.NonEmptyReadonlyArray<A>
-} = overload (
-  1,
-  <A>(self: ReadonlyArray<A>, a: A) =>
-    [...self, a] as unknown as NERA.NonEmptyReadonlyArray<A>,
-)
+} = overload (1, <A>(self: ReadonlyArray<A>, a: A) => NERA.concat (self, [a]))
 
 export const appendAllWith: {
   <A>(f: (a: A) => A): (self: ReadonlyArray<A>) => ReadonlyArray<A>
@@ -212,8 +208,8 @@ export const range: {
   from === to
     ? [from]
     : from < to
-      ? [from, ...range (from + 1) (to)]
-      : [from, ...range (from - 1) (to)]
+      ? prepend (from, range (from + 1) (to))
+      : prepend (from, range (from - 1) (to))
 
 export const reverse: {
   <A>(self: ReadonlyArray<A>): ReadonlyArray<A>
@@ -228,22 +224,22 @@ export const join: {
 
 /** [f (a, b, ...) | a <- as, b <- bs, ..., p (a, b, ...)] */
 export function comprehension<A, R>(
-  input: [ReadonlyArray<A>],
+  input: readonly [ReadonlyArray<A>],
   f: (a: A) => R,
   p?: (a: A) => boolean,
 ): ReadonlyArray<R>
 export function comprehension<A, B, R>(
-  input: [ReadonlyArray<A>, ReadonlyArray<B>],
+  input: readonly [ReadonlyArray<A>, ReadonlyArray<B>],
   f: (a: A, b: B) => R,
   p?: (a: A, b: B) => boolean,
 ): ReadonlyArray<R>
 export function comprehension<A, B, C, R>(
-  input: [ReadonlyArray<A>, ReadonlyArray<B>, ReadonlyArray<C>],
+  input: readonly [ReadonlyArray<A>, ReadonlyArray<B>, ReadonlyArray<C>],
   f: (a: A, b: B, c: C) => R,
   p?: (a: A, b: B, c: C) => boolean,
 ): ReadonlyArray<R>
 export function comprehension<A, B, C, D, R>(
-  input: [
+  input: readonly [
     ReadonlyArray<A>,
     ReadonlyArray<B>,
     ReadonlyArray<C>,
@@ -275,7 +271,7 @@ export function comprehension(
   return pipe (
     input,
     getArgs ([]),
-    filterMap ((args: [unknown]) =>
+    filterMap ((args: readonly [unknown]) =>
       isNonEmpty (args)
         ? p (...args)
           ? pipe (f (...args), O.some)

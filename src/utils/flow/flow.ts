@@ -393,7 +393,7 @@ export function flow<
 ): (...a: A) => T
 export function flow(
   f: (...a: readonly unknown[]) => unknown,
-  ...rest: ((a: unknown) => unknown)[]
+  ...rest: ReadonlyArray<(a: unknown) => unknown>
 ) {
   return (...a: readonly unknown[]) =>
     rest.reduce ((prev, f) => f (prev), f (...a))

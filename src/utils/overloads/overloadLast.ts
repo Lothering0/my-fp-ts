@@ -43,7 +43,9 @@ export function overloadLast<A extends OverloadedLast0>(
  */
 export function overloadLast<A extends OverloadedLast1>(
   n: 1,
-  pointed: (...args: [Parameters<A>[0], Parameters<A>[1]]) => ReturnType<A>,
+  pointed: (
+    ...args: readonly [Parameters<A>[0], Parameters<A>[1]]
+  ) => ReturnType<A>,
 ): A
 /**
  * Overloads `(a, point) => r` with `a => point => r`
@@ -51,7 +53,9 @@ export function overloadLast<A extends OverloadedLast1>(
 export function overloadLast<A extends OverloadedLast1>(
   n: 1,
 ): (
-  pointed: (...args: [Parameters<A>[0], Parameters<A>[1]]) => ReturnType<A>,
+  pointed: (
+    ...args: readonly [Parameters<A>[0], Parameters<A>[1]]
+  ) => ReturnType<A>,
 ) => A
 /**
  * Overloads `(a, b, point) => r` with `(a, b) => point => r`
@@ -59,7 +63,7 @@ export function overloadLast<A extends OverloadedLast1>(
 export function overloadLast<A extends OverloadedLast2>(
   n: 2,
   pointed: (
-    ...args: [Parameters<A>[0], Parameters<A>[1], Parameters<A>[2]]
+    ...args: readonly [Parameters<A>[0], Parameters<A>[1], Parameters<A>[2]]
   ) => ReturnType<A>,
 ): A
 /**
@@ -69,7 +73,7 @@ export function overloadLast<A extends OverloadedLast2>(
   n: 2,
 ): (
   pointed: (
-    ...args: [Parameters<A>[0], Parameters<A>[1], Parameters<A>[2]]
+    ...args: readonly [Parameters<A>[0], Parameters<A>[1], Parameters<A>[2]]
   ) => ReturnType<A>,
 ) => A
 /**
@@ -78,7 +82,7 @@ export function overloadLast<A extends OverloadedLast2>(
 export function overloadLast<A extends OverloadedLast3>(
   n: 3,
   pointed: (
-    ...args: [
+    ...args: readonly [
       Parameters<A>[0],
       Parameters<A>[1],
       Parameters<A>[2],
@@ -93,7 +97,7 @@ export function overloadLast<A extends OverloadedLast3>(
   n: 3,
 ): (
   pointed: (
-    ...args: [
+    ...args: readonly [
       Parameters<A>[0],
       Parameters<A>[1],
       Parameters<A>[2],
@@ -119,15 +123,16 @@ export function overloadLast<A extends OverloadedLastN>(
   pointed?: (...args: Parameters<A>) => ReturnType<A>,
 ): A {
   const overloadLast_ =
-    (pointed: (...args: any[]) => any) =>
-    (...args: any[]): any =>
+    (pointed: (...args: ReadonlyArray<any>) => any) =>
+    (...args: ReadonlyArray<any>): any =>
       args.length < n + 1
         ? (point: any) => pointed (...args, point)
         : pointed (...args)
 
   return (
     typeof pointed === "undefined"
-      ? (pointed: (...args: any[]) => any) => overloadLast_ (pointed)
+      ? (pointed: (...args: ReadonlyArray<any>) => any) =>
+          overloadLast_ (pointed)
       : overloadLast_ (pointed)
   ) as any
 }

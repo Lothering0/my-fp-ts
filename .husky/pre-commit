@@ -1,4 +1,7 @@
+git stash --keep-index --include-untracked
 npm run prettier
 npm run lint
+git add .
+git stash pop
 npm run tsc
 npm run test
