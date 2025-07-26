@@ -4,8 +4,6 @@ export interface SeparatedHKT extends HKT {
   readonly type: Separated<this["_E"], this["_A"]>
 }
 
-export declare const _F: SeparatedHKT
-
 export interface Separated<E, A> {
   readonly left: E
   readonly right: A

@@ -2,7 +2,7 @@ import * as O from "../../../src/modules/Option"
 import * as N from "../../../src/modules/Number"
 import { describeFunctorLaws } from "../../_utils/describeFunctorLaws"
 
-describeFunctorLaws (O, [O.some (1), O.none])
+describeFunctorLaws (O.Functor, [O.some (1), O.none])
 
 describe ("functor", () => {
   describe ("map", () => {

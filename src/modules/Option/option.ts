@@ -4,8 +4,6 @@ export interface OptionHKT extends HKT {
   readonly type: Option<this["_A"]>
 }
 
-export declare const _F: OptionHKT
-
 export type Option<A> = None | Some<A>
 
 export interface None {

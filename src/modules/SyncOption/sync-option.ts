@@ -8,8 +8,6 @@ export interface SyncOptionHKT extends HKT {
   readonly type: SyncOption<this["_A"]>
 }
 
-export declare const _F: SyncOptionHKT
-
 export interface SyncOption<A> extends S.Sync<O.Option<A>> {}
 
 export const none: SyncOption<never> = O.zero

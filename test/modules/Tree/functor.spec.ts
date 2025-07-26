@@ -2,7 +2,7 @@ import * as Tr from "../../../src/modules/Tree"
 import * as N from "../../../src/modules/Number"
 import { describeFunctorLaws } from "../../_utils/describeFunctorLaws"
 
-describeFunctorLaws (Tr, [
+describeFunctorLaws (Tr.Functor, [
   Tr.make (1),
   Tr.make (1, [Tr.make (2), Tr.make (3)]),
   Tr.make (1, [Tr.make (2, [Tr.make (4)]), Tr.make (3)]),

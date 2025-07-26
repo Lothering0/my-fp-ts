@@ -11,8 +11,6 @@ export interface AsyncOptionHKT extends HKT {
   readonly type: AsyncOption<this["_A"]>
 }
 
-export declare const _F: AsyncOptionHKT
-
 export interface AsyncOption<A> extends A.Async<O.Option<A>> {}
 
 export const none: AsyncOption<never> = A.of (O.none)

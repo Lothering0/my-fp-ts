@@ -9,7 +9,7 @@ interface TestCase {
 }
 
 describe ("getEq", () => {
-  const Eq = O.getEq (N)
+  const Eq = O.getEq (N.Eq)
 
   const testCases: TestCase[] = [
     {

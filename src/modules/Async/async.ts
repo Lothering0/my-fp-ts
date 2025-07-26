@@ -5,8 +5,6 @@ export interface AsyncHKT extends HKT {
   readonly type: Async<this["_A"]>
 }
 
-export declare const _F: AsyncHKT
-
 export interface Async<A> extends S.Sync<Promise<A>> {}
 
 export const async: {

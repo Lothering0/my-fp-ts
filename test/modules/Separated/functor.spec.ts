@@ -2,7 +2,7 @@ import * as S from "../../../src/modules/Separated"
 import * as N from "../../../src/modules/Number"
 import { describeFunctorLaws } from "../../_utils/describeFunctorLaws"
 
-describeFunctorLaws (S, [S.make ("a", 1)])
+describeFunctorLaws (S.Functor, [S.make ("a", 1)])
 
 describe ("functor", () => {
   describe ("map", () => {

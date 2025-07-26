@@ -4,8 +4,6 @@ export interface SyncHKT extends HKT {
   readonly type: Sync<this["_A"]>
 }
 
-export declare const _F: SyncHKT
-
 export interface Sync<A> {
   (): A
 }

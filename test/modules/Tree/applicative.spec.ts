@@ -3,7 +3,7 @@ import * as N from "../../../src/modules/Number"
 import { describeApplicativeLaws } from "../../_utils/describeApplicativeLaws"
 
 describeApplicativeLaws (
-  Tr,
+  Tr.Applicative,
   [
     Tr.make (1),
     Tr.make (1, [Tr.make (2), Tr.make (3)]),

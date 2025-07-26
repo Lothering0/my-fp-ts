@@ -2,7 +2,7 @@ import * as R from "../../../src/modules/Result"
 import * as N from "../../../src/modules/Number"
 import { describeFunctorLaws } from "../../_utils/describeFunctorLaws"
 
-describeFunctorLaws (R, [R.failure ("a"), R.success (1)])
+describeFunctorLaws (R.Functor, [R.failure ("a"), R.success (1)])
 
 describe ("functor", () => {
   describe ("map", () => {

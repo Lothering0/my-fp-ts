@@ -4,8 +4,6 @@ export interface ResultHKT extends HKT {
   readonly type: Result<this["_E"], this["_A"]>
 }
 
-export declare const _F: ResultHKT
-
 export type Result<E, A> = Failure<E> | Success<A>
 
 export interface Failure<E> {

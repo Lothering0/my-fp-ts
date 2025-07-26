@@ -19,7 +19,7 @@ describe ("transformer", () => {
 
   it ("should correctly compose multiple monads", () => {
     const AO = O.transform (RA.Monad)
-    const AOO = O.transform (AO)
+    const AOO = O.transform (AO.Monad)
 
     expect (AOO.of (1)).toEqual<ReadonlyArray<O.Option<O.Option<number>>>> ([
       {

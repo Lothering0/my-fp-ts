@@ -9,8 +9,6 @@ export interface AsyncResultHKT extends HKT {
   readonly type: AsyncResult<this["_E"], this["_A"]>
 }
 
-export declare const _F: AsyncResultHKT
-
 export interface AsyncResult<E, A> extends A.Async<R.Result<E, A>> {}
 
 export const failure: {

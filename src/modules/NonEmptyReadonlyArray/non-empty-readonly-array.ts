@@ -4,6 +4,4 @@ export interface NonEmptyReadonlyArrayHKT extends HKT {
   readonly type: NonEmptyReadonlyArray<this["_A"]>
 }
 
-export declare const _F: NonEmptyReadonlyArrayHKT
-
 export type NonEmptyReadonlyArray<A> = readonly [A, ...ReadonlyArray<A>]

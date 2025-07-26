@@ -9,7 +9,7 @@ interface TestCase {
 }
 
 describe ("getEq", () => {
-  const Eq = RA.getEq (N)
+  const Eq = RA.getEq (N.Eq)
 
   const testCases: ReadonlyArray<TestCase> = [
     {

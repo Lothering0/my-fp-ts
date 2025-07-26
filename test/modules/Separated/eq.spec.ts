@@ -10,7 +10,7 @@ interface TestCase {
 }
 
 describe ("getEq", () => {
-  const Eq = S.getEq (Str, N)
+  const Eq = S.getEq (Str.Eq, N.Eq)
 
   const testCases: TestCase[] = [
     {

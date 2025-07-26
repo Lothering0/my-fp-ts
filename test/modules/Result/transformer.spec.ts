@@ -26,7 +26,7 @@ describe ("transformer", () => {
 
   it ("should correctly compose multiple monads", () => {
     const AR = R.transform (RA.Monad)
-    const ARR = R.transform (AR)
+    const ARR = R.transform (AR.Monad)
 
     expect (ARR.of (1)).toEqual<
       ReadonlyArray<R.Result<never, R.Result<never, number>>>

@@ -8,8 +8,6 @@ export interface SyncResultHKT extends HKT {
   readonly type: SyncResult<this["_E"], this["_A"]>
 }
 
-export declare const _F: SyncResultHKT
-
 export interface SyncResult<E, A> extends S.Sync<R.Result<E, A>> {}
 
 export const failure: {
