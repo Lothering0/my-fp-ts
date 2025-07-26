@@ -5,11 +5,18 @@ import { pipe, flow } from "./flow"
 
 export const random: S.Sync<number> = () => Math.random ()
 
-export const randomBool: S.Sync<boolean> = S.map (random, n => n > 0.5)
+export const randomBool: S.Sync<boolean> = pipe (
+  random,
+  S.map (n => n > 0.5),
+)
 
 export const randomFloat: {
   (min: number, max: number): S.Sync<number>
-} = (min, max) => S.map (random, n => n * (max - min) + min)
+} = (min, max) =>
+  pipe (
+    random,
+    S.map (n => n * (max - min) + min),
+  )
 
 export const randomInt: {
   (min: number, max: number): S.Sync<number>

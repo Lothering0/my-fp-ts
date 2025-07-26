@@ -1,33 +1,27 @@
 import { createExtendable } from "../../types/Extendable"
-import { overload } from "../../utils/overloads"
 import { ReadonlyArrayHKT } from "./readonly-array"
 import { Functor } from "./functor"
-import { matchLeft, prepend } from "./utils"
+import { fromNonEmpty, matchLeft, prepend } from "./utils"
+import { constEmptyArray } from "../../utils/constant"
+import { pipe } from "../../utils/flow"
 
 export const Extendable = createExtendable<ReadonlyArrayHKT> ({
   ...Functor,
-  extend: overload (
-    1,
-    <A, B>(
-      self: ReadonlyArray<A>,
-      fab: (fa: ReadonlyArray<A>) => B,
-    ): ReadonlyArray<B> =>
-      matchLeft (
-        self,
-        () => [] as ReadonlyArray<B>,
-        (head, tail) => prepend (fab (prepend (head, tail)), extend (tail, fab)),
+  extend: fab =>
+    matchLeft (constEmptyArray, (head, tail) =>
+      pipe (
+        tail,
+        extend (fab),
+        pipe (prepend (head) (tail), fab, prepend),
+        fromNonEmpty,
       ),
-  ),
+    ),
 })
 
 export const extend: {
   <A, B>(
     fab: (fa: ReadonlyArray<A>) => B,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<B>
-  <A, B>(
-    self: ReadonlyArray<A>,
-    fab: (fa: ReadonlyArray<A>) => B,
-  ): ReadonlyArray<B>
 } = Extendable.extend
 
 export const duplicate: {

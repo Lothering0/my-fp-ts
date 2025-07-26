@@ -5,40 +5,23 @@ import * as O from "../Option"
 import { identity } from "../Identity"
 import { LazyArg } from "../../types/utils"
 import { match } from "./utils"
-import { overload } from "../../utils/overloads"
 import { constant } from "../../utils/constant"
 
-export const getOrElse: {
-  <A, B>(onNone: LazyArg<B>): (self: AO.AsyncOption<A>) => A.Async<A | B>
-  <A, B>(self: AO.AsyncOption<A>, onNone: LazyArg<B>): A.Async<A | B>
-} = overload (
-  1,
-  <A, B>(self: AO.AsyncOption<A>, onNone: LazyArg<B>): A.Async<A | B> =>
-    match (self, onNone, identity<A | B>),
-)
+export const getOrElse =
+  <A>(onNone: LazyArg<A>) =>
+  <B>(self: AO.AsyncOption<B>): A.Async<A | B> =>
+    match (onNone, identity<A | B>) (self)
 
-export const orElse: {
-  <A, B>(
-    that: AO.AsyncOption<B>,
-  ): (self: AO.AsyncOption<A>) => AO.AsyncOption<A | B>
-  <A, B>(
-    self: AO.AsyncOption<A>,
-    that: AO.AsyncOption<B>,
-  ): AO.AsyncOption<A | B>
-} = overload (1, (self, that) =>
-  A.flatMap (self, O.match (constant (that), AO.some)),
-)
+export const orElse =
+  <A>(that: AO.AsyncOption<A>) =>
+  <B>(self: AO.AsyncOption<B>): AO.AsyncOption<A | B> =>
+    A.flatMap (O.match (constant (that), AO.some<A | B>)) (self)
 
 /** Lazy version of `orElse` */
-export const catchAll: {
-  <A, B>(
-    that: LazyArg<AO.AsyncOption<B>>,
-  ): (self: AO.AsyncOption<A>) => AO.AsyncOption<A | B>
-  <A, B>(
-    self: AO.AsyncOption<A>,
-    that: LazyArg<AO.AsyncOption<B>>,
-  ): AO.AsyncOption<A | B>
-} = overload (1, (self, that) => A.flatMap (self, O.match (that, AO.some)))
+export const catchAll =
+  <A>(that: LazyArg<AO.AsyncOption<A>>) =>
+  <B>(self: AO.AsyncOption<B>): AO.AsyncOption<A | B> =>
+    A.flatMap (O.match (that, AO.some<A | B>)) (self)
 
 export const Alt: Alt_.Alt<AO.AsyncOptionHKT> = {
   orElse,

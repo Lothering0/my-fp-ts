@@ -13,7 +13,8 @@ export const Compactable: C.Compactable<SyncOptionHKT> = {
     execute,
     O.match (
       () => S.make (none, none),
-      ma => S.make (R.match (ma, some, zero), R.match (ma, zero, some)),
+      ma =>
+        S.make (pipe (ma, R.match (some, zero)), pipe (ma, R.match (zero, some))),
     ),
   ),
 }

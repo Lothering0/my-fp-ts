@@ -19,89 +19,39 @@ export const of: {
 } = Applicative.of
 
 export const ap: {
-  <A, B>(
+  <A>(
     fa: NonEmptyReadonlyArray<A>,
-  ): (self: NonEmptyReadonlyArray<(a: A) => B>) => NonEmptyReadonlyArray<B>
-  <A, B>(
-    self: NonEmptyReadonlyArray<(a: A) => B>,
-    fa: NonEmptyReadonlyArray<A>,
-  ): NonEmptyReadonlyArray<B>
+  ): <B>(self: NonEmptyReadonlyArray<(a: A) => B>) => NonEmptyReadonlyArray<B>
 } = Applicative.ap
 
 export const apWithIndex: {
-  <A, B>(
+  <A>(
     fa: NonEmptyReadonlyArray<A>,
-  ): (
+  ): <B>(
     self: NonEmptyReadonlyArray<(i: number, a: A) => B>,
   ) => NonEmptyReadonlyArray<B>
-  <A, B>(
-    self: NonEmptyReadonlyArray<(i: number, a: A) => B>,
-    fa: NonEmptyReadonlyArray<A>,
-  ): NonEmptyReadonlyArray<B>
 } = ApplicativeWithIndex.apWithIndex
 
 /** Alias for `ap` */
-export const apply: {
-  <A, B>(
-    fa: NonEmptyReadonlyArray<A>,
-  ): (self: NonEmptyReadonlyArray<(a: A) => B>) => NonEmptyReadonlyArray<B>
-  <A, B>(
-    self: NonEmptyReadonlyArray<(a: A) => B>,
-    fa: NonEmptyReadonlyArray<A>,
-  ): NonEmptyReadonlyArray<B>
-} = Applicative.apply
+export const apply = ap
 
 /** Alias for `apWithIndex` */
-export const applyWithIndex: {
-  <A, B>(
-    fa: NonEmptyReadonlyArray<A>,
-  ): (
-    self: NonEmptyReadonlyArray<(i: number, a: A) => B>,
-  ) => NonEmptyReadonlyArray<B>
-  <A, B>(
-    self: NonEmptyReadonlyArray<(i: number, a: A) => B>,
-    fa: NonEmptyReadonlyArray<A>,
-  ): NonEmptyReadonlyArray<B>
-} = ApplicativeWithIndex.applyWithIndex
+export const applyWithIndex = apWithIndex
 
 export const flap: {
   <A, B>(
     fab: NonEmptyReadonlyArray<(a: A) => B>,
   ): (self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<B>
-  <A, B>(
-    self: NonEmptyReadonlyArray<A>,
-    fab: NonEmptyReadonlyArray<(a: A) => B>,
-  ): NonEmptyReadonlyArray<B>
 } = Applicative.flap
 
 export const flapWithIndex: {
   <A, B>(
     fab: NonEmptyReadonlyArray<(i: number, a: A) => B>,
   ): (self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<B>
-  <A, B>(
-    self: NonEmptyReadonlyArray<A>,
-    fab: NonEmptyReadonlyArray<(i: number, a: A) => B>,
-  ): NonEmptyReadonlyArray<B>
 } = ApplicativeWithIndex.flapWithIndex
 
 /** Alias for `flap` */
-export const flipApply: {
-  <A, B>(
-    fab: NonEmptyReadonlyArray<(a: A) => B>,
-  ): (self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<B>
-  <A, B>(
-    self: NonEmptyReadonlyArray<A>,
-    fab: NonEmptyReadonlyArray<(a: A) => B>,
-  ): NonEmptyReadonlyArray<B>
-} = Applicative.flipApply
+export const flipApply = flap
 
 /** Alias for `flapWithIndex` */
-export const flipApplyWithIndex: {
-  <A, B>(
-    fab: NonEmptyReadonlyArray<(i: number, a: A) => B>,
-  ): (self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<B>
-  <A, B>(
-    self: NonEmptyReadonlyArray<A>,
-    fab: NonEmptyReadonlyArray<(i: number, a: A) => B>,
-  ): NonEmptyReadonlyArray<B>
-} = ApplicativeWithIndex.flipApplyWithIndex
+export const flipApplyWithIndex = flapWithIndex

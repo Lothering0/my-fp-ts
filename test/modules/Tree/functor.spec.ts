@@ -13,11 +13,11 @@ describe ("functor", () => {
     it ("should apply function to value of each node", () => {
       const n = 1
       expect (
-        Tr.map (Tr.make (1, [Tr.make (2, [Tr.make (4)]), Tr.make (3)]), N.add (n)),
+        Tr.map (N.add (n)) (Tr.make (1, [Tr.make (2, [Tr.make (4)]), Tr.make (3)])),
       ).toEqual (
-        Tr.make (N.add (1, n), [
-          Tr.make (N.add (2, n), [Tr.make (N.add (4, n))]),
-          Tr.make (N.add (3, n)),
+        Tr.make (N.add (1) (n), [
+          Tr.make (N.add (2) (n), [Tr.make (N.add (4) (n))]),
+          Tr.make (N.add (3) (n)),
         ]),
       )
     })

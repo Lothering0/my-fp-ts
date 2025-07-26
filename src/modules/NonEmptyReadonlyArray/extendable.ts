@@ -13,10 +13,6 @@ export const extend: {
   <A, B>(
     fab: (fa: NonEmptyReadonlyArray<A>) => B,
   ): (self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<B>
-  <A, B>(
-    self: NonEmptyReadonlyArray<A>,
-    fab: (fa: NonEmptyReadonlyArray<A>) => B,
-  ): NonEmptyReadonlyArray<B>
 } = Extendable.extend
 
 export const duplicate: {

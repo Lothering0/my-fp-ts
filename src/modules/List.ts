@@ -1,6 +1,6 @@
 import * as RA from "./ReadonlyArray"
 import { LazyArg } from "../types/utils"
-import { overload } from "../utils/overloads"
+import { pipe } from "../utils/flow"
 
 export type List<A> = Nil | Cons<A>
 
@@ -36,11 +36,10 @@ export const isNil: {
 
 export const match: {
   <A, B>(onNil: LazyArg<B>, onCons: (a: A) => B): (self: List<A>) => B
-  <A, B>(self: List<A>, onNil: LazyArg<B>, onCons: (a: A) => B): B
-} = overload (2, (self, onNil, onCons) =>
-  isNil (self) ? onNil () : onCons (self.head),
-)
+} = (onNil, onCons) => self => isNil (self) ? onNil () : onCons (self.head)
 
-export const fromArray: {
-  <A>(as: ReadonlyArray<A>): List<A>
-} = RA.reduceRight (nil, (x, acc) => cons (x, acc))
+export const fromArray = <A>(as: ReadonlyArray<A>): List<A> =>
+  pipe (
+    as,
+    RA.reduceRight (nil as List<A>, (x, acc) => cons (x, acc)),
+  )

@@ -9,7 +9,7 @@ describe ("functor", () => {
     it ("should apply function to value of `right` property", () => {
       const x = 1
       const n = 1
-      expect (S.map (S.make ("a", x), N.add (n))).toEqual (S.make ("a", N.add (x, n)))
+      expect (S.map (N.add (n)) (S.make ("a", x))).toEqual (S.make ("a", N.add (x) (n)))
     })
   })
 })

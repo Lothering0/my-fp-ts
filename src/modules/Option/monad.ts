@@ -9,7 +9,6 @@ import { identity } from "../Identity"
 import { match } from "./utils"
 import { zero } from "./alternative"
 import { pipe } from "../../utils/flow"
-import { overload } from "../../utils/overloads"
 import { constant } from "../../utils/constant"
 
 export const Monad = createMonad<O.OptionHKT> ({
@@ -25,7 +24,6 @@ export const flat: {
 
 export const flatMap: {
   <A, B>(amb: (a: A) => O.Option<B>): (self: O.Option<A>) => O.Option<B>
-  <A, B>(self: O.Option<A>, amb: (a: A) => O.Option<B>): O.Option<B>
 } = Monad.flatMap
 
 export const compose: {
@@ -33,11 +31,6 @@ export const compose: {
     bmc: (b: B) => O.Option<C>,
     amb: (a: A) => O.Option<B>,
   ): (a: A) => O.Option<C>
-  <A, B, C>(
-    bmc: (b: B) => O.Option<C>,
-    amb: (a: A) => O.Option<B>,
-    a: A,
-  ): O.Option<C>
 } = Monad.compose
 
 export const setTo: {
@@ -45,11 +38,6 @@ export const setTo: {
     name: Exclude<N, keyof A>,
     b: B,
   ): (self: O.Option<A>) => O.Option<DoObject<N, A, B>>
-  <N extends string | number | symbol, A, B>(
-    self: O.Option<A>,
-    name: Exclude<N, keyof A>,
-    b: B,
-  ): O.Option<DoObject<N, A, B>>
 } = Monad.setTo
 
 export const mapTo: {
@@ -57,11 +45,6 @@ export const mapTo: {
     name: Exclude<N, keyof A>,
     ab: (a: A) => B,
   ): (self: O.Option<A>) => O.Option<DoObject<N, A, B>>
-  <N extends string | number | symbol, A, B>(
-    self: O.Option<A>,
-    name: Exclude<N, keyof A>,
-    ab: (a: A) => B,
-  ): O.Option<DoObject<N, A, B>>
 } = Monad.mapTo
 
 export const flapTo: {
@@ -69,11 +52,6 @@ export const flapTo: {
     name: Exclude<N, keyof A>,
     fab: O.Option<(a: A) => B>,
   ): (self: O.Option<A>) => O.Option<DoObject<N, A, B>>
-  <N extends string | number | symbol, A, B>(
-    self: O.Option<A>,
-    name: Exclude<N, keyof A>,
-    fab: O.Option<(a: A) => B>,
-  ): O.Option<DoObject<N, A, B>>
 } = Monad.flapTo
 
 export const apS: {
@@ -81,11 +59,6 @@ export const apS: {
     name: Exclude<N, keyof A>,
     fb: O.Option<B>,
   ): (self: O.Option<A>) => O.Option<DoObject<N, A, B>>
-  <N extends string | number | symbol, A, B>(
-    self: O.Option<A>,
-    name: Exclude<N, keyof A>,
-    fb: O.Option<B>,
-  ): O.Option<DoObject<N, A, B>>
 } = Monad.apS
 
 export const flatMapTo: {
@@ -93,28 +66,16 @@ export const flatMapTo: {
     name: Exclude<N, keyof A>,
     amb: (a: A) => O.Option<B>,
   ): (self: O.Option<A>) => O.Option<DoObject<N, A, B>>
-  <N extends string | number | symbol, A, B>(
-    self: O.Option<A>,
-    name: Exclude<N, keyof A>,
-    amb: (a: A) => O.Option<B>,
-  ): O.Option<DoObject<N, A, B>>
 } = Monad.flatMapTo
 
 export const tap: {
   <A, _>(am_: (a: A) => O.Option<_>): (self: O.Option<A>) => O.Option<A>
-  <A, _>(self: O.Option<A>, am_: (a: A) => O.Option<_>): O.Option<A>
 } = Monad.tap
 
 export const tapSync: {
   <A, _>(am_: (a: A) => Sync<_>): (self: O.Option<A>) => O.Option<A>
-  <A, _>(self: O.Option<A>, am_: (a: A) => Sync<_>): O.Option<A>
 } = Monad.tapSync
 
 export const tapResult: {
   <E, A, _>(afe: (a: A) => R.Result<E, _>): (self: O.Option<A>) => O.Option<A>
-  <E, A, _>(self: O.Option<A>, afe: (a: A) => R.Result<E, _>): O.Option<A>
-} = overload (
-  1,
-  <E, A, _>(self: O.Option<A>, afe: (a: A) => R.Result<E, _>): O.Option<A> =>
-    pipe (self, map (afe), flatMap (R.match (zero, constant (self)))),
-)
+} = afe => self => pipe (self, map (afe), flatMap (R.match (zero, constant (self))))

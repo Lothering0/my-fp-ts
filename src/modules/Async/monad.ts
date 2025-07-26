@@ -4,7 +4,6 @@ import { Sync } from "../Sync"
 import { createMonad } from "../../types/Monad"
 import { Applicative } from "./applicative"
 import { DoObject } from "../../types/DoObject"
-import { overload } from "../../utils/overloads"
 
 export const Monad = createMonad<A.AsyncHKT> ({
   ...Applicative,
@@ -19,7 +18,6 @@ export const flat: {
 
 export const flatMap: {
   <A, B>(amb: (a: A) => A.Async<B>): (self: A.Async<A>) => A.Async<B>
-  <A, B>(self: A.Async<A>, amb: (a: A) => A.Async<B>): A.Async<B>
 } = Monad.flatMap
 
 export const compose: {
@@ -27,11 +25,6 @@ export const compose: {
     bmc: (b: B) => A.Async<C>,
     amb: (a: A) => A.Async<B>,
   ): (a: A) => A.Async<C>
-  <A, B, C>(
-    bmc: (b: B) => A.Async<C>,
-    amb: (a: A) => A.Async<B>,
-    a: A,
-  ): A.Async<C>
 } = Monad.compose
 
 export const setTo: {
@@ -39,11 +32,6 @@ export const setTo: {
     name: Exclude<N, keyof A>,
     b: B,
   ): (self: A.Async<A>) => A.Async<DoObject<N, A, B>>
-  <N extends string | number | symbol, A, B>(
-    self: A.Async<A>,
-    name: Exclude<N, keyof A>,
-    b: B,
-  ): A.Async<DoObject<N, A, B>>
 } = Monad.setTo
 
 export const mapTo: {
@@ -51,11 +39,6 @@ export const mapTo: {
     name: Exclude<N, keyof A>,
     ab: (a: A) => B,
   ): (self: A.Async<A>) => A.Async<DoObject<N, A, B>>
-  <N extends string | number | symbol, A, B>(
-    self: A.Async<A>,
-    name: Exclude<N, keyof A>,
-    ab: (a: A) => B,
-  ): A.Async<DoObject<N, A, B>>
 } = Monad.mapTo
 
 export const flapTo: {
@@ -63,11 +46,6 @@ export const flapTo: {
     name: Exclude<N, keyof A>,
     fab: A.Async<(a: A) => B>,
   ): (self: A.Async<A>) => A.Async<DoObject<N, A, B>>
-  <N extends string | number | symbol, A, B>(
-    self: A.Async<A>,
-    name: Exclude<N, keyof A>,
-    fab: A.Async<(a: A) => B>,
-  ): A.Async<DoObject<N, A, B>>
 } = Monad.flapTo
 
 export const apS: {
@@ -75,11 +53,6 @@ export const apS: {
     name: Exclude<N, keyof A>,
     fb: A.Async<B>,
   ): (self: A.Async<A>) => A.Async<DoObject<N, A, B>>
-  <N extends string | number | symbol, A, B>(
-    self: A.Async<A>,
-    name: Exclude<N, keyof A>,
-    fb: A.Async<B>,
-  ): A.Async<DoObject<N, A, B>>
 } = Monad.apS
 
 export const flatMapTo: {
@@ -87,56 +60,29 @@ export const flatMapTo: {
     name: Exclude<N, keyof A>,
     amb: (a: A) => A.Async<B>,
   ): (self: A.Async<A>) => A.Async<DoObject<N, A, B>>
-  <N extends string | number | symbol, A, B>(
-    self: A.Async<A>,
-    name: Exclude<N, keyof A>,
-    amb: (a: A) => A.Async<B>,
-  ): A.Async<DoObject<N, A, B>>
 } = Monad.flatMapTo
 
 export const tap: {
   <A, _>(am_: (a: A) => A.Async<_>): (self: A.Async<A>) => A.Async<A>
-  <A, _>(self: A.Async<A>, am_: (a: A) => A.Async<_>): A.Async<A>
 } = Monad.tap
 
 export const tapSync: {
   <A, _>(am_: (a: A) => Sync<_>): (self: A.Async<A>) => A.Async<A>
-  <A, _>(self: A.Async<A>, am_: (a: A) => Sync<_>): A.Async<A>
 } = Monad.tapSync
 
 export const parallel: {
   <N extends string | number | symbol, A, B>(
     fb: A.Async<B>,
   ): (fa: A.Async<A>) => A.Async<DoObject<N, A, B>>
-  <N extends string | number | symbol, A, B>(
-    fa: A.Async<A>,
-    fb: A.Async<B>,
-  ): A.Async<DoObject<N, A, B>>
-} = overload (
-  1,
-  (fa, fb) => () =>
-    Promise.all ([A.toPromise (fa), A.toPromise (fb)]).then (([a]) => a as any),
-)
+} = fb => fa => () =>
+  Promise.all ([A.toPromise (fa), A.toPromise (fb)]).then (([a]) => a as any)
 
 export const parallelTo: {
   <N extends string | number | symbol, A, B>(
     name: Exclude<N, keyof A>,
     fb: A.Async<B>,
   ): (fa: A.Async<A>) => A.Async<DoObject<N, A, B>>
-  <N extends string | number | symbol, A, B>(
-    fa: A.Async<A>,
-    name: Exclude<N, keyof A>,
-    fb: A.Async<B>,
-  ): A.Async<DoObject<N, A, B>>
-} = overload (
-  2,
-  <N extends string | number | symbol, A, B>(
-    fa: A.Async<A>,
-    name: Exclude<N, keyof A>,
-    fb: A.Async<B>,
-  ): A.Async<DoObject<N, A, B>> =>
-    () =>
-      Promise.all ([A.toPromise (fa), A.toPromise (fb)]).then (
-        ([a, b]) => ({ [name]: b, ...a }) as any,
-      ),
-)
+} = (name, fb) => fa => () =>
+  Promise.all ([A.toPromise (fa), A.toPromise (fb)]).then (
+    ([a, b]) => ({ [name]: b, ...a }) as any,
+  )

@@ -55,6 +55,6 @@ describe ("getEq", () => {
   ]
 
   testCases.forEach (({ description, tree1, tree2, expected }) =>
-    it (description, () => expect (Eq.equals (tree1, tree2)).toBe (expected)),
+    it (description, () => expect (Eq.equals (tree1) (tree2)).toBe (expected)),
   )
 })

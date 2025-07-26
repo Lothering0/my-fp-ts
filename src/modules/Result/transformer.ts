@@ -7,7 +7,6 @@ import { createBifunctor } from "../../types/Bifunctor"
 import { createApplicative } from "../../types/Applicative"
 import { createMonad, Monad } from "../../types/Monad"
 import { flow, pipe } from "../../utils/flow"
-import { overload } from "../../utils/overloads"
 
 export interface ResultT<F extends HKT> extends HKT {
   readonly type: Kind<F, any, this["_R"], R.Result<this["_E"], this["_A"]>>
@@ -37,14 +36,7 @@ export const transform = <F extends HKT>(F: Monad<F>) => {
       onFailure: (e: E) => B,
       onSuccess: (a: A) => B,
     ): (self: Kind<THKT, KE, E, A>) => Kind<F, R, KE, B>
-    <KE, R, E, A, B>(
-      self: Kind<THKT, KE, E, A>,
-      onFailure: (e: E) => B,
-      onSuccess: (a: A) => B,
-    ): Kind<F, R, KE, B>
-  } = overload (2, (self, onFailure, onSuccess) =>
-    F.map (self, R.match (onFailure, onSuccess)),
-  )
+  } = flow (R.match, F.map)
 
   const swap: {
     <KE, E, A>(self: Kind<THKT, KE, E, A>): Kind<THKT, KE, A, E>
@@ -55,29 +47,25 @@ export const transform = <F extends HKT>(F: Monad<F>) => {
   } = F.map (R.toUnion)
 
   const Functor: Functor<THKT> = {
-    map: overload (1, (self, f) => F.map (self, R.map (f))),
+    map: flow (R.map, F.map),
   }
 
   const Bifunctor = createBifunctor<THKT> ({
     ...Functor,
-    mapLeft: overload (1, (self, f) => F.map (self, R.mapLeft (f))),
+    mapLeft: ed => flow (F.map (R.mapLeft (ed))),
   })
 
   const Applicative = createApplicative<THKT> ({
     ...Functor,
     of: success,
-    ap: overload (
-      1,
-      <_, _2, A, B>(
-        self: Kind<THKT, _, _2, (a: A) => B>,
-        fma: Kind<THKT, _, _2, A>,
-      ): Kind<THKT, _, _2, B> =>
+    ap:
+      <_, _2, A>(fma: Kind<THKT, _, _2, A>) =>
+      <B>(self: Kind<THKT, _, _2, (a: A) => B>) =>
         pipe (
           self,
-          F.map (mf => (mg: R.Result<_2, A>) => R.ap (mf, mg)),
+          F.map (mf => (mg: R.Result<_2, A>) => R.ap (mg) (mf)),
           F.ap (fma),
         ),
-    ),
   })
 
   const Monad = createMonad<THKT> ({

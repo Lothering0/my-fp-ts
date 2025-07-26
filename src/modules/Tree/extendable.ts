@@ -3,20 +3,14 @@ import { createExtendable } from "../../types/Extendable"
 import { Tree, TreeHKT } from "./tree"
 import { Functor } from "./functor"
 import { forestOf, make } from "./utils"
-import { overload } from "../../utils/overloads"
 
 export const Extendable = createExtendable<TreeHKT> ({
   ...Functor,
-  extend: overload (
-    1,
-    <A, B>(self: Tree<A>, fab: (fa: Tree<A>) => B): Tree<B> =>
-      make (fab (self), RA.map (forestOf (self), extend (fab))),
-  ),
+  extend: fab => self => make (fab (self), RA.map (extend (fab)) (forestOf (self))),
 })
 
 export const extend: {
   <A, B>(fab: (fa: Tree<A>) => B): (self: Tree<A>) => Tree<B>
-  <A, B>(self: Tree<A>, fab: (fa: Tree<A>) => B): Tree<B>
 } = Extendable.extend
 
 export const duplicate: {

@@ -8,13 +8,13 @@ describe ("functor", () => {
   describe ("map", () => {
     it ("should return `failure` if it was provided", () => {
       const fe = R.failure ("a")
-      expect (R.map (fe, N.add (1))).toEqual (fe)
+      expect (R.map (N.add (1)) (fe)).toEqual (fe)
     })
 
     it ("should apply function to `success` value", () => {
       const x = 1
       const n = 1
-      expect (R.map (R.success (x), N.add (n))).toEqual (R.success (N.add (x, n)))
+      expect (R.map (N.add (n)) (R.success (x))).toEqual (R.success (N.add (x) (n)))
     })
   })
 })

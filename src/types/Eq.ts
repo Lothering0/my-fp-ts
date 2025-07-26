@@ -1,15 +1,11 @@
 import * as C from "./Contravariant"
 import { HKT } from "./HKT"
-import { overload } from "../utils/overloads"
 import { Semigroup } from "./Semigroup"
 import { Monoid } from "./Monoid"
-import { constTrue } from "../utils/constant"
+import { constant, constTrue } from "../utils/constant"
 
 export interface Eq<A> {
-  readonly equals: {
-    (x: A): (y: A) => boolean
-    (x: A, y: A): boolean
-  }
+  readonly equals: (x: A) => (y: A) => boolean
 }
 
 export interface EqHKT extends HKT {
@@ -17,31 +13,25 @@ export interface EqHKT extends HKT {
 }
 
 export const EqStrict: Eq<unknown> = {
-  equals: overload (1, (x, y) => x === y),
+  equals: x => y => x === y,
 }
 
 export const Contravariant: C.Contravariant<EqHKT> = {
-  contramap: overload (
-    1,
-    <A, B>(self: Eq<A>, ba: (b: B) => A): Eq<B> => ({
-      equals: overload (1, (x, y) => self.equals (ba (x), ba (y))),
-    }),
-  ),
+  contramap: ba => self => ({
+    equals: x => y => self.equals (ba (x)) (ba (y)),
+  }),
 }
 
 export const contramap: {
   <A, B>(ba: (b: B) => A): (self: Eq<A>) => Eq<B>
-  <A, B>(self: Eq<A>, ba: (b: B) => A): Eq<B>
 } = Contravariant.contramap
 
 export const getSemigroup: {
   <A>(): Semigroup<Eq<A>>
 } = () => ({
-  concat: overload (1, (Eq1, Eq2) => ({
-    equals: overload (1, (x, y) =>
-      EqStrict.equals (Eq1.equals (x, y), Eq2.equals (x, y)),
-    ),
-  })),
+  concat: Eq1 => Eq2 => ({
+    equals: x => y => EqStrict.equals (Eq1.equals (x) (y)) (Eq2.equals (x) (y)),
+  }),
 })
 
 export const getMonoid: {
@@ -49,6 +39,6 @@ export const getMonoid: {
 } = () => ({
   ...getSemigroup (),
   empty: {
-    equals: overload (1, constTrue),
+    equals: constant (constTrue),
   },
 })

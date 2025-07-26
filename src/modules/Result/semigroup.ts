@@ -3,18 +3,16 @@ import { Result, success } from "./result"
 import { isFailure } from "./refinements"
 import { fromSuccess } from "./utils"
 import { pipe } from "../../utils/flow"
-import { overload } from "../../utils/overloads"
 
 export const getSemigroup: {
   <E, A>(S: Semigroup<A>): Semigroup<Result<E, A>>
 } = S => ({
-  concat: overload (1, (mx, my) =>
+  concat: my => mx =>
     isFailure (mx)
       ? isFailure (my)
         ? mx
         : my
       : isFailure (my)
         ? mx
-        : pipe (S.concat (fromSuccess (mx), fromSuccess (my)), success),
-  ),
+        : pipe (S.concat (fromSuccess (mx)) (fromSuccess (my)), success),
 })

@@ -5,7 +5,7 @@ import { getDoWhile } from "../../src/utils/loops"
 describe ("getDoWhile", () => {
   it ("should correctly run", () => {
     const iterationsCount = 5
-    const doWhile = getDoWhile (RA)
+    const doWhile = getDoWhile (RA.Applicative)
     const xs: number[] = []
 
     const unsafeInsert: {

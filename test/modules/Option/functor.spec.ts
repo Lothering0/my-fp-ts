@@ -7,13 +7,13 @@ describeFunctorLaws (O, [O.some (1), O.none])
 describe ("functor", () => {
   describe ("map", () => {
     it ("should return `none` if it was provided", () => {
-      expect (O.map (O.none, N.add (1))).toEqual (O.none)
+      expect (O.map (N.add (1)) (O.none)).toEqual (O.none)
     })
 
     it ("should apply function to `some` value", () => {
       const x = 1
       const n = 1
-      expect (O.map (O.some (x), N.add (n))).toEqual (O.some (N.add (x, n)))
+      expect (O.map (N.add (n)) (O.some (x))).toEqual (O.some (N.add (x) (n)))
     })
   })
 })

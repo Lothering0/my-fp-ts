@@ -40,6 +40,6 @@ describe ("getEq", () => {
   ]
 
   testCases.forEach (({ description, option1, option2, expected }) =>
-    it (description, () => expect (Eq.equals (option1, option2)).toBe (expected)),
+    it (description, () => expect (Eq.equals (option1) (option2)).toBe (expected)),
   )
 })

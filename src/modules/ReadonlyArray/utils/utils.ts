@@ -8,7 +8,6 @@ import { Predicate } from "../../Predicate"
 import { identity } from "../../Identity"
 import { flatMap } from "../monad"
 import { filterMap } from "../filterable"
-import { overload, overloadLast } from "../../../utils/overloads"
 import { constant, constEmptyArray } from "../../../utils/constant"
 import { flow, pipe } from "../../../utils/flow"
 import { match, matchLeft, matchRight } from "./matchers"
@@ -45,119 +44,93 @@ export const tail: {
 
 export const lookup: {
   <A>(i: number): (self: ReadonlyArray<A>) => O.Option<A>
-  <A>(i: number, self: ReadonlyArray<A>): O.Option<A>
-} = overloadLast (1, (i, self) =>
-  i >= 0 && i < length (self) ? pipe (self.at (i)!, O.some) : O.none,
-)
+} = i => self =>
+  i >= 0 && i < length (self) ? pipe (self.at (i)!, O.some) : O.none
 
 /** Like `lookup` but accepts also negative integers where -1 is index of the last element, -2 of the pre-last and so on. */
 export const at: {
   <A>(i: number): (self: ReadonlyArray<A>) => O.Option<A>
-  <A>(i: number, self: ReadonlyArray<A>): O.Option<A>
-} = overloadLast (1, (i, self) =>
-  i < length (self) && i >= -length (self) ? pipe (self.at (i)!, O.some) : O.none,
-)
+} = i => self =>
+  i < length (self) && i >= -length (self) ? pipe (self.at (i)!, O.some) : O.none
 
 export const isOutOfBounds: {
   <A>(i: number): (self: ReadonlyArray<A>) => boolean
-  <A>(self: ReadonlyArray<A>, i: number): boolean
-} = overload (1, (self, i) => !Object.hasOwn (self, Number (i)))
+} = i => self => !Object.hasOwn (self, Number (i))
 
 export const findMap: {
   <A, B>(amb: (a: A) => O.Option<B>): (self: ReadonlyArray<A>) => O.Option<B>
-  <A, B>(self: ReadonlyArray<A>, amb: (a: A) => O.Option<B>): O.Option<B>
-} = overload (
-  1,
-  <A, B>(self: ReadonlyArray<A>, amb: (a: A) => O.Option<B>): O.Option<B> =>
-    matchLeft (self, O.zero, (head, tail) =>
-      O.match (amb (head), () => findMap (tail, amb), O.some),
+} = amb =>
+  matchLeft (O.zero, (head, tail) =>
+    pipe (
+      head,
+      amb,
+      O.match (() => findMap (amb) (tail), O.some),
     ),
-)
+  )
 
 export const find: {
   <A, B extends A>(p: Refinement<A, B>): (self: ReadonlyArray<A>) => O.Option<B>
-  <A, B extends A>(self: ReadonlyArray<A>, p: Refinement<A, B>): O.Option<B>
   <A>(p: Predicate<A>): (self: ReadonlyArray<A>) => O.Option<A>
-  <A>(self: ReadonlyArray<A>, p: Predicate<A>): O.Option<A>
-} = overload (
-  1,
-  <A>(self: ReadonlyArray<A>, p: Predicate<A>): O.Option<A> =>
-    findMap (self, a => pipe (a, p, B.match (O.zero, flow (constant (a), O.some)))),
-)
+} = <A>(p: Predicate<A>) =>
+  findMap (a => pipe (a, p, B.match (O.zero, flow (constant (a), O.some))))
 
 export const findIndex: {
   <A>(p: Predicate<A>): (self: ReadonlyArray<A>) => O.Option<number>
-  <A>(self: ReadonlyArray<A>, p: Predicate<A>): O.Option<number>
-} = overload (1, (self, p) =>
+} = p => self =>
   pipe (
     self.findIndex (a => p (a)),
     i => i > -1 ? O.some (i) : O.none,
-  ),
-)
+  )
 
 export const findLastMap: {
   <A, B>(amb: (a: A) => O.Option<B>): (self: ReadonlyArray<A>) => O.Option<B>
-  <A, B>(self: ReadonlyArray<A>, amb: (a: A) => O.Option<B>): O.Option<B>
-} = overload (
-  1,
-  <A, B>(self: ReadonlyArray<A>, amb: (a: A) => O.Option<B>): O.Option<B> =>
-    matchRight (self, O.zero, (init, last) =>
-      O.match (amb (last), () => findLastMap (init, amb), O.some),
+} = amb =>
+  matchRight (O.zero, (init, last) =>
+    pipe (
+      last,
+      amb,
+      O.match (() => findLastMap (amb) (init), O.some),
     ),
-)
+  )
 
 export const findLast: {
   <A, B extends A>(p: Refinement<A, B>): (self: ReadonlyArray<A>) => O.Option<B>
-  <A, B extends A>(self: ReadonlyArray<A>, p: Refinement<A, B>): O.Option<B>
   <A>(p: Predicate<A>): (self: ReadonlyArray<A>) => O.Option<A>
-  <A>(self: ReadonlyArray<A>, p: Predicate<A>): O.Option<A>
-} = overload (
-  1,
-  <A>(self: ReadonlyArray<A>, p: Predicate<A>): O.Option<A> =>
-    findLastMap (self, a =>
-      pipe (a, p, B.match (O.zero, flow (constant (a), O.some))),
-    ),
-)
+} = <A>(p: Predicate<A>) =>
+  findLastMap (a => pipe (a, p, B.match (O.zero, flow (constant (a), O.some))))
 
 export const findLastIndex: {
   <A>(p: Predicate<A>): (self: ReadonlyArray<A>) => O.Option<number>
-  <A>(self: ReadonlyArray<A>, p: Predicate<A>): O.Option<number>
-} = overload (1, (self, p) =>
+} = p => self =>
   pipe (
     self.findLastIndex (a => p (a)),
     i => i > -1 ? O.some (i) : O.none,
-  ),
-)
+  )
 
 /** Is `a` element of an array by `Eq` instance */
-export const elem = <A>(
-  E: E.Eq<A>,
-): {
-  (a: A): (self: ReadonlyArray<A>) => boolean
-  (self: ReadonlyArray<A>, a: A): boolean
-} => overload (1, (self, a) => pipe (self, find (E.equals (a)), O.isSome))
+export const elem =
+  <A>(
+    E: E.Eq<A>,
+  ): {
+    (a: A): (self: ReadonlyArray<A>) => boolean
+  } =>
+  a =>
+    flow (find (E.equals (a)), O.isSome)
 
 export const every: {
   <A, B extends A>(
     p: Refinement<A, B>,
   ): Refinement<ReadonlyArray<A>, ReadonlyArray<B>>
-  <A, B extends A>(
-    self: ReadonlyArray<A>,
-    p: Refinement<A, B>,
-  ): self is ReadonlyArray<B>
   <A>(p: Predicate<A>): Predicate<ReadonlyArray<A>>
-  <A>(self: ReadonlyArray<A>, p: Predicate<A>): boolean
-} = overload (1, (self, p) => self.every (a => p (a)))
+} =
+  <A, B extends A>(p: Refinement<A, B>) =>
+  (self: ReadonlyArray<A>) =>
+    self.every (a => p (a))
 
-export const exists: {
-  <A>(
-    p: Predicate<A>,
-  ): (self: ReadonlyArray<A>) => self is NERA.NonEmptyReadonlyArray<A>
-  <A>(
-    self: ReadonlyArray<A>,
-    p: Predicate<A>,
-  ): self is NERA.NonEmptyReadonlyArray<A>
-} = overload (1, (self, p) => self.some (a => p (a)))
+export const exists =
+  <A>(p: Predicate<A>) =>
+  (self: ReadonlyArray<A>): self is NERA.NonEmptyReadonlyArray<A> =>
+    self.some (a => p (a))
 
 /** Alias for exists */
 export const some = exists
@@ -172,35 +145,27 @@ export const successes: {
 
 export const prepend: {
   <A>(a: A): (self: ReadonlyArray<A>) => NERA.NonEmptyReadonlyArray<A>
-  <A>(a: A, self: ReadonlyArray<A>): NERA.NonEmptyReadonlyArray<A>
-} = overloadLast (1, (a, self) => NERA.concat ([a], self))
+} = a => self => NERA.concat (self) ([a])
 
 export const prependAllWith: {
   <A>(f: (a: A) => A): (self: ReadonlyArray<A>) => ReadonlyArray<A>
-  <A>(f: (a: A) => A, self: ReadonlyArray<A>): ReadonlyArray<A>
-} = overloadLast (1, (f, self) => flatMap (self, x => [f (x), x]))
+} = f => flatMap (x => [f (x), x])
 
 export const prependAll: {
   <A>(a: A): (self: ReadonlyArray<A>) => ReadonlyArray<A>
-  <A>(a: A, self: ReadonlyArray<A>): ReadonlyArray<A>
-} = overloadLast (1, <A>(a: A, self: ReadonlyArray<A>) =>
-  prependAllWith (constant (a), self),
-)
+} = flow (constant, prependAllWith)
 
 export const append: {
   <A>(a: A): (self: ReadonlyArray<A>) => NERA.NonEmptyReadonlyArray<A>
-  <A>(self: ReadonlyArray<A>, a: A): NERA.NonEmptyReadonlyArray<A>
-} = overload (1, <A>(self: ReadonlyArray<A>, a: A) => NERA.concat (self, [a]))
+} = a => NERA.concat ([a])
 
 export const appendAllWith: {
   <A>(f: (a: A) => A): (self: ReadonlyArray<A>) => ReadonlyArray<A>
-  <A>(self: ReadonlyArray<A>, f: (a: A) => A): ReadonlyArray<A>
-} = overload (1, (self, f) => flatMap (self, x => [x, f (x)]))
+} = f => flatMap (x => [x, f (x)])
 
 export const appendAll: {
   <A>(a: A): (self: ReadonlyArray<A>) => ReadonlyArray<A>
-  <A>(self: ReadonlyArray<A>, a: A): ReadonlyArray<A>
-} = overload (1, (self, a) => appendAllWith (self, constant (a)))
+} = flow (constant, appendAllWith)
 
 export const range: {
   (from: number): (to: number) => NERA.NonEmptyReadonlyArray<number>
@@ -208,8 +173,8 @@ export const range: {
   from === to
     ? [from]
     : from < to
-      ? prepend (from, range (from + 1) (to))
-      : prepend (from, range (from - 1) (to))
+      ? prepend (from) (range (from + 1) (to))
+      : prepend (from) (range (from - 1) (to))
 
 export const reverse: {
   <A>(self: ReadonlyArray<A>): ReadonlyArray<A>
@@ -217,10 +182,7 @@ export const reverse: {
 
 export const join: {
   (separator: string): (self: ReadonlyArray<string>) => string
-  (self: ReadonlyArray<string>, separator: string): string
-} = overload (1, (self: ReadonlyArray<string>, separator: string) =>
-  self.join (separator),
-)
+} = separator => self => self.join (separator)
 
 /** [f (a, b, ...) | a <- as, b <- bs, ..., p (a, b, ...)] */
 export function comprehension<A, R>(

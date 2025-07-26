@@ -18,10 +18,12 @@ export const Compactable: C.Compactable<ReadonlyArrayHKT> = {
   compact: flatMap (O.match (constEmptyArray, of)),
   compactResults: successes,
   separate: reduce (getInitialSeparated (), (b, ma) =>
-    R.match (
+    pipe (
       ma,
-      e => S.make (pipe (b, S.left, append (e)), S.right (b)),
-      a => S.make (S.left (b), pipe (b, S.right, append (a), fromNonEmpty)),
+      R.match (
+        e => S.make (pipe (b, S.left, append (e)), S.right (b)),
+        a => S.make (S.left (b), pipe (b, S.right, append (a), fromNonEmpty)),
+      ),
     ),
   ),
 }

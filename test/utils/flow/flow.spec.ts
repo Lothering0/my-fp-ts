@@ -1,5 +1,6 @@
 import { concat } from "../../../src/modules/String"
 import { flow } from "../../../src/utils/flow"
+import { uncurry } from "../../../src/utils/currying"
 
 describe ("flow", () => {
   it ("should be equal to its only function", () => {
@@ -17,7 +18,7 @@ describe ("flow", () => {
   })
 
   it ("should apply all passed arguments to the first function", () => {
-    const f = jest.fn (concat)
+    const f = jest.fn (uncurry (concat))
     const g = jest.fn (concat ("c"))
     expect (flow (f, g) ("a", "b")).toBe (g (f ("a", "b")))
     expect (f).toHaveBeenCalledTimes (2)

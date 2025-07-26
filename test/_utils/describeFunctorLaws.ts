@@ -2,6 +2,7 @@ import * as N from "../../src/modules/Number"
 import { HKT, Kind } from "../../src/types/HKT"
 import { Functor } from "../../src/types/Functor"
 import { identity } from "../../src/modules/Identity"
+import { pipe } from "../../src/utils/flow"
 
 export const describeFunctorLaws: {
   <F extends HKT>(F: Functor<F>, fas: Kind<F, unknown, unknown, number>[]): void
@@ -10,7 +11,7 @@ export const describeFunctorLaws: {
     describe ("map", () => {
       it ("should satisfy identity law", () => {
         fas.forEach (fa => {
-          expect (F.map (fa, identity)).toEqual (fa)
+          expect (F.map (identity) (fa)).toEqual (fa)
         })
       })
 
@@ -19,7 +20,12 @@ export const describeFunctorLaws: {
         const bc = N.divide (2)
 
         fas.forEach (fa => {
-          expect (F.map (fa, a => bc (ab (a)))).toEqual (F.map (F.map (fa, ab), bc))
+          expect (
+            pipe (
+              fa,
+              F.map (a => bc (ab (a))),
+            ),
+          ).toEqual (F.map (bc) (F.map (ab) (fa)))
         })
       })
     })

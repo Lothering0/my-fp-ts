@@ -13,12 +13,7 @@ export const describeApplicativeLaws: {
     describe ("ap", () => {
       it ("should satisfy identity law", () => {
         fas.forEach (fa => {
-          expect (
-            A.ap (
-              A.of (a => a),
-              fa,
-            ),
-          ).toEqual (fa)
+          expect (A.ap (fa) (A.of (a => a))).toEqual (fa)
         })
       })
 
@@ -26,19 +21,14 @@ export const describeApplicativeLaws: {
         const ab = N.add (5)
         const x = 1
 
-        expect (A.ap (A.of (ab), A.of (x))).toEqual (A.of (ab (x)))
+        expect (A.ap (A.of (x)) (A.of (ab))).toEqual (A.of (ab (x)))
       })
 
       it ("should satisfy interchange law", () => {
         const x = 1
 
         fabs.forEach (fab => {
-          expect (A.ap (fab, A.of (x))).toEqual (
-            A.ap (
-              A.of (ab => ab (x)),
-              fab,
-            ),
-          )
+          expect (A.ap (A.of (x)) (fab)).toEqual (A.ap (fab) (A.of (ab => ab (x))))
         })
       })
     })

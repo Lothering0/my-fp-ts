@@ -12,7 +12,9 @@ export const Monad: M.Monad<TreeHKT> = M.createMonad<TreeHKT> ({
   flat: self =>
     make (
       pipe (self, valueOf, valueOf),
-      RA.concat (pipe (self, valueOf, forestOf), RA.map (forestOf (self), flat)),
+      RA.concat (pipe (self, forestOf, RA.map (flat))) (
+        pipe (self, valueOf, forestOf),
+      ),
     ),
 })
 
@@ -24,12 +26,10 @@ export const flat: {
 
 export const flatMap: {
   <A, B>(amb: (a: A) => Tree<B>): (self: Tree<A>) => Tree<B>
-  <A, B>(self: Tree<A>, amb: (a: A) => Tree<B>): Tree<B>
 } = Monad.flatMap
 
 export const compose: {
   <A, B, C>(bmc: (b: B) => Tree<C>, amb: (a: A) => Tree<B>): (a: A) => Tree<C>
-  <A, B, C>(bmc: (b: B) => Tree<C>, amb: (a: A) => Tree<B>, a: A): Tree<C>
 } = Monad.compose
 
 export const setTo: {
@@ -37,11 +37,6 @@ export const setTo: {
     name: Exclude<N, keyof A>,
     b: B,
   ): (self: Tree<A>) => Tree<DoObject<N, A, B>>
-  <N extends string | number | symbol, A, B>(
-    self: Tree<A>,
-    name: Exclude<N, keyof A>,
-    b: B,
-  ): Tree<DoObject<N, A, B>>
 } = Monad.setTo
 
 export const mapTo: {
@@ -49,11 +44,6 @@ export const mapTo: {
     name: Exclude<N, keyof A>,
     ab: (a: A) => B,
   ): (self: Tree<A>) => Tree<DoObject<N, A, B>>
-  <N extends string | number | symbol, A, B>(
-    self: Tree<A>,
-    name: Exclude<N, keyof A>,
-    ab: (a: A) => B,
-  ): Tree<DoObject<N, A, B>>
 } = Monad.mapTo
 
 export const flapTo: {
@@ -61,11 +51,6 @@ export const flapTo: {
     name: Exclude<N, keyof A>,
     fab: Tree<(a: A) => B>,
   ): (self: Tree<A>) => Tree<DoObject<N, A, B>>
-  <N extends string | number | symbol, A, B>(
-    self: Tree<A>,
-    name: Exclude<N, keyof A>,
-    fab: Tree<(a: A) => B>,
-  ): Tree<DoObject<N, A, B>>
 } = Monad.flapTo
 
 export const apS: {
@@ -73,11 +58,6 @@ export const apS: {
     name: Exclude<N, keyof A>,
     fb: Tree<B>,
   ): (self: Tree<A>) => Tree<DoObject<N, A, B>>
-  <N extends string | number | symbol, A, B>(
-    self: Tree<A>,
-    name: Exclude<N, keyof A>,
-    fb: Tree<B>,
-  ): Tree<DoObject<N, A, B>>
 } = Monad.apS
 
 export const flatMapTo: {
@@ -85,19 +65,12 @@ export const flatMapTo: {
     name: Exclude<N, keyof A>,
     amb: (a: A) => Tree<B>,
   ): (self: Tree<A>) => Tree<DoObject<N, A, B>>
-  <N extends string | number | symbol, A, B>(
-    self: Tree<A>,
-    name: Exclude<N, keyof A>,
-    amb: (a: A) => Tree<B>,
-  ): Tree<DoObject<N, A, B>>
 } = Monad.flatMapTo
 
 export const tap: {
   <A, _>(am_: (a: A) => Tree<_>): (self: Tree<A>) => Tree<A>
-  <A, _>(self: Tree<A>, am_: (a: A) => Tree<_>): Tree<A>
 } = Monad.tap
 
 export const tapSync: {
   <A, _>(am_: (a: A) => Sync<_>): (self: Tree<A>) => Tree<A>
-  <A, _>(self: Tree<A>, am_: (a: A) => Sync<_>): Tree<A>
 } = Monad.tapSync

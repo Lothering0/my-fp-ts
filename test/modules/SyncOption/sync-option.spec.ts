@@ -8,7 +8,7 @@ describe ("fromSync", () => {
   it ("should return `none` if function threw an error", () => {
     const x = 1
     const fa: S.Sync<never> = jest.fn (() => raise (x))
-    const result = pipe (SO.fromSync (fa), SO.execute)
+    const result = pipe (fa, SO.fromSync, SO.execute)
     expect (result).toEqual<O.Option<never>> (O.none)
     expect (fa).toHaveBeenCalledTimes (1)
   })
@@ -16,7 +16,7 @@ describe ("fromSync", () => {
   it ("should return `some` if function returned a value", () => {
     const x = 1
     const fa: S.Sync<typeof x> = jest.fn (() => x)
-    const result = pipe (SO.fromSync (fa), SO.execute)
+    const result = pipe (fa, SO.fromSync, SO.execute)
     expect (result).toEqual<O.Option<typeof x>> (O.some (x))
     expect (fa).toHaveBeenCalledTimes (1)
   })

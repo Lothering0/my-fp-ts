@@ -18,7 +18,6 @@ export const flat: {
 
 export const flatMap: {
   <S, A, B>(amb: (a: A) => State<S, B>): (self: State<S, A>) => State<S, B>
-  <S, A, B>(self: State<S, A>, amb: (a: A) => State<S, B>): State<S, B>
 } = Monad.flatMap
 
 export const compose: {
@@ -26,35 +25,20 @@ export const compose: {
     bmc: (b: B) => State<S, C>,
     amb: (a: A) => State<S, B>,
   ): (a: A) => State<S, C>
-  <S, A, B, C>(
-    bmc: (b: B) => State<S, C>,
-    amb: (a: A) => State<S, B>,
-    a: A,
-  ): State<S, C>
 } = Monad.compose
 
 export const setTo: {
-  <N extends string | number | symbol, S, A, B>(
+  <N extends string | number | symbol, A, B>(
     name: Exclude<N, keyof A>,
     b: B,
-  ): (self: State<S, A>) => State<S, DoObject<N, A, B>>
-  <N extends string | number | symbol, S, A, B>(
-    self: State<S, A>,
-    name: Exclude<N, keyof A>,
-    b: B,
-  ): State<S, DoObject<N, A, B>>
+  ): <S>(self: State<S, A>) => State<S, DoObject<N, A, B>>
 } = Monad.setTo
 
 export const mapTo: {
-  <N extends string | number | symbol, S, A, B>(
+  <N extends string | number | symbol, A, B>(
     name: Exclude<N, keyof A>,
     ab: (a: A) => B,
-  ): (self: State<S, A>) => State<S, DoObject<N, A, B>>
-  <N extends string | number | symbol, S, A, B>(
-    self: State<S, A>,
-    name: Exclude<N, keyof A>,
-    ab: (a: A) => B,
-  ): State<S, DoObject<N, A, B>>
+  ): <S>(self: State<S, A>) => State<S, DoObject<N, A, B>>
 } = Monad.mapTo
 
 export const flapTo: {
@@ -62,11 +46,6 @@ export const flapTo: {
     name: Exclude<N, keyof A>,
     fab: State<S, (a: A) => B>,
   ): (self: State<S, A>) => State<S, DoObject<N, A, B>>
-  <N extends string | number | symbol, S, A, B>(
-    self: State<S, A>,
-    name: Exclude<N, keyof A>,
-    fab: State<S, (a: A) => B>,
-  ): State<S, DoObject<N, A, B>>
 } = Monad.flapTo
 
 export const apS: {
@@ -74,11 +53,6 @@ export const apS: {
     name: Exclude<N, keyof A>,
     fb: State<S, B>,
   ): (self: State<S, A>) => State<S, DoObject<N, A, B>>
-  <N extends string | number | symbol, S, A, B>(
-    self: State<S, A>,
-    name: Exclude<N, keyof A>,
-    fb: State<S, B>,
-  ): State<S, DoObject<N, A, B>>
 } = Monad.apS
 
 export const flatMapTo: {
@@ -86,19 +60,12 @@ export const flatMapTo: {
     name: Exclude<N, keyof A>,
     amb: (a: A) => State<S, B>,
   ): (self: State<S, A>) => State<S, DoObject<N, A, B>>
-  <N extends string | number | symbol, S, A, B>(
-    self: State<S, A>,
-    name: Exclude<N, keyof A>,
-    amb: (a: A) => State<S, B>,
-  ): State<S, DoObject<N, A, B>>
 } = Monad.flatMapTo
 
 export const tap: {
   <S, A, _>(am_: (a: A) => State<S, _>): (self: State<S, A>) => State<S, A>
-  <S, A, _>(self: State<S, A>, am_: (a: A) => State<S, _>): State<S, A>
 } = Monad.tap
 
 export const tapSync: {
-  <S, A, _>(am_: (a: A) => Sync<_>): (self: State<S, A>) => State<S, A>
-  <S, A, _>(self: State<S, A>, am_: (a: A) => Sync<_>): State<S, A>
+  <A, _>(am_: (a: A) => Sync<_>): <S>(self: State<S, A>) => State<S, A>
 } = Monad.tapSync

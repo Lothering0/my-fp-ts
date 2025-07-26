@@ -18,18 +18,10 @@ export const map: {
   <A, B>(
     ab: (a: A) => B,
   ): (self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<B>
-  <A, B>(
-    self: NonEmptyReadonlyArray<A>,
-    ab: (a: A) => B,
-  ): NonEmptyReadonlyArray<B>
 } = Functor.map
 
 export const mapWithIndex: {
   <A, B>(
     iab: (i: number, a: A) => B,
   ): (self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<B>
-  <A, B>(
-    self: NonEmptyReadonlyArray<A>,
-    iab: (i: number, a: A) => B,
-  ): NonEmptyReadonlyArray<B>
 } = FunctorWithIndex.mapWithIndex

@@ -2,17 +2,18 @@ import { Eq } from "../../types/Eq"
 import { Option } from "./option"
 import { match } from "./utils"
 import { isNone } from "./refinements"
-import { overload } from "../../utils/overloads"
 import { constFalse } from "../../utils/constant"
+import { pipe } from "../../utils/flow"
 
 export const getEq: {
   <A>(Eq: Eq<A>): Eq<Option<A>>
 } = Eq => ({
-  equals: overload (1, (mx, my) =>
-    match (
+  equals: mx => my =>
+    pipe (
       mx,
-      () => isNone (my),
-      x => match (my, constFalse, Eq.equals (x)),
+      match (
+        () => isNone (my),
+        x => match (constFalse, Eq.equals (x)) (my),
+      ),
     ),
-  ),
 })

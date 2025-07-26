@@ -10,7 +10,7 @@ describe ("functor", () => {
       const x = 1
       const fa: AO.AsyncOption<typeof x> = jest.fn (AO.of (x))
 
-      const result = await pipe (AO.map (fa, identity), AO.toPromise)
+      const result = await pipe (fa, AO.map (identity), AO.toPromise)
       expect (result).toEqual<O.Option<typeof x>> (O.some (x))
       expect (fa).toHaveBeenCalledTimes (1)
     })
@@ -26,10 +26,11 @@ describe ("functor", () => {
       const fa2: AO.AsyncOption<typeof x> = jest.fn (getFa ())
 
       const result1 = await pipe (
-        AO.map (fa1, a => bc (ab (a))),
+        fa1,
+        AO.map (a => bc (ab (a))),
         AO.toPromise,
       )
-      const result2 = await pipe (AO.map (AO.map (fa2, ab), bc), AO.toPromise)
+      const result2 = await pipe (fa2, AO.map (ab), AO.map (bc), AO.toPromise)
 
       expect (result1).toEqual (result2)
       expect (fa1).toHaveBeenCalledTimes (1)
@@ -39,7 +40,7 @@ describe ("functor", () => {
     it ("should return function containing promise of `none` if the same was provided", async () => {
       const n = 1
       const fa: AO.AsyncOption<never> = jest.fn (AO.none)
-      const result = await pipe (AO.map (fa, N.add (n)), AO.toPromise)
+      const result = await pipe (fa, AO.map (N.add (n)), AO.toPromise)
       expect (result).toEqual<O.Option<never>> (O.none)
       expect (fa).toHaveBeenCalledTimes (1)
     })
@@ -48,8 +49,8 @@ describe ("functor", () => {
       const x = 1
       const n = 1
       const fa: AO.AsyncOption<typeof x> = jest.fn (AO.some (x))
-      const result = await pipe (AO.map (fa, N.add (n)), AO.toPromise)
-      expect (result).toEqual (O.some (N.add (x, n)))
+      const result = await pipe (fa, AO.map (N.add (n)), AO.toPromise)
+      expect (result).toEqual (O.some (N.add (x) (n)))
       expect (fa).toHaveBeenCalledTimes (1)
     })
   })

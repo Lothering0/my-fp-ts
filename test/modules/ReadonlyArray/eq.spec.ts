@@ -39,6 +39,6 @@ describe ("getEq", () => {
   ]
 
   testCases.forEach (({ description, array1, array2, expected }) =>
-    it (description, () => expect (Eq.equals (array1, array2)).toBe (expected)),
+    it (description, () => expect (Eq.equals (array1) (array2)).toBe (expected)),
   )
 })

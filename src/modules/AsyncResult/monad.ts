@@ -13,7 +13,6 @@ import {
   fromAsync,
 } from "./async-result"
 import { pipe } from "../../utils/flow"
-import { overload } from "../../utils/overloads"
 import { DoObject } from "../../types/DoObject"
 
 export const Monad = createMonad<AsyncResultHKT> ({
@@ -34,10 +33,6 @@ export const flatMap: {
   <_, A, B>(
     amb: (a: A) => AsyncResult<_, B>,
   ): (self: AsyncResult<_, A>) => AsyncResult<_, B>
-  <_, A, B>(
-    self: AsyncResult<_, A>,
-    amb: (a: A) => AsyncResult<_, B>,
-  ): AsyncResult<_, B>
 } = Monad.flatMap
 
 export const compose: {
@@ -45,35 +40,20 @@ export const compose: {
     bmc: (b: B) => AsyncResult<_, C>,
     amb: (a: A) => AsyncResult<_, B>,
   ): (a: A) => AsyncResult<_, C>
-  <_, A, B, C>(
-    bmc: (b: B) => AsyncResult<_, C>,
-    amb: (a: A) => AsyncResult<_, B>,
-    a: A,
-  ): AsyncResult<_, C>
 } = Monad.compose
 
 export const setTo: {
-  <N extends string | number | symbol, _, A, B>(
+  <N extends string | number | symbol, A, B>(
     name: Exclude<N, keyof A>,
     b: B,
-  ): (self: AsyncResult<_, A>) => AsyncResult<_, DoObject<N, A, B>>
-  <N extends string | number | symbol, _, A, B>(
-    self: AsyncResult<_, A>,
-    name: Exclude<N, keyof A>,
-    b: B,
-  ): AsyncResult<_, DoObject<N, A, B>>
+  ): <_>(self: AsyncResult<_, A>) => AsyncResult<_, DoObject<N, A, B>>
 } = Monad.setTo
 
 export const mapTo: {
-  <N extends string | number | symbol, _, A, B>(
+  <N extends string | number | symbol, A, B>(
     name: Exclude<N, keyof A>,
     ab: (a: A) => B,
-  ): (self: AsyncResult<_, A>) => AsyncResult<_, DoObject<N, A, B>>
-  <N extends string | number | symbol, _, A, B>(
-    self: AsyncResult<_, A>,
-    name: Exclude<N, keyof A>,
-    ab: (a: A) => B,
-  ): AsyncResult<_, DoObject<N, A, B>>
+  ): <_>(self: AsyncResult<_, A>) => AsyncResult<_, DoObject<N, A, B>>
 } = Monad.mapTo
 
 export const flapTo: {
@@ -81,11 +61,6 @@ export const flapTo: {
     name: Exclude<N, keyof A>,
     fab: AsyncResult<_, (a: A) => B>,
   ): (self: AsyncResult<_, A>) => AsyncResult<_, DoObject<N, A, B>>
-  <N extends string | number | symbol, _, A, B>(
-    self: AsyncResult<_, A>,
-    name: Exclude<N, keyof A>,
-    fab: AsyncResult<_, (a: A) => B>,
-  ): AsyncResult<_, DoObject<N, A, B>>
 } = Monad.flapTo
 
 export const apS: {
@@ -93,11 +68,6 @@ export const apS: {
     name: Exclude<N, keyof A>,
     fb: AsyncResult<_, B>,
   ): (self: AsyncResult<_, A>) => AsyncResult<_, DoObject<N, A, B>>
-  <N extends string | number | symbol, _, A, B>(
-    self: AsyncResult<_, A>,
-    name: Exclude<N, keyof A>,
-    fb: AsyncResult<_, B>,
-  ): AsyncResult<_, DoObject<N, A, B>>
 } = Monad.apS
 
 export const flatMapTo: {
@@ -105,114 +75,72 @@ export const flatMapTo: {
     name: Exclude<N, keyof A>,
     amb: (a: A) => AsyncResult<_, B>,
   ): (self: AsyncResult<_, A>) => AsyncResult<_, DoObject<N, A, B>>
-  <N extends string | number | symbol, _, A, B>(
-    self: AsyncResult<_, A>,
-    name: Exclude<N, keyof A>,
-    amb: (a: A) => AsyncResult<_, B>,
-  ): AsyncResult<_, DoObject<N, A, B>>
 } = Monad.flatMapTo
 
 export const tap: {
   <_, A, _2>(
     am_: (a: A) => AsyncResult<_, _2>,
   ): (self: AsyncResult<_, A>) => AsyncResult<_, A>
-  <_, A, _2>(
-    self: AsyncResult<_, A>,
-    am_: (a: A) => AsyncResult<_, _2>,
-  ): AsyncResult<_, A>
 } = Monad.tap
 
 export const tapSync: {
-  <_, A, _2>(
-    am_: (a: A) => Sync<_2>,
-  ): (self: AsyncResult<_, A>) => AsyncResult<_, A>
-  <_, A, _2>(
-    self: AsyncResult<_, A>,
-    am_: (a: A) => Sync<_2>,
-  ): AsyncResult<_, A>
+  <A, _>(
+    am_: (a: A) => Sync<_>,
+  ): <_2>(self: AsyncResult<_2, A>) => AsyncResult<_2, A>
 } = Monad.tapSync
 
 export const tapResult: {
   <E, A, _>(
     f: (a: A) => R.Result<E, _>,
   ): (self: AsyncResult<E, A>) => AsyncResult<E, A>
-  <E, A, _>(
-    self: AsyncResult<E, A>,
-    f: (a: A) => R.Result<E, _>,
-  ): AsyncResult<E, A>
-} = overload (1, (self, f) =>
+} = f => self =>
   pipe (
     Do,
     apS ("a", self),
     tap (({ a }) => pipe (a, f, A.of)),
     map (({ a }) => a),
-  ),
-)
+  )
 
 export const tapSyncResult: {
   <E, A, _>(
     f: (a: A) => SR.SyncResult<E, _>,
   ): (self: AsyncResult<E, A>) => AsyncResult<E, A>
-  <E, A, _>(
-    self: AsyncResult<E, A>,
-    f: (a: A) => SR.SyncResult<E, _>,
-  ): AsyncResult<E, A>
-} = overload (1, (self, f) =>
+} = f => self =>
   pipe (
     Do,
     apS ("a", self),
     tap (({ a }) => pipe (a, f, SR.execute, A.of)),
     map (({ a }) => a),
-  ),
-)
+  )
 
-export const tapAsync: {
-  <_, A, _2>(
-    f: (a: A) => A.Async<_2>,
-  ): (self: AsyncResult<_, A>) => AsyncResult<_, A>
-  <_, A, _2>(
-    self: AsyncResult<_, A>,
-    f: (a: A) => A.Async<_2>,
-  ): AsyncResult<_, A>
-} = overload (1, (self, f) =>
-  pipe (
-    Do,
-    apS ("a", self),
-    tap (({ a }) => pipe (a, f, fromAsync)),
-    map (({ a }) => a),
-  ),
-)
+export const tapAsync =
+  <A, _>(f: (a: A) => A.Async<_>) =>
+  <_2>(self: AsyncResult<_2, A>): AsyncResult<_2, A> =>
+    pipe (
+      Do,
+      apS ("a", self),
+      tap (({ a }) => pipe (a, f, fromAsync<_2, _>)),
+      map (({ a }) => a),
+    )
 
 export const parallel: {
-  <N extends string | number | symbol, E, A, B>(
+  <N extends string | number | symbol, E, B>(
     fb: AsyncResult<E, B>,
-  ): (self: AsyncResult<E, A>) => AsyncResult<E, DoObject<N, A, B>>
-  <N extends string | number | symbol, E, A, B>(
-    self: AsyncResult<E, A>,
-    fb: AsyncResult<E, B>,
-  ): AsyncResult<E, DoObject<N, A, B>>
-} = overload (
-  1,
-  (self, fb) => () =>
-    Promise.all ([toPromise (self), toPromise (fb)]).then (([ma, mb]) =>
-      R.flatMap (mb, () => ma as any),
+  ): <A>(self: AsyncResult<E, A>) => AsyncResult<E, DoObject<N, A, B>>
+} = fb => self => () =>
+  Promise.all ([toPromise (self), toPromise (fb)]).then (([ma, mb]) =>
+    pipe (
+      mb,
+      R.flatMap (() => ma as any),
     ),
-)
+  )
 
 export const parallelTo: {
   <N extends string | number | symbol, E, A, B>(
     name: Exclude<N, keyof A>,
     fb: AsyncResult<E, B>,
   ): (self: AsyncResult<E, A>) => AsyncResult<E, DoObject<N, A, B>>
-  <N extends string | number | symbol, E, A, B>(
-    self: AsyncResult<E, A>,
-    name: Exclude<N, keyof A>,
-    fb: AsyncResult<E, B>,
-  ): AsyncResult<E, DoObject<N, A, B>>
-} = overload (
-  2,
-  (self, name, fb) => () =>
-    Promise.all ([toPromise (self), toPromise (fb)]).then (([ma, mb]) =>
-      R.apS (ma, name, mb),
-    ),
-)
+} = (name, fb) => self => () =>
+  Promise.all ([toPromise (self), toPromise (fb)]).then (([ma, mb]) =>
+    R.apS (name, mb) (ma),
+  )

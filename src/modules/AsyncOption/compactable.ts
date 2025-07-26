@@ -5,7 +5,7 @@ import * as C from "../../types/Compactable"
 import { AsyncOption, AsyncOptionHKT, toPromise, some } from "./async-option"
 import { zero } from "./alternative"
 import { flatMap } from "./monad"
-import { flow } from "../../utils/flow"
+import { flow, pipe } from "../../utils/flow"
 
 export const Compactable: C.Compactable<AsyncOptionHKT> = {
   compact: self => () => toPromise (self).then (O.compact),
@@ -15,8 +15,8 @@ export const Compactable: C.Compactable<AsyncOptionHKT> = {
     ma => () => ma,
     mma =>
       S.make (
-        flatMap (mma, R.match (some, zero)),
-        flatMap (mma, R.match (zero, some)),
+        pipe (mma, flatMap (R.match (some, zero))),
+        pipe (mma, flatMap (R.match (zero, some))),
       ),
   ),
 }

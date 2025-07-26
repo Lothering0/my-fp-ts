@@ -1,7 +1,6 @@
 import * as S from "../types/Show"
 import * as E from "../types/Eq"
 import { LazyArg } from "../types/utils"
-import { overload } from "../utils/overloads"
 
 export const not: {
   <B extends boolean>(b: B): B extends true ? false : true
@@ -9,8 +8,7 @@ export const not: {
 
 export const match: {
   <A>(onFalse: LazyArg<A>, onTrue: LazyArg<A>): (self: boolean) => A
-  <A>(self: boolean, onFalse: LazyArg<A>, onTrue: LazyArg<A>): A
-} = overload (2, (x, onFalse, onTrue) => x ? onTrue () : onFalse ())
+} = (onFalse, onTrue) => self => self ? onTrue () : onFalse ()
 
 export const show: {
   <B extends boolean>(self: B): `${B}`

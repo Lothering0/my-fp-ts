@@ -19,10 +19,6 @@ export const flatMap: {
   <A, B>(
     amb: (a: A) => ReadonlyArray<B>,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<B>
-  <A, B>(
-    self: ReadonlyArray<A>,
-    amb: (a: A) => ReadonlyArray<B>,
-  ): ReadonlyArray<B>
 } = Monad.flatMap
 
 export const compose: {
@@ -30,11 +26,6 @@ export const compose: {
     bmc: (b: B) => ReadonlyArray<C>,
     amb: (a: A) => ReadonlyArray<B>,
   ): (a: A) => ReadonlyArray<C>
-  <A, B, C>(
-    bmc: (b: B) => ReadonlyArray<C>,
-    amb: (a: A) => ReadonlyArray<B>,
-    a: A,
-  ): ReadonlyArray<C>
 } = Monad.compose
 
 export const setTo: {
@@ -42,11 +33,6 @@ export const setTo: {
     name: Exclude<N, keyof A>,
     b: B,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<DoObject<N, A, B>>
-  <N extends string | number | symbol, A, B>(
-    self: ReadonlyArray<A>,
-    name: Exclude<N, keyof A>,
-    b: B,
-  ): ReadonlyArray<DoObject<N, A, B>>
 } = Monad.setTo
 
 export const mapTo: {
@@ -54,11 +40,6 @@ export const mapTo: {
     name: Exclude<N, keyof A>,
     ab: (a: A) => B,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<DoObject<N, A, B>>
-  <N extends string | number | symbol, A, B>(
-    self: ReadonlyArray<A>,
-    name: Exclude<N, keyof A>,
-    ab: (a: A) => B,
-  ): ReadonlyArray<DoObject<N, A, B>>
 } = Monad.mapTo
 
 export const flapTo: {
@@ -66,11 +47,6 @@ export const flapTo: {
     name: Exclude<N, keyof A>,
     fab: ReadonlyArray<(a: A) => B>,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<DoObject<N, A, B>>
-  <N extends string | number | symbol, A, B>(
-    self: ReadonlyArray<A>,
-    name: Exclude<N, keyof A>,
-    fab: ReadonlyArray<(a: A) => B>,
-  ): ReadonlyArray<DoObject<N, A, B>>
 } = Monad.flapTo
 
 export const apS: {
@@ -78,11 +54,6 @@ export const apS: {
     name: Exclude<N, keyof A>,
     fb: ReadonlyArray<B>,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<DoObject<N, A, B>>
-  <N extends string | number | symbol, A, B>(
-    self: ReadonlyArray<A>,
-    name: Exclude<N, keyof A>,
-    fb: ReadonlyArray<B>,
-  ): ReadonlyArray<DoObject<N, A, B>>
 } = Monad.apS
 
 export const flatMapTo: {
@@ -90,24 +61,14 @@ export const flatMapTo: {
     name: Exclude<N, keyof A>,
     amb: (a: A) => ReadonlyArray<B>,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<DoObject<N, A, B>>
-  <N extends string | number | symbol, A, B>(
-    self: ReadonlyArray<A>,
-    name: Exclude<N, keyof A>,
-    amb: (a: A) => ReadonlyArray<B>,
-  ): ReadonlyArray<DoObject<N, A, B>>
 } = Monad.flatMapTo
 
 export const tap: {
   <A, _>(
     am_: (a: A) => ReadonlyArray<_>,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<A>
-  <A, _>(
-    self: ReadonlyArray<A>,
-    am_: (a: A) => ReadonlyArray<_>,
-  ): ReadonlyArray<A>
 } = Monad.tap
 
 export const tapSync: {
   <A, _>(am_: (a: A) => Sync<_>): (self: ReadonlyArray<A>) => ReadonlyArray<A>
-  <A, _>(self: ReadonlyArray<A>, am_: (a: A) => Sync<_>): ReadonlyArray<A>
 } = Monad.tapSync

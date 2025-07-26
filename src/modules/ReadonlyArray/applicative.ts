@@ -2,16 +2,21 @@ import { ReadonlyArrayHKT } from "./readonly-array"
 import { createApplicative } from "../../types/Applicative"
 import { createApplicativeWithIndex } from "../../types/ApplicativeWithIndex"
 import { Functor, FunctorWithIndex, map, mapWithIndex } from "./functor"
-import { overload } from "../../utils/overloads"
+import { pipe } from "../../utils/flow"
 
 export const Applicative = createApplicative<ReadonlyArrayHKT> ({
   ...Functor,
   of: a => [a],
-  ap: overload (
-    1,
-    <A, B>(self: ReadonlyArray<(a: A) => B>, fa: ReadonlyArray<A>) =>
-      map (fa, a => map (self, ab => ab (a))).flat (),
-  ),
+  ap: fa => self =>
+    pipe (
+      fa,
+      map (a =>
+        pipe (
+          self,
+          map (ab => ab (a)),
+        ),
+      ),
+    ).flat (),
 })
 
 export const ApplicativeWithIndex = createApplicativeWithIndex<
@@ -20,11 +25,16 @@ export const ApplicativeWithIndex = createApplicativeWithIndex<
 > ({
   ...FunctorWithIndex,
   ...Applicative,
-  apWithIndex: overload (
-    1,
-    <A, B>(self: ReadonlyArray<(i: number, a: A) => B>, fa: ReadonlyArray<A>) =>
-      mapWithIndex (fa, (i, a) => map (self, ab => ab (i, a))).flat (),
-  ),
+  apWithIndex: fa => self =>
+    pipe (
+      fa,
+      mapWithIndex ((i, a) =>
+        pipe (
+          self,
+          map (ab => ab (i, a)),
+        ),
+      ),
+    ).flat (),
 })
 
 export const of: {
@@ -35,82 +45,34 @@ export const ap: {
   <A, B>(
     fa: ReadonlyArray<A>,
   ): (self: ReadonlyArray<(a: A) => B>) => ReadonlyArray<B>
-  <A, B>(
-    self: ReadonlyArray<(a: A) => B>,
-    fa: ReadonlyArray<A>,
-  ): ReadonlyArray<B>
 } = Applicative.ap
 
 export const apWithIndex: {
-  <A, B>(
+  <A>(
     fa: ReadonlyArray<A>,
-  ): (self: ReadonlyArray<(i: number, a: A) => B>) => ReadonlyArray<B>
-  <A, B>(
-    self: ReadonlyArray<(i: number, a: A) => B>,
-    fa: ReadonlyArray<A>,
-  ): ReadonlyArray<B>
+  ): <B>(self: ReadonlyArray<(i: number, a: A) => B>) => ReadonlyArray<B>
 } = ApplicativeWithIndex.apWithIndex
 
 /** Alias for `ap` */
-export const apply: {
-  <A, B>(
-    fa: ReadonlyArray<A>,
-  ): (self: ReadonlyArray<(a: A) => B>) => ReadonlyArray<B>
-  <A, B>(
-    self: ReadonlyArray<(a: A) => B>,
-    fa: ReadonlyArray<A>,
-  ): ReadonlyArray<B>
-} = Applicative.apply
+export const apply = ap
 
 /** Alias for `apWithIndex` */
-export const applyWithIndex: {
-  <A, B>(
-    fa: ReadonlyArray<A>,
-  ): (self: ReadonlyArray<(i: number, a: A) => B>) => ReadonlyArray<B>
-  <A, B>(
-    self: ReadonlyArray<(i: number, a: A) => B>,
-    fa: ReadonlyArray<A>,
-  ): ReadonlyArray<B>
-} = ApplicativeWithIndex.applyWithIndex
+export const applyWithIndex = apWithIndex
 
 export const flap: {
   <A, B>(
     fab: ReadonlyArray<(a: A) => B>,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<B>
-  <A, B>(
-    self: ReadonlyArray<A>,
-    fab: ReadonlyArray<(a: A) => B>,
-  ): ReadonlyArray<B>
 } = Applicative.flap
 
 export const flapWithIndex: {
   <A, B>(
     fab: ReadonlyArray<(i: number, a: A) => B>,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<B>
-  <A, B>(
-    self: ReadonlyArray<A>,
-    fab: ReadonlyArray<(i: number, a: A) => B>,
-  ): ReadonlyArray<B>
 } = ApplicativeWithIndex.flapWithIndex
 
 /** Alias for `flap` */
-export const flipApply: {
-  <A, B>(
-    fab: ReadonlyArray<(a: A) => B>,
-  ): (self: ReadonlyArray<A>) => ReadonlyArray<B>
-  <A, B>(
-    self: ReadonlyArray<A>,
-    fab: ReadonlyArray<(a: A) => B>,
-  ): ReadonlyArray<B>
-} = Applicative.flipApply
+export const flipApply = flap
 
 /** Alias for `flapWithIndex` */
-export const flipApplyWithIndex: {
-  <A, B>(
-    fab: ReadonlyArray<(i: number, a: A) => B>,
-  ): (self: ReadonlyArray<A>) => ReadonlyArray<B>
-  <A, B>(
-    self: ReadonlyArray<A>,
-    fab: ReadonlyArray<(i: number, a: A) => B>,
-  ): ReadonlyArray<B>
-} = ApplicativeWithIndex.flipApplyWithIndex
+export const flipApplyWithIndex = flapWithIndex

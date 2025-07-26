@@ -1,5 +1,4 @@
 import * as O from "../Option"
-import { overload } from "../../utils/overloads"
 import { HKT, Kind } from "../../types/HKT"
 import { Functor } from "../../types/Functor"
 import { createApplicative } from "../../types/Applicative"
@@ -33,34 +32,23 @@ export const transform = <F extends HKT>(F: Monad<F>) => {
       onNone: LazyArg<B>,
       onSome: (a: A) => B,
     ): (self: Kind<THKT, _, _2, A>) => Kind<F, _, _2, B>
-    <_, _2, A, B>(
-      self: Kind<THKT, _, _2, A>,
-      onNone: LazyArg<B>,
-      onSome: (a: A) => B,
-    ): Kind<F, _, _2, B>
-  } = overload (2, (self, onNone, onSome) =>
-    F.map (self, O.match (onNone, onSome)),
-  )
+  } = flow (O.match, F.map)
 
   const Functor: Functor<THKT> = {
-    map: overload (1, (self, f) => F.map (self, O.map (f))),
+    map: flow (O.map, F.map),
   }
 
   const Applicative = createApplicative<THKT> ({
     ...Functor,
     of: some,
-    ap: overload (
-      1,
-      <_, _2, A, B>(
-        self: Kind<THKT, _, _2, (a: A) => B>,
-        fma: Kind<THKT, _, _2, A>,
-      ): Kind<THKT, _, _2, B> =>
+    ap:
+      <_, _2, A>(fma: Kind<THKT, _, _2, A>) =>
+      <B>(self: Kind<THKT, _, _2, (a: A) => B>): Kind<THKT, _, _2, B> =>
         pipe (
           self,
-          F.map (mf => (mg: O.Option<A>) => O.ap (mf, mg)),
+          F.map (mf => (mg: O.Option<A>) => O.ap (mg) (mf)),
           F.ap (fma),
         ),
-    ),
   })
 
   const Monad = createMonad<THKT> ({

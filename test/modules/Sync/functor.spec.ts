@@ -9,7 +9,7 @@ describe ("functor", () => {
       const x = 1
       const fa: S.Sync<typeof x> = jest.fn (S.of (x))
 
-      const result = S.execute (S.map (fa, identity))
+      const result = S.execute (S.map (identity) (fa))
       expect (result).toEqual (x)
       expect (fa).toHaveBeenCalledTimes (1)
     })
@@ -25,10 +25,11 @@ describe ("functor", () => {
       const fa2: S.Sync<typeof x> = jest.fn (getFa ())
 
       const result1 = pipe (
-        S.map (fa1, a => bc (ab (a))),
+        fa1,
+        S.map (a => bc (ab (a))),
         S.execute,
       )
-      const result2 = pipe (S.map (S.map (fa2, ab), bc), S.execute)
+      const result2 = pipe (fa2, S.map (ab), S.map (bc), S.execute)
 
       expect (result1).toEqual (result2)
       expect (fa1).toHaveBeenCalledTimes (1)

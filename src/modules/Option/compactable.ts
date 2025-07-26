@@ -5,14 +5,15 @@ import { Option, OptionHKT, some } from "./option"
 import { flat, flatMap } from "./monad"
 import { fromResult } from "./utils"
 import { zero } from "./alternative"
+import { pipe } from "../../utils/flow"
 
 export const Compactable: C.Compactable<OptionHKT> = {
   compact: flat,
   compactResults: flatMap (fromResult),
   separate: self =>
     S.make (
-      flatMap (self, R.match (some, zero)),
-      flatMap (self, R.match (zero, some)),
+      pipe (self, flatMap (R.match (some, zero))),
+      pipe (self, flatMap (R.match (zero, some))),
     ),
 }
 
