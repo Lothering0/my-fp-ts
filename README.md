@@ -9,6 +9,6 @@
   - function `let` -> function `setTo`;
   - function `flatten` -> function `flat`
 - My implementation has no `Array` and `NonEmptyArray` monads. Instead there are only `ReadonlyArray` and `NonEmptyReadonlyArray`. This modules don't contain `unsafe` operations.
-- There are modules and type classes which I have not implemented... yet or will never do.
+- There are modules and type classes which I have not implemented yet... or will never do.
 
 Would thank to [Encoding HKTs in TypeScript](https://dev.to/effect/encoding-of-hkts-in-typescript-5c3) article by [Mike Arnaldi](https://github.com/mikearnaldi) for inspiration.
