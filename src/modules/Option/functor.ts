@@ -1,10 +1,10 @@
-import * as F from "../../types/Functor"
+import * as functor from "../../types/Functor"
 import { OptionHKT, Option, some } from "./option"
 import { flow } from "../../utils/flow"
 import { match } from "./utils"
 import { zero } from "./alternative"
 
-export const Functor: F.Functor<OptionHKT> = {
+export const Functor: functor.Functor<OptionHKT> = {
   map: fab => flow (match (zero, flow (fab, some))),
 }
 

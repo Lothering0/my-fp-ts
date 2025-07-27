@@ -1,4 +1,4 @@
-import * as A from "../../types/Alt"
+import * as alt from "../../types/Alt"
 import { some, Option, OptionHKT } from "./option"
 import { identity } from "../Identity"
 import { LazyArg } from "../../types/utils"
@@ -21,6 +21,6 @@ export const catchAll =
   <A>(self: Option<A>): Option<A | B> =>
     match (that, some<A | B>) (self)
 
-export const Alt: A.Alt<OptionHKT> = {
+export const Alt: alt.Alt<OptionHKT> = {
   orElse,
 }

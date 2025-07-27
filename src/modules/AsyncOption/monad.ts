@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as A from "../Async"
-import * as AR from "../AsyncResult"
-import * as R from "../Result"
-import * as O from "../Option"
-import * as SO from "../SyncOption"
-import * as SR from "../SyncResult"
+import * as async from "../Async"
+import * as asyncResult from "../AsyncResult"
+import * as result from "../Result"
+import * as option from "../Option"
+import * as syncOption from "../SyncOption"
+import * as syncResult from "../SyncResult"
 import { Sync } from "../Sync"
 import { createMonad } from "../../types/Monad"
 import {
@@ -22,7 +22,7 @@ export const Monad = createMonad<AsyncOptionHKT> ({
   ...Applicative,
   flat: self => () =>
     toPromise (self).then (ma =>
-      O.isNone (ma) ? ma : pipe (ma, O.fromSome, toPromise),
+      option.isNone (ma) ? ma : pipe (ma, option.fromSome, toPromise),
     ),
 })
 
@@ -91,29 +91,31 @@ export const tapSync: {
 } = Monad.tapSync
 
 export const tapOption: {
-  <A, _>(f: (a: A) => O.Option<_>): (self: AsyncOption<A>) => AsyncOption<A>
-} = f => self =>
-  pipe (
-    Do,
-    apS ("a", self),
-    tap (({ a }) => pipe (a, f, A.of)),
-    map (({ a }) => a),
-  )
-
-export const tapResult: {
-  <E, A, _>(
-    f: (a: A) => R.Result<E, _>,
+  <A, _>(
+    f: (a: A) => option.Option<_>,
   ): (self: AsyncOption<A>) => AsyncOption<A>
 } = f => self =>
   pipe (
     Do,
     apS ("a", self),
-    tap (({ a }) => pipe (a, f, O.fromResult, A.of)),
+    tap (({ a }) => pipe (a, f, async.of)),
+    map (({ a }) => a),
+  )
+
+export const tapResult: {
+  <E, A, _>(
+    f: (a: A) => result.Result<E, _>,
+  ): (self: AsyncOption<A>) => AsyncOption<A>
+} = f => self =>
+  pipe (
+    Do,
+    apS ("a", self),
+    tap (({ a }) => pipe (a, f, option.fromResult, async.of)),
     map (({ a }) => a),
   )
 
 export const tapAsync: {
-  <A, _>(f: (a: A) => A.Async<_>): (self: AsyncOption<A>) => AsyncOption<A>
+  <A, _>(f: (a: A) => async.Async<_>): (self: AsyncOption<A>) => AsyncOption<A>
 } = f => self =>
   pipe (
     Do,
@@ -124,7 +126,7 @@ export const tapAsync: {
 
 export const tapAsyncResult: {
   <E, A, _>(
-    f: (a: A) => AR.AsyncResult<E, _>,
+    f: (a: A) => asyncResult.AsyncResult<E, _>,
   ): (self: AsyncOption<A>) => AsyncOption<A>
 } = f => self =>
   pipe (
@@ -134,9 +136,9 @@ export const tapAsyncResult: {
       pipe (
         a,
         f,
-        AR.match (
-          () => O.none,
-          () => O.some (a),
+        asyncResult.match (
+          () => option.none,
+          () => option.some (a),
         ),
       ),
     ),
@@ -145,25 +147,25 @@ export const tapAsyncResult: {
 
 export const tapSyncOption: {
   <A, _>(
-    f: (a: A) => SO.SyncOption<_>,
+    f: (a: A) => syncOption.SyncOption<_>,
   ): (self: AsyncOption<A>) => AsyncOption<A>
 } = f => self =>
   pipe (
     Do,
     apS ("a", self),
-    tapOption (({ a }) => pipe (a, f, SO.execute)),
+    tapOption (({ a }) => pipe (a, f, syncOption.execute)),
     map (({ a }) => a),
   )
 
 export const tapSyncResult: {
   <E, A, _>(
-    f: (a: A) => SR.SyncResult<E, _>,
+    f: (a: A) => syncResult.SyncResult<E, _>,
   ): (self: AsyncOption<A>) => AsyncOption<A>
 } = f => self =>
   pipe (
     Do,
     apS ("a", self),
-    tapResult (({ a }) => pipe (a, f, SR.execute)),
+    tapResult (({ a }) => pipe (a, f, syncResult.execute)),
     map (({ a }) => a),
   )
 
@@ -175,7 +177,7 @@ export const parallel: {
   Promise.all ([toPromise (fa), toPromise (fb)]).then (([ma, mb]) =>
     pipe (
       mb,
-      O.flatMap (() => ma as any),
+      option.flatMap (() => ma as any),
     ),
   )
 
@@ -186,5 +188,5 @@ export const parallelTo: {
   ): (fa: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
 } = (name, fb) => fa => () =>
   Promise.all ([toPromise (fa), toPromise (fb)]).then (([ma, mb]) =>
-    O.apS (name, mb) (ma),
+    option.apS (name, mb) (ma),
   )

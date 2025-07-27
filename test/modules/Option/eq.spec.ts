@@ -1,40 +1,40 @@
-import * as O from "../../../src/modules/Option"
-import * as N from "../../../src/modules/Number"
+import * as option from "../../../src/modules/Option"
+import * as number from "../../../src/modules/Number"
 
 interface TestCase {
   readonly description: string
-  readonly option1: O.Option<number>
-  readonly option2: O.Option<number>
+  readonly option1: option.Option<number>
+  readonly option2: option.Option<number>
   readonly expected: boolean
 }
 
 describe ("getEq", () => {
-  const Eq = O.getEq (N.Eq)
+  const Eq = option.getEq (number.Eq)
 
   const testCases: TestCase[] = [
     {
       description: "should return `true` for nones",
-      option1: O.none,
-      option2: O.none,
+      option1: option.none,
+      option2: option.none,
       expected: true,
     },
     {
       description:
         "should return `false` if first is `none` and second is `some`",
-      option1: O.some (1),
-      option2: O.none,
+      option1: option.some (1),
+      option2: option.none,
       expected: false,
     },
     {
       description: "should return `false` for `some`s with different values",
-      option1: O.some (0),
-      option2: O.some (1),
+      option1: option.some (0),
+      option2: option.some (1),
       expected: false,
     },
     {
       description: "should return `true` for `some`s with same values",
-      option1: O.some (1),
-      option2: O.some (1),
+      option1: option.some (1),
+      option2: option.some (1),
       expected: true,
     },
   ]

@@ -1,11 +1,11 @@
-import * as Tr from "../../../src/modules/Tree"
-import * as N from "../../../src/modules/Number"
+import * as tree from "../../../src/modules/Tree"
+import * as number from "../../../src/modules/Number"
 import { describeFunctorLaws } from "../../_utils/describeFunctorLaws"
 
-describeFunctorLaws (Tr.Functor, [
-  Tr.make (1),
-  Tr.make (1, [Tr.make (2), Tr.make (3)]),
-  Tr.make (1, [Tr.make (2, [Tr.make (4)]), Tr.make (3)]),
+describeFunctorLaws (tree.Functor, [
+  tree.make (1),
+  tree.make (1, [tree.make (2), tree.make (3)]),
+  tree.make (1, [tree.make (2, [tree.make (4)]), tree.make (3)]),
 ])
 
 describe ("functor", () => {
@@ -13,11 +13,13 @@ describe ("functor", () => {
     it ("should apply function to value of each node", () => {
       const n = 1
       expect (
-        Tr.map (N.add (n)) (Tr.make (1, [Tr.make (2, [Tr.make (4)]), Tr.make (3)])),
+        tree.map (number.add (n)) (
+          tree.make (1, [tree.make (2, [tree.make (4)]), tree.make (3)]),
+        ),
       ).toEqual (
-        Tr.make (N.add (1) (n), [
-          Tr.make (N.add (2) (n), [Tr.make (N.add (4) (n))]),
-          Tr.make (N.add (3) (n)),
+        tree.make (number.add (1) (n), [
+          tree.make (number.add (2) (n), [tree.make (number.add (4) (n))]),
+          tree.make (number.add (3) (n)),
         ]),
       )
     })

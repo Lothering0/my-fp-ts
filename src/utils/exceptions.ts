@@ -1,5 +1,5 @@
+import * as result from "../modules/Result"
 import { LazyArg } from "../types/utils"
-import * as R from "../modules/Result"
 
 export const raise: {
   <A>(a: A): never
@@ -8,11 +8,11 @@ export const raise: {
 }
 
 export const tryDo: {
-  <E, A>(a: LazyArg<A>): R.Result<E, A>
+  <E, A>(a: LazyArg<A>): result.Result<E, A>
 } = a => {
   try {
-    return R.success (a ())
+    return result.success (a ())
   } catch (exception) {
-    return R.failure (exception)
+    return result.failure (exception)
   }
 }

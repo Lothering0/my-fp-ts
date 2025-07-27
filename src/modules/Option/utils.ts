@@ -1,4 +1,4 @@
-import * as R from "../Result"
+import * as result from "../Result"
 import { none, Option, some, Some } from "./option"
 import { LazyArg } from "../../types/utils"
 import { flow, pipe } from "../../utils/flow"
@@ -19,10 +19,10 @@ export const toOption: {
 } = a => a == null ? none : some (a)
 
 export const fromResult: {
-  <_, A>(ma: R.Result<_, A>): Option<A>
-} = R.match (zero, some)
+  <_, A>(ma: result.Result<_, A>): Option<A>
+} = result.match (zero, some)
 
 export const toResult =
   <E>(onNone: LazyArg<E>) =>
-  <A>(self: Option<A>): R.Result<E, A> =>
-    match (flow (onNone, R.failure), R.success<E, A>) (self)
+  <A>(self: Option<A>): result.Result<E, A> =>
+    match (flow (onNone, result.failure), result.success<E, A>) (self)

@@ -1,4 +1,4 @@
-import * as R from "../Result"
+import * as result from "../Result"
 import { createApplicative } from "../../types/Applicative"
 import { AsyncResultHKT, success, toPromise, AsyncResult } from "./async-result"
 import { pipe } from "../../utils/flow"
@@ -10,10 +10,10 @@ export const Applicative = createApplicative<AsyncResultHKT> ({
   ap: fma => self => () =>
     Promise.all ([toPromise (self), toPromise (fma)]).then (([mab, ma]) =>
       pipe (
-        R.Do,
-        R.apS ("a", ma),
-        R.apS ("ab", mab),
-        R.map (({ ab, a }) => ab (a)),
+        result.Do,
+        result.apS ("a", ma),
+        result.apS ("ab", mab),
+        result.map (({ ab, a }) => ab (a)),
       ),
     ),
 })

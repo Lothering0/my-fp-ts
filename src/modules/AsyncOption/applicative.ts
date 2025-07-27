@@ -1,4 +1,4 @@
-import * as O from "../Option"
+import * as option from "../Option"
 import { createApplicative } from "../../types/Applicative"
 import { AsyncOptionHKT, some, toPromise, AsyncOption } from "./async-option"
 import { pipe } from "../../utils/flow"
@@ -10,10 +10,10 @@ export const Applicative = createApplicative<AsyncOptionHKT> ({
   ap: fma => self => () =>
     Promise.all ([toPromise (self), toPromise (fma)]).then (([mab, ma]) =>
       pipe (
-        O.Do,
-        O.apS ("a", ma),
-        O.apS ("ab", mab),
-        O.map (({ ab, a }) => ab (a)),
+        option.Do,
+        option.apS ("a", ma),
+        option.apS ("ab", mab),
+        option.map (({ ab, a }) => ab (a)),
       ),
     ),
 })

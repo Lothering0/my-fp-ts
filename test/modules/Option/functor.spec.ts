@@ -1,19 +1,21 @@
-import * as O from "../../../src/modules/Option"
-import * as N from "../../../src/modules/Number"
+import * as option from "../../../src/modules/Option"
+import * as number from "../../../src/modules/Number"
 import { describeFunctorLaws } from "../../_utils/describeFunctorLaws"
 
-describeFunctorLaws (O.Functor, [O.some (1), O.none])
+describeFunctorLaws (option.Functor, [option.some (1), option.none])
 
 describe ("functor", () => {
   describe ("map", () => {
     it ("should return `none` if it was provided", () => {
-      expect (O.map (N.add (1)) (O.none)).toEqual (O.none)
+      expect (option.map (number.add (1)) (option.none)).toEqual (option.none)
     })
 
     it ("should apply function to `some` value", () => {
       const x = 1
       const n = 1
-      expect (O.map (N.add (n)) (O.some (x))).toEqual (O.some (N.add (x) (n)))
+      expect (option.map (number.add (n)) (option.some (x))).toEqual (
+        option.some (number.add (x) (n)),
+      )
     })
   })
 })

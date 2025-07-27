@@ -1,5 +1,5 @@
-import * as RA from "../../../src/modules/ReadonlyArray"
-import * as N from "../../../src/modules/Number"
+import * as readonlyArray from "../../../src/modules/ReadonlyArray"
+import * as number from "../../../src/modules/Number"
 
 interface TestCase {
   readonly description: string
@@ -9,7 +9,7 @@ interface TestCase {
 }
 
 describe ("getEq", () => {
-  const Eq = RA.getEq (N.Eq)
+  const Eq = readonlyArray.getEq (number.Eq)
 
   const testCases: ReadonlyArray<TestCase> = [
     {

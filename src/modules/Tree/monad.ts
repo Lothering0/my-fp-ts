@@ -1,5 +1,5 @@
-import * as RA from "../ReadonlyArray"
-import * as M from "../../types/Monad"
+import * as readonlyArray from "../ReadonlyArray"
+import * as monad from "../../types/Monad"
 import { Sync } from "../Sync"
 import { DoObject } from "../../types/DoObject"
 import { Tree, TreeHKT } from "./tree"
@@ -7,12 +7,12 @@ import { Applicative } from "./applicative"
 import { make, valueOf, forestOf } from "./utils"
 import { pipe } from "../../utils/flow"
 
-export const Monad: M.Monad<TreeHKT> = M.createMonad<TreeHKT> ({
+export const Monad: monad.Monad<TreeHKT> = monad.createMonad<TreeHKT> ({
   ...Applicative,
   flat: self =>
     make (
       pipe (self, valueOf, valueOf),
-      RA.concat (pipe (self, forestOf, RA.map (flat))) (
+      readonlyArray.concat (pipe (self, forestOf, readonlyArray.map (flat))) (
         pipe (self, valueOf, forestOf),
       ),
     ),

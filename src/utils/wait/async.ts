@@ -1,6 +1,6 @@
-import * as A from "../../modules/Async"
+import * as async from "../../modules/Async"
 import { _ } from "../underscore"
 
 export const wait: {
-  (ms: number): A.Async<void>
+  (ms: number): async.Async<void>
 } = ms => () => new Promise (f => setTimeout (() => f (_), ms))

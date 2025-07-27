@@ -1,15 +1,15 @@
-import * as R from "../Result"
-import * as F from "../../types/Functor"
+import * as result from "../Result"
+import * as functor from "../../types/Functor"
 import { createBifunctor } from "../../types/Bifunctor"
 import { AsyncResultHKT, toPromise, AsyncResult } from "./async-result"
 
-export const Functor: F.Functor<AsyncResultHKT> = {
-  map: ab => self => () => toPromise (self).then (R.map (ab)),
+export const Functor: functor.Functor<AsyncResultHKT> = {
+  map: ab => self => () => toPromise (self).then (result.map (ab)),
 }
 
 export const Bifunctor = createBifunctor<AsyncResultHKT> ({
   ...Functor,
-  mapLeft: ed => self => () => toPromise (self).then (R.mapLeft (ed)),
+  mapLeft: ed => self => () => toPromise (self).then (result.mapLeft (ed)),
 })
 
 export const map: {

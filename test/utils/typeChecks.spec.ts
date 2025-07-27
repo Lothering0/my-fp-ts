@@ -1,4 +1,4 @@
-import * as T from "../../src/utils/typeChecks"
+import * as typeChecks from "../../src/utils/typeChecks"
 
 describe ("typeChecks", () => {
   const typeByName = {
@@ -19,7 +19,7 @@ describe ("typeChecks", () => {
     Object.values (typeByName).forEach (x => {
       const expected = typeof x
       it (`should correctly determine \`${expected}\` type`, () =>
-        expect (T.typeOf (x)).toBe (expected))
+        expect (typeChecks.typeOf (x)).toBe (expected))
     })
   })
 
@@ -31,47 +31,47 @@ describe ("typeChecks", () => {
 
   const testCases: ReadonlyArray<TestCase> = [
     {
-      f: T.isNumber,
+      f: typeChecks.isNumber,
       values: [typeByName.number],
     },
     {
-      f: T.isBigint,
+      f: typeChecks.isBigint,
       values: [typeByName.bigint],
     },
     {
-      f: T.isString,
+      f: typeChecks.isString,
       values: [typeByName.string],
     },
     {
-      f: T.isBoolean,
+      f: typeChecks.isBoolean,
       values: [typeByName.true, typeByName.false],
     },
     {
-      f: T.isNullableObject,
+      f: typeChecks.isNullableObject,
       values: [typeByName.object, typeByName.array, typeByName.null],
     },
     {
-      f: T.isObject,
+      f: typeChecks.isObject,
       values: [typeByName.object, typeByName.array],
     },
     {
-      f: T.isFunction,
+      f: typeChecks.isFunction,
       values: [typeByName.function],
     },
     {
-      f: T.isNull,
+      f: typeChecks.isNull,
       values: [typeByName.null],
     },
     {
-      f: T.isUndefined,
+      f: typeChecks.isUndefined,
       values: [typeByName.undefined],
     },
     {
-      f: T.isSymbol,
+      f: typeChecks.isSymbol,
       values: [typeByName.symbol],
     },
     {
-      f: T.isDefined,
+      f: typeChecks.isDefined,
       values: Object.values (typeByName).filter (
         x => x !== null && x !== undefined,
       ),

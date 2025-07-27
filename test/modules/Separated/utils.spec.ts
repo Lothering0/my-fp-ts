@@ -1,9 +1,11 @@
-import * as S from "../../../src/modules/Separated"
+import * as separated from "../../../src/modules/Separated"
 
 describe ("make", () => {
   it ("should create correct instance of `Separated`", () =>
-    expect (S.make ("a", 1)).toEqual<S.Separated<string, number>> ({
-      left: "a",
-      right: 1,
-    }))
+    expect (separated.make ("a", 1)).toEqual<separated.Separated<string, number>> (
+      {
+        left: "a",
+        right: 1,
+      },
+    ))
 })

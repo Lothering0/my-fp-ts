@@ -1,12 +1,12 @@
 import * as fs from "node:fs"
 import * as fsPromises from "node:fs/promises"
-import * as SR from "../modules/SyncResult"
-import * as AR from "../modules/AsyncResult"
+import * as syncResult from "../modules/SyncResult"
+import * as asyncResult from "../modules/AsyncResult"
 
 export const readFileSync: {
-  (path: string): SR.SyncResult<Error, Buffer>
-} = path => SR.fromSync (() => fs.readFileSync (path))
+  (path: string): syncResult.SyncResult<Error, Buffer>
+} = path => syncResult.fromSync (() => fs.readFileSync (path))
 
 export const readFile: {
-  (path: string): AR.AsyncResult<Error, Buffer>
-} = path => AR.fromAsync (() => fsPromises.readFile (path))
+  (path: string): asyncResult.AsyncResult<Error, Buffer>
+} = path => asyncResult.fromAsync (() => fsPromises.readFile (path))

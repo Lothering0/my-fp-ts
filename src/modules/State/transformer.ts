@@ -1,4 +1,4 @@
-import * as S from "../State"
+import * as state from "../State"
 import { HKT, Kind } from "../../types/HKT"
 import { Functor } from "../../types/Functor"
 import { createApplicative } from "../../types/Applicative"
@@ -16,8 +16,8 @@ export const transform = <F extends HKT>(F: Monad<F>) => {
   type THKT = StateT<F>
 
   const fromState: {
-    <S, E, A>(self: S.State<S, A>): Kind<THKT, S, E, A>
-  } = self => s => F.of (S.run (s) (self))
+    <S, E, A>(self: state.State<S, A>): Kind<THKT, S, E, A>
+  } = self => s => F.of (state.run (s) (self))
 
   const fromF: {
     <S, R, E, A>(self: Kind<F, R, E, A>): Kind<THKT, S, E, A>

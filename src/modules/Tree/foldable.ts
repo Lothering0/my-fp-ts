@@ -1,20 +1,20 @@
-import * as RA from "../ReadonlyArray"
-import * as F from "../../types/Foldable"
+import * as readonlyArray from "../ReadonlyArray"
+import * as foldable from "../../types/Foldable"
 import { Tree, TreeHKT } from "./tree"
 import { forestOf, valueOf } from "./utils"
 import { pipe } from "../../utils/flow"
 
-export const Foldable: F.Foldable<TreeHKT> = {
+export const Foldable: foldable.Foldable<TreeHKT> = {
   reduce: (b, bab) => self =>
-    RA.reduce (bab (b, valueOf (self)), (b, tree) => pipe (tree, reduce (b, bab))) (
-      forestOf (self),
-    ),
+    readonlyArray.reduce (bab (b, valueOf (self)), (b, tree) =>
+      pipe (tree, reduce (b, bab)),
+    ) (forestOf (self)),
   reduceRight: (b, abb) => self =>
     abb (
       valueOf (self),
-      RA.reduceRight (b, (tree, b) => pipe (tree, reduceRight (b, abb))) (
-        forestOf (self),
-      ),
+      readonlyArray.reduceRight (b, (tree, b) =>
+        pipe (tree, reduceRight (b, abb)),
+      ) (forestOf (self)),
     ),
 }
 

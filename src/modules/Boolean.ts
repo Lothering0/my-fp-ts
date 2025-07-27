@@ -1,5 +1,5 @@
-import * as S from "../types/Show"
-import * as E from "../types/Eq"
+import * as show_ from "../types/Show"
+import * as eq from "../types/Eq"
 import { LazyArg } from "../types/utils"
 
 export const not: {
@@ -14,8 +14,8 @@ export const show: {
   <B extends boolean>(self: B): `${B}`
 } = self => `${self}`
 
-export const Show: S.Show<boolean> = { show }
+export const Show: show_.Show<boolean> = { show }
 
-export const Eq: E.Eq<boolean> = E.EqStrict
+export const Eq: eq.Eq<boolean> = eq.EqStrict
 
 export const { equals } = Eq

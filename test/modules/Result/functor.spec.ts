@@ -1,20 +1,22 @@
-import * as R from "../../../src/modules/Result"
-import * as N from "../../../src/modules/Number"
+import * as result from "../../../src/modules/Result"
+import * as number from "../../../src/modules/Number"
 import { describeFunctorLaws } from "../../_utils/describeFunctorLaws"
 
-describeFunctorLaws (R.Functor, [R.failure ("a"), R.success (1)])
+describeFunctorLaws (result.Functor, [result.failure ("a"), result.success (1)])
 
 describe ("functor", () => {
   describe ("map", () => {
     it ("should return `failure` if it was provided", () => {
-      const fe = R.failure ("a")
-      expect (R.map (N.add (1)) (fe)).toEqual (fe)
+      const fe = result.failure ("a")
+      expect (result.map (number.add (1)) (fe)).toEqual (fe)
     })
 
     it ("should apply function to `success` value", () => {
       const x = 1
       const n = 1
-      expect (R.map (N.add (n)) (R.success (x))).toEqual (R.success (N.add (x) (n)))
+      expect (result.map (number.add (n)) (result.success (x))).toEqual (
+        result.success (number.add (x) (n)),
+      )
     })
   })
 })

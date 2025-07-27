@@ -1,4 +1,4 @@
-import * as Eq from "../../src/types/Eq"
+import * as eq from "../../src/types/Eq"
 
 const permutations = [
   { a: 0, b: 0, c: 0 },
@@ -16,13 +16,13 @@ describe ("Eq", () => {
     describe ("equals", () => {
       it ("should satisfy reflexivity law", () => {
         permutations.forEach (({ a }) => {
-          expect (Eq.EqStrict.equals (a) (a) === true).toBe (true)
+          expect (eq.EqStrict.equals (a) (a) === true).toBe (true)
         })
       })
 
       it ("should satisfy symmetry law", () => {
         permutations.forEach (({ a, b }) => {
-          expect (Eq.EqStrict.equals (a) (b) === Eq.EqStrict.equals (b) (a)).toBe (
+          expect (eq.EqStrict.equals (a) (b) === eq.EqStrict.equals (b) (a)).toBe (
             true,
           )
         })
@@ -30,9 +30,9 @@ describe ("Eq", () => {
 
       it ("should satisfy transitivity law", () => {
         permutations.forEach (({ a, b, c }) => {
-          const ab = Eq.EqStrict.equals (a) (b) === true
-          const bc = Eq.EqStrict.equals (b) (c) === true
-          const ac = Eq.EqStrict.equals (a) (c) === true
+          const ab = eq.EqStrict.equals (a) (b) === true
+          const bc = eq.EqStrict.equals (b) (c) === true
+          const ac = eq.EqStrict.equals (a) (c) === true
           if (ab && bc) expect (ac).toBe (true)
         })
       })

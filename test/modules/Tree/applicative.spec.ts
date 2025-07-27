@@ -1,20 +1,23 @@
-import * as Tr from "../../../src/modules/Tree"
-import * as N from "../../../src/modules/Number"
+import * as tree from "../../../src/modules/Tree"
+import * as number from "../../../src/modules/Number"
 import { describeApplicativeLaws } from "../../_utils/describeApplicativeLaws"
 
 describeApplicativeLaws (
-  Tr.Applicative,
+  tree.Applicative,
   [
-    Tr.make (1),
-    Tr.make (1, [Tr.make (2), Tr.make (3)]),
-    Tr.make (1, [Tr.make (2, [Tr.make (4)]), Tr.make (3)]),
+    tree.make (1),
+    tree.make (1, [tree.make (2), tree.make (3)]),
+    tree.make (1, [tree.make (2, [tree.make (4)]), tree.make (3)]),
   ],
   [
-    Tr.make (N.add (1)),
-    Tr.make (N.add (1), [Tr.make (N.add (2)), Tr.make (N.add (3))]),
-    Tr.make (N.add (1), [
-      Tr.make (N.add (2), [Tr.make (N.add (4))]),
-      Tr.make (N.add (3)),
+    tree.make (number.add (1)),
+    tree.make (number.add (1), [
+      tree.make (number.add (2)),
+      tree.make (number.add (3)),
+    ]),
+    tree.make (number.add (1), [
+      tree.make (number.add (2), [tree.make (number.add (4))]),
+      tree.make (number.add (3)),
     ]),
   ],
 )

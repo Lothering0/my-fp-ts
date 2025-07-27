@@ -1,18 +1,18 @@
-import * as RA from "../ReadonlyArray"
-import * as Ap from "../../types/Applicative"
-import * as ApI from "../../types/ApplicativeWithIndex"
+import * as readonlyArray from "../ReadonlyArray"
+import * as applicative from "../../types/Applicative"
+import * as applicativeWithIndex from "../../types/ApplicativeWithIndex"
 import {
   NonEmptyReadonlyArray,
   NonEmptyReadonlyArrayHKT,
 } from "./non-empty-readonly-array"
 
 export const Applicative = {
-  ...RA.Applicative,
-} as Ap.Applicative<NonEmptyReadonlyArrayHKT>
+  ...readonlyArray.Applicative,
+} as applicative.Applicative<NonEmptyReadonlyArrayHKT>
 
 export const ApplicativeWithIndex = {
-  ...RA.ApplicativeWithIndex,
-} as ApI.ApplicativeWithIndex<NonEmptyReadonlyArrayHKT, number>
+  ...readonlyArray.ApplicativeWithIndex,
+} as applicativeWithIndex.ApplicativeWithIndex<NonEmptyReadonlyArrayHKT, number>
 
 export const of: {
   <A>(a: A): NonEmptyReadonlyArray<A>

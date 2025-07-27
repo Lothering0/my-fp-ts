@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as R from "../Result"
-import * as A from "../Async"
-import * as SR from "../SyncResult"
+import * as result from "../Result"
+import * as async from "../Async"
+import * as syncResult from "../SyncResult"
 import { Sync } from "../Sync"
 import { createMonad } from "../../types/Monad"
 import { map } from "./functor"
@@ -19,7 +19,7 @@ export const Monad = createMonad<AsyncResultHKT> ({
   ...Applicative,
   flat: self => () =>
     toPromise (self).then (ma =>
-      R.isFailure (ma) ? ma : pipe (ma, R.fromSuccess, toPromise),
+      result.isFailure (ma) ? ma : pipe (ma, result.fromSuccess, toPromise),
     ),
 })
 
@@ -91,30 +91,30 @@ export const tapSync: {
 
 export const tapResult: {
   <E, A, _>(
-    f: (a: A) => R.Result<E, _>,
+    f: (a: A) => result.Result<E, _>,
   ): (self: AsyncResult<E, A>) => AsyncResult<E, A>
 } = f => self =>
   pipe (
     Do,
     apS ("a", self),
-    tap (({ a }) => pipe (a, f, A.of)),
+    tap (({ a }) => pipe (a, f, async.of)),
     map (({ a }) => a),
   )
 
 export const tapSyncResult: {
   <E, A, _>(
-    f: (a: A) => SR.SyncResult<E, _>,
+    f: (a: A) => syncResult.SyncResult<E, _>,
   ): (self: AsyncResult<E, A>) => AsyncResult<E, A>
 } = f => self =>
   pipe (
     Do,
     apS ("a", self),
-    tap (({ a }) => pipe (a, f, SR.execute, A.of)),
+    tap (({ a }) => pipe (a, f, syncResult.execute, async.of)),
     map (({ a }) => a),
   )
 
 export const tapAsync =
-  <A, _>(f: (a: A) => A.Async<_>) =>
+  <A, _>(f: (a: A) => async.Async<_>) =>
   <_2>(self: AsyncResult<_2, A>): AsyncResult<_2, A> =>
     pipe (
       Do,
@@ -131,7 +131,7 @@ export const parallel: {
   Promise.all ([toPromise (self), toPromise (fb)]).then (([ma, mb]) =>
     pipe (
       mb,
-      R.flatMap (() => ma as any),
+      result.flatMap (() => ma as any),
     ),
   )
 
@@ -142,5 +142,5 @@ export const parallelTo: {
   ): (self: AsyncResult<E, A>) => AsyncResult<E, DoObject<N, A, B>>
 } = (name, fb) => self => () =>
   Promise.all ([toPromise (self), toPromise (fb)]).then (([ma, mb]) =>
-    R.apS (name, mb) (ma),
+    result.apS (name, mb) (ma),
   )

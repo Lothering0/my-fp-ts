@@ -1,14 +1,14 @@
-import * as SO from "../../../src/modules/SyncOption"
-import * as O from "../../../src/modules/Option"
+import * as syncOption from "../../../src/modules/SyncOption"
+import * as option from "../../../src/modules/Option"
 
 describe ("separate", () => {
   it ("should call `SyncOption` instance only once", () => {
-    const asyncOption: SO.SyncOption<never> = jest.fn (() => O.none)
+    const fa: syncOption.SyncOption<never> = jest.fn (() => option.none)
 
-    const separated = SO.separate (asyncOption)
+    const separated = syncOption.separate (fa)
     separated.left ()
     separated.right ()
 
-    expect (asyncOption).toHaveBeenCalledTimes (1)
+    expect (fa).toHaveBeenCalledTimes (1)
   })
 })

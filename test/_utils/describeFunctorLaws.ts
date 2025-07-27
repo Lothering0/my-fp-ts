@@ -1,4 +1,4 @@
-import * as N from "../../src/modules/Number"
+import * as number from "../../src/modules/Number"
 import { HKT, Kind } from "../../src/types/HKT"
 import { Functor } from "../../src/types/Functor"
 import { identity } from "../../src/modules/Identity"
@@ -16,8 +16,8 @@ export const describeFunctorLaws: {
       })
 
       it ("should satisfy composition law", () => {
-        const ab = N.add (5)
-        const bc = N.divide (2)
+        const ab = number.add (5)
+        const bc = number.divide (2)
 
         fas.forEach (fa => {
           expect (

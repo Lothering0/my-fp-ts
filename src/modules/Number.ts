@@ -1,6 +1,6 @@
-import * as O from "./Option"
-import * as E from "../types/Eq"
-import * as S from "../types/Show"
+import * as option from "./Option"
+import * as eq from "../types/Eq"
+import * as show_ from "../types/Show"
 import { not } from "./Boolean"
 import { Predicate } from "./Predicate"
 import { Semigroup } from "../types/Semigroup"
@@ -40,9 +40,9 @@ export const show: {
   <N extends number>(self: N): `${N}`
 } = self => `${self}`
 
-export const Show: S.Show<number> = { show }
+export const Show: show_.Show<number> = { show }
 
-export const Eq: E.Eq<number> = E.EqStrict
+export const Eq: eq.Eq<number> = eq.EqStrict
 
 export const { equals } = Eq
 
@@ -59,8 +59,8 @@ export const divide: {
 } = y => x => x / y
 
 export const divideSafe: {
-  (y: number): (x: number) => O.Option<number>
-} = y => x => y === 0 ? O.none : O.some (x / y)
+  (y: number): (x: number) => option.Option<number>
+} = y => x => y === 0 ? option.none : option.some (x / y)
 
 export const isEven: Predicate<number> = x => x % 2 === 0
 

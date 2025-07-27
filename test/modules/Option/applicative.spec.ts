@@ -1,9 +1,9 @@
-import * as O from "../../../src/modules/Option"
-import * as N from "../../../src/modules/Number"
+import * as option from "../../../src/modules/Option"
+import * as number from "../../../src/modules/Number"
 import { describeApplicativeLaws } from "../../_utils/describeApplicativeLaws"
 
 describeApplicativeLaws (
-  O.Applicative,
-  [O.some (1), O.none],
-  [O.some (N.add (5)), O.none],
+  option.Applicative,
+  [option.some (1), option.none],
+  [option.some (number.add (5)), option.none],
 )

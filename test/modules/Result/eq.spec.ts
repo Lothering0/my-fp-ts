@@ -1,47 +1,47 @@
-import * as R from "../../../src/modules/Result"
-import * as N from "../../../src/modules/Number"
-import * as S from "../../../src/modules/String"
+import * as result from "../../../src/modules/Result"
+import * as number from "../../../src/modules/Number"
+import * as string from "../../../src/modules/String"
 
 interface TestCase {
   readonly description: string
-  readonly result1: R.Result<string, number>
-  readonly result2: R.Result<string, number>
+  readonly result1: result.Result<string, number>
+  readonly result2: result.Result<string, number>
   readonly expected: boolean
 }
 
 describe ("getEq", () => {
-  const Eq = R.getEq (S.Eq, N.Eq)
+  const Eq = result.getEq (string.Eq, number.Eq)
 
   const testCases: TestCase[] = [
     {
       description: "should return `false` for different `failure`s",
-      result1: R.failure ("a"),
-      result2: R.failure ("b"),
+      result1: result.failure ("a"),
+      result2: result.failure ("b"),
       expected: false,
     },
     {
       description: "should return `true` for same `failure`s",
-      result1: R.failure ("a"),
-      result2: R.failure ("a"),
+      result1: result.failure ("a"),
+      result2: result.failure ("a"),
       expected: true,
     },
     {
       description:
         "should return `false` if first is `failure` and second is `success`",
-      result1: R.failure ("a"),
-      result2: R.success (1),
+      result1: result.failure ("a"),
+      result2: result.success (1),
       expected: false,
     },
     {
       description: "should return `false` for different `success`es",
-      result1: R.success (0),
-      result2: R.success (1),
+      result1: result.success (0),
+      result2: result.success (1),
       expected: false,
     },
     {
       description: "should return `true` for same `success`es",
-      result1: R.success (1),
-      result2: R.success (1),
+      result1: result.success (1),
+      result2: result.success (1),
       expected: true,
     },
   ]

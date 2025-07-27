@@ -1,18 +1,18 @@
-import * as RA from "../ReadonlyArray"
-import * as F from "../../types/Foldable"
-import * as FI from "../../types/FoldableWithIndex"
+import * as readonlyArray from "../ReadonlyArray"
+import * as foldable from "../../types/Foldable"
+import * as foldableWithIndex from "../../types/FoldableWithIndex"
 import {
   NonEmptyReadonlyArray,
   NonEmptyReadonlyArrayHKT,
 } from "./non-empty-readonly-array"
 
 export const Foldable = {
-  ...RA.Foldable,
-} as F.Foldable<NonEmptyReadonlyArrayHKT>
+  ...readonlyArray.Foldable,
+} as foldable.Foldable<NonEmptyReadonlyArrayHKT>
 
 export const FoldableWithIndex = {
-  ...RA.FoldableWithIndex,
-} as FI.FoldableWithIndex<NonEmptyReadonlyArrayHKT, number>
+  ...readonlyArray.FoldableWithIndex,
+} as foldableWithIndex.FoldableWithIndex<NonEmptyReadonlyArrayHKT, number>
 
 export const reduce: {
   <A, B>(b: B, bab: (b: B, a: A) => B): (self: NonEmptyReadonlyArray<A>) => B

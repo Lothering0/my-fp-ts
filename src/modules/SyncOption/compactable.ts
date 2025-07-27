@@ -1,34 +1,37 @@
-import * as O from "../Option"
-import * as R from "../Result"
-import * as S from "../Separated"
-import * as C from "../../types/Compactable"
+import * as option from "../Option"
+import * as result from "../Result"
+import * as separated from "../Separated"
+import * as compactable from "../../types/Compactable"
 import { SyncOption, SyncOptionHKT, execute, some, none } from "./sync-option"
 import { flow, pipe } from "../../utils/flow"
 import { zero } from "./alternative"
 
-export const Compactable: C.Compactable<SyncOptionHKT> = {
-  compact: self => () => pipe (self, execute, O.compact),
-  compactResults: self => () => pipe (self, execute, O.compactResults),
+export const Compactable: compactable.Compactable<SyncOptionHKT> = {
+  compact: self => () => pipe (self, execute, option.compact),
+  compactResults: self => () => pipe (self, execute, option.compactResults),
   separate: flow (
     execute,
-    O.match (
-      () => S.make (none, none),
+    option.match (
+      () => separated.make (none, none),
       ma =>
-        S.make (pipe (ma, R.match (some, zero)), pipe (ma, R.match (zero, some))),
+        separated.make (
+          pipe (ma, result.match (some, zero)),
+          pipe (ma, result.match (zero, some)),
+        ),
     ),
   ),
 }
 
 export const compact: {
-  <A>(self: SyncOption<O.Option<A>>): SyncOption<A>
+  <A>(self: SyncOption<option.Option<A>>): SyncOption<A>
 } = Compactable.compact
 
 export const compactResults: {
-  <A>(self: SyncOption<R.Result<unknown, A>>): SyncOption<A>
+  <A>(self: SyncOption<result.Result<unknown, A>>): SyncOption<A>
 } = Compactable.compactResults
 
 export const separate: {
   <E, A>(
-    self: SyncOption<R.Result<E, A>>,
-  ): S.Separated<SyncOption<E>, SyncOption<A>>
+    self: SyncOption<result.Result<E, A>>,
+  ): separated.Separated<SyncOption<E>, SyncOption<A>>
 } = Compactable.separate

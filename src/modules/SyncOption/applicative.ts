@@ -1,4 +1,4 @@
-import * as O from "../Option"
+import * as option from "../Option"
 import { createApplicative } from "../../types/Applicative"
 import { SyncOptionHKT, some, execute, SyncOption } from "./sync-option"
 import { Functor } from "./functor"
@@ -9,10 +9,10 @@ export const Applicative = createApplicative<SyncOptionHKT> ({
   of: some,
   ap: fma => self => () =>
     pipe (
-      O.Do,
-      O.apS ("a", execute (fma)),
-      O.apS ("ab", execute (self)),
-      O.map (({ a, ab }) => ab (a)),
+      option.Do,
+      option.apS ("a", execute (fma)),
+      option.apS ("ab", execute (self)),
+      option.map (({ a, ab }) => ab (a)),
     ),
 })
 

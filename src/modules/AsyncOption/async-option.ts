@@ -1,7 +1,7 @@
-import * as A from "../Async"
-import * as AR from "../AsyncResult"
-import * as R from "../Result"
-import * as O from "../Option"
+import * as async from "../Async"
+import * as asyncResult from "../AsyncResult"
+import * as result from "../Result"
+import * as option from "../Option"
 import { HKT } from "../../types/HKT"
 import { identity } from "../Identity"
 import { constant } from "../../utils/constant"
@@ -11,22 +11,26 @@ export interface AsyncOptionHKT extends HKT {
   readonly type: AsyncOption<this["_A"]>
 }
 
-export interface AsyncOption<A> extends A.Async<O.Option<A>> {}
+export interface AsyncOption<A> extends async.Async<option.Option<A>> {}
 
-export const none: AsyncOption<never> = A.of (O.none)
+export const none: AsyncOption<never> = async.of (option.none)
 
 export const some: {
   <A>(a: A): AsyncOption<A>
-} = flow (O.some, A.of)
+} = flow (option.some, async.of)
 
 export const toPromise: {
-  <A>(ma: AsyncOption<A>): Promise<O.Option<A>>
-} = mma => mma ().then (identity, constant (O.none))
+  <A>(ma: AsyncOption<A>): Promise<option.Option<A>>
+} = mma => mma ().then (identity, constant (option.none))
 
 export const fromAsync: {
-  <A>(ma: A.Async<A>): AsyncOption<A>
-} = ma => () => ma ().then (O.some, () => O.none)
+  <A>(ma: async.Async<A>): AsyncOption<A>
+} = ma => () => ma ().then (option.some, () => option.none)
 
 export const fromAsyncResult: {
-  <E, A>(ma: AR.AsyncResult<E, A>): AsyncOption<A>
-} = ma => () => ma ().then (R.match (constant (O.none), O.some), constant (O.none))
+  <E, A>(ma: asyncResult.AsyncResult<E, A>): AsyncOption<A>
+} = ma => () =>
+  ma ().then (
+    result.match (constant (option.none), option.some),
+    constant (option.none),
+  )

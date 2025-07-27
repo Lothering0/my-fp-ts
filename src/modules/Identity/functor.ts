@@ -1,7 +1,7 @@
-import * as F from "../../types/Functor"
+import * as functor from "../../types/Functor"
 import { Identity, IdentityHKT } from "./identity"
 
-export const Functor: F.Functor<IdentityHKT> = {
+export const Functor: functor.Functor<IdentityHKT> = {
   map: ab => self => ab (self),
 }
 

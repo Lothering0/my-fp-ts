@@ -1,19 +1,19 @@
-import * as R from "../Result"
-import * as S from "../Separated"
-import * as C from "../../types/Compactable"
+import * as result from "../Result"
+import * as separated from "../Separated"
+import * as compactable from "../../types/Compactable"
 import { Option, OptionHKT, some } from "./option"
 import { flat, flatMap } from "./monad"
 import { fromResult } from "./utils"
 import { zero } from "./alternative"
 import { pipe } from "../../utils/flow"
 
-export const Compactable: C.Compactable<OptionHKT> = {
+export const Compactable: compactable.Compactable<OptionHKT> = {
   compact: flat,
   compactResults: flatMap (fromResult),
   separate: self =>
-    S.make (
-      pipe (self, flatMap (R.match (some, zero))),
-      pipe (self, flatMap (R.match (zero, some))),
+    separated.make (
+      pipe (self, flatMap (result.match (some, zero))),
+      pipe (self, flatMap (result.match (zero, some))),
     ),
 }
 
@@ -22,9 +22,11 @@ export const compact: {
 } = Compactable.compact
 
 export const compactResults: {
-  <A>(self: Option<R.Result<unknown, A>>): Option<A>
+  <A>(self: Option<result.Result<unknown, A>>): Option<A>
 } = Compactable.compactResults
 
 export const separate: {
-  <E, A>(self: Option<R.Result<E, A>>): S.Separated<Option<E>, Option<A>>
+  <E, A>(
+    self: Option<result.Result<E, A>>,
+  ): separated.Separated<Option<E>, Option<A>>
 } = Compactable.separate

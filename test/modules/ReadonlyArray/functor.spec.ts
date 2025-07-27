@@ -1,8 +1,8 @@
-import * as RA from "../../../src/modules/ReadonlyArray"
-import * as N from "../../../src/modules/Number"
+import * as readonlyArray from "../../../src/modules/ReadonlyArray"
+import * as number from "../../../src/modules/Number"
 import { describeFunctorLaws } from "../../_utils/describeFunctorLaws"
 
-describeFunctorLaws (RA.Functor, [[], [1], [1, 2, 3]])
+describeFunctorLaws (readonlyArray.Functor, [[], [1], [1, 2, 3]])
 
 describe ("functor", () => {
   describe ("map", () => {
@@ -12,12 +12,12 @@ describe ("functor", () => {
       const z = 3
       const n = 1
 
-      expect (RA.map (N.add (n)) ([])).toEqual ([])
-      expect (RA.map (N.add (n)) ([x])).toEqual ([N.add (x) (n)])
-      expect (RA.map (N.add (n)) ([x, y, z])).toEqual ([
-        N.add (x) (n),
-        N.add (y) (n),
-        N.add (z) (n),
+      expect (readonlyArray.map (number.add (n)) ([])).toEqual ([])
+      expect (readonlyArray.map (number.add (n)) ([x])).toEqual ([number.add (x) (n)])
+      expect (readonlyArray.map (number.add (n)) ([x, y, z])).toEqual ([
+        number.add (x) (n),
+        number.add (y) (n),
+        number.add (z) (n),
       ])
     })
   })

@@ -1,31 +1,31 @@
-import * as RA from "../modules/ReadonlyArray"
-import * as S from "../modules/Sync"
+import * as readonlyArray from "../modules/ReadonlyArray"
+import * as sync from "../modules/Sync"
 import { NonEmptyReadonlyArray } from "../modules/NonEmptyReadonlyArray"
 import { pipe, flow } from "./flow"
 
-export const random: S.Sync<number> = () => Math.random ()
+export const random: sync.Sync<number> = () => Math.random ()
 
-export const randomBool: S.Sync<boolean> = pipe (
+export const randomBool: sync.Sync<boolean> = pipe (
   random,
-  S.map (n => n > 0.5),
+  sync.map (n => n > 0.5),
 )
 
 export const randomFloat: {
-  (min: number, max: number): S.Sync<number>
+  (min: number, max: number): sync.Sync<number>
 } = (min, max) =>
   pipe (
     random,
-    S.map (n => n * (max - min) + min),
+    sync.map (n => n * (max - min) + min),
   )
 
 export const randomInt: {
-  (min: number, max: number): S.Sync<number>
-} = flow (randomFloat, S.map (Math.round))
+  (min: number, max: number): sync.Sync<number>
+} = flow (randomFloat, sync.map (Math.round))
 
 export const randomElem: {
-  <A>(as: NonEmptyReadonlyArray<A>): S.Sync<A>
+  <A>(as: NonEmptyReadonlyArray<A>): sync.Sync<A>
 } = as =>
   pipe (
-    randomInt (0, RA.length (as) - 1),
-    S.map (n => as.at (n)!),
+    randomInt (0, readonlyArray.length (as) - 1),
+    sync.map (n => as.at (n)!),
   )

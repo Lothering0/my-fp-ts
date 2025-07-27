@@ -1,5 +1,5 @@
-import * as SR from "../SyncResult"
-import * as O from "../Option"
+import * as syncResult from "../SyncResult"
+import * as option from "../Option"
 import { Sync } from "../Sync"
 import { Result } from "../Result"
 import { createMonad } from "../../types/Monad"
@@ -12,7 +12,7 @@ export const Monad = createMonad<SyncOptionHKT> ({
   ...Applicative,
   flat: self => () =>
     pipe (self, execute, ma =>
-      O.isNone (ma) ? ma : pipe (ma, O.fromSome, execute),
+      option.isNone (ma) ? ma : pipe (ma, option.fromSome, execute),
     ),
 })
 
@@ -77,20 +77,20 @@ export const tapSync: {
 } = Monad.tapSync
 
 export const tapOption: {
-  <A, _>(f: (a: A) => O.Option<_>): (self: SyncOption<A>) => SyncOption<A>
-} = f => self => () => pipe (self, execute, O.tap (f))
+  <A, _>(f: (a: A) => option.Option<_>): (self: SyncOption<A>) => SyncOption<A>
+} = f => self => () => pipe (self, execute, option.tap (f))
 
 export const tapResult: {
   <E, A, _>(f: (a: A) => Result<E, _>): (self: SyncOption<A>) => SyncOption<A>
-} = f => self => () => pipe (self, execute, O.tapResult (f))
+} = f => self => () => pipe (self, execute, option.tapResult (f))
 
 export const tapSyncResult: {
   <E, A, _>(
-    f: (a: A) => SR.SyncResult<E, _>,
+    f: (a: A) => syncResult.SyncResult<E, _>,
   ): (self: SyncOption<A>) => SyncOption<A>
 } = f => self => () =>
   pipe (
     self,
     execute,
-    O.tap (a => pipe (a, f, SR.execute, O.fromResult)),
+    option.tap (a => pipe (a, f, syncResult.execute, option.fromResult)),
   )

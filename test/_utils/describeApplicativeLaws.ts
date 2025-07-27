@@ -1,4 +1,4 @@
-import * as N from "../../src/modules/Number"
+import * as number from "../../src/modules/Number"
 import { HKT, Kind } from "../../src/types/HKT"
 import { Applicative } from "../../src/types/Applicative"
 
@@ -18,7 +18,7 @@ export const describeApplicativeLaws: {
       })
 
       it ("should satisfy homomorphism law", () => {
-        const ab = N.add (5)
+        const ab = number.add (5)
         const x = 1
 
         expect (A.ap (A.of (x)) (A.of (ab))).toEqual (A.of (ab (x)))

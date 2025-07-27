@@ -1,5 +1,5 @@
-import * as RA from "../ReadonlyArray"
-import * as M from "../../types/Monad"
+import * as readonlyArray from "../ReadonlyArray"
+import * as monad from "../../types/Monad"
 import { Sync } from "../Sync"
 import {
   NonEmptyReadonlyArray,
@@ -8,8 +8,8 @@ import {
 import { DoObject } from "../../types/DoObject"
 
 export const Monad = {
-  ...RA.Monad,
-} as M.Monad<NonEmptyReadonlyArrayHKT>
+  ...readonlyArray.Monad,
+} as monad.Monad<NonEmptyReadonlyArrayHKT>
 
 export const Do = Monad.Do
 

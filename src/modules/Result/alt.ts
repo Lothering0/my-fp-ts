@@ -1,4 +1,4 @@
-import * as A from "../../types/Alt"
+import * as alt from "../../types/Alt"
 import { identity } from "../Identity"
 import { Result, ResultHKT, success } from "./result"
 import { match } from "./utils"
@@ -20,6 +20,6 @@ export const catchAll =
   <A>(self: Result<E1, A>): Result<E2, A | B> =>
     pipe (self, match (onFailure, success<E2, A | B>))
 
-export const Alt: A.Alt<ResultHKT> = {
+export const Alt: alt.Alt<ResultHKT> = {
   orElse,
 }

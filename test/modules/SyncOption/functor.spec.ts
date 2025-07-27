@@ -1,6 +1,6 @@
-import * as SO from "../../../src/modules/SyncOption"
-import * as O from "../../../src/modules/Option"
-import * as N from "../../../src/modules/Number"
+import * as syncOption from "../../../src/modules/SyncOption"
+import * as option from "../../../src/modules/Option"
+import * as number from "../../../src/modules/Number"
 import { identity } from "../../../src/modules/Identity"
 import { pipe } from "../../../src/utils/flow"
 
@@ -8,29 +8,34 @@ describe ("functor", () => {
   describe ("map", () => {
     it ("should satisfy identity law", () => {
       const x = 1
-      const fa: SO.SyncOption<typeof x> = jest.fn (SO.of (x))
+      const fa: syncOption.SyncOption<typeof x> = jest.fn (syncOption.of (x))
 
-      const result = pipe (fa, SO.map (identity), SO.execute)
-      expect (result).toEqual<O.Option<typeof x>> (O.some (x))
+      const result = pipe (fa, syncOption.map (identity), syncOption.execute)
+      expect (result).toEqual<option.Option<typeof x>> (option.some (x))
       expect (fa).toHaveBeenCalledTimes (1)
     })
 
     it ("should satisfy composition law", () => {
-      const ab = N.add (5)
-      const bc = N.divide (2)
+      const ab = number.add (5)
+      const bc = number.divide (2)
 
       const x = 1
-      const getFa = () => SO.of<typeof x> (x)
+      const getFa = () => syncOption.of<typeof x> (x)
 
-      const fa1: SO.SyncOption<typeof x> = jest.fn (getFa ())
-      const fa2: SO.SyncOption<typeof x> = jest.fn (getFa ())
+      const fa1: syncOption.SyncOption<typeof x> = jest.fn (getFa ())
+      const fa2: syncOption.SyncOption<typeof x> = jest.fn (getFa ())
 
       const result1 = pipe (
         fa1,
-        SO.map (a => bc (ab (a))),
-        SO.execute,
+        syncOption.map (a => bc (ab (a))),
+        syncOption.execute,
       )
-      const result2 = pipe (fa2, SO.map (ab), SO.map (bc), SO.execute)
+      const result2 = pipe (
+        fa2,
+        syncOption.map (ab),
+        syncOption.map (bc),
+        syncOption.execute,
+      )
 
       expect (result1).toEqual (result2)
       expect (fa1).toHaveBeenCalledTimes (1)
@@ -39,18 +44,18 @@ describe ("functor", () => {
 
     it ("should return function containing `none` if the same was provided", () => {
       const n = 1
-      const fa: SO.SyncOption<never> = jest.fn (SO.none)
-      const result = pipe (fa, SO.map (N.add (n)), SO.execute)
-      expect (result).toEqual<O.Option<never>> (O.none)
+      const fa: syncOption.SyncOption<never> = jest.fn (syncOption.none)
+      const result = pipe (fa, syncOption.map (number.add (n)), syncOption.execute)
+      expect (result).toEqual<option.Option<never>> (option.none)
       expect (fa).toHaveBeenCalledTimes (1)
     })
 
     it ("should return function containing `some` if it was provided", () => {
       const x = 1
       const n = 1
-      const fa: SO.SyncOption<typeof x> = jest.fn (SO.some (x))
-      const result = pipe (fa, SO.map (N.add (n)), SO.execute)
-      expect (result).toEqual (O.some (N.add (x) (n)))
+      const fa: syncOption.SyncOption<typeof x> = jest.fn (syncOption.some (x))
+      const result = pipe (fa, syncOption.map (number.add (n)), syncOption.execute)
+      expect (result).toEqual (option.some (number.add (x) (n)))
       expect (fa).toHaveBeenCalledTimes (1)
     })
   })

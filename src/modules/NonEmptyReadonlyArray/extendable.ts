@@ -1,13 +1,13 @@
-import * as RA from "../ReadonlyArray"
-import * as E from "../../types/Extendable"
+import * as readonlyArray from "../ReadonlyArray"
+import * as extendable from "../../types/Extendable"
 import {
   NonEmptyReadonlyArray,
   NonEmptyReadonlyArrayHKT,
 } from "./non-empty-readonly-array"
 
 export const Extendable = {
-  ...RA.Extendable,
-} as E.Extendable<NonEmptyReadonlyArrayHKT>
+  ...readonlyArray.Extendable,
+} as extendable.Extendable<NonEmptyReadonlyArrayHKT>
 
 export const extend: {
   <A, B>(

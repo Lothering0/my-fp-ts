@@ -1,15 +1,17 @@
-import * as S from "../../../src/modules/Separated"
-import * as N from "../../../src/modules/Number"
+import * as separated from "../../../src/modules/Separated"
+import * as number from "../../../src/modules/Number"
 import { describeFunctorLaws } from "../../_utils/describeFunctorLaws"
 
-describeFunctorLaws (S.Functor, [S.make ("a", 1)])
+describeFunctorLaws (separated.Functor, [separated.make ("a", 1)])
 
 describe ("functor", () => {
   describe ("map", () => {
     it ("should apply function to value of `right` property", () => {
       const x = 1
       const n = 1
-      expect (S.map (N.add (n)) (S.make ("a", x))).toEqual (S.make ("a", N.add (x) (n)))
+      expect (separated.map (number.add (n)) (separated.make ("a", x))).toEqual (
+        separated.make ("a", number.add (x) (n)),
+      )
     })
   })
 })

@@ -1,4 +1,4 @@
-import * as RA from "../ReadonlyArray"
+import * as readonlyArray from "../ReadonlyArray"
 import { Tree, TreeHKT } from "./tree"
 import { createApplicative } from "../../types/Applicative"
 import { Functor } from "./functor"
@@ -11,13 +11,13 @@ export const Applicative = createApplicative<TreeHKT> ({
   ap: fa => self =>
     make (
       valueOf (self) (valueOf (fa)),
-      RA.concat (
+      readonlyArray.concat (
         pipe (
           fa,
           forestOf,
-          RA.map (tree => pipe (self, ap (tree))),
+          readonlyArray.map (tree => pipe (self, ap (tree))),
         ),
-      ) (pipe (self, forestOf, RA.map (ap (fa)))),
+      ) (pipe (self, forestOf, readonlyArray.map (ap (fa)))),
     ),
 })
 

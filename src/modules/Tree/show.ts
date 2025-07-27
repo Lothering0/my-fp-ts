@@ -1,4 +1,4 @@
-import * as RA from "../ReadonlyArray"
+import * as readonlyArray from "../ReadonlyArray"
 import { Tree } from "./tree"
 import { Show } from "../../types/Show"
 import { pipe } from "../../utils/flow"
@@ -10,7 +10,7 @@ export const getShow: {
   show: self =>
     pipe (self, valueOf, S.show, s =>
       hasForest (self)
-        ? `make (${s}, ${pipe (self, forestOf, RA.getShow (getShow (S)).show)})`
+        ? `make (${s}, ${pipe (self, forestOf, readonlyArray.getShow (getShow (S)).show)})`
         : `make (${s})`,
     ),
 })

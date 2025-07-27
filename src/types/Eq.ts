@@ -1,4 +1,4 @@
-import * as C from "./Contravariant"
+import * as contravariant from "./Contravariant"
 import { HKT } from "./HKT"
 import { Semigroup } from "./Semigroup"
 import { Monoid } from "./Monoid"
@@ -16,7 +16,7 @@ export const EqStrict: Eq<unknown> = {
   equals: x => y => x === y,
 }
 
-export const Contravariant: C.Contravariant<EqHKT> = {
+export const Contravariant: contravariant.Contravariant<EqHKT> = {
   contramap: ba => self => ({
     equals: x => y => self.equals (ba (x)) (ba (y)),
   }),

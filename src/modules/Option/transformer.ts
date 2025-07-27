@@ -1,4 +1,4 @@
-import * as O from "../Option"
+import * as option from "../Option"
 import { HKT, Kind } from "../../types/HKT"
 import { Functor } from "../../types/Functor"
 import { createApplicative } from "../../types/Applicative"
@@ -8,34 +8,34 @@ import { identity } from "../Identity"
 import { LazyArg } from "../../types/utils"
 
 export interface OptionT<F extends HKT> extends HKT {
-  readonly type: Kind<F, this["_R"], this["_E"], O.Option<this["_A"]>>
+  readonly type: Kind<F, this["_R"], this["_E"], option.Option<this["_A"]>>
 }
 
-export const transform = <F extends HKT>(F: Monad<F>) => {
+export const transform = <F extends HKT>(M: Monad<F>) => {
   type THKT = OptionT<F>
 
   const some: {
     <_, _2, A>(a: A): Kind<THKT, _, _2, A>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } = flow (O.some, F.of) as any
+  } = flow (option.some, M.of) as any
 
   const zero: {
     <_, E, A = never>(): Kind<THKT, _, E, A>
-  } = () => F.of (O.none)
+  } = () => M.of (option.none)
 
   const fromF: {
     <_, _2, A>(ma: Kind<F, _, _2, A>): Kind<THKT, _, _2, A>
-  } = F.map (O.some)
+  } = M.map (option.some)
 
   const match: {
     <_, _2, A, B>(
       onNone: LazyArg<B>,
       onSome: (a: A) => B,
     ): (self: Kind<THKT, _, _2, A>) => Kind<F, _, _2, B>
-  } = flow (O.match, F.map)
+  } = flow (option.match, M.map)
 
   const Functor: Functor<THKT> = {
-    map: flow (O.map, F.map),
+    map: flow (option.map, M.map),
   }
 
   const Applicative = createApplicative<THKT> ({
@@ -46,14 +46,14 @@ export const transform = <F extends HKT>(F: Monad<F>) => {
       <B>(self: Kind<THKT, _, _2, (a: A) => B>): Kind<THKT, _, _2, B> =>
         pipe (
           self,
-          F.map (mf => (mg: O.Option<A>) => O.ap (mg) (mf)),
-          F.ap (fma),
+          M.map (mf => (mg: option.Option<A>) => option.ap (mg) (mf)),
+          M.ap (fma),
         ),
   })
 
   const Monad = createMonad<THKT> ({
     ...Applicative,
-    flat: flow (F.flatMap (O.match (() => F.of (O.none), identity))),
+    flat: flow (M.flatMap (option.match (() => M.of (option.none), identity))),
   })
 
   return {

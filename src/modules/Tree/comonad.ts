@@ -1,9 +1,9 @@
-import * as C from "../../types/Comonad"
+import * as comonad from "../../types/Comonad"
 import { Tree, TreeHKT } from "./tree"
 import { valueOf } from "./utils"
 import { Extendable } from "./extendable"
 
-export const Comonad: C.Comonad<TreeHKT> = {
+export const Comonad: comonad.Comonad<TreeHKT> = {
   ...Extendable,
   extract: valueOf,
 }

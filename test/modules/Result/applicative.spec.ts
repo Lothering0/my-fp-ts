@@ -1,9 +1,9 @@
-import * as R from "../../../src/modules/Result"
-import * as N from "../../../src/modules/Number"
+import * as result from "../../../src/modules/Result"
+import * as number from "../../../src/modules/Number"
 import { describeApplicativeLaws } from "../../_utils/describeApplicativeLaws"
 
 describeApplicativeLaws (
-  R.Applicative,
-  [R.failure ("a"), R.success (1)],
-  [R.failure ("a"), R.success (N.add (5))],
+  result.Applicative,
+  [result.failure ("a"), result.success (1)],
+  [result.failure ("a"), result.success (number.add (5))],
 )

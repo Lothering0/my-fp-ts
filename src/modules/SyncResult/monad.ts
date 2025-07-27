@@ -1,4 +1,4 @@
-import * as R from "../Result"
+import * as result from "../Result"
 import { Sync } from "../Sync"
 import { createMonad } from "../../types/Monad"
 import { DoObject } from "../../types/DoObject"
@@ -10,7 +10,7 @@ export const Monad = createMonad<SyncResultHKT> ({
   ...Applicative,
   flat: self => () =>
     pipe (self, execute, ma =>
-      R.isFailure (ma) ? ma : pipe (ma, R.fromSuccess, execute),
+      result.isFailure (ma) ? ma : pipe (ma, result.fromSuccess, execute),
     ),
 })
 
@@ -82,6 +82,6 @@ export const tapSync: {
 
 export const tapResult: {
   <E, A, _>(
-    f: (a: A) => R.Result<E, _>,
+    f: (a: A) => result.Result<E, _>,
   ): (self: SyncResult<E, A>) => SyncResult<E, A>
-} = f => self => () => pipe (self, execute, R.tap (f))
+} = f => self => () => pipe (self, execute, result.tap (f))
