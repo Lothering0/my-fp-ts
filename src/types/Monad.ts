@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Sync } from "../modules/Sync"
 import { Applicative } from "./Applicative"
-import { DoObject } from "./DoObject"
+import { DoObject, DoObjectKey } from "./DoObject"
 import { HKT, Kind } from "./HKT"
 import { flow, pipe } from "../utils/flow"
 import { constant } from "../utils/constant"
@@ -22,27 +22,27 @@ export interface Monad<F extends HKT> extends Applicative<F> {
     amb: (a: A) => Kind<F, _, _2, B>,
   ) => (a: A) => Kind<F, _, _2, C>
 
-  readonly setTo: <N extends string | number | symbol, A, B>(
+  readonly setTo: <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     b: B,
   ) => <_, _2>(self: Kind<F, _, _2, A>) => Kind<F, _, _2, DoObject<N, A, B>>
 
-  readonly mapTo: <N extends string | number | symbol, A, B>(
+  readonly mapTo: <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     ab: (a: A) => B,
   ) => <_, _2>(self: Kind<F, _, _2, A>) => Kind<F, _, _2, DoObject<N, A, B>>
 
-  readonly flapTo: <N extends string | number | symbol, _, _2, A, B>(
+  readonly flapTo: <N extends DoObjectKey, _, _2, A, B>(
     name: Exclude<N, keyof A>,
     fab: Kind<F, _, _2, (a: A) => B>,
   ) => (self: Kind<F, _, _2, A>) => Kind<F, _, _2, DoObject<N, A, B>>
 
-  readonly apS: <N extends string | number | symbol, _, _2, A, B>(
+  readonly apS: <N extends DoObjectKey, _, _2, A, B>(
     name: Exclude<N, keyof A>,
     fb: Kind<F, _, _2, B>,
   ) => (self: Kind<F, _, _2, A>) => Kind<F, _, _2, DoObject<N, A, B>>
 
-  readonly flatMapTo: <N extends string | number | symbol, _, _2, A, B>(
+  readonly flatMapTo: <N extends DoObjectKey, _, _2, A, B>(
     name: Exclude<N, keyof A>,
     amb: (a: A) => Kind<F, _, _2, B>,
   ) => (self: Kind<F, _, _2, A>) => Kind<F, _, _2, DoObject<N, A, B>>

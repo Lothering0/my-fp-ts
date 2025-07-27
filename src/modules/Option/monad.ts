@@ -2,7 +2,7 @@ import * as option from "./option"
 import * as result from "../Result"
 import { Sync } from "../Sync"
 import { createMonad } from "../../types/Monad"
-import { DoObject } from "../../types/DoObject"
+import { DoObject, DoObjectKey } from "../../types/DoObject"
 import { map } from "./functor"
 import { Applicative } from "./applicative"
 import { identity } from "../Identity"
@@ -36,35 +36,35 @@ export const compose: {
 } = Monad.compose
 
 export const setTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     b: B,
   ): (self: option.Option<A>) => option.Option<DoObject<N, A, B>>
 } = Monad.setTo
 
 export const mapTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     ab: (a: A) => B,
   ): (self: option.Option<A>) => option.Option<DoObject<N, A, B>>
 } = Monad.mapTo
 
 export const flapTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fab: option.Option<(a: A) => B>,
   ): (self: option.Option<A>) => option.Option<DoObject<N, A, B>>
 } = Monad.flapTo
 
 export const apS: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fb: option.Option<B>,
   ): (self: option.Option<A>) => option.Option<DoObject<N, A, B>>
 } = Monad.apS
 
 export const flatMapTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     amb: (a: A) => option.Option<B>,
   ): (self: option.Option<A>) => option.Option<DoObject<N, A, B>>

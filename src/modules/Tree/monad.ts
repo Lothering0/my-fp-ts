@@ -1,7 +1,7 @@
 import * as readonlyArray from "../ReadonlyArray"
 import * as monad from "../../types/Monad"
 import { Sync } from "../Sync"
-import { DoObject } from "../../types/DoObject"
+import { DoObject, DoObjectKey } from "../../types/DoObject"
 import { Tree, TreeHKT } from "./tree"
 import { Applicative } from "./applicative"
 import { make, valueOf, forestOf } from "./utils"
@@ -33,35 +33,35 @@ export const compose: {
 } = Monad.compose
 
 export const setTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     b: B,
   ): (self: Tree<A>) => Tree<DoObject<N, A, B>>
 } = Monad.setTo
 
 export const mapTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     ab: (a: A) => B,
   ): (self: Tree<A>) => Tree<DoObject<N, A, B>>
 } = Monad.mapTo
 
 export const flapTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fab: Tree<(a: A) => B>,
   ): (self: Tree<A>) => Tree<DoObject<N, A, B>>
 } = Monad.flapTo
 
 export const apS: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fb: Tree<B>,
   ): (self: Tree<A>) => Tree<DoObject<N, A, B>>
 } = Monad.apS
 
 export const flatMapTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     amb: (a: A) => Tree<B>,
   ): (self: Tree<A>) => Tree<DoObject<N, A, B>>

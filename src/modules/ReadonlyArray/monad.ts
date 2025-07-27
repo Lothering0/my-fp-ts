@@ -1,7 +1,7 @@
 import { Sync } from "../Sync"
 import { ReadonlyArrayHKT } from "./readonly-array"
 import { createMonad } from "../../types/Monad"
-import { DoObject } from "../../types/DoObject"
+import { DoObject, DoObjectKey } from "../../types/DoObject"
 import { Applicative } from "./applicative"
 
 export const Monad = createMonad<ReadonlyArrayHKT> ({
@@ -29,35 +29,35 @@ export const compose: {
 } = Monad.compose
 
 export const setTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     b: B,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<DoObject<N, A, B>>
 } = Monad.setTo
 
 export const mapTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     ab: (a: A) => B,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<DoObject<N, A, B>>
 } = Monad.mapTo
 
 export const flapTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fab: ReadonlyArray<(a: A) => B>,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<DoObject<N, A, B>>
 } = Monad.flapTo
 
 export const apS: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fb: ReadonlyArray<B>,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<DoObject<N, A, B>>
 } = Monad.apS
 
 export const flatMapTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     amb: (a: A) => ReadonlyArray<B>,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<DoObject<N, A, B>>

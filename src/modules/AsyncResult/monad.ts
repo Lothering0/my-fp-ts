@@ -13,7 +13,7 @@ import {
   fromAsync,
 } from "./async-result"
 import { pipe } from "../../utils/flow"
-import { DoObject } from "../../types/DoObject"
+import { DoObject, DoObjectKey } from "../../types/DoObject"
 
 export const Monad = createMonad<AsyncResultHKT> ({
   ...Applicative,
@@ -43,35 +43,35 @@ export const compose: {
 } = Monad.compose
 
 export const setTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     b: B,
   ): <_>(self: AsyncResult<_, A>) => AsyncResult<_, DoObject<N, A, B>>
 } = Monad.setTo
 
 export const mapTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     ab: (a: A) => B,
   ): <_>(self: AsyncResult<_, A>) => AsyncResult<_, DoObject<N, A, B>>
 } = Monad.mapTo
 
 export const flapTo: {
-  <N extends string | number | symbol, _, A, B>(
+  <N extends DoObjectKey, _, A, B>(
     name: Exclude<N, keyof A>,
     fab: AsyncResult<_, (a: A) => B>,
   ): (self: AsyncResult<_, A>) => AsyncResult<_, DoObject<N, A, B>>
 } = Monad.flapTo
 
 export const apS: {
-  <N extends string | number | symbol, _, A, B>(
+  <N extends DoObjectKey, _, A, B>(
     name: Exclude<N, keyof A>,
     fb: AsyncResult<_, B>,
   ): (self: AsyncResult<_, A>) => AsyncResult<_, DoObject<N, A, B>>
 } = Monad.apS
 
 export const flatMapTo: {
-  <N extends string | number | symbol, _, A, B>(
+  <N extends DoObjectKey, _, A, B>(
     name: Exclude<N, keyof A>,
     amb: (a: A) => AsyncResult<_, B>,
   ): (self: AsyncResult<_, A>) => AsyncResult<_, DoObject<N, A, B>>
@@ -124,7 +124,7 @@ export const tapAsync =
     )
 
 export const parallel: {
-  <N extends string | number | symbol, E, B>(
+  <N extends DoObjectKey, E, B>(
     fb: AsyncResult<E, B>,
   ): <A>(self: AsyncResult<E, A>) => AsyncResult<E, DoObject<N, A, B>>
 } = fb => self => () =>
@@ -136,7 +136,7 @@ export const parallel: {
   )
 
 export const parallelTo: {
-  <N extends string | number | symbol, E, A, B>(
+  <N extends DoObjectKey, E, A, B>(
     name: Exclude<N, keyof A>,
     fb: AsyncResult<E, B>,
   ): (self: AsyncResult<E, A>) => AsyncResult<E, DoObject<N, A, B>>

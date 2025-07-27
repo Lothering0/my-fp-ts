@@ -1,5 +1,5 @@
 import { createMonad } from "../../types/Monad"
-import { DoObject } from "../../types/DoObject"
+import { DoObject, DoObjectKey } from "../../types/DoObject"
 import { Applicative } from "./applicative"
 import { Identity, IdentityHKT, identity } from "./identity"
 import { Sync } from "../Sync"
@@ -27,35 +27,35 @@ export const compose: {
 } = Monad.compose
 
 export const setTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     b: B,
   ): (self: Identity<A>) => Identity<DoObject<N, A, B>>
 } = Monad.setTo
 
 export const mapTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     ab: (a: A) => B,
   ): (self: Identity<A>) => Identity<DoObject<N, A, B>>
 } = Monad.mapTo
 
 export const flapTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fab: Identity<(a: A) => B>,
   ): (self: Identity<A>) => Identity<DoObject<N, A, B>>
 } = Monad.flapTo
 
 export const apS: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fb: Identity<B>,
   ): (self: Identity<A>) => Identity<DoObject<N, A, B>>
 } = Monad.apS
 
 export const flatMapTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     amb: (a: A) => Identity<B>,
   ): (self: Identity<A>) => Identity<DoObject<N, A, B>>

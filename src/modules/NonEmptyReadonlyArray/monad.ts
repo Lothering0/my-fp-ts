@@ -5,7 +5,7 @@ import {
   NonEmptyReadonlyArray,
   NonEmptyReadonlyArrayHKT,
 } from "./non-empty-readonly-array"
-import { DoObject } from "../../types/DoObject"
+import { DoObject, DoObjectKey } from "../../types/DoObject"
 
 export const Monad = {
   ...readonlyArray.Monad,
@@ -33,7 +33,7 @@ export const compose: {
 } = Monad.compose
 
 export const setTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     b: B,
   ): (
@@ -42,7 +42,7 @@ export const setTo: {
 } = Monad.setTo
 
 export const mapTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     ab: (a: A) => B,
   ): (
@@ -51,7 +51,7 @@ export const mapTo: {
 } = Monad.mapTo
 
 export const flapTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fab: NonEmptyReadonlyArray<(a: A) => B>,
   ): (
@@ -60,7 +60,7 @@ export const flapTo: {
 } = Monad.flapTo
 
 export const apS: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fb: NonEmptyReadonlyArray<B>,
   ): (
@@ -69,7 +69,7 @@ export const apS: {
 } = Monad.apS
 
 export const flatMapTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     amb: (a: A) => NonEmptyReadonlyArray<B>,
   ): (

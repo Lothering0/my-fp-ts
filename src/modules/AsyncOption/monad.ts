@@ -16,7 +16,7 @@ import {
 import { map } from "./functor"
 import { Applicative } from "./applicative"
 import { pipe } from "../../utils/flow"
-import { DoObject } from "../../types/DoObject"
+import { DoObject, DoObjectKey } from "../../types/DoObject"
 
 export const Monad = createMonad<AsyncOptionHKT> ({
   ...Applicative,
@@ -46,35 +46,35 @@ export const compose: {
 } = Monad.compose
 
 export const setTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     b: B,
   ): (self: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
 } = Monad.setTo
 
 export const mapTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     ab: (a: A) => B,
   ): (self: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
 } = Monad.mapTo
 
 export const flapTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fab: AsyncOption<(a: A) => B>,
   ): (self: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
 } = Monad.flapTo
 
 export const apS: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fb: AsyncOption<B>,
   ): (self: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
 } = Monad.apS
 
 export const flatMapTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     amb: (a: A) => AsyncOption<B>,
   ): (self: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
@@ -170,7 +170,7 @@ export const tapSyncResult: {
   )
 
 export const parallel: {
-  <N extends string | number | symbol, B>(
+  <N extends DoObjectKey, B>(
     fb: AsyncOption<B>,
   ): <A>(fa: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
 } = fb => fa => () =>
@@ -182,7 +182,7 @@ export const parallel: {
   )
 
 export const parallelTo: {
-  <N extends string | number | symbol, A, B>(
+  <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fb: AsyncOption<B>,
   ): (fa: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
