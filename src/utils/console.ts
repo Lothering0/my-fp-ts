@@ -1,21 +1,21 @@
 import { Sync } from "../modules/Sync"
 
-export const log_: {
+export const log: {
   <A>(a: A): Sync<void>
 } = a => () => console.log (a)
 
-export const info_: {
+export const info: {
   <A>(a: A): Sync<void>
 } = a => () => console.info (a)
 
-export const warn_: {
+export const warn: {
   <A>(a: A): Sync<void>
 } = a => () => console.warn (a)
 
-export const error_: {
+export const error: {
   <A>(a: A): Sync<void>
 } = a => () => console.error (a)
 
-export const writeToStdout_: {
+export const writeToStdout: {
   (s: string): Sync<void>
 } = string => () => process.stdout.write (string)
