@@ -1,12 +1,15 @@
-import * as F from "../../types/Functor"
-import * as FI from "../../types/FunctorWithIndex"
+import * as functor from "../../types/Functor"
+import * as functorWithIndex from "../../types/FunctorWithIndex"
 import { ReadonlyArrayHKT } from "./readonly-array"
 
-export const Functor: F.Functor<ReadonlyArrayHKT> = {
+export const Functor: functor.Functor<ReadonlyArrayHKT> = {
   map: ab => self => self.map (a => ab (a)),
 }
 
-export const FunctorWithIndex: FI.FunctorWithIndex<ReadonlyArrayHKT, number> = {
+export const FunctorWithIndex: functorWithIndex.FunctorWithIndex<
+  ReadonlyArrayHKT,
+  number
+> = {
   ...Functor,
   mapWithIndex: iab => self => self.map ((a, i) => iab (i, a)),
 }

@@ -1,11 +1,11 @@
-import * as NERA from "../../NonEmptyReadonlyArray"
+import * as nonEmptyReadonlyArray from "../../NonEmptyReadonlyArray"
 import { LazyArg } from "../../../types/utils"
 import { isNonEmpty } from "../refinements"
 
 export const match: {
   <A, B>(
     onEmpty: LazyArg<B>,
-    onNonEmpty: (as: NERA.NonEmptyReadonlyArray<A>) => B,
+    onNonEmpty: (as: nonEmptyReadonlyArray.NonEmptyReadonlyArray<A>) => B,
   ): (self: ReadonlyArray<A>) => B
 } = (onEmpty, onNonEmpty) => self =>
   isNonEmpty (self) ? onNonEmpty (self) : onEmpty ()
@@ -16,7 +16,12 @@ export const matchLeft: {
     onNonEmpty: (head: A, tail: ReadonlyArray<A>) => B,
   ): (self: ReadonlyArray<A>) => B
 } = (onEmpty, onNonEmpty) => self =>
-  isNonEmpty (self) ? onNonEmpty (NERA.head (self), NERA.tail (self)) : onEmpty ()
+  isNonEmpty (self)
+    ? onNonEmpty (
+        nonEmptyReadonlyArray.head (self),
+        nonEmptyReadonlyArray.tail (self),
+      )
+    : onEmpty ()
 
 export const matchRight: {
   <A, B>(
@@ -24,4 +29,9 @@ export const matchRight: {
     onNonEmpty: (init: ReadonlyArray<A>, last: A) => B,
   ): (self: ReadonlyArray<A>) => B
 } = (onEmpty, onNonEmpty) => self =>
-  isNonEmpty (self) ? onNonEmpty (NERA.init (self), NERA.last (self)) : onEmpty ()
+  isNonEmpty (self)
+    ? onNonEmpty (
+        nonEmptyReadonlyArray.init (self),
+        nonEmptyReadonlyArray.last (self),
+      )
+    : onEmpty ()

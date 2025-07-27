@@ -1,8 +1,8 @@
-import * as NERA from "../../NonEmptyReadonlyArray"
-import * as O from "../../Option"
-import * as R from "../../Result"
-import * as B from "../../Boolean"
-import * as E from "../../../types/Eq"
+import * as nonEmptyReadonlyArray from "../../NonEmptyReadonlyArray"
+import * as option from "../../Option"
+import * as result from "../../Result"
+import * as boolean from "../../Boolean"
+import * as eq from "../../../types/Eq"
 import { Refinement } from "../../../types/utils"
 import { Predicate } from "../../Predicate"
 import { identity } from "../../Identity"
@@ -15,7 +15,7 @@ import { isNonEmpty } from "../refinements"
 import { of } from "../applicative"
 
 export const fromNonEmpty: {
-  <A>(as: NERA.NonEmptyReadonlyArray<A>): ReadonlyArray<A>
+  <A>(as: nonEmptyReadonlyArray.NonEmptyReadonlyArray<A>): ReadonlyArray<A>
 } = identity
 
 export const length: {
@@ -27,95 +27,109 @@ export const copy: {
 } = self => [...self]
 
 export const head: {
-  <A>(self: ReadonlyArray<A>): O.Option<A>
-} = match (O.zero, flow (NERA.head, O.some))
+  <A>(self: ReadonlyArray<A>): option.Option<A>
+} = match (option.zero, flow (nonEmptyReadonlyArray.head, option.some))
 
 export const init: {
-  <A>(self: ReadonlyArray<A>): O.Option<ReadonlyArray<A>>
-} = match (O.zero, flow (NERA.init, O.some))
+  <A>(self: ReadonlyArray<A>): option.Option<ReadonlyArray<A>>
+} = match (option.zero, flow (nonEmptyReadonlyArray.init, option.some))
 
 export const last: {
-  <A>(self: ReadonlyArray<A>): O.Option<A>
-} = match (O.zero, flow (NERA.last, O.some))
+  <A>(self: ReadonlyArray<A>): option.Option<A>
+} = match (option.zero, flow (nonEmptyReadonlyArray.last, option.some))
 
 export const tail: {
-  <A>(self: ReadonlyArray<A>): O.Option<ReadonlyArray<A>>
-} = match (O.zero, flow (NERA.tail, O.some))
+  <A>(self: ReadonlyArray<A>): option.Option<ReadonlyArray<A>>
+} = match (option.zero, flow (nonEmptyReadonlyArray.tail, option.some))
 
 export const lookup: {
-  <A>(i: number): (self: ReadonlyArray<A>) => O.Option<A>
+  <A>(i: number): (self: ReadonlyArray<A>) => option.Option<A>
 } = i => self =>
-  i >= 0 && i < length (self) ? pipe (self.at (i)!, O.some) : O.none
+  i >= 0 && i < length (self) ? pipe (self.at (i)!, option.some) : option.none
 
 /** Like `lookup` but accepts also negative integers where -1 is index of the last element, -2 of the pre-last and so on. */
 export const at: {
-  <A>(i: number): (self: ReadonlyArray<A>) => O.Option<A>
+  <A>(i: number): (self: ReadonlyArray<A>) => option.Option<A>
 } = i => self =>
-  i < length (self) && i >= -length (self) ? pipe (self.at (i)!, O.some) : O.none
+  i < length (self) && i >= -length (self)
+    ? pipe (self.at (i)!, option.some)
+    : option.none
 
 export const isOutOfBounds: {
   <A>(i: number): (self: ReadonlyArray<A>) => boolean
 } = i => self => !Object.hasOwn (self, Number (i))
 
 export const findMap: {
-  <A, B>(amb: (a: A) => O.Option<B>): (self: ReadonlyArray<A>) => O.Option<B>
+  <A, B>(
+    amb: (a: A) => option.Option<B>,
+  ): (self: ReadonlyArray<A>) => option.Option<B>
 } = amb =>
-  matchLeft (O.zero, (head, tail) =>
+  matchLeft (option.zero, (head, tail) =>
     pipe (
       head,
       amb,
-      O.match (() => findMap (amb) (tail), O.some),
+      option.match (() => findMap (amb) (tail), option.some),
     ),
   )
 
 export const find: {
-  <A, B extends A>(p: Refinement<A, B>): (self: ReadonlyArray<A>) => O.Option<B>
-  <A>(p: Predicate<A>): (self: ReadonlyArray<A>) => O.Option<A>
+  <A, B extends A>(
+    p: Refinement<A, B>,
+  ): (self: ReadonlyArray<A>) => option.Option<B>
+  <A>(p: Predicate<A>): (self: ReadonlyArray<A>) => option.Option<A>
 } = <A>(p: Predicate<A>) =>
-  findMap (a => pipe (a, p, B.match (O.zero, flow (constant (a), O.some))))
+  findMap (a =>
+    pipe (a, p, boolean.match (option.zero, flow (constant (a), option.some))),
+  )
 
 export const findIndex: {
-  <A>(p: Predicate<A>): (self: ReadonlyArray<A>) => O.Option<number>
+  <A>(p: Predicate<A>): (self: ReadonlyArray<A>) => option.Option<number>
 } = p => self =>
   pipe (
     self.findIndex (a => p (a)),
-    i => i > -1 ? O.some (i) : O.none,
+    i => i > -1 ? option.some (i) : option.none,
   )
 
 export const findLastMap: {
-  <A, B>(amb: (a: A) => O.Option<B>): (self: ReadonlyArray<A>) => O.Option<B>
+  <A, B>(
+    amb: (a: A) => option.Option<B>,
+  ): (self: ReadonlyArray<A>) => option.Option<B>
 } = amb =>
-  matchRight (O.zero, (init, last) =>
+  matchRight (option.zero, (init, last) =>
     pipe (
       last,
       amb,
-      O.match (() => findLastMap (amb) (init), O.some),
+      option.match (() => findLastMap (amb) (init), option.some),
     ),
   )
 
 export const findLast: {
-  <A, B extends A>(p: Refinement<A, B>): (self: ReadonlyArray<A>) => O.Option<B>
-  <A>(p: Predicate<A>): (self: ReadonlyArray<A>) => O.Option<A>
+  <A, B extends A>(
+    p: Refinement<A, B>,
+  ): (self: ReadonlyArray<A>) => option.Option<B>
+  <A>(p: Predicate<A>): (self: ReadonlyArray<A>) => option.Option<A>
 } = <A>(p: Predicate<A>) =>
-  findLastMap (a => pipe (a, p, B.match (O.zero, flow (constant (a), O.some))))
+  findLastMap (a =>
+    pipe (a, p, boolean.match (option.zero, flow (constant (a), option.some))),
+  )
 
 export const findLastIndex: {
-  <A>(p: Predicate<A>): (self: ReadonlyArray<A>) => O.Option<number>
+  <A>(p: Predicate<A>): (self: ReadonlyArray<A>) => option.Option<number>
 } = p => self =>
   pipe (
     self.findLastIndex (a => p (a)),
-    i => i > -1 ? O.some (i) : O.none,
+    i => i > -1 ? option.some (i) : option.none,
   )
 
 /** Is `a` element of an array by `Eq` instance */
 export const elem =
   <A>(
-    E: E.Eq<A>,
+    E: eq.Eq<A>,
   ): {
     (a: A): (self: ReadonlyArray<A>) => boolean
   } =>
   a =>
-    flow (find (E.equals (a)), O.isSome)
+    flow (find (E.equals (a)), option.isSome)
 
 export const every: {
   <A, B extends A>(
@@ -129,23 +143,27 @@ export const every: {
 
 export const exists =
   <A>(p: Predicate<A>) =>
-  (self: ReadonlyArray<A>): self is NERA.NonEmptyReadonlyArray<A> =>
+  (
+    self: ReadonlyArray<A>,
+  ): self is nonEmptyReadonlyArray.NonEmptyReadonlyArray<A> =>
     self.some (a => p (a))
 
 /** Alias for exists */
 export const some = exists
 
 export const failures: {
-  <E, A>(self: ReadonlyArray<R.Result<E, A>>): ReadonlyArray<E>
-} = flatMap (R.match (of, constEmptyArray))
+  <E, A>(self: ReadonlyArray<result.Result<E, A>>): ReadonlyArray<E>
+} = flatMap (result.match (of, constEmptyArray))
 
 export const successes: {
-  <E, A>(self: ReadonlyArray<R.Result<E, A>>): ReadonlyArray<A>
-} = flatMap (R.match (constEmptyArray, of))
+  <E, A>(self: ReadonlyArray<result.Result<E, A>>): ReadonlyArray<A>
+} = flatMap (result.match (constEmptyArray, of))
 
 export const prepend: {
-  <A>(a: A): (self: ReadonlyArray<A>) => NERA.NonEmptyReadonlyArray<A>
-} = a => self => NERA.concat (self) ([a])
+  <A>(
+    a: A,
+  ): (self: ReadonlyArray<A>) => nonEmptyReadonlyArray.NonEmptyReadonlyArray<A>
+} = a => self => nonEmptyReadonlyArray.concat (self) ([a])
 
 export const prependAllWith: {
   <A>(f: (a: A) => A): (self: ReadonlyArray<A>) => ReadonlyArray<A>
@@ -156,8 +174,10 @@ export const prependAll: {
 } = flow (constant, prependAllWith)
 
 export const append: {
-  <A>(a: A): (self: ReadonlyArray<A>) => NERA.NonEmptyReadonlyArray<A>
-} = a => NERA.concat ([a])
+  <A>(
+    a: A,
+  ): (self: ReadonlyArray<A>) => nonEmptyReadonlyArray.NonEmptyReadonlyArray<A>
+} = a => nonEmptyReadonlyArray.concat ([a])
 
 export const appendAllWith: {
   <A>(f: (a: A) => A): (self: ReadonlyArray<A>) => ReadonlyArray<A>
@@ -168,7 +188,9 @@ export const appendAll: {
 } = flow (constant, appendAllWith)
 
 export const range: {
-  (from: number): (to: number) => NERA.NonEmptyReadonlyArray<number>
+  (
+    from: number,
+  ): (to: number) => nonEmptyReadonlyArray.NonEmptyReadonlyArray<number>
 } = from => to =>
   from === to
     ? [from]
@@ -225,8 +247,10 @@ export function comprehension(
     isNonEmpty (input)
       ? pipe (
           input,
-          NERA.head,
-          flatMap (x => pipe (input, NERA.tail, getArgs (append (x) (args)))),
+          nonEmptyReadonlyArray.head,
+          flatMap (x =>
+            pipe (input, nonEmptyReadonlyArray.tail, getArgs (append (x) (args))),
+          ),
         )
       : [args]
 
@@ -236,10 +260,10 @@ export function comprehension(
     filterMap ((args: readonly [unknown]) =>
       isNonEmpty (args)
         ? p (...args)
-          ? pipe (f (...args), O.some)
-          : O.none
+          ? pipe (f (...args), option.some)
+          : option.none
         : // If some of input arrays is empty, then whole result should be an empty array
-          O.none,
+          option.none,
     ),
   )
 }

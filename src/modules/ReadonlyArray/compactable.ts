@@ -1,7 +1,7 @@
-import * as O from "../Option"
-import * as R from "../Result"
-import * as S from "../Separated"
-import * as C from "../../types/Compactable"
+import * as option from "../Option"
+import * as result from "../Result"
+import * as separated from "../Separated"
+import * as compactable from "../../types/Compactable"
 import { ReadonlyArrayHKT } from "./readonly-array"
 import { of } from "./applicative"
 import { flatMap } from "./monad"
@@ -11,33 +11,41 @@ import { constEmptyArray } from "../../utils/constant"
 import { pipe } from "../../utils/flow"
 
 const getInitialSeparated: {
-  <E, A>(): S.Separated<ReadonlyArray<E>, ReadonlyArray<A>>
-} = () => S.make ([], [])
+  <E, A>(): separated.Separated<ReadonlyArray<E>, ReadonlyArray<A>>
+} = () => separated.make ([], [])
 
-export const Compactable: C.Compactable<ReadonlyArrayHKT> = {
-  compact: flatMap (O.match (constEmptyArray, of)),
+export const Compactable: compactable.Compactable<ReadonlyArrayHKT> = {
+  compact: flatMap (option.match (constEmptyArray, of)),
   compactResults: successes,
   separate: reduce (getInitialSeparated (), (b, ma) =>
     pipe (
       ma,
-      R.match (
-        e => S.make (pipe (b, S.left, append (e)), S.right (b)),
-        a => S.make (S.left (b), pipe (b, S.right, append (a), fromNonEmpty)),
+      result.match (
+        e =>
+          separated.make (
+            pipe (b, separated.left, append (e)),
+            separated.right (b),
+          ),
+        a =>
+          separated.make (
+            separated.left (b),
+            pipe (b, separated.right, append (a), fromNonEmpty),
+          ),
       ),
     ),
   ),
 }
 
 export const compact: {
-  <A>(self: ReadonlyArray<O.Option<A>>): ReadonlyArray<A>
+  <A>(self: ReadonlyArray<option.Option<A>>): ReadonlyArray<A>
 } = Compactable.compact
 
 export const compactResults: {
-  <A>(self: ReadonlyArray<R.Result<unknown, A>>): ReadonlyArray<A>
+  <A>(self: ReadonlyArray<result.Result<unknown, A>>): ReadonlyArray<A>
 } = Compactable.compactResults
 
 export const separate: {
   <E, A>(
-    self: ReadonlyArray<R.Result<E, A>>,
-  ): S.Separated<ReadonlyArray<E>, ReadonlyArray<A>>
+    self: ReadonlyArray<result.Result<E, A>>,
+  ): separated.Separated<ReadonlyArray<E>, ReadonlyArray<A>>
 } = Compactable.separate

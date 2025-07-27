@@ -1,4 +1,4 @@
-import * as NERA from "../NonEmptyReadonlyArray"
+import * as nonEmptyReadonlyArray from "../NonEmptyReadonlyArray"
 import { length } from "./utils"
 
 export const isEmpty = <A>(self: ReadonlyArray<A>): self is readonly [] =>
@@ -6,4 +6,4 @@ export const isEmpty = <A>(self: ReadonlyArray<A>): self is readonly [] =>
 
 export const isNonEmpty = <A>(
   self: ReadonlyArray<A>,
-): self is NERA.NonEmptyReadonlyArray<A> => !isEmpty (self)
+): self is nonEmptyReadonlyArray.NonEmptyReadonlyArray<A> => !isEmpty (self)
