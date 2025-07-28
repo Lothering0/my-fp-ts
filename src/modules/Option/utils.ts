@@ -4,6 +4,9 @@ import { LazyArg } from "../../types/utils"
 import { flow, pipe } from "../../utils/flow"
 import { isNone } from "./refinements"
 import { zero } from "./alternative"
+import { constNull, constUndefined, constVoid } from "../../utils/constant"
+import { identity } from "../Identity"
+import { isNull, isUndefined } from "../../utils/typeChecks"
 
 export const fromSome: {
   <A>(self: Some<A>): A
@@ -20,6 +23,27 @@ export const match: {
 export const fromNullable: {
   <A>(a: A): Option<NonNullable<A>>
 } = a => a == null ? none : some (a)
+
+export const fromNull = <A>(a: A): Option<Exclude<A, null>> =>
+  isNull (a) ? none : some (a as Exclude<A, null>)
+
+export const toNull: {
+  <A>(self: Option<A>): A | null
+} = match (constNull, identity)
+
+export const fromUndefined = <A>(a: A): Option<Exclude<A, undefined>> =>
+  isUndefined (a) ? none : some (a as Exclude<A, undefined>)
+
+export const toUndefined: {
+  <A>(self: Option<A>): A | undefined
+} = match (constUndefined, identity)
+
+export const fromVoid = <A>(a: A): Option<Exclude<A, void>> =>
+  fromUndefined (a as Exclude<A, void>)
+
+export const toVoid: {
+  <A>(self: Option<A>): A | void
+} = match (constVoid, identity)
 
 export const fromResult: {
   <_, A>(ma: result.Result<_, A>): Option<A>

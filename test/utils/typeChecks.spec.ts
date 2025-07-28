@@ -63,6 +63,10 @@ describe ("typeChecks", () => {
       values: [typeByName.null],
     },
     {
+      f: typeChecks.isNullable,
+      values: [typeByName.undefined, typeByName.null],
+    },
+    {
       f: typeChecks.isUndefined,
       values: [typeByName.undefined],
     },

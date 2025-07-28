@@ -53,6 +53,9 @@ export const isBigint = (x: unknown): x is bigint => typeOf (x) === "bigint"
 
 export const isNull = (x: unknown): x is null => x === null
 
+export const isNullable = (x: unknown): x is null | undefined | void =>
+  x == null
+
 export const isDefined = (x: unknown): boolean => x != null
 
 export const isObject = (x: unknown): x is object =>
