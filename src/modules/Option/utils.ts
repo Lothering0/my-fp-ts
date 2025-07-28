@@ -10,11 +10,14 @@ export const fromSome: {
 } = self => self.value
 
 export const match: {
-  <A, B>(onNone: LazyArg<B>, onSome: (a: A) => B): (self: Option<A>) => B
+  <A, B, C = B>(
+    onNone: LazyArg<B>,
+    onSome: (a: A) => C,
+  ): (self: Option<A>) => B | C
 } = (onNone, onSome) => self =>
   isNone (self) ? onNone () : pipe (self, fromSome, onSome)
 
-export const toOption: {
+export const fromNullable: {
   <A>(a: A): Option<NonNullable<A>>
 } = a => a == null ? none : some (a)
 
@@ -22,7 +25,6 @@ export const fromResult: {
   <_, A>(ma: result.Result<_, A>): Option<A>
 } = result.match (zero, some)
 
-export const toResult =
-  <E>(onNone: LazyArg<E>) =>
-  <A>(self: Option<A>): result.Result<E, A> =>
-    match (flow (onNone, result.failure), result.success<E, A>) (self)
+export const toResult: {
+  <E>(onNone: LazyArg<E>): <A>(self: Option<A>) => result.Result<E, A>
+} = onNone => match (flow (onNone, result.failure), result.success)

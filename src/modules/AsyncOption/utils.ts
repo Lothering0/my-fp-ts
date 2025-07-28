@@ -4,9 +4,9 @@ import { LazyArg } from "../../types/utils"
 import { toPromise, AsyncOption } from "./async-option"
 
 export const match: {
-  <A, B>(
+  <A, B, C = B>(
     onNone: LazyArg<B>,
-    onSome: (a: A) => B,
-  ): (self: AsyncOption<A>) => Async<B>
+    onSome: (a: A) => C,
+  ): (self: AsyncOption<A>) => Async<B | C>
 } = (onNone, onSome) => self => () =>
   toPromise (self).then (option.match (onNone, onSome))

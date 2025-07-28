@@ -35,7 +35,10 @@ export const isNil: {
 } = xs => xs._tag === "Nil"
 
 export const match: {
-  <A, B>(onNil: LazyArg<B>, onCons: (a: A) => B): (self: List<A>) => B
+  <A, B, C = B>(
+    onNil: LazyArg<B>,
+    onCons: (a: A) => C,
+  ): (self: List<A>) => B | C
 } = (onNil, onCons) => self => isNil (self) ? onNil () : onCons (self.head)
 
 export const fromArray = <A>(as: ReadonlyArray<A>): List<A> =>

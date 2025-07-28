@@ -6,10 +6,11 @@ import { AsyncResult, AsyncResultHKT, success } from "./async-result"
 import { match } from "./utils"
 import { constant } from "../../utils/constant"
 
-export const getOrElse =
-  <E, B>(onFailure: (e: E) => B) =>
-  <A>(self: AsyncResult<E, A>): async.Async<A | B> =>
-    match (onFailure, identity<A | B>) (self)
+export const getOrElse: {
+  <E, B>(
+    onFailure: (e: E) => B,
+  ): <A>(self: AsyncResult<E, A>) => async.Async<A | B>
+} = onFailure => match (onFailure, identity)
 
 export const orElse =
   <E1, A>(onFailure: AsyncResult<E1, A>) =>

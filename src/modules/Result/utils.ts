@@ -12,17 +12,19 @@ export const fromSuccess: {
 } = self => self.success
 
 export const match: {
-  <E, A, B>(
+  <E, A, B, C = B>(
     onFailure: (e: E) => B,
-    onSuccess: (a: A) => B,
-  ): (self: Result<E, A>) => B
+    onSuccess: (a: A) => C,
+  ): (self: Result<E, A>) => B | C
 } = (onFailure, onSuccess) => self =>
   isFailure (self)
     ? pipe (self, fromFailure, onFailure)
     : pipe (self, fromSuccess, onSuccess)
 
-export const toUnion = <E, A>(self: Result<E, A>): E | A =>
-  match<E, A, E | A> (identity, identity) (self)
+export const toUnion: {
+  <E, A>(self: Result<E, A>): E | A
+} = match (identity, identity)
 
-export const swap = <E, A>(self: Result<E, A>): Result<A, E> =>
-  match<E, A, Result<A, E>> (success, failure) (self)
+export const swap: {
+  <E, A>(self: Result<E, A>): Result<A, E>
+} = match (success, failure)

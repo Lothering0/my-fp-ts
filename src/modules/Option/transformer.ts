@@ -28,10 +28,10 @@ export const transform = <F extends HKT>(M: Monad<F>) => {
   } = M.map (option.some)
 
   const match: {
-    <_, _2, A, B>(
+    <_, _2, A, B, C = B>(
       onNone: LazyArg<B>,
-      onSome: (a: A) => B,
-    ): (self: Kind<THKT, _, _2, A>) => Kind<F, _, _2, B>
+      onSome: (a: A) => C,
+    ): (self: Kind<THKT, _, _2, A>) => Kind<F, _, _2, B | C>
   } = flow (option.match, M.map)
 
   const Functor: Functor<THKT> = {

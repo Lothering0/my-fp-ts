@@ -7,9 +7,9 @@ export const toUnion: {
 } = self => () => toPromise (self).then (result.toUnion)
 
 export const match: {
-  <E, A, B>(
+  <E, A, B, C = B>(
     onFailure: (e: E) => B,
-    onSuccess: (a: A) => B,
-  ): (self: AsyncResult<E, A>) => Async<B>
+    onSuccess: (a: A) => C,
+  ): (self: AsyncResult<E, A>) => Async<B | C>
 } = (onFailure, onSuccess) => self => () =>
   toPromise (self).then (result.match (onFailure, onSuccess))

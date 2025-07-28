@@ -20,9 +20,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "reflect-metadata": "^0.2.2"
-  },
   "devDependencies": {
     "@jest/globals": "^30.0.4",
     "@stylistic/eslint-plugin": "^4.2.0",

@@ -32,10 +32,10 @@ export const transform = <F extends HKT>(M: Monad<F>) => {
   } = M.map (result.failure)
 
   const match: {
-    <KE, R, E, A, B>(
+    <KE, R, E, A, B, C = B>(
       onFailure: (e: E) => B,
-      onSuccess: (a: A) => B,
-    ): (self: Kind<THKT, KE, E, A>) => Kind<F, R, KE, B>
+      onSuccess: (a: A) => C,
+    ): (self: Kind<THKT, KE, E, A>) => Kind<F, R, KE, B | C>
   } = flow (result.match, M.map)
 
   const swap: {

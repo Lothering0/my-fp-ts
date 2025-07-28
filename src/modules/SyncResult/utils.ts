@@ -8,9 +8,9 @@ export const toUnion: {
 } = self => () => pipe (self, execute, result.toUnion)
 
 export const match: {
-  <E, A, B>(
+  <E, A, B, C = B>(
     onFailure: (e: E) => B,
-    onSuccess: (a: A) => B,
-  ): (self: SyncResult<E, A>) => sync.Sync<B>
+    onSuccess: (a: A) => C,
+  ): (self: SyncResult<E, A>) => sync.Sync<B | C>
 } = (onFailure, onSuccess) =>
   flow (execute, result.match (onFailure, onSuccess), sync.of)

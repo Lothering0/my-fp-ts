@@ -7,10 +7,11 @@ import { LazyArg } from "../../types/utils"
 import { match } from "./utils"
 import { constant } from "../../utils/constant"
 
-export const getOrElse =
-  <A>(onNone: LazyArg<A>) =>
-  <B>(self: asyncOption.AsyncOption<B>): async.Async<A | B> =>
-    match (onNone, identity<A | B>) (self)
+export const getOrElse: {
+  <A>(
+    onNone: LazyArg<A>,
+  ): <B>(self: asyncOption.AsyncOption<B>) => async.Async<A | B>
+} = onNone => match (onNone, identity)
 
 export const orElse =
   <A>(that: asyncOption.AsyncOption<A>) =>

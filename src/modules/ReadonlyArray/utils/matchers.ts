@@ -3,18 +3,18 @@ import { LazyArg } from "../../../types/utils"
 import { isNonEmpty } from "../refinements"
 
 export const match: {
-  <A, B>(
+  <A, B, C = B>(
     onEmpty: LazyArg<B>,
-    onNonEmpty: (as: nonEmptyReadonlyArray.NonEmptyReadonlyArray<A>) => B,
-  ): (self: ReadonlyArray<A>) => B
+    onNonEmpty: (as: nonEmptyReadonlyArray.NonEmptyReadonlyArray<A>) => C,
+  ): (self: ReadonlyArray<A>) => B | C
 } = (onEmpty, onNonEmpty) => self =>
   isNonEmpty (self) ? onNonEmpty (self) : onEmpty ()
 
 export const matchLeft: {
-  <A, B>(
+  <A, B, C = B>(
     onEmpty: LazyArg<B>,
-    onNonEmpty: (head: A, tail: ReadonlyArray<A>) => B,
-  ): (self: ReadonlyArray<A>) => B
+    onNonEmpty: (head: A, tail: ReadonlyArray<A>) => C,
+  ): (self: ReadonlyArray<A>) => B | C
 } = (onEmpty, onNonEmpty) => self =>
   isNonEmpty (self)
     ? onNonEmpty (
@@ -24,10 +24,10 @@ export const matchLeft: {
     : onEmpty ()
 
 export const matchRight: {
-  <A, B>(
+  <A, B, C = B>(
     onEmpty: LazyArg<B>,
-    onNonEmpty: (init: ReadonlyArray<A>, last: A) => B,
-  ): (self: ReadonlyArray<A>) => B
+    onNonEmpty: (init: ReadonlyArray<A>, last: A) => C,
+  ): (self: ReadonlyArray<A>) => B | C
 } = (onEmpty, onNonEmpty) => self =>
   isNonEmpty (self)
     ? onNonEmpty (

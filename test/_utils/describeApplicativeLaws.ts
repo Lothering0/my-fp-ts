@@ -1,6 +1,7 @@
 import * as number from "../../src/modules/Number"
 import { HKT, Kind } from "../../src/types/HKT"
 import { Applicative } from "../../src/types/Applicative"
+import { identity } from "../../src/modules/Identity"
 
 export const describeApplicativeLaws: {
   <F extends HKT>(
@@ -13,7 +14,7 @@ export const describeApplicativeLaws: {
     describe ("ap", () => {
       it ("should satisfy identity law", () => {
         fas.forEach (fa => {
-          expect (A.ap (fa) (A.of (a => a))).toEqual (fa)
+          expect (A.ap (fa) (A.of (identity))).toEqual (fa)
         })
       })
 
