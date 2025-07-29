@@ -7,10 +7,10 @@ describeFunctorLaws (separated.Functor, [separated.make ("a", 1)])
 describe ("functor", () => {
   describe ("map", () => {
     it ("should apply function to value of `right` property", () => {
-      const x = 1
+      const a = 1
       const n = 1
-      expect (separated.map (number.add (n)) (separated.make ("a", x))).toEqual (
-        separated.make ("a", number.add (x) (n)),
+      expect (separated.map (number.add (n)) (separated.make ("a", a))).toEqual (
+        separated.make ("a", number.add (a) (n)),
       )
     })
   })

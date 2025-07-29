@@ -3,25 +3,29 @@ import * as readonlyArray from "../../../src/modules/ReadonlyArray"
 
 describe ("transformer", () => {
   it ("should correctly transform `ReadonlyArray` monad", () => {
-    const AO = option.transform (readonlyArray.Monad)
+    const readonlyArrayOption = option.transform (readonlyArray.Monad)
 
-    expect (AO.of (1)).toEqual<ReadonlyArray<option.Option<number>>> ([
+    expect (readonlyArrayOption.of (1)).toEqual<
+      ReadonlyArray<option.Option<number>>
+    > ([
       {
         _tag: "Some",
         value: 1,
       },
     ])
 
-    expect (AO.map (String) (AO.of (1))).toEqual<
+    expect (readonlyArrayOption.map (String) (readonlyArrayOption.of (1))).toEqual<
       ReadonlyArray<option.Option<string>>
     > ([{ _tag: "Some", value: "1" }])
   })
 
   it ("should correctly compose multiple monads", () => {
-    const AO = option.transform (readonlyArray.Monad)
-    const AOO = option.transform (AO.Monad)
+    const readonlyArrayOption = option.transform (readonlyArray.Monad)
+    const readonlyArrayOptionOption = option.transform (
+      readonlyArrayOption.Monad,
+    )
 
-    expect (AOO.of (1)).toEqual<
+    expect (readonlyArrayOptionOption.of (1)).toEqual<
       ReadonlyArray<option.Option<option.Option<number>>>
     > ([
       {
@@ -33,9 +37,9 @@ describe ("transformer", () => {
       },
     ])
 
-    expect (AOO.map (String) (AOO.of (1))).toEqual<
-      ReadonlyArray<option.Option<option.Option<string>>>
-    > ([
+    expect (
+      readonlyArrayOptionOption.map (String) (readonlyArrayOptionOption.of (1)),
+    ).toEqual<ReadonlyArray<option.Option<option.Option<string>>>> ([
       {
         _tag: "Some",
         value: {

@@ -5,18 +5,18 @@ import { pipe } from "../../../src/utils/flow"
 
 describe ("fromAsync", () => {
   it ("should return `none` if promise is rejected", async () => {
-    const x = 1
-    const fa: async.Async<never> = jest.fn (() => Promise.reject (x))
+    const a = 1
+    const fa: async.Async<never> = jest.fn (() => Promise.reject (a))
     const result = await pipe (fa, asyncOption.fromAsync, asyncOption.toPromise)
     expect (result).toEqual<option.Option<never>> (option.none)
     expect (fa).toHaveBeenCalledTimes (1)
   })
 
   it ("should return `some` if promise is resolved", async () => {
-    const x = 1
-    const fa: async.Async<typeof x> = jest.fn (() => Promise.resolve (x))
+    const a = 1
+    const fa: async.Async<typeof a> = jest.fn (() => Promise.resolve (a))
     const result = await pipe (fa, asyncOption.fromAsync, asyncOption.toPromise)
-    expect (result).toEqual<option.Option<typeof x>> (option.some (x))
+    expect (result).toEqual<option.Option<typeof a>> (option.some (a))
     expect (fa).toHaveBeenCalledTimes (1)
   })
 })

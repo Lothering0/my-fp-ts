@@ -7,9 +7,9 @@ import { pipe } from "../../../src/utils/flow"
 describe ("functor", () => {
   describe ("map", () => {
     it ("should satisfy identity law", async () => {
-      const x = 1
+      const a = 1
       const fa: asyncResult.AsyncResult<never, number> = jest.fn (
-        asyncResult.of (x),
+        asyncResult.of (a),
       )
 
       const result_ = await pipe (
@@ -17,7 +17,7 @@ describe ("functor", () => {
         asyncResult.map (identity),
         asyncResult.toPromise,
       )
-      expect (result_).toEqual (result.success (x))
+      expect (result_).toEqual (result.success (a))
       expect (fa).toHaveBeenCalledTimes (1)
     })
 
@@ -25,11 +25,11 @@ describe ("functor", () => {
       const ab = number.add (5)
       const bc = number.divide (2)
 
-      const x = 1
-      const getFa = () => asyncResult.of<never, typeof x> (x)
+      const a = 1
+      const getFa = () => asyncResult.of<never, typeof a> (a)
 
-      const fa1: asyncResult.AsyncResult<never, typeof x> = jest.fn (getFa ())
-      const fa2: asyncResult.AsyncResult<never, typeof x> = jest.fn (getFa ())
+      const fa1: asyncResult.AsyncResult<never, typeof a> = jest.fn (getFa ())
+      const fa2: asyncResult.AsyncResult<never, typeof a> = jest.fn (getFa ())
 
       const result1 = await pipe (
         fa1,
@@ -49,32 +49,32 @@ describe ("functor", () => {
     })
 
     it ("should return function containing promise of `failure` if the same was provided", async () => {
-      const x = 1
+      const a = 1
       const n = 1
-      const fe: asyncResult.AsyncResult<typeof x, never> = jest.fn (
-        asyncResult.failure (x),
+      const fe: asyncResult.AsyncResult<typeof a, never> = jest.fn (
+        asyncResult.failure (a),
       )
       const result_ = await pipe (
         fe,
         asyncResult.map (number.add (n)),
         asyncResult.toPromise,
       )
-      expect (result_).toEqual (result.failure (x))
+      expect (result_).toEqual (result.failure (a))
       expect (fe).toHaveBeenCalledTimes (1)
     })
 
     it ("should return function containing promise of `success` if it was provided", async () => {
-      const x = 1
+      const a = 1
       const n = 1
-      const fa: asyncResult.AsyncResult<never, typeof x> = jest.fn (
-        asyncResult.success (x),
+      const fa: asyncResult.AsyncResult<never, typeof a> = jest.fn (
+        asyncResult.success (a),
       )
       const result_ = await pipe (
         fa,
         asyncResult.map (number.add (n)),
         asyncResult.toPromise,
       )
-      expect (result_).toEqual (result.success (number.add (x) (n)))
+      expect (result_).toEqual (result.success (number.add (a) (n)))
       expect (fa).toHaveBeenCalledTimes (1)
     })
   })

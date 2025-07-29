@@ -6,11 +6,11 @@ import { pipe } from "../../../src/utils/flow"
 describe ("functor", () => {
   describe ("map", () => {
     it ("should satisfy identity law", () => {
-      const x = 1
-      const fa: sync.Sync<typeof x> = jest.fn (sync.of (x))
+      const a = 1
+      const fa: sync.Sync<typeof a> = jest.fn (sync.of (a))
 
       const result = sync.execute (sync.map (identity) (fa))
-      expect (result).toEqual (x)
+      expect (result).toEqual (a)
       expect (fa).toHaveBeenCalledTimes (1)
     })
 
@@ -18,11 +18,11 @@ describe ("functor", () => {
       const ab = number.add (5)
       const bc = number.divide (2)
 
-      const x = 1
-      const getFa = () => sync.of<typeof x> (x)
+      const a = 1
+      const getFa = () => sync.of<typeof a> (a)
 
-      const fa1: sync.Sync<typeof x> = jest.fn (getFa ())
-      const fa2: sync.Sync<typeof x> = jest.fn (getFa ())
+      const fa1: sync.Sync<typeof a> = jest.fn (getFa ())
+      const fa2: sync.Sync<typeof a> = jest.fn (getFa ())
 
       const result1 = pipe (
         fa1,

@@ -12,10 +12,10 @@ describe ("functor", () => {
     })
 
     it ("should apply function to `success` value", () => {
-      const x = 1
+      const a = 1
       const n = 1
-      expect (result.map (number.add (n)) (result.success (x))).toEqual (
-        result.success (number.add (x) (n)),
+      expect (result.map (number.add (n)) (result.success (a))).toEqual (
+        result.success (number.add (a) (n)),
       )
     })
   })

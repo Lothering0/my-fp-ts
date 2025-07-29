@@ -11,10 +11,10 @@ describe ("functor", () => {
     })
 
     it ("should apply function to `some` value", () => {
-      const x = 1
+      const a = 1
       const n = 1
-      expect (option.map (number.add (n)) (option.some (x))).toEqual (
-        option.some (number.add (x) (n)),
+      expect (option.map (number.add (n)) (option.some (a))).toEqual (
+        option.some (number.add (a) (n)),
       )
     })
   })

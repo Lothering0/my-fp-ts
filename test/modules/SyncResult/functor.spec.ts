@@ -7,11 +7,11 @@ import { pipe } from "../../../src/utils/flow"
 describe ("functor", () => {
   describe ("map", () => {
     it ("should satisfy identity law", () => {
-      const x = 1
-      const fa: syncResult.SyncResult<never, number> = jest.fn (syncResult.of (x))
+      const a = 1
+      const fa: syncResult.SyncResult<never, number> = jest.fn (syncResult.of (a))
 
       const result_ = pipe (fa, syncResult.map (identity), syncResult.execute)
-      expect (result_).toEqual (result.success (x))
+      expect (result_).toEqual (result.success (a))
       expect (fa).toHaveBeenCalledTimes (1)
     })
 
@@ -19,11 +19,11 @@ describe ("functor", () => {
       const ab = number.add (5)
       const bc = number.divide (2)
 
-      const x = 1
-      const getFa = () => syncResult.of<never, typeof x> (x)
+      const a = 1
+      const getFa = () => syncResult.of<never, typeof a> (a)
 
-      const fa1: syncResult.SyncResult<never, typeof x> = jest.fn (getFa ())
-      const fa2: syncResult.SyncResult<never, typeof x> = jest.fn (getFa ())
+      const fa1: syncResult.SyncResult<never, typeof a> = jest.fn (getFa ())
+      const fa2: syncResult.SyncResult<never, typeof a> = jest.fn (getFa ())
 
       const result1 = pipe (
         fa1,
@@ -43,32 +43,32 @@ describe ("functor", () => {
     })
 
     it ("should return function containing `failure` if the same was provided", () => {
-      const x = 1
+      const a = 1
       const n = 1
-      const fe: syncResult.SyncResult<typeof x, never> = jest.fn (
-        syncResult.failure (x),
+      const fe: syncResult.SyncResult<typeof a, never> = jest.fn (
+        syncResult.failure (a),
       )
       const result_ = pipe (
         fe,
         syncResult.map (number.add (n)),
         syncResult.execute,
       )
-      expect (result_).toEqual (result.failure (x))
+      expect (result_).toEqual (result.failure (a))
       expect (fe).toHaveBeenCalledTimes (1)
     })
 
     it ("should return function containing `success` if it was provided", () => {
-      const x = 1
+      const a = 1
       const n = 1
-      const fa: syncResult.SyncResult<never, typeof x> = jest.fn (
-        syncResult.success (x),
+      const fa: syncResult.SyncResult<never, typeof a> = jest.fn (
+        syncResult.success (a),
       )
       const result_ = pipe (
         fa,
         syncResult.map (number.add (n)),
         syncResult.execute,
       )
-      expect (result_).toEqual (result.success (number.add (x) (n)))
+      expect (result_).toEqual (result.success (number.add (a) (n)))
       expect (fa).toHaveBeenCalledTimes (1)
     })
   })

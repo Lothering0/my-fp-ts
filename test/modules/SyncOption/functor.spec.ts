@@ -7,11 +7,11 @@ import { pipe } from "../../../src/utils/flow"
 describe ("functor", () => {
   describe ("map", () => {
     it ("should satisfy identity law", () => {
-      const x = 1
-      const fa: syncOption.SyncOption<typeof x> = jest.fn (syncOption.of (x))
+      const a = 1
+      const fa: syncOption.SyncOption<typeof a> = jest.fn (syncOption.of (a))
 
       const result = pipe (fa, syncOption.map (identity), syncOption.execute)
-      expect (result).toEqual<option.Option<typeof x>> (option.some (x))
+      expect (result).toEqual<option.Option<typeof a>> (option.some (a))
       expect (fa).toHaveBeenCalledTimes (1)
     })
 
@@ -19,11 +19,11 @@ describe ("functor", () => {
       const ab = number.add (5)
       const bc = number.divide (2)
 
-      const x = 1
-      const getFa = () => syncOption.of<typeof x> (x)
+      const a = 1
+      const getFa = () => syncOption.of<typeof a> (a)
 
-      const fa1: syncOption.SyncOption<typeof x> = jest.fn (getFa ())
-      const fa2: syncOption.SyncOption<typeof x> = jest.fn (getFa ())
+      const fa1: syncOption.SyncOption<typeof a> = jest.fn (getFa ())
+      const fa2: syncOption.SyncOption<typeof a> = jest.fn (getFa ())
 
       const result1 = pipe (
         fa1,
@@ -51,11 +51,11 @@ describe ("functor", () => {
     })
 
     it ("should return function containing `some` if it was provided", () => {
-      const x = 1
+      const a = 1
       const n = 1
-      const fa: syncOption.SyncOption<typeof x> = jest.fn (syncOption.some (x))
+      const fa: syncOption.SyncOption<typeof a> = jest.fn (syncOption.some (a))
       const result = pipe (fa, syncOption.map (number.add (n)), syncOption.execute)
-      expect (result).toEqual (option.some (number.add (x) (n)))
+      expect (result).toEqual (option.some (number.add (a) (n)))
       expect (fa).toHaveBeenCalledTimes (1)
     })
   })

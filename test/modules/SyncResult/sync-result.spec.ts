@@ -6,18 +6,18 @@ import { raise } from "../../../src/utils/exceptions"
 
 describe ("fromSync", () => {
   it ("should return `failure` if function threw an error", () => {
-    const x = 1
-    const fa: sync.Sync<never> = jest.fn (() => raise (x))
+    const a = 1
+    const fa: sync.Sync<never> = jest.fn (() => raise (a))
     const result_ = pipe (syncResult.fromSync (fa), syncResult.execute)
-    expect (result_).toEqual<result.Result<typeof x, never>> (result.failure (x))
+    expect (result_).toEqual<result.Result<typeof a, never>> (result.failure (a))
     expect (fa).toHaveBeenCalledTimes (1)
   })
 
   it ("should return `success` if function returned a value", () => {
-    const x = 1
-    const fa: sync.Sync<typeof x> = jest.fn (() => x)
+    const a = 1
+    const fa: sync.Sync<typeof a> = jest.fn (() => a)
     const result_ = pipe (syncResult.fromSync (fa), syncResult.execute)
-    expect (result_).toEqual<result.Result<never, typeof x>> (result.success (x))
+    expect (result_).toEqual<result.Result<never, typeof a>> (result.success (a))
     expect (fa).toHaveBeenCalledTimes (1)
   })
 })

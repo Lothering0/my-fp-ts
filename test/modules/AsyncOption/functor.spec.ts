@@ -7,15 +7,15 @@ import { pipe } from "../../../src/utils/flow"
 describe ("functor", () => {
   describe ("map", () => {
     it ("should satisfy identity law", async () => {
-      const x = 1
-      const fa: asyncOption.AsyncOption<typeof x> = jest.fn (asyncOption.of (x))
+      const a = 1
+      const fa: asyncOption.AsyncOption<typeof a> = jest.fn (asyncOption.of (a))
 
       const result = await pipe (
         fa,
         asyncOption.map (identity),
         asyncOption.toPromise,
       )
-      expect (result).toEqual<option.Option<typeof x>> (option.some (x))
+      expect (result).toEqual<option.Option<typeof a>> (option.some (a))
       expect (fa).toHaveBeenCalledTimes (1)
     })
 
@@ -23,11 +23,11 @@ describe ("functor", () => {
       const ab = number.add (5)
       const bc = number.divide (2)
 
-      const x = 1
-      const getFa = () => asyncOption.of<typeof x> (x)
+      const a = 1
+      const getFa = () => asyncOption.of<typeof a> (a)
 
-      const fa1: asyncOption.AsyncOption<typeof x> = jest.fn (getFa ())
-      const fa2: asyncOption.AsyncOption<typeof x> = jest.fn (getFa ())
+      const fa1: asyncOption.AsyncOption<typeof a> = jest.fn (getFa ())
+      const fa2: asyncOption.AsyncOption<typeof a> = jest.fn (getFa ())
 
       const result1 = await pipe (
         fa1,
@@ -59,15 +59,15 @@ describe ("functor", () => {
     })
 
     it ("should return function containing promise of `some` if it was provided", async () => {
-      const x = 1
+      const a = 1
       const n = 1
-      const fa: asyncOption.AsyncOption<typeof x> = jest.fn (asyncOption.some (x))
+      const fa: asyncOption.AsyncOption<typeof a> = jest.fn (asyncOption.some (a))
       const result = await pipe (
         fa,
         asyncOption.map (number.add (n)),
         asyncOption.toPromise,
       )
-      expect (result).toEqual (option.some (number.add (x) (n)))
+      expect (result).toEqual (option.some (number.add (a) (n)))
       expect (fa).toHaveBeenCalledTimes (1)
     })
   })

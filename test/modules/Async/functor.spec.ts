@@ -6,11 +6,11 @@ import { pipe } from "../../../src/utils/flow"
 describe ("functor", () => {
   describe ("map", () => {
     it ("should satisfy identity law", async () => {
-      const x = 1
-      const fa: async.Async<typeof x> = jest.fn (async.of (x))
+      const a = 1
+      const fa: async.Async<typeof a> = jest.fn (async.of (a))
 
       const result = await pipe (fa, async.map (identity), async.toPromise)
-      expect (result).toEqual (x)
+      expect (result).toEqual (a)
       expect (fa).toHaveBeenCalledTimes (1)
     })
 
@@ -18,11 +18,11 @@ describe ("functor", () => {
       const ab = number.add (5)
       const bc = number.divide (2)
 
-      const x = 1
-      const getFa = () => async.of<typeof x> (x)
+      const a = 1
+      const getFa = () => async.of<typeof a> (a)
 
-      const fa1: async.Async<typeof x> = jest.fn (getFa ())
-      const fa2: async.Async<typeof x> = jest.fn (getFa ())
+      const fa1: async.Async<typeof a> = jest.fn (getFa ())
+      const fa2: async.Async<typeof a> = jest.fn (getFa ())
 
       const result1 = await pipe (
         fa1,

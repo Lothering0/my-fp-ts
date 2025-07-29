@@ -3,18 +3,18 @@ import * as readonlyArray from "../../../src/modules/ReadonlyArray"
 
 describe ("transformer", () => {
   it ("should correctly transform `ReadonlyArray` monad", () => {
-    const AR = result.transform (readonlyArray.Monad)
+    const readonlyArrayResult = result.transform (readonlyArray.Monad)
 
-    expect (AR.success (1)).toEqual<ReadonlyArray<result.Result<string, number>>> (
-      [
-        {
-          _tag: "Success",
-          success: 1,
-        },
-      ],
-    )
+    expect (readonlyArrayResult.success (1)).toEqual<
+      ReadonlyArray<result.Result<string, number>>
+    > ([
+      {
+        _tag: "Success",
+        success: 1,
+      },
+    ])
 
-    expect (AR.failure ("a")).toEqual<
+    expect (readonlyArrayResult.failure ("a")).toEqual<
       ReadonlyArray<result.Result<string, number>>
     > ([
       {
@@ -23,16 +23,18 @@ describe ("transformer", () => {
       },
     ])
 
-    expect (AR.map (String) (AR.of (1))).toEqual<
+    expect (readonlyArrayResult.map (String) (readonlyArrayResult.of (1))).toEqual<
       ReadonlyArray<result.Result<never, string>>
     > ([{ _tag: "Success", success: "1" }])
   })
 
   it ("should correctly compose multiple monads", () => {
-    const AR = result.transform (readonlyArray.Monad)
-    const ARR = result.transform (AR.Monad)
+    const readonlyArrayResult = result.transform (readonlyArray.Monad)
+    const readonlyArrayResultResult = result.transform (
+      readonlyArrayResult.Monad,
+    )
 
-    expect (ARR.of (1)).toEqual<
+    expect (readonlyArrayResultResult.of (1)).toEqual<
       ReadonlyArray<result.Result<never, result.Result<never, number>>>
     > ([
       {
@@ -44,7 +46,9 @@ describe ("transformer", () => {
       },
     ])
 
-    expect (ARR.map (String) (ARR.of (1))).toEqual<
+    expect (
+      readonlyArrayResultResult.map (String) (readonlyArrayResultResult.of (1)),
+    ).toEqual<
       ReadonlyArray<result.Result<never, result.Result<never, string>>>
     > ([
       {
