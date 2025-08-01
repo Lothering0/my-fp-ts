@@ -11,8 +11,8 @@ export const tryDo: {
   <E, A>(a: LazyArg<A>): result.Result<E, A>
 } = a => {
   try {
-    return result.success (a ())
+    return result.succeed (a ())
   } catch (exception) {
-    return result.failure (exception)
+    return result.fail (exception)
   }
 }

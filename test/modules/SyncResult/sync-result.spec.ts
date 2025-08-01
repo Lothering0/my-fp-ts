@@ -9,7 +9,7 @@ describe ("fromSync", () => {
     const a = 1
     const fa: sync.Sync<never> = jest.fn (() => raise (a))
     const result_ = pipe (syncResult.fromSync (fa), syncResult.execute)
-    expect (result_).toEqual<result.Result<typeof a, never>> (result.failure (a))
+    expect (result_).toEqual<result.Result<typeof a, never>> (result.fail (a))
     expect (fa).toHaveBeenCalledTimes (1)
   })
 
@@ -17,7 +17,7 @@ describe ("fromSync", () => {
     const a = 1
     const fa: sync.Sync<typeof a> = jest.fn (() => a)
     const result_ = pipe (syncResult.fromSync (fa), syncResult.execute)
-    expect (result_).toEqual<result.Result<never, typeof a>> (result.success (a))
+    expect (result_).toEqual<result.Result<never, typeof a>> (result.succeed (a))
     expect (fa).toHaveBeenCalledTimes (1)
   })
 })

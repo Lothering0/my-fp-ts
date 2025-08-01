@@ -1,6 +1,6 @@
 import { Option, none, some } from "./option"
 import { isNone } from "./refinements"
-import { fromSome } from "./utils"
+import { value } from "./utils"
 import { Monoid } from "../../types/Monoid"
 import { Semigroup } from "../../types/Semigroup"
 import { pipe } from "../../utils/flow"
@@ -16,5 +16,5 @@ export const getMonoid: {
         : my
       : isNone (my)
         ? mx
-        : pipe (S.concat (fromSome (mx)) (fromSome (my)), some),
+        : pipe (S.concat (value (mx)) (value (my)), some),
 })

@@ -1,4 +1,4 @@
-import { failure, success } from "../../src/modules/Result"
+import { fail, succeed } from "../../src/modules/Result"
 import { raise, tryDo } from "../../src/utils/exceptions"
 
 describe ("exceptions", () => {
@@ -13,13 +13,13 @@ describe ("exceptions", () => {
   describe ("tryDo", () => {
     it ("should return correct `Result` instance", () => {
       const x = "a"
-      const fail = jest.fn (() => raise (x))
+      const failing = jest.fn (() => raise (x))
       const pass = jest.fn (() => x)
 
-      expect (tryDo (fail)).toEqual (failure (x))
-      expect (tryDo (pass)).toEqual (success (x))
+      expect (tryDo (failing)).toEqual (fail (x))
+      expect (tryDo (pass)).toEqual (succeed (x))
 
-      expect (fail).toHaveBeenCalledTimes (1)
+      expect (failing).toHaveBeenCalledTimes (1)
       expect (pass).toHaveBeenCalledTimes (1)
     })
   })

@@ -11,34 +11,34 @@ export interface AsyncResultHKT extends HKT {
 
 export interface AsyncResult<E, A> extends async.Async<result.Result<E, A>> {}
 
-export const failure: {
+export const fail: {
   <E = never, A = never>(e: E): AsyncResult<E, A>
-} = flow (result.failure, async.of)
+} = flow (result.fail, async.of)
 
-export const failureSync: {
+export const failSync: {
   <E = never, A = never>(me: sync.Sync<E>): AsyncResult<E, A>
-} = flow (sync.execute, failure)
+} = flow (sync.execute, fail)
 
-export const failureAsync: {
+export const failAsync: {
   <E = never, A = never>(me: async.Async<E>): AsyncResult<E, A>
-} = async.map (result.failure)
+} = async.map (result.fail)
 
-export const success: {
+export const succeed: {
   <E = never, A = never>(a: A): AsyncResult<E, A>
-} = flow (result.success, async.of)
+} = flow (result.succeed, async.of)
 
-export const successSync: {
+export const succeedSync: {
   <E = never, A = never>(ma: sync.Sync<A>): AsyncResult<E, A>
-} = flow (sync.execute, success)
+} = flow (sync.execute, succeed)
 
-export const successAsync: {
+export const succeedAsync: {
   <E = never, A = never>(me: async.Async<A>): AsyncResult<E, A>
-} = async.map (result.success)
+} = async.map (result.succeed)
 
 export const fromAsync: {
   <E, A>(ma: async.Async<A>): AsyncResult<E, A>
-} = ma => () => ma ().then (result.success, result.failure)
+} = ma => () => ma ().then (result.succeed, result.fail)
 
 export const toPromise: {
   <E, A>(ma: AsyncResult<E, A>): Promise<result.Result<E, A>>
-} = mma => mma ().then (identity, result.failure)
+} = mma => mma ().then (identity, result.fail)

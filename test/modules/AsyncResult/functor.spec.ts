@@ -17,7 +17,7 @@ describe ("functor", () => {
         asyncResult.map (identity),
         asyncResult.toPromise,
       )
-      expect (result_).toEqual (result.success (a))
+      expect (result_).toEqual (result.succeed (a))
       expect (fa).toHaveBeenCalledTimes (1)
     })
 
@@ -52,14 +52,14 @@ describe ("functor", () => {
       const a = 1
       const n = 1
       const fe: asyncResult.AsyncResult<typeof a, never> = jest.fn (
-        asyncResult.failure (a),
+        asyncResult.fail (a),
       )
       const result_ = await pipe (
         fe,
         asyncResult.map (number.add (n)),
         asyncResult.toPromise,
       )
-      expect (result_).toEqual (result.failure (a))
+      expect (result_).toEqual (result.fail (a))
       expect (fe).toHaveBeenCalledTimes (1)
     })
 
@@ -67,14 +67,14 @@ describe ("functor", () => {
       const a = 1
       const n = 1
       const fa: asyncResult.AsyncResult<never, typeof a> = jest.fn (
-        asyncResult.success (a),
+        asyncResult.succeed (a),
       )
       const result_ = await pipe (
         fa,
         asyncResult.map (number.add (n)),
         asyncResult.toPromise,
       )
-      expect (result_).toEqual (result.success (number.add (a) (n)))
+      expect (result_).toEqual (result.succeed (number.add (a) (n)))
       expect (fa).toHaveBeenCalledTimes (1)
     })
   })

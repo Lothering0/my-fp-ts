@@ -15,21 +15,21 @@ export interface ResultT<F extends HKT> extends HKT {
 export const transform = <F extends HKT>(M: Monad<F>) => {
   type THKT = ResultT<F>
 
-  const success: {
+  const succeed: {
     <A, S, E = never>(a: A): Kind<THKT, S, E, A>
-  } = flow (result.success, M.of)
+  } = flow (result.succeed, M.of)
 
-  const successF: {
+  const succeedF: {
     <A, S, E = never>(fe: Kind<F, never, S, A>): Kind<THKT, S, E, A>
-  } = M.map (result.success)
+  } = M.map (result.succeed)
 
-  const failure: {
+  const fail: {
     <S, E, A = never>(e: E): Kind<THKT, S, E, A>
-  } = flow (result.failure, M.of)
+  } = flow (result.fail, M.of)
 
-  const failureF: {
+  const failF: {
     <S, E, A = never>(fe: Kind<F, never, S, E>): Kind<THKT, S, E, A>
-  } = M.map (result.failure)
+  } = M.map (result.fail)
 
   const match: {
     <S, R, E, A, B, C = B>(
@@ -57,7 +57,7 @@ export const transform = <F extends HKT>(M: Monad<F>) => {
 
   const Applicative = createApplicative<THKT> ({
     ...Functor,
-    of: success,
+    of: succeed,
     ap:
       <S, E1, A>(fma: Kind<THKT, S, E1, A>) =>
       <E2, B>(self: Kind<THKT, S, E2, (a: A) => B>) =>
@@ -73,14 +73,14 @@ export const transform = <F extends HKT>(M: Monad<F>) => {
     flat: <S, E1, E2, A>(
       self: Kind<THKT, S, E1, Kind<THKT, S, E2, A>>,
     ): Kind<THKT, any, E1 | E2, A> =>
-      pipe (self, M.flatMap (result.match (flow (result.failure, M.of), identity))),
+      pipe (self, M.flatMap (result.match (flow (result.fail, M.of), identity))),
   })
 
   return {
-    success,
-    successF,
-    failure,
-    failureF,
+    succeed,
+    succeedF,
+    fail,
+    failF,
     match,
     swap,
     toUnion,

@@ -1,6 +1,6 @@
 import { Sync } from "../Sync"
 import { Applicative } from "./applicative"
-import { failure, Result, ResultHKT } from "./result"
+import { fail, Result, ResultHKT } from "./result"
 import { match } from "./utils"
 import { createMonad } from "../../types/Monad"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
@@ -8,7 +8,7 @@ import { identity } from "../Identity"
 
 export const Monad = createMonad<ResultHKT> ({
   ...Applicative,
-  flat: match (failure, identity),
+  flat: match (fail, identity),
 })
 
 export const Do = Monad.Do

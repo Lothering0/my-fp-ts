@@ -4,16 +4,16 @@ import { Sync } from "../Sync"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
 import { Tree, TreeHKT } from "./tree"
 import { Applicative } from "./applicative"
-import { make, valueOf, forestOf } from "./utils"
+import { make, value, forest } from "./utils"
 import { pipe } from "../../utils/flow"
 
 export const Monad: monad.Monad<TreeHKT> = monad.createMonad<TreeHKT> ({
   ...Applicative,
   flat: self =>
     make (
-      pipe (self, valueOf, valueOf),
-      readonlyArray.concat (pipe (self, forestOf, readonlyArray.map (flat))) (
-        pipe (self, valueOf, forestOf),
+      pipe (self, value, value),
+      readonlyArray.concat (pipe (self, forest, readonlyArray.map (flat))) (
+        pipe (self, value, forest),
       ),
     ),
 })

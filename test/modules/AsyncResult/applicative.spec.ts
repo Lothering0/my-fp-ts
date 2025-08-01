@@ -19,7 +19,7 @@ describe ("applicative", () => {
         asyncResult.toPromise,
       )
 
-      expect (result_).toEqual<result.Result<never, typeof a>> (result.success (a))
+      expect (result_).toEqual<result.Result<never, typeof a>> (result.succeed (a))
       expect (fa).toHaveBeenCalledTimes (1)
     })
 
@@ -69,7 +69,7 @@ describe ("applicative", () => {
       const ab = number.add (5)
 
       const fa: asyncResult.AsyncResult<typeof e, never> = jest.fn (
-        asyncResult.failure (e),
+        asyncResult.fail (e),
       )
       const fab: asyncResult.AsyncResult<never, typeof ab> = jest.fn (
         asyncResult.of (ab),
@@ -77,7 +77,7 @@ describe ("applicative", () => {
 
       const result_ = await pipe (fab, asyncResult.ap (fa), asyncResult.toPromise)
 
-      expect (result_).toEqual<result.Result<typeof e, never>> (result.failure (e))
+      expect (result_).toEqual<result.Result<typeof e, never>> (result.fail (e))
       expect (fa).toHaveBeenCalledTimes (1)
       expect (fab).toHaveBeenCalledTimes (1)
     })
@@ -90,12 +90,12 @@ describe ("applicative", () => {
         asyncResult.of (a),
       )
       const fab: asyncResult.AsyncResult<typeof e, never> = jest.fn (
-        asyncResult.failure (e),
+        asyncResult.fail (e),
       )
 
       const result_ = await pipe (fab, asyncResult.ap (fa), asyncResult.toPromise)
 
-      expect (result_).toEqual<result.Result<typeof e, never>> (result.failure (e))
+      expect (result_).toEqual<result.Result<typeof e, never>> (result.fail (e))
       expect (fa).toHaveBeenCalledTimes (1)
       expect (fab).toHaveBeenCalledTimes (1)
     })
@@ -104,10 +104,10 @@ describe ("applicative", () => {
       const e = "e"
       const d = "d"
       const fa: asyncResult.AsyncResult<typeof e, never> = jest.fn (
-        asyncResult.failure (e),
+        asyncResult.fail (e),
       )
       const fab: asyncResult.AsyncResult<typeof d, never> = jest.fn (
-        asyncResult.failure (d),
+        asyncResult.fail (d),
       )
 
       const result_: result.Result<typeof e | typeof d, unknown> = await pipe (
@@ -116,7 +116,7 @@ describe ("applicative", () => {
         asyncResult.toPromise,
       )
 
-      expect (result_).toEqual<result.Result<typeof e, never>> (result.failure (e))
+      expect (result_).toEqual<result.Result<typeof e, never>> (result.fail (e))
       expect (fa).toHaveBeenCalledTimes (1)
       expect (fab).toHaveBeenCalledTimes (1)
     })

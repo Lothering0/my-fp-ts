@@ -10,21 +10,21 @@ export interface SyncResultHKT extends HKT {
 
 export interface SyncResult<E, A> extends sync.Sync<result.Result<E, A>> {}
 
-export const failure: {
+export const fail: {
   <E = never, A = never>(e: E): SyncResult<E, A>
-} = e => () => result.failure (e)
+} = e => () => result.fail (e)
 
-export const failureSync: {
+export const failSync: {
   <E = never, A = never>(me: sync.Sync<E>): SyncResult<E, A>
-} = me => () => pipe (me, sync.execute, result.failure)
+} = me => () => pipe (me, sync.execute, result.fail)
 
-export const success: {
+export const succeed: {
   <E = never, A = never>(a: A): SyncResult<E, A>
-} = a => () => result.success (a)
+} = a => () => result.succeed (a)
 
-export const successSync: {
+export const succeedSync: {
   <E = never, A = never>(ma: sync.Sync<A>): SyncResult<E, A>
-} = ma => () => pipe (ma, sync.execute, result.success)
+} = ma => () => pipe (ma, sync.execute, result.succeed)
 
 export const fromSync: {
   <E, A>(ma: sync.Sync<A>): SyncResult<E, A>
@@ -36,6 +36,6 @@ export const execute: {
   try {
     return ma ()
   } catch (exception) {
-    return result.failure (exception)
+    return result.fail (exception)
   }
 }

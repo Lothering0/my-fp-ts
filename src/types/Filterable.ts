@@ -1,6 +1,6 @@
 import { Separated } from "../modules/Separated"
 import { Option, some, none } from "../modules/Option"
-import { Result, failure, success } from "../modules/Result"
+import { Result, fail, succeed } from "../modules/Result"
 import { Compactable } from "./Compactable"
 import { Functor } from "./Functor"
 import { HKT, Kind } from "./HKT"
@@ -45,7 +45,7 @@ export const createFilterable = <F extends HKT>(
     flow (map (p), separate)
 
   const partition: Filterable<F>["partition"] = p =>
-    partitionMap (a => p (a) ? success (a) : failure (a))
+    partitionMap (a => p (a) ? succeed (a) : fail (a))
 
   return {
     ...Filterable,

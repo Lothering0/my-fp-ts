@@ -2,7 +2,7 @@ import * as readonlyArray from "../ReadonlyArray"
 import { Tree, TreeHKT } from "./tree"
 import { createApplicative } from "../../types/Applicative"
 import { Functor } from "./functor"
-import { make, valueOf, forestOf } from "./utils"
+import { make, value, forest } from "./utils"
 import { pipe } from "../../utils/flow"
 
 export const Applicative = createApplicative<TreeHKT> ({
@@ -10,14 +10,14 @@ export const Applicative = createApplicative<TreeHKT> ({
   of: make,
   ap: fa => self =>
     make (
-      valueOf (self) (valueOf (fa)),
+      value (self) (value (fa)),
       readonlyArray.concat (
         pipe (
           fa,
-          forestOf,
+          forest,
           readonlyArray.map (tree => pipe (self, ap (tree))),
         ),
-      ) (pipe (self, forestOf, readonlyArray.map (ap (fa)))),
+      ) (pipe (self, forest, readonlyArray.map (ap (fa)))),
     ),
 })
 

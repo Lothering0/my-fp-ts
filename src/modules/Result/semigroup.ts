@@ -1,7 +1,7 @@
 import { Semigroup } from "../../types/Semigroup"
-import { Result, success } from "./result"
+import { Result, succeed } from "./result"
 import { isFailure } from "./refinements"
-import { fromSuccess } from "./utils"
+import { success } from "./utils"
 import { pipe } from "../../utils/flow"
 
 export const getSemigroup: {
@@ -14,5 +14,5 @@ export const getSemigroup: {
         : my
       : isFailure (my)
         ? mx
-        : pipe (S.concat (fromSuccess (mx)) (fromSuccess (my)), success),
+        : pipe (S.concat (success (mx)) (success (my)), succeed),
 })

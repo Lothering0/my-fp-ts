@@ -5,7 +5,7 @@ describe ("transformer", () => {
   it ("should correctly transform `ReadonlyArray` monad", () => {
     const readonlyArrayResult = result.transform (readonlyArray.Monad)
 
-    expect (readonlyArrayResult.success (1)).toEqual<
+    expect (readonlyArrayResult.succeed (1)).toEqual<
       ReadonlyArray<result.Result<string, number>>
     > ([
       {
@@ -14,7 +14,7 @@ describe ("transformer", () => {
       },
     ])
 
-    expect (readonlyArrayResult.failure ("a")).toEqual<
+    expect (readonlyArrayResult.fail ("a")).toEqual<
       ReadonlyArray<result.Result<string, number>>
     > ([
       {

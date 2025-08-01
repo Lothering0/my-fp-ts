@@ -4,6 +4,6 @@ import { describeApplicativeLaws } from "../../_utils/describeApplicativeLaws"
 
 describeApplicativeLaws (
   result.Applicative,
-  [result.failure ("a"), result.success (1)],
-  [result.failure ("a"), result.success (number.add (5))],
+  [result.fail ("a"), result.succeed (1)],
+  [result.fail ("a"), result.succeed (number.add (5))],
 )

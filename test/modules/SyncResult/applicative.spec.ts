@@ -19,7 +19,7 @@ describe ("applicative", () => {
         syncResult.execute,
       )
 
-      expect (result_).toEqual<result.Result<never, typeof a>> (result.success (a))
+      expect (result_).toEqual<result.Result<never, typeof a>> (result.succeed (a))
       expect (fa).toHaveBeenCalledTimes (1)
     })
 
@@ -69,7 +69,7 @@ describe ("applicative", () => {
       const ab = number.add (5)
 
       const fa: syncResult.SyncResult<typeof e, never> = jest.fn (
-        syncResult.failure (e),
+        syncResult.fail (e),
       )
       const fab: syncResult.SyncResult<never, typeof ab> = jest.fn (
         syncResult.of (ab),
@@ -77,7 +77,7 @@ describe ("applicative", () => {
 
       const result_ = pipe (fab, syncResult.ap (fa), syncResult.execute)
 
-      expect (result_).toEqual<result.Result<typeof e, never>> (result.failure (e))
+      expect (result_).toEqual<result.Result<typeof e, never>> (result.fail (e))
       expect (fa).toHaveBeenCalledTimes (1)
       expect (fab).toHaveBeenCalledTimes (1)
     })
@@ -90,12 +90,12 @@ describe ("applicative", () => {
         syncResult.of (a),
       )
       const fab: syncResult.SyncResult<typeof e, never> = jest.fn (
-        syncResult.failure (e),
+        syncResult.fail (e),
       )
 
       const result_ = pipe (fab, syncResult.ap (fa), syncResult.execute)
 
-      expect (result_).toEqual<result.Result<typeof e, never>> (result.failure (e))
+      expect (result_).toEqual<result.Result<typeof e, never>> (result.fail (e))
       expect (fa).toHaveBeenCalledTimes (1)
       expect (fab).toHaveBeenCalledTimes (1)
     })
@@ -104,10 +104,10 @@ describe ("applicative", () => {
       const e = "e"
       const d = "d"
       const fa: syncResult.SyncResult<typeof e, never> = jest.fn (
-        syncResult.failure (e),
+        syncResult.fail (e),
       )
       const fab: syncResult.SyncResult<typeof d, never> = jest.fn (
-        syncResult.failure (d),
+        syncResult.fail (d),
       )
 
       const result_: result.Result<typeof e | typeof d, unknown> = pipe (
@@ -116,7 +116,7 @@ describe ("applicative", () => {
         syncResult.execute,
       )
 
-      expect (result_).toEqual<result.Result<typeof e, never>> (result.failure (e))
+      expect (result_).toEqual<result.Result<typeof e, never>> (result.fail (e))
       expect (fa).toHaveBeenCalledTimes (1)
       expect (fab).toHaveBeenCalledTimes (1)
     })

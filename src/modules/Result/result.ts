@@ -16,14 +16,14 @@ export interface Success<A> {
   readonly success: A
 }
 
-export const failure: {
+export const fail: {
   <E = never, A = never>(e: E): Result<E, A>
 } = value => ({
   _tag: "Failure",
   failure: value,
 })
 
-export const success: {
+export const succeed: {
   <E = never, A = never>(a: A): Result<E, A>
 } = value => ({
   _tag: "Success",

@@ -1,12 +1,12 @@
 import { Monoid } from "../../types/Monoid"
 import { getRaceSemigroup } from "./semigroup"
 import { AsyncResult } from "./async-result"
-import { success } from "../Result"
+import { succeed } from "../Result"
 import { _ } from "../../utils/underscore"
 
 export const getRaceMonoid: {
   <E, A>(): Monoid<AsyncResult<E, A>>
 } = () => ({
   ...getRaceSemigroup (),
-  empty: () => new Promise (() => success (_)),
+  empty: () => new Promise (() => succeed (_)),
 })

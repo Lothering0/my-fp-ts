@@ -8,7 +8,7 @@ import { constNull, constUndefined, constVoid } from "../../utils/constant"
 import { identity } from "../Identity"
 import { isNull, isUndefined } from "../../utils/typeChecks"
 
-export const fromSome: {
+export const value: {
   <A>(self: Some<A>): A
 } = self => self.value
 
@@ -18,7 +18,7 @@ export const match: {
     onSome: (a: A) => C,
   ): (self: Option<A>) => B | C
 } = (onNone, onSome) => self =>
-  isNone (self) ? onNone () : pipe (self, fromSome, onSome)
+  isNone (self) ? onNone () : pipe (self, value, onSome)
 
 export const fromNullable: {
   <A>(a: A): Option<NonNullable<A>>
@@ -51,4 +51,4 @@ export const fromResult: {
 
 export const toResult: {
   <E>(onNone: LazyArg<E>): <A>(self: Option<A>) => result.Result<E, A>
-} = onNone => match (flow (onNone, result.failure), result.success)
+} = onNone => match (flow (onNone, result.fail), result.succeed)

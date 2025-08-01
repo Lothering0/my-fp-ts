@@ -11,7 +11,7 @@ describe ("functor", () => {
       const fa: syncResult.SyncResult<never, number> = jest.fn (syncResult.of (a))
 
       const result_ = pipe (fa, syncResult.map (identity), syncResult.execute)
-      expect (result_).toEqual (result.success (a))
+      expect (result_).toEqual (result.succeed (a))
       expect (fa).toHaveBeenCalledTimes (1)
     })
 
@@ -46,14 +46,14 @@ describe ("functor", () => {
       const a = 1
       const n = 1
       const fe: syncResult.SyncResult<typeof a, never> = jest.fn (
-        syncResult.failure (a),
+        syncResult.fail (a),
       )
       const result_ = pipe (
         fe,
         syncResult.map (number.add (n)),
         syncResult.execute,
       )
-      expect (result_).toEqual (result.failure (a))
+      expect (result_).toEqual (result.fail (a))
       expect (fe).toHaveBeenCalledTimes (1)
     })
 
@@ -61,14 +61,14 @@ describe ("functor", () => {
       const a = 1
       const n = 1
       const fa: syncResult.SyncResult<never, typeof a> = jest.fn (
-        syncResult.success (a),
+        syncResult.succeed (a),
       )
       const result_ = pipe (
         fa,
         syncResult.map (number.add (n)),
         syncResult.execute,
       )
-      expect (result_).toEqual (result.success (number.add (a) (n)))
+      expect (result_).toEqual (result.succeed (number.add (a) (n)))
       expect (fa).toHaveBeenCalledTimes (1)
     })
   })

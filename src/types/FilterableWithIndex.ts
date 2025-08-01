@@ -1,6 +1,6 @@
 import { Separated } from "../modules/Separated"
 import { Option, some, none } from "../modules/Option"
-import { Result, failure, success } from "../modules/Result"
+import { Result, fail, succeed } from "../modules/Result"
 import { HKT, Kind } from "./HKT"
 import { FunctorWithIndex } from "./FunctorWithIndex"
 import { Filterable } from "./Filterable"
@@ -54,7 +54,7 @@ export const createFilterableWithIndex = <F extends HKT, I>(
     F,
     I
   >["partitionWithIndex"] = p =>
-    partitionMapWithIndex ((i, a) => p (i, a) ? success (a) : failure (a))
+    partitionMapWithIndex ((i, a) => p (i, a) ? succeed (a) : fail (a))
 
   return {
     ...Filterable,

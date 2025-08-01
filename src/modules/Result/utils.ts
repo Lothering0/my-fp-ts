@@ -1,13 +1,13 @@
 import { pipe } from "../../utils/flow"
 import { identity } from "../Identity"
 import { isFailure } from "./refinements"
-import { Result, failure, Failure, success, Success } from "./result"
+import { Result, fail, Failure, succeed, Success } from "./result"
 
-export const fromFailure: {
+export const failure: {
   <E>(self: Failure<E>): E
 } = self => self.failure
 
-export const fromSuccess: {
+export const success: {
   <A>(self: Success<A>): A
 } = self => self.success
 
@@ -18,8 +18,8 @@ export const match: {
   ): (self: Result<E, A>) => B | C
 } = (onFailure, onSuccess) => self =>
   isFailure (self)
-    ? pipe (self, fromFailure, onFailure)
-    : pipe (self, fromSuccess, onSuccess)
+    ? pipe (self, failure, onFailure)
+    : pipe (self, success, onSuccess)
 
 export const toUnion: {
   <E, A>(self: Result<E, A>): E | A
@@ -27,4 +27,4 @@ export const toUnion: {
 
 export const swap: {
   <E, A>(self: Result<E, A>): Result<A, E>
-} = match (success, failure)
+} = match (succeed, fail)

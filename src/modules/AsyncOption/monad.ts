@@ -22,7 +22,7 @@ export const Monad = createMonad<AsyncOptionHKT> ({
   ...Applicative,
   flat: self => () =>
     toPromise (self).then (ma =>
-      option.isNone (ma) ? ma : pipe (ma, option.fromSome, toPromise),
+      option.isNone (ma) ? ma : pipe (ma, option.value, toPromise),
     ),
 })
 

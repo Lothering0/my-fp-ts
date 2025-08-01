@@ -12,7 +12,7 @@ export const Monad = createMonad<SyncOptionHKT> ({
   ...Applicative,
   flat: self => () =>
     pipe (self, execute, ma =>
-      option.isNone (ma) ? ma : pipe (ma, option.fromSome, execute),
+      option.isNone (ma) ? ma : pipe (ma, option.value, execute),
     ),
 })
 
