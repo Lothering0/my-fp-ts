@@ -4,17 +4,17 @@
 - File structure differs. While [fp-ts](https://github.com/gcanti/fp-ts) holds all files in a flat directory `src`, my `src` contains three sections: `modules`, `types` and `utils`. Each module in `modules` has separated for its own purpose `.ts` files (type class instance, module utils, refinements, etc). In [fp-ts](https://github.com/gcanti/fp-ts) all stuff related to a module exists in one file.
 - Naming differences:
 
-| Original                      | My implementation                  |
-| ----------------------------- | ---------------------------------- |
-| `Either` (`left` and `right`) | `Result` (`failure` and `success`) |
-| `IO`                          | `Sync`                             |
-| `IOOption`                    | `SyncOption`                       |
-| `IOEither`                    | `SyncResult`                       |
-| `Task`                        | `Async`                            |
-| `TaskOption`                  | `AsyncOption`                      |
-| `TaskEither`                  | `AsyncResult`                      |
-| `let`                         | `setTo`                            |
-| `flatten`                     | `flat`                             |
+| Original                      | My implementation               |
+| ----------------------------- | ------------------------------- |
+| `Either` (`left` and `right`) | `Result` (`fail` and `succeed`) |
+| `IO`                          | `Sync`                          |
+| `IOOption`                    | `SyncOption`                    |
+| `IOEither`                    | `SyncResult`                    |
+| `Task`                        | `Async`                         |
+| `TaskOption`                  | `AsyncOption`                   |
+| `TaskEither`                  | `AsyncResult`                   |
+| `let`                         | `setTo`                         |
+| `flatten`                     | `flat`                          |
 
 - My implementation has neither `Array` nor `NonEmptyArray` monads. Instead there are only `ReadonlyArray` and `NonEmptyReadonlyArray`. Those modules don't contain `unsafe` operations.
 - There are modules and type classes which I have not implemented yet... or will never do.
