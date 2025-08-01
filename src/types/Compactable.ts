@@ -5,13 +5,13 @@ import { HKT, Kind } from "./HKT"
 import { TypeClass } from "./TypeClass"
 
 export interface Compactable<F extends HKT> extends TypeClass<F> {
-  readonly compact: <_, _2, A>(
-    self: Kind<F, _, _2, Option<A>>,
-  ) => Kind<F, _, _2, A>
-  readonly compactResults: <_, _2, A>(
-    self: Kind<F, _, _2, Result<unknown, A>>,
-  ) => Kind<F, _, _2, A>
-  readonly separate: <_, E, A, B>(
-    self: Kind<F, _, E, Result<A, B>>,
-  ) => Separated<Kind<F, _, E, A>, Kind<F, _, E, B>>
+  readonly compact: <S, _, A>(
+    self: Kind<F, S, _, Option<A>>,
+  ) => Kind<F, S, _, A>
+  readonly compactResults: <S, _, A>(
+    self: Kind<F, S, _, Result<unknown, A>>,
+  ) => Kind<F, S, _, A>
+  readonly separate: <S, E, A, B>(
+    self: Kind<F, S, E, Result<A, B>>,
+  ) => Separated<Kind<F, S, E, A>, Kind<F, S, E, B>>
 }

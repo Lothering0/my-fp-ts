@@ -8,7 +8,7 @@ import { identity } from "../Identity"
 import { LazyArg } from "../../types/utils"
 
 export interface OptionT<F extends HKT> extends HKT {
-  readonly type: Kind<F, this["_R"], this["_E"], option.Option<this["_A"]>>
+  readonly type: Kind<F, this["_S"], this["_E"], option.Option<this["_A"]>>
 }
 
 export const transform = <F extends HKT>(M: Monad<F>) => {
@@ -16,8 +16,7 @@ export const transform = <F extends HKT>(M: Monad<F>) => {
 
   const some: {
     <_, _2, A>(a: A): Kind<THKT, _, _2, A>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } = flow (option.some, M.of) as any
+  } = flow (option.some, M.of)
 
   const zero: {
     <_, E, A = never>(): Kind<THKT, _, E, A>
@@ -42,8 +41,10 @@ export const transform = <F extends HKT>(M: Monad<F>) => {
     ...Functor,
     of: some,
     ap:
-      <_, _2, A>(fma: Kind<THKT, _, _2, A>) =>
-      <B>(self: Kind<THKT, _, _2, (a: A) => B>): Kind<THKT, _, _2, B> =>
+      <_, E1, A>(fma: Kind<THKT, _, E1, A>) =>
+      <E2, B>(
+        self: Kind<THKT, _, E2, (a: A) => B>,
+      ): Kind<THKT, _, E1 | E2, B> =>
         pipe (
           self,
           M.map (mf => (mg: option.Option<A>) => option.ap (mg) (mf)),
@@ -53,7 +54,9 @@ export const transform = <F extends HKT>(M: Monad<F>) => {
 
   const Monad = createMonad<THKT> ({
     ...Applicative,
-    flat: flow (M.flatMap (option.match (() => M.of (option.none), identity))),
+    flat: M.flatMap (
+      option.match (() => M.of (option.none), identity),
+    ) as Monad<THKT>["flat"],
   })
 
   return {

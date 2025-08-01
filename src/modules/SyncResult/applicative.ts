@@ -17,22 +17,22 @@ export const Applicative = createApplicative<SyncResultHKT> ({
 })
 
 export const of: {
-  <_, A>(a: A): SyncResult<_, A>
+  <A>(a: A): SyncResult<never, A>
 } = Applicative.of
 
 export const ap: {
-  <_, A>(
-    fa: SyncResult<_, A>,
-  ): <B>(self: SyncResult<_, (a: A) => B>) => SyncResult<_, B>
+  <E1, A>(
+    fa: SyncResult<E1, A>,
+  ): <E2, B>(self: SyncResult<E2, (a: A) => B>) => SyncResult<E1 | E2, B>
 } = Applicative.ap
 
 /** Alias for `ap` */
 export const apply = ap
 
 export const flap: {
-  <_, A, B>(
-    fab: SyncResult<_, (a: A) => B>,
-  ): (self: SyncResult<_, A>) => SyncResult<_, B>
+  <E1, A, B>(
+    fab: SyncResult<E1, (a: A) => B>,
+  ): <E2>(self: SyncResult<E2, A>) => SyncResult<E1 | E2, B>
 } = Applicative.flap
 
 /** Alias for `flap` */

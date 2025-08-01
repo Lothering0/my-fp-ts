@@ -14,18 +14,20 @@ export const Monad = createMonad<ResultHKT> ({
 export const Do = Monad.Do
 
 export const flat: {
-  <_, A>(self: Result<_, Result<_, A>>): Result<_, A>
+  <E1, E2, A>(self: Result<E1, Result<E2, A>>): Result<E1 | E2, A>
 } = Monad.flat
 
 export const flatMap: {
-  <_, A, B>(amb: (a: A) => Result<_, B>): (self: Result<_, A>) => Result<_, B>
+  <E1, A, B>(
+    amb: (a: A) => Result<E1, B>,
+  ): <E2>(self: Result<E2, A>) => Result<E1 | E2, B>
 } = Monad.flatMap
 
 export const compose: {
-  <_, A, B, C>(
-    bmc: (b: B) => Result<_, C>,
-    amb: (a: A) => Result<_, B>,
-  ): (a: A) => Result<_, C>
+  <E1, E2, A, B, C>(
+    bmc: (b: B) => Result<E2, C>,
+    amb: (a: A) => Result<E1, B>,
+  ): (a: A) => Result<E1 | E2, C>
 } = Monad.compose
 
 export const setTo: {
@@ -43,28 +45,30 @@ export const mapTo: {
 } = Monad.mapTo
 
 export const flapTo: {
-  <N extends DoObjectKey, _, A, B>(
+  <N extends DoObjectKey, E1, A, B>(
     name: Exclude<N, keyof A>,
-    fab: Result<_, (a: A) => B>,
-  ): (self: Result<_, A>) => Result<_, DoObject<N, A, B>>
+    fab: Result<E1, (a: A) => B>,
+  ): <E2>(self: Result<E2, A>) => Result<E1 | E2, DoObject<N, A, B>>
 } = Monad.flapTo
 
 export const apS: {
-  <N extends DoObjectKey, _, A, B>(
+  <N extends DoObjectKey, E1, A, B>(
     name: Exclude<N, keyof A>,
-    fb: Result<_, B>,
-  ): (self: Result<_, A>) => Result<_, DoObject<N, A, B>>
+    fb: Result<E1, B>,
+  ): <E2>(self: Result<E2, A>) => Result<E1 | E2, DoObject<N, A, B>>
 } = Monad.apS
 
 export const flatMapTo: {
-  <N extends DoObjectKey, _, A, B>(
+  <N extends DoObjectKey, E1, A, B>(
     name: Exclude<N, keyof A>,
-    amb: (a: A) => Result<_, B>,
-  ): (self: Result<_, A>) => Result<_, DoObject<N, A, B>>
+    amb: (a: A) => Result<E1, B>,
+  ): <E2>(self: Result<E2, A>) => Result<E1 | E2, DoObject<N, A, B>>
 } = Monad.flatMapTo
 
 export const tap: {
-  <_, A, _2>(am_: (a: A) => Result<_, _2>): (self: Result<_, A>) => Result<_, A>
+  <E1, A, _2>(
+    am_: (a: A) => Result<E1, _2>,
+  ): <E2>(self: Result<E2, A>) => Result<E1 | E2, A>
 } = Monad.tap
 
 export const tapSync: {

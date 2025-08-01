@@ -20,7 +20,7 @@ describe ("functor", () => {
       const bc = number.divide (2)
 
       const a = 1
-      const getFa = () => syncResult.of<never, typeof a> (a)
+      const getFa = () => syncResult.of<typeof a> (a)
 
       const fa1: syncResult.SyncResult<never, typeof a> = jest.fn (getFa ())
       const fa2: syncResult.SyncResult<never, typeof a> = jest.fn (getFa ())

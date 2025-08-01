@@ -5,9 +5,7 @@ import { State, StateHKT } from "./state"
 
 export const Applicative = createApplicative<StateHKT> ({
   ...Functor,
-  of:
-    <S, A>(a: A) =>
-    (s: S) => [a, s],
+  of: a => s => [a, s],
   ap: fab => self =>
     flow (fab, ([a1, s1]) => pipe (s1, self, ([a2, s2]) => [a2 (a1), s2])),
 })

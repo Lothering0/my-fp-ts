@@ -9,7 +9,7 @@ export interface LazyArg<A> {
 }
 
 export interface NaturalTransformation<F extends HKT, G extends HKT> {
-  <R, E, A>(fa: Kind<F, R, E, A>): Kind<G, R, E, A>
+  <S, E, A>(fa: Kind<F, S, E, A>): Kind<G, S, E, A>
 }
 
 export interface Refinement<A, B extends A> {

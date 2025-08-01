@@ -9,41 +9,41 @@ import { createMonad, Monad } from "../../types/Monad"
 import { flow, pipe } from "../../utils/flow"
 
 export interface ResultT<F extends HKT> extends HKT {
-  readonly type: Kind<F, any, this["_R"], result.Result<this["_E"], this["_A"]>>
+  readonly type: Kind<F, any, this["_S"], result.Result<this["_E"], this["_A"]>>
 }
 
 export const transform = <F extends HKT>(M: Monad<F>) => {
   type THKT = ResultT<F>
 
   const success: {
-    <A, KE, E = never>(a: A): Kind<THKT, KE, E, A>
-  } = flow (result.success, M.of) as any
+    <A, S, E = never>(a: A): Kind<THKT, S, E, A>
+  } = flow (result.success, M.of)
 
   const successF: {
-    <A, KE, E = never>(fe: Kind<F, never, KE, A>): Kind<THKT, KE, E, A>
+    <A, S, E = never>(fe: Kind<F, never, S, A>): Kind<THKT, S, E, A>
   } = M.map (result.success)
 
   const failure: {
-    <KE, E, A = never>(e: E): Kind<THKT, KE, E, A>
-  } = flow (result.failure, M.of) as any
+    <S, E, A = never>(e: E): Kind<THKT, S, E, A>
+  } = flow (result.failure, M.of)
 
   const failureF: {
-    <KE, E, A = never>(fe: Kind<F, never, KE, E>): Kind<THKT, KE, E, A>
+    <S, E, A = never>(fe: Kind<F, never, S, E>): Kind<THKT, S, E, A>
   } = M.map (result.failure)
 
   const match: {
-    <KE, R, E, A, B, C = B>(
+    <S, R, E, A, B, C = B>(
       onFailure: (e: E) => B,
       onSuccess: (a: A) => C,
-    ): (self: Kind<THKT, KE, E, A>) => Kind<F, R, KE, B | C>
+    ): (self: Kind<THKT, S, E, A>) => Kind<F, R, S, B | C>
   } = flow (result.match, M.map)
 
   const swap: {
-    <KE, E, A>(self: Kind<THKT, KE, E, A>): Kind<THKT, KE, A, E>
+    <S, E, A>(self: Kind<THKT, S, E, A>): Kind<THKT, S, A, E>
   } = M.map (result.swap)
 
   const toUnion: {
-    <KE, R, E, A>(self: Kind<THKT, KE, E, A>): Kind<F, R, KE, E | A>
+    <S, R, E, A>(self: Kind<THKT, S, E, A>): Kind<F, R, S, E | A>
   } = M.map (result.toUnion)
 
   const Functor: Functor<THKT> = {
@@ -59,20 +59,21 @@ export const transform = <F extends HKT>(M: Monad<F>) => {
     ...Functor,
     of: success,
     ap:
-      <_, _2, A>(fma: Kind<THKT, _, _2, A>) =>
-      <B>(self: Kind<THKT, _, _2, (a: A) => B>) =>
+      <S, E1, A>(fma: Kind<THKT, S, E1, A>) =>
+      <E2, B>(self: Kind<THKT, S, E2, (a: A) => B>) =>
         pipe (
           self,
-          M.map (mf => (mg: result.Result<_2, A>) => result.ap (mg) (mf)),
+          M.map (mf => (mg: result.Result<E1, A>) => result.ap (mg) (mf)),
           M.ap (fma),
         ),
   })
 
   const Monad = createMonad<THKT> ({
     ...Applicative,
-    flat: flow (
-      M.flatMap (result.match (flow (result.failure, M.of) as any, identity)),
-    ),
+    flat: <S, E1, E2, A>(
+      self: Kind<THKT, S, E1, Kind<THKT, S, E2, A>>,
+    ): Kind<THKT, any, E1 | E2, A> =>
+      pipe (self, M.flatMap (result.match (flow (result.failure, M.of), identity))),
   })
 
   return {

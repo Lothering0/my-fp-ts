@@ -26,7 +26,7 @@ describe ("functor", () => {
       const bc = number.divide (2)
 
       const a = 1
-      const getFa = () => asyncResult.of<never, typeof a> (a)
+      const getFa = () => asyncResult.of<typeof a> (a)
 
       const fa1: asyncResult.AsyncResult<never, typeof a> = jest.fn (getFa ())
       const fa2: asyncResult.AsyncResult<never, typeof a> = jest.fn (getFa ())

@@ -17,20 +17,20 @@ export const Monad = createMonad<SyncResultHKT> ({
 export const Do = Monad.Do
 
 export const flat: {
-  <_, A>(self: SyncResult<_, SyncResult<_, A>>): SyncResult<_, A>
+  <E1, E2, A>(self: SyncResult<E1, SyncResult<E2, A>>): SyncResult<E1 | E2, A>
 } = Monad.flat
 
 export const flatMap: {
-  <_, A, B>(
-    amb: (a: A) => SyncResult<_, B>,
-  ): (self: SyncResult<_, A>) => SyncResult<_, B>
+  <E1, A, B>(
+    amb: (a: A) => SyncResult<E1, B>,
+  ): <E2>(self: SyncResult<E2, A>) => SyncResult<E1 | E2, B>
 } = Monad.flatMap
 
 export const compose: {
-  <_, A, B, C>(
-    bmc: (b: B) => SyncResult<_, C>,
-    amb: (a: A) => SyncResult<_, B>,
-  ): (a: A) => SyncResult<_, C>
+  <E1, E2, A, B, C>(
+    bmc: (b: B) => SyncResult<E2, C>,
+    amb: (a: A) => SyncResult<E1, B>,
+  ): (a: A) => SyncResult<E1 | E2, C>
 } = Monad.compose
 
 export const setTo: {
@@ -48,30 +48,30 @@ export const mapTo: {
 } = Monad.mapTo
 
 export const flapTo: {
-  <N extends DoObjectKey, _, A, B>(
+  <N extends DoObjectKey, E1, A, B>(
     name: Exclude<N, keyof A>,
-    fab: SyncResult<_, (a: A) => B>,
-  ): (self: SyncResult<_, A>) => SyncResult<_, DoObject<N, A, B>>
+    fab: SyncResult<E1, (a: A) => B>,
+  ): <E2>(self: SyncResult<E2, A>) => SyncResult<E1 | E2, DoObject<N, A, B>>
 } = Monad.flapTo
 
 export const apS: {
-  <N extends DoObjectKey, _, A, B>(
+  <N extends DoObjectKey, E1, A, B>(
     name: Exclude<N, keyof A>,
-    fb: SyncResult<_, B>,
-  ): (self: SyncResult<_, A>) => SyncResult<_, DoObject<N, A, B>>
+    fb: SyncResult<E1, B>,
+  ): <E2>(self: SyncResult<E2, A>) => SyncResult<E1 | E2, DoObject<N, A, B>>
 } = Monad.apS
 
 export const flatMapTo: {
-  <N extends DoObjectKey, _, A, B>(
+  <N extends DoObjectKey, E1, A, B>(
     name: Exclude<N, keyof A>,
-    amb: (a: A) => SyncResult<_, B>,
-  ): (self: SyncResult<_, A>) => SyncResult<_, DoObject<N, A, B>>
+    amb: (a: A) => SyncResult<E1, B>,
+  ): <E2>(self: SyncResult<E2, A>) => SyncResult<E1 | E2, DoObject<N, A, B>>
 } = Monad.flatMapTo
 
 export const tap: {
-  <_, A, _2>(
-    am_: (a: A) => SyncResult<_, _2>,
-  ): (self: SyncResult<_, A>) => SyncResult<_, A>
+  <E1, A, _>(
+    am_: (a: A) => SyncResult<E1, _>,
+  ): <E2>(self: SyncResult<E2, A>) => SyncResult<E1 | E2, A>
 } = Monad.tap
 
 export const tapSync: {
@@ -81,7 +81,7 @@ export const tapSync: {
 } = Monad.tapSync
 
 export const tapResult: {
-  <E, A, _>(
-    f: (a: A) => result.Result<E, _>,
-  ): (self: SyncResult<E, A>) => SyncResult<E, A>
+  <E1, A, _>(
+    f: (a: A) => result.Result<E1, _>,
+  ): <E2>(self: SyncResult<E2, A>) => SyncResult<E1 | E2, A>
 } = f => self => () => pipe (self, execute, result.tap (f))

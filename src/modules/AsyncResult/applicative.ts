@@ -19,22 +19,22 @@ export const Applicative = createApplicative<AsyncResultHKT> ({
 })
 
 export const of: {
-  <_, A>(a: A): AsyncResult<_, A>
+  <A>(a: A): AsyncResult<never, A>
 } = Applicative.of
 
 export const ap: {
-  <_, A>(
-    fa: AsyncResult<_, A>,
-  ): <B>(self: AsyncResult<_, (a: A) => B>) => AsyncResult<_, B>
+  <E1, A>(
+    fa: AsyncResult<E1, A>,
+  ): <E2, B>(self: AsyncResult<E2, (a: A) => B>) => AsyncResult<E1 | E2, B>
 } = Applicative.ap
 
 /** Alias for `ap` */
 export const apply = ap
 
 export const flap: {
-  <_, A, B>(
-    fab: AsyncResult<_, (a: A) => B>,
-  ): (self: AsyncResult<_, A>) => AsyncResult<_, B>
+  <E1, A, B>(
+    fab: AsyncResult<E1, (a: A) => B>,
+  ): <E2>(self: AsyncResult<E2, A>) => AsyncResult<E1 | E2, B>
 } = Applicative.flap
 
 /** Alias for `flap` */

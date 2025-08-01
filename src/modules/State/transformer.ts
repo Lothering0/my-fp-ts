@@ -7,9 +7,8 @@ import { pipe } from "../../utils/flow"
 
 export interface StateT<F extends HKT> extends HKT {
   readonly type: (
-    s: this["_R"],
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ) => Kind<F, any, this["_E"], [this["_A"], this["_R"]]>
+    s: this["_S"],
+  ) => Kind<F, this["_S"], this["_E"], [this["_A"], this["_S"]]>
 }
 
 export const transform = <F extends HKT>(F: Monad<F>) => {
@@ -20,7 +19,7 @@ export const transform = <F extends HKT>(F: Monad<F>) => {
   } = self => s => F.of (state.run (s) (self))
 
   const fromF: {
-    <S, R, E, A>(self: Kind<F, R, E, A>): Kind<THKT, S, E, A>
+    <S, E, A>(self: Kind<F, S, E, A>): Kind<THKT, S, E, A>
   } = self => s =>
     pipe (
       self,
@@ -28,15 +27,15 @@ export const transform = <F extends HKT>(F: Monad<F>) => {
     )
 
   const run: {
-    <S>(s: S): <R, E, A>(ma: Kind<THKT, S, E, A>) => Kind<F, R, E, [A, S]>
+    <S>(s: S): <E, A>(ma: Kind<THKT, S, E, A>) => Kind<F, S, E, [A, S]>
   } = s => ma => ma (s)
 
   const evaluate: {
-    <S>(s: S): <R, E, A>(ma: Kind<THKT, S, E, A>) => Kind<F, R, E, A>
+    <S>(s: S): <E, A>(ma: Kind<THKT, S, E, A>) => Kind<F, S, E, A>
   } = s => ma => F.map (([a]) => a) (run (s) (ma))
 
   const execute: {
-    <S>(s: S): <R, E, A>(ma: Kind<THKT, S, E, A>) => Kind<F, R, E, S>
+    <S>(s: S): <E, A>(ma: Kind<THKT, S, E, A>) => Kind<F, S, E, S>
   } = s => ma => F.map (([, s]) => s) (run (s) (ma))
 
   const Functor: Functor<THKT> = {

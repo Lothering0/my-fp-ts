@@ -11,18 +11,22 @@ export const Applicative = createApplicative<ResultHKT> ({
 })
 
 export const of: {
-  <_, A>(a: A): Result<_, A>
+  <A>(a: A): Result<never, A>
 } = Applicative.of
 
 export const ap: {
-  <_, A>(fa: Result<_, A>): <B>(self: Result<_, (a: A) => B>) => Result<_, B>
+  <E1, A>(
+    fa: Result<E1, A>,
+  ): <E2, B>(self: Result<E2, (a: A) => B>) => Result<E1 | E2, B>
 } = Applicative.ap
 
 /** Alias for `ap` */
 export const apply = ap
 
 export const flap: {
-  <_, A, B>(fab: Result<_, (a: A) => B>): (self: Result<_, A>) => Result<_, B>
+  <E1, A, B>(
+    fab: Result<E1, (a: A) => B>,
+  ): <E2>(self: Result<E2, A>) => Result<E1 | E2, B>
 } = Applicative.flap
 
 /** Alias for `flap` */

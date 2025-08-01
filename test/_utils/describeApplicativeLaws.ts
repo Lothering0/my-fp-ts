@@ -7,7 +7,7 @@ export const describeApplicativeLaws: {
   <F extends HKT>(
     A: Applicative<F>,
     fas: Kind<F, unknown, unknown, number>[],
-    fabs: Kind<F, unknown, unknown, (x: number) => number>[],
+    fabs: Kind<F, never, unknown, (x: number) => number>[],
   ): void
 } = (A, fas, fabs) => {
   describe ("applicative", () => {

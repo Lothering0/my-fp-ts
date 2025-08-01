@@ -7,60 +7,60 @@ import { flow, pipe } from "../utils/flow"
 import { constant } from "../utils/constant"
 
 export interface Monad<F extends HKT> extends Applicative<F> {
-  readonly Do: Kind<F, unknown, unknown, {}>
+  readonly Do: Kind<F, never, never, {}>
 
-  readonly flat: <R, E, A>(
-    self: Kind<F, R, E, Kind<F, R, E, A>>,
-  ) => Kind<F, R, E, A>
+  readonly flat: <S, E1, E2, A>(
+    self: Kind<F, S, E1, Kind<F, S, E2, A>>,
+  ) => Kind<F, S, E1 | E2, A>
 
-  readonly flatMap: <_, _2, A, B>(
-    amb: (a: A) => Kind<F, _, _2, B>,
-  ) => (self: Kind<F, _, _2, A>) => Kind<F, _, _2, B>
+  readonly flatMap: <S, E1, A, B>(
+    amb: (a: A) => Kind<F, S, E1, B>,
+  ) => <E2>(self: Kind<F, S, E2, A>) => Kind<F, S, E1 | E2, B>
 
-  readonly compose: <_, _2, A, B, C>(
-    bmc: (b: B) => Kind<F, _, _2, C>,
-    amb: (a: A) => Kind<F, _, _2, B>,
-  ) => (a: A) => Kind<F, _, _2, C>
+  readonly compose: <S, E1, E2, A, B, C>(
+    bmc: (b: B) => Kind<F, S, E2, C>,
+    amb: (a: A) => Kind<F, S, E1, B>,
+  ) => (a: A) => Kind<F, S, E1 | E2, C>
 
   readonly setTo: <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     b: B,
-  ) => <_, _2>(self: Kind<F, _, _2, A>) => Kind<F, _, _2, DoObject<N, A, B>>
+  ) => <S, _, _2>(self: Kind<F, S, _, A>) => Kind<F, S, _, DoObject<N, A, B>>
 
   readonly mapTo: <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     ab: (a: A) => B,
-  ) => <_, _2>(self: Kind<F, _, _2, A>) => Kind<F, _, _2, DoObject<N, A, B>>
+  ) => <S, _>(self: Kind<F, S, _, A>) => Kind<F, S, _, DoObject<N, A, B>>
 
-  readonly flapTo: <N extends DoObjectKey, _, _2, A, B>(
+  readonly flapTo: <N extends DoObjectKey, S, E1, A, B>(
     name: Exclude<N, keyof A>,
-    fab: Kind<F, _, _2, (a: A) => B>,
-  ) => (self: Kind<F, _, _2, A>) => Kind<F, _, _2, DoObject<N, A, B>>
+    fab: Kind<F, S, E1, (a: A) => B>,
+  ) => <E2>(self: Kind<F, S, E2, A>) => Kind<F, S, E1 | E2, DoObject<N, A, B>>
 
-  readonly apS: <N extends DoObjectKey, _, _2, A, B>(
+  readonly apS: <N extends DoObjectKey, S, E1, A, B>(
     name: Exclude<N, keyof A>,
-    fb: Kind<F, _, _2, B>,
-  ) => (self: Kind<F, _, _2, A>) => Kind<F, _, _2, DoObject<N, A, B>>
+    fb: Kind<F, S, E1, B>,
+  ) => <E2>(self: Kind<F, S, E2, A>) => Kind<F, S, E1 | E2, DoObject<N, A, B>>
 
-  readonly flatMapTo: <N extends DoObjectKey, _, _2, A, B>(
+  readonly flatMapTo: <N extends DoObjectKey, S, E1, A, B>(
     name: Exclude<N, keyof A>,
-    amb: (a: A) => Kind<F, _, _2, B>,
-  ) => (self: Kind<F, _, _2, A>) => Kind<F, _, _2, DoObject<N, A, B>>
+    amb: (a: A) => Kind<F, S, E1, B>,
+  ) => <E2>(self: Kind<F, S, E2, A>) => Kind<F, S, E1 | E2, DoObject<N, A, B>>
 
-  readonly tap: <_, _2, A, _3>(
-    am_: (a: A) => Kind<F, _, _2, _3>,
-  ) => (self: Kind<F, _, _2, A>) => Kind<F, _, _2, A>
+  readonly tap: <S, E1, A, _3>(
+    am_: (a: A) => Kind<F, S, E1, _3>,
+  ) => <E2>(self: Kind<F, S, E2, A>) => Kind<F, S, E1 | E2, A>
 
   readonly tapSync: <A, _>(
     am_: (a: A) => Sync<_>,
-  ) => <_2, _3>(self: Kind<F, _2, _3, A>) => Kind<F, _2, _3, A>
+  ) => <S, _2>(self: Kind<F, S, _2, A>) => Kind<F, S, _2, A>
 }
 
 export const createMonad = <F extends HKT>(
   Monad: Applicative<F> & Pick<Monad<F>, "flat">,
 ): Monad<F> => {
   const { of, map, flat } = Monad
-  const Do = of ({})
+  const Do: Monad<F>["Do"] = of ({})
 
   const apS: Monad<F>["apS"] = (name, fb) =>
     flow (
@@ -91,22 +91,20 @@ export const createMonad = <F extends HKT>(
       ),
     )
 
-  const tapSync: Monad<F>["tapSync"] =
-    <A, _>(am_: (a: A) => Sync<_>) =>
-    <_2, _3>(self: Kind<F, _2, _3, A>): Kind<F, _2, _3, A> =>
-      pipe (
-        Do,
-        apS ("a", self),
-        flatMap (({ a }) =>
-          pipe (
-            a,
-            am_,
-            sync => sync (), // From `Sync`
-            of<_2, _3, _>,
-            flatMap (() => of (a)),
-          ),
+  const tapSync: Monad<F>["tapSync"] = am_ => self =>
+    pipe (
+      Do,
+      apS ("a", self),
+      flatMap (({ a }) =>
+        pipe (
+          a,
+          am_,
+          sync => sync (), // From `Sync`
+          of,
+          flatMap (() => of (a)),
         ),
-      )
+      ),
+    )
 
   const mapTo: Monad<F>["mapTo"] = (name, ab) =>
     flatMap (a =>

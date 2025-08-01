@@ -2,5 +2,5 @@ import { Extendable } from "./Extendable"
 import { HKT, Kind } from "./HKT"
 
 export interface Comonad<F extends HKT> extends Extendable<F> {
-  readonly extract: <_, _2, A>(self: Kind<F, _, _2, A>) => A
+  readonly extract: <S, _, A>(self: Kind<F, S, _, A>) => A
 }

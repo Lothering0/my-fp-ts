@@ -3,12 +3,12 @@ import { Functor } from "./Functor"
 import { HKT, Kind } from "./HKT"
 
 export interface Extendable<F extends HKT> extends Functor<F> {
-  readonly extend: <_, _2, A, B>(
-    fab: (fa: Kind<F, _, _2, A>) => B,
-  ) => (self: Kind<F, _, _2, A>) => Kind<F, _, _2, B>
-  readonly duplicate: <_, _2, A>(
-    self: Kind<F, _, _2, A>,
-  ) => Kind<F, _, _2, Kind<F, _, _2, A>>
+  readonly extend: <S, _, A, B>(
+    fab: (fa: Kind<F, S, _, A>) => B,
+  ) => (self: Kind<F, S, _, A>) => Kind<F, S, _, B>
+  readonly duplicate: <S, E, A>(
+    self: Kind<F, S, E, A>,
+  ) => Kind<F, S, E, Kind<F, S, E, A>>
 }
 
 export const createExtendable: {

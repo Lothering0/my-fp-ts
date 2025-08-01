@@ -11,23 +11,23 @@ export interface Filterable<F extends HKT> extends Functor<F>, Compactable<F> {
   /** Partitions and maps elements to new values */
   readonly partitionMap: <A, B, C>(
     p: (a: A) => Result<B, C>,
-  ) => <_, E>(
-    self: Kind<F, _, E, A>,
-  ) => Separated<Kind<F, _, E, B>, Kind<F, _, E, C>>
+  ) => <S, E>(
+    self: Kind<F, S, E, A>,
+  ) => Separated<Kind<F, S, E, B>, Kind<F, S, E, C>>
 
   readonly partition: <A>(
     p: Predicate<A>,
-  ) => <_, E>(
-    self: Kind<F, _, E, A>,
-  ) => Separated<Kind<F, _, E, A>, Kind<F, _, E, A>>
+  ) => <S, E>(
+    self: Kind<F, S, E, A>,
+  ) => Separated<Kind<F, S, E, A>, Kind<F, S, E, A>>
 
   /** Removes element if predicate function returns `none`. Otherwise maps it to value of `some` */
   readonly filterMap: <A, B>(
     p: (a: A) => Option<B>,
-  ) => <_, _2>(self: Kind<F, _, _2, A>) => Kind<F, _, _2, B>
+  ) => <S, _>(self: Kind<F, S, _, A>) => Kind<F, S, _, B>
 
   readonly filter: {
-    <A>(p: Predicate<A>): <_, _2>(self: Kind<F, _, _2, A>) => Kind<F, _, _2, A>
+    <A>(p: Predicate<A>): <S, _, _2>(self: Kind<F, S, _, A>) => Kind<F, S, _, A>
   }
 }
 

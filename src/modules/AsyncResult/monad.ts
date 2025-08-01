@@ -3,6 +3,7 @@ import * as result from "../Result"
 import * as async from "../Async"
 import * as syncResult from "../SyncResult"
 import { Sync } from "../Sync"
+import { identity } from "../Identity"
 import { createMonad } from "../../types/Monad"
 import { map } from "./functor"
 import { Applicative } from "./applicative"
@@ -11,35 +12,39 @@ import {
   AsyncResult,
   toPromise,
   fromAsync,
+  failure,
 } from "./async-result"
 import { pipe } from "../../utils/flow"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
+import { match } from "./utils"
 
 export const Monad = createMonad<AsyncResultHKT> ({
   ...Applicative,
   flat: self => () =>
-    toPromise (self).then (ma =>
-      result.isFailure (ma) ? ma : pipe (ma, result.fromSuccess, toPromise),
+    pipe (self, match (failure, identity), async.toPromise, promise =>
+      promise.then (toPromise),
     ),
 })
 
 export const Do = Monad.Do
 
 export const flat: {
-  <_, A>(self: AsyncResult<_, AsyncResult<_, A>>): AsyncResult<_, A>
+  <E1, E2, A>(
+    self: AsyncResult<E1, AsyncResult<E2, A>>,
+  ): AsyncResult<E1 | E2, A>
 } = Monad.flat
 
 export const flatMap: {
-  <_, A, B>(
-    amb: (a: A) => AsyncResult<_, B>,
-  ): (self: AsyncResult<_, A>) => AsyncResult<_, B>
+  <E1, A, B>(
+    amb: (a: A) => AsyncResult<E1, B>,
+  ): <E2>(self: AsyncResult<E2, A>) => AsyncResult<E1 | E2, B>
 } = Monad.flatMap
 
 export const compose: {
-  <_, A, B, C>(
-    bmc: (b: B) => AsyncResult<_, C>,
-    amb: (a: A) => AsyncResult<_, B>,
-  ): (a: A) => AsyncResult<_, C>
+  <E1, E2, A, B, C>(
+    bmc: (b: B) => AsyncResult<E2, C>,
+    amb: (a: A) => AsyncResult<E1, B>,
+  ): (a: A) => AsyncResult<E1 | E2, C>
 } = Monad.compose
 
 export const setTo: {
@@ -57,30 +62,30 @@ export const mapTo: {
 } = Monad.mapTo
 
 export const flapTo: {
-  <N extends DoObjectKey, _, A, B>(
+  <N extends DoObjectKey, E1, A, B>(
     name: Exclude<N, keyof A>,
-    fab: AsyncResult<_, (a: A) => B>,
-  ): (self: AsyncResult<_, A>) => AsyncResult<_, DoObject<N, A, B>>
+    fab: AsyncResult<E1, (a: A) => B>,
+  ): <E2>(self: AsyncResult<E2, A>) => AsyncResult<E1 | E2, DoObject<N, A, B>>
 } = Monad.flapTo
 
 export const apS: {
-  <N extends DoObjectKey, _, A, B>(
+  <N extends DoObjectKey, E1, A, B>(
     name: Exclude<N, keyof A>,
-    fb: AsyncResult<_, B>,
-  ): (self: AsyncResult<_, A>) => AsyncResult<_, DoObject<N, A, B>>
+    fb: AsyncResult<E1, B>,
+  ): <E2>(self: AsyncResult<E2, A>) => AsyncResult<E1 | E2, DoObject<N, A, B>>
 } = Monad.apS
 
 export const flatMapTo: {
-  <N extends DoObjectKey, _, A, B>(
+  <N extends DoObjectKey, E1, A, B>(
     name: Exclude<N, keyof A>,
-    amb: (a: A) => AsyncResult<_, B>,
-  ): (self: AsyncResult<_, A>) => AsyncResult<_, DoObject<N, A, B>>
+    amb: (a: A) => AsyncResult<E1, B>,
+  ): <E2>(self: AsyncResult<E2, A>) => AsyncResult<E1 | E2, DoObject<N, A, B>>
 } = Monad.flatMapTo
 
 export const tap: {
-  <_, A, _2>(
-    am_: (a: A) => AsyncResult<_, _2>,
-  ): (self: AsyncResult<_, A>) => AsyncResult<_, A>
+  <E1, A, _2>(
+    am_: (a: A) => AsyncResult<E1, _2>,
+  ): <E2>(self: AsyncResult<E2, A>) => AsyncResult<E1 | E2, A>
 } = Monad.tap
 
 export const tapSync: {
@@ -90,9 +95,9 @@ export const tapSync: {
 } = Monad.tapSync
 
 export const tapResult: {
-  <E, A, _>(
-    f: (a: A) => result.Result<E, _>,
-  ): (self: AsyncResult<E, A>) => AsyncResult<E, A>
+  <E1, A, _>(
+    f: (a: A) => result.Result<E1, _>,
+  ): <E2>(self: AsyncResult<E2, A>) => AsyncResult<E1 | E2, A>
 } = f => self =>
   pipe (
     Do,
@@ -102,9 +107,9 @@ export const tapResult: {
   )
 
 export const tapSyncResult: {
-  <E, A, _>(
-    f: (a: A) => syncResult.SyncResult<E, _>,
-  ): (self: AsyncResult<E, A>) => AsyncResult<E, A>
+  <E1, A, _>(
+    f: (a: A) => syncResult.SyncResult<E1, _>,
+  ): <E2>(self: AsyncResult<E2, A>) => AsyncResult<E1 | E2, A>
 } = f => self =>
   pipe (
     Do,
@@ -124,22 +129,21 @@ export const tapAsync =
     )
 
 export const parallel: {
-  <N extends DoObjectKey, E, B>(
-    fb: AsyncResult<E, B>,
-  ): <A>(self: AsyncResult<E, A>) => AsyncResult<E, DoObject<N, A, B>>
+  <N extends DoObjectKey, E1, B>(
+    fb: AsyncResult<E1, B>,
+  ): <E2, A>(
+    self: AsyncResult<E2, A>,
+  ) => AsyncResult<E1 | E2, DoObject<N, A, B>>
 } = fb => self => () =>
   Promise.all ([toPromise (self), toPromise (fb)]).then (([ma, mb]) =>
-    pipe (
-      mb,
-      result.flatMap (() => ma as any),
-    ),
+    pipe (mb, result.flatMap (() => ma) as any),
   )
 
 export const parallelTo: {
-  <N extends DoObjectKey, E, A, B>(
+  <N extends DoObjectKey, E1, A, B>(
     name: Exclude<N, keyof A>,
-    fb: AsyncResult<E, B>,
-  ): (self: AsyncResult<E, A>) => AsyncResult<E, DoObject<N, A, B>>
+    fb: AsyncResult<E1, B>,
+  ): <E2>(self: AsyncResult<E1, A>) => AsyncResult<E1 | E2, DoObject<N, A, B>>
 } = (name, fb) => self => () =>
   Promise.all ([toPromise (self), toPromise (fb)]).then (([ma, mb]) =>
     result.apS (name, mb) (ma),
