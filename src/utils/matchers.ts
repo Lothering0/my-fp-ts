@@ -3,6 +3,7 @@ import * as option from "../modules/Option"
 import * as eq from "../types/Eq"
 import { LazyArg } from "../types/utils"
 import { pipe } from "./flow"
+import { uncurry } from "./currying"
 
 interface Matchers<A> {
   <B>(ab: (a: A) => B): (a: A) => B
@@ -368,14 +369,14 @@ interface Matchers<A> {
 }
 
 export const matchOn: {
-  <A>(p: (pattern: A) => (a: A) => boolean): Matchers<A>
+  <A>(p: (pattern: A, a: A) => boolean): Matchers<A>
 } =
-  <A>(p: (pattern: A) => (a: A) => boolean) =>
+  <A>(p: (pattern: A, a: A) => boolean) =>
   <B>(ab: (a: A) => B, ...matchers: readonly [A, LazyArg<B>][]) =>
   (a: A): B =>
     pipe (
       matchers,
-      readonlyArray.find (([pattern]) => p (pattern) (a)),
+      readonlyArray.find (([pattern]) => p (pattern, a)),
       option.match (
         () => ab (a),
         ([, f]) => f (),
@@ -384,6 +385,6 @@ export const matchOn: {
 
 export const matchEq: {
   <A>(Eq: eq.Eq<A>): Matchers<A>
-} = Eq => matchOn (Eq.equals)
+} = Eq => pipe (Eq.equals, uncurry, matchOn)
 
 export const match = matchEq (eq.EqStrict)
