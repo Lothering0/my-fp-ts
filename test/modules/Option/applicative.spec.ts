@@ -4,6 +4,6 @@ import { describeApplicativeLaws } from "../../_utils/describeApplicativeLaws"
 
 describeApplicativeLaws (
   option.Applicative,
-  [option.some (1), option.none],
-  [option.some (number.add (5)), option.none],
+  [option.none, option.some (1)],
+  [option.none, option.some (number.add (5))],
 )

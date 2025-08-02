@@ -10,14 +10,14 @@ describeApplicativeLaws (
     tree.make (1, [tree.make (2, [tree.make (4)]), tree.make (3)]),
   ],
   [
-    tree.make (number.add (1)),
-    tree.make (number.add (1), [
-      tree.make (number.add (2)),
-      tree.make (number.add (3)),
+    tree.make (number.add (10)),
+    tree.make (number.add (10), [
+      tree.make (number.add (20)),
+      tree.make (number.add (30)),
     ]),
-    tree.make (number.add (1), [
-      tree.make (number.add (2), [tree.make (number.add (4))]),
-      tree.make (number.add (3)),
+    tree.make (number.add (10), [
+      tree.make (number.add (20), [tree.make (number.add (40))]),
+      tree.make (number.add (30)),
     ]),
   ],
 )
