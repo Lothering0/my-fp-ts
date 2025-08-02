@@ -6,7 +6,7 @@ import { pipe } from "../../utils/flow"
 
 export const Functor: functor.Functor<TreeHKT> = {
   map: ab => self =>
-    make (pipe (self, value, ab), readonlyArray.map (map (ab)) (forest (self))),
+    make (pipe (self, value, ab), pipe (self, forest, readonlyArray.map (map (ab)))),
 }
 
 export const map: {

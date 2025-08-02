@@ -1,23 +1,27 @@
 import * as readonlyArray from "../ReadonlyArray"
 import { Tree, TreeHKT } from "./tree"
 import { createApplicative } from "../../types/Applicative"
-import { Functor } from "./functor"
+import { Functor, map } from "./functor"
 import { make, value, forest } from "./utils"
-import { pipe } from "../../utils/flow"
+import { pipe, flow } from "../../utils/flow"
+
+export const flat: {
+  <A>(self: Tree<Tree<A>>): Tree<A>
+} = self =>
+  make (
+    pipe (self, value, value),
+    readonlyArray.concat (pipe (self, forest, readonlyArray.map (flat))) (
+      pipe (self, value, forest),
+    ),
+  )
 
 export const Applicative = createApplicative<TreeHKT> ({
   ...Functor,
   of: make,
-  ap: fa => self =>
-    make (
-      value (self) (value (fa)),
-      readonlyArray.concat (
-        pipe (
-          fa,
-          forest,
-          readonlyArray.map (tree => pipe (self, ap (tree))),
-        ),
-      ) (pipe (self, forest, readonlyArray.map (ap (fa)))),
+  ap: fa =>
+    flow (
+      map (ab => pipe (fa, map (ab))),
+      flat,
     ),
 })
 

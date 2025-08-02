@@ -1,28 +1,15 @@
-import * as readonlyArray from "../ReadonlyArray"
 import * as monad from "../../types/Monad"
 import { Sync } from "../Sync"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
 import { Tree, TreeHKT } from "./tree"
-import { Applicative } from "./applicative"
-import { make, value, forest } from "./utils"
-import { pipe } from "../../utils/flow"
+import { Applicative, flat } from "./applicative"
 
 export const Monad: monad.Monad<TreeHKT> = monad.createMonad<TreeHKT> ({
   ...Applicative,
-  flat: self =>
-    make (
-      pipe (self, value, value),
-      readonlyArray.concat (pipe (self, forest, readonlyArray.map (flat))) (
-        pipe (self, value, forest),
-      ),
-    ),
+  flat,
 })
 
 export const Do = Monad.Do
-
-export const flat: {
-  <A>(self: Tree<Tree<A>>): Tree<A>
-} = Monad.flat
 
 export const flatMap: {
   <A, B>(amb: (a: A) => Tree<B>): (self: Tree<A>) => Tree<B>
