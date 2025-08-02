@@ -81,18 +81,18 @@ export const flatMapTo: {
 } = Monad.flatMapTo
 
 export const tap: {
-  <A, _>(
-    am_: (a: A) => AsyncOption<_>,
+  <A>(
+    f: (a: A) => AsyncOption<unknown>,
   ): (self: AsyncOption<A>) => AsyncOption<A>
 } = Monad.tap
 
 export const tapSync: {
-  <A, _>(am_: (a: A) => Sync<_>): (self: AsyncOption<A>) => AsyncOption<A>
+  <A>(f: (a: A) => Sync<unknown>): (self: AsyncOption<A>) => AsyncOption<A>
 } = Monad.tapSync
 
 export const tapOption: {
-  <A, _>(
-    f: (a: A) => option.Option<_>,
+  <A>(
+    f: (a: A) => option.Option<unknown>,
   ): (self: AsyncOption<A>) => AsyncOption<A>
 } = f => self =>
   pipe (
@@ -103,8 +103,8 @@ export const tapOption: {
   )
 
 export const tapResult: {
-  <E, A, _>(
-    f: (a: A) => result.Result<E, _>,
+  <E, A>(
+    f: (a: A) => result.Result<E, unknown>,
   ): (self: AsyncOption<A>) => AsyncOption<A>
 } = f => self =>
   pipe (
@@ -115,7 +115,9 @@ export const tapResult: {
   )
 
 export const tapAsync: {
-  <A, _>(f: (a: A) => async.Async<_>): (self: AsyncOption<A>) => AsyncOption<A>
+  <A>(
+    f: (a: A) => async.Async<unknown>,
+  ): (self: AsyncOption<A>) => AsyncOption<A>
 } = f => self =>
   pipe (
     Do,
@@ -125,8 +127,8 @@ export const tapAsync: {
   )
 
 export const tapAsyncResult: {
-  <E, A, _>(
-    f: (a: A) => asyncResult.AsyncResult<E, _>,
+  <E, A>(
+    f: (a: A) => asyncResult.AsyncResult<E, unknown>,
   ): (self: AsyncOption<A>) => AsyncOption<A>
 } = f => self =>
   pipe (
@@ -146,8 +148,8 @@ export const tapAsyncResult: {
   )
 
 export const tapSyncOption: {
-  <A, _>(
-    f: (a: A) => syncOption.SyncOption<_>,
+  <A>(
+    f: (a: A) => syncOption.SyncOption<unknown>,
   ): (self: AsyncOption<A>) => AsyncOption<A>
 } = f => self =>
   pipe (
@@ -158,8 +160,8 @@ export const tapSyncOption: {
   )
 
 export const tapSyncResult: {
-  <E, A, _>(
-    f: (a: A) => syncResult.SyncResult<E, _>,
+  <E, A>(
+    f: (a: A) => syncResult.SyncResult<E, unknown>,
   ): (self: AsyncOption<A>) => AsyncOption<A>
 } = f => self =>
   pipe (

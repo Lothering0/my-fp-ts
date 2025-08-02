@@ -65,13 +65,13 @@ export const flatMapTo: {
 } = Monad.flatMapTo
 
 export const tap: {
-  <A, _>(
-    am_: (a: A) => async.Async<_>,
+  <A>(
+    f: (a: A) => async.Async<unknown>,
   ): (self: async.Async<A>) => async.Async<A>
 } = Monad.tap
 
 export const tapSync: {
-  <A, _>(am_: (a: A) => Sync<_>): (self: async.Async<A>) => async.Async<A>
+  <A>(f: (a: A) => Sync<unknown>): (self: async.Async<A>) => async.Async<A>
 } = Monad.tapSync
 
 export const parallel: {

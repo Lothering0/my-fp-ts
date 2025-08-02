@@ -12,24 +12,24 @@ export interface FilterableWithIndex<F extends HKT, I>
   /** Partitions and maps elements to new values */
   readonly partitionMapWithIndex: <A, B, C>(
     p: (i: I, a: A) => Result<B, C>,
-  ) => <S, _, E>(
+  ) => <S, E>(
     self: Kind<F, S, E, A>,
   ) => Separated<Kind<F, S, E, B>, Kind<F, S, E, C>>
 
   readonly partitionWithIndex: <A>(
     p: (i: I, a: A) => boolean,
-  ) => <S, _, E>(
+  ) => <S, E>(
     self: Kind<F, S, E, A>,
   ) => Separated<Kind<F, S, E, A>, Kind<F, S, E, A>>
 
   /** Removes element if predicate function returns `none`. Otherwise maps it to value of `some` */
   readonly filterMapWithIndex: <A, B>(
     p: (i: I, a: A) => Option<B>,
-  ) => <S, _>(self: Kind<F, S, _, A>) => Kind<F, S, _, B>
+  ) => <S, E>(self: Kind<F, S, E, A>) => Kind<F, S, E, B>
 
   readonly filterWithIndex: <A>(
     p: (i: I, a: A) => boolean,
-  ) => <S, _>(self: Kind<F, S, _, A>) => Kind<F, S, _, A>
+  ) => <S, E>(self: Kind<F, S, E, A>) => Kind<F, S, E, A>
 }
 
 export const createFilterableWithIndex = <F extends HKT, I>(

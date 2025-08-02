@@ -14,11 +14,11 @@ export const Bifunctor = createBifunctor<SyncResultHKT> ({
 })
 
 export const map: {
-  <A, B>(ab: (a: A) => B): <_>(self: SyncResult<_, A>) => SyncResult<_, B>
+  <A, B>(ab: (a: A) => B): <E>(self: SyncResult<E, A>) => SyncResult<E, B>
 } = Functor.map
 
 export const mapLeft: {
-  <E, D>(ed: (e: E) => D): <_>(self: SyncResult<E, _>) => SyncResult<D, _>
+  <E, D>(ed: (e: E) => D): <A>(self: SyncResult<E, A>) => SyncResult<D, A>
 } = Bifunctor.mapLeft
 
 export const bimap: {

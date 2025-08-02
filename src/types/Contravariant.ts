@@ -4,5 +4,5 @@ import { TypeClass } from "./TypeClass"
 export interface Contravariant<F extends HKT> extends TypeClass<F> {
   readonly contramap: <A, B>(
     ba: (b: B) => A,
-  ) => <S, _>(self: Kind<F, S, _, A>) => Kind<F, S, _, B>
+  ) => <S, E>(self: Kind<F, S, E, A>) => Kind<F, S, E, B>
 }

@@ -4,10 +4,10 @@ import { match } from "./utils"
 import { flow } from "../../utils/flow"
 
 export const getShow: {
-  <E, A>(SE: Show<E>, SA: Show<A>): Show<Result<E, A>>
-} = (SE, SA) => ({
+  <E, A>(ShowE: Show<E>, ShowA: Show<A>): Show<Result<E, A>>
+} = (ShowE, ShowA) => ({
   show: match (
-    flow (SE.show, e => `failure (${e})`),
-    flow (SA.show, a => `success (${a})`),
+    flow (ShowE.show, e => `failure (${e})`),
+    flow (ShowA.show, a => `success (${a})`),
   ),
 })

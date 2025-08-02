@@ -55,9 +55,9 @@ export const flatMapTo: {
 } = Monad.flatMapTo
 
 export const tap: {
-  <A, _>(am_: (a: A) => Tree<_>): (self: Tree<A>) => Tree<A>
+  <A>(f: (a: A) => Tree<unknown>): (self: Tree<A>) => Tree<A>
 } = Monad.tap
 
 export const tapSync: {
-  <A, _>(am_: (a: A) => Sync<_>): (self: Tree<A>) => Tree<A>
+  <A>(f: (a: A) => Sync<unknown>): (self: Tree<A>) => Tree<A>
 } = Monad.tapSync

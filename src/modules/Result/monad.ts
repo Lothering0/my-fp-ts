@@ -34,14 +34,14 @@ export const setTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     b: B,
-  ): <_>(self: Result<_, A>) => Result<_, DoObject<N, A, B>>
+  ): <E>(self: Result<E, A>) => Result<E, DoObject<N, A, B>>
 } = Monad.setTo
 
 export const mapTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     ab: (a: A) => B,
-  ): <_>(self: Result<_, A>) => Result<_, DoObject<N, A, B>>
+  ): <E>(self: Result<E, A>) => Result<E, DoObject<N, A, B>>
 } = Monad.mapTo
 
 export const flapTo: {
@@ -66,11 +66,11 @@ export const flatMapTo: {
 } = Monad.flatMapTo
 
 export const tap: {
-  <E1, A, _2>(
-    am_: (a: A) => Result<E1, _2>,
+  <E1, A>(
+    f: (a: A) => Result<E1, unknown>,
   ): <E2>(self: Result<E2, A>) => Result<E1 | E2, A>
 } = Monad.tap
 
 export const tapSync: {
-  <A, _>(am_: (a: A) => Sync<_>): <_2>(self: Result<_2, A>) => Result<_2, A>
+  <A>(f: (a: A) => Sync<unknown>): <E>(self: Result<E, A>) => Result<E, A>
 } = Monad.tapSync

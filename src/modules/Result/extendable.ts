@@ -8,9 +8,9 @@ export const Extendable = createExtendable<ResultHKT> ({
 })
 
 export const extend: {
-  <_, A, B>(fab: (fa: Result<_, A>) => B): (self: Result<_, A>) => Result<_, B>
+  <E, A, B>(fab: (fa: Result<E, A>) => B): (self: Result<E, A>) => Result<E, B>
 } = Extendable.extend
 
 export const duplicate: {
-  <_, A>(self: Result<_, A>): Result<_, Result<_, A>>
+  <E, A>(self: Result<E, A>): Result<E, Result<E, A>>
 } = Extendable.duplicate

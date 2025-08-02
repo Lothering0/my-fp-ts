@@ -7,7 +7,7 @@ import { HKT, Kind } from "../types/HKT"
 export const getDoWhile: {
   <F extends HKT>(
     Applicative: Applicative<F>,
-  ): <_, _2, A>(p: Predicate<void>) => (a: LazyArg<A>) => Kind<F, _, _2, void>
+  ): <S, E, A>(p: Predicate<void>) => (a: LazyArg<A>) => Kind<F, S, E, void>
 } = Applicative => p => a => {
   while (p ()) a ()
   return Applicative.of (_)

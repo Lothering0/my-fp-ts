@@ -5,7 +5,7 @@ import { flow } from "../utils/flow"
 export interface Bifunctor<F extends HKT> extends Functor<F> {
   readonly mapLeft: <E, D>(
     ed: (e: E) => D,
-  ) => <S, _>(self: Kind<F, S, E, _>) => Kind<F, S, D, _>
+  ) => <S, A>(self: Kind<F, S, E, A>) => Kind<F, S, D, A>
 
   readonly bimap: <E, A, D, B>(
     ed: (e: E) => D,

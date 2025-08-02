@@ -69,24 +69,28 @@ export const flatMapTo: {
 } = Monad.flatMapTo
 
 export const tap: {
-  <A, _>(am_: (a: A) => SyncOption<_>): (self: SyncOption<A>) => SyncOption<A>
+  <A>(f: (a: A) => SyncOption<unknown>): (self: SyncOption<A>) => SyncOption<A>
 } = Monad.tap
 
 export const tapSync: {
-  <A, _>(am_: (a: A) => Sync<_>): (self: SyncOption<A>) => SyncOption<A>
+  <A>(f: (a: A) => Sync<unknown>): (self: SyncOption<A>) => SyncOption<A>
 } = Monad.tapSync
 
 export const tapOption: {
-  <A, _>(f: (a: A) => option.Option<_>): (self: SyncOption<A>) => SyncOption<A>
+  <A>(
+    f: (a: A) => option.Option<unknown>,
+  ): (self: SyncOption<A>) => SyncOption<A>
 } = f => self => () => pipe (self, execute, option.tap (f))
 
 export const tapResult: {
-  <E, A, _>(f: (a: A) => Result<E, _>): (self: SyncOption<A>) => SyncOption<A>
+  <E, A>(
+    f: (a: A) => Result<E, unknown>,
+  ): (self: SyncOption<A>) => SyncOption<A>
 } = f => self => () => pipe (self, execute, option.tapResult (f))
 
 export const tapSyncResult: {
-  <E, A, _>(
-    f: (a: A) => syncResult.SyncResult<E, _>,
+  <E, A>(
+    f: (a: A) => syncResult.SyncResult<E, unknown>,
   ): (self: SyncOption<A>) => SyncOption<A>
 } = f => self => () =>
   pipe (

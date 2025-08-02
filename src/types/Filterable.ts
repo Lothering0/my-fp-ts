@@ -24,10 +24,10 @@ export interface Filterable<F extends HKT> extends Functor<F>, Compactable<F> {
   /** Removes element if predicate function returns `none`. Otherwise maps it to value of `some` */
   readonly filterMap: <A, B>(
     p: (a: A) => Option<B>,
-  ) => <S, _>(self: Kind<F, S, _, A>) => Kind<F, S, _, B>
+  ) => <S, E>(self: Kind<F, S, E, A>) => Kind<F, S, E, B>
 
   readonly filter: {
-    <A>(p: Predicate<A>): <S, _, _2>(self: Kind<F, S, _, A>) => Kind<F, S, _, A>
+    <A>(p: Predicate<A>): <S, E>(self: Kind<F, S, E, A>) => Kind<F, S, E, A>
   }
 }
 

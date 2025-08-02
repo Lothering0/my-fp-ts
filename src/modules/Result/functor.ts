@@ -5,26 +5,20 @@ import { match } from "./utils"
 import { flow } from "../../utils/flow"
 
 export const Functor: functor.Functor<ResultHKT> = {
-  map:
-    <A, B>(ab: (a: A) => B) =>
-    <_>(self: Result<_, A>) =>
-      match (fail<_, B>, flow (ab, succeed)) (self),
+  map: ab => match (fail, flow (ab, succeed)),
 }
 
 export const Bifunctor = createBifunctor<ResultHKT> ({
   ...Functor,
-  mapLeft:
-    <E, D>(ed: (e: E) => D) =>
-    <_>(self: Result<E, _>) =>
-      match (flow (ed, fail), succeed<D, _>) (self),
+  mapLeft: ed => match (flow (ed, fail), succeed),
 })
 
 export const map: {
-  <A, B>(ab: (a: A) => B): <_>(self: Result<_, A>) => Result<_, B>
+  <A, B>(ab: (a: A) => B): <E>(self: Result<E, A>) => Result<E, B>
 } = Functor.map
 
 export const mapLeft: {
-  <E, D>(ed: (e: E) => D): <_>(self: Result<E, _>) => Result<D, _>
+  <E, D>(ed: (e: E) => D): <A>(self: Result<E, A>) => Result<D, A>
 } = Bifunctor.mapLeft
 
 export const bimap: {

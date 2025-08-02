@@ -14,11 +14,11 @@ export const Bifunctor = createBifunctor<SeparatedHKT> ({
 })
 
 export const map: {
-  <A, B>(ab: (a: A) => B): <_>(self: Separated<_, A>) => Separated<_, B>
+  <A, B>(ab: (a: A) => B): <E>(self: Separated<E, A>) => Separated<E, B>
 } = Functor.map
 
 export const mapLeft: {
-  <E, D>(ed: (e: E) => D): <_>(self: Separated<E, _>) => Separated<D, _>
+  <E, D>(ed: (e: E) => D): <A>(self: Separated<E, A>) => Separated<D, A>
 } = Bifunctor.mapLeft
 
 export const bimap: {

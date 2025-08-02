@@ -15,22 +15,22 @@ export const transform = <F extends HKT>(M: Monad<F>) => {
   type THKT = OptionT<F>
 
   const some: {
-    <_, _2, A>(a: A): Kind<THKT, _, _2, A>
+    <S, E, A>(a: A): Kind<THKT, S, E, A>
   } = flow (option.some, M.of)
 
   const zero: {
-    <_, E, A = never>(): Kind<THKT, _, E, A>
+    <S, E, A = never>(): Kind<THKT, S, E, A>
   } = () => M.of (option.none)
 
   const fromF: {
-    <_, _2, A>(ma: Kind<F, _, _2, A>): Kind<THKT, _, _2, A>
+    <S, E, A>(ma: Kind<F, S, E, A>): Kind<THKT, S, E, A>
   } = M.map (option.some)
 
   const match: {
-    <_, _2, A, B, C = B>(
+    <S, E, A, B, C = B>(
       onNone: LazyArg<B>,
       onSome: (a: A) => C,
-    ): (self: Kind<THKT, _, _2, A>) => Kind<F, _, _2, B | C>
+    ): (self: Kind<THKT, S, E, A>) => Kind<F, S, E, B | C>
   } = flow (option.match, M.map)
 
   const Functor: Functor<THKT> = {
@@ -41,10 +41,10 @@ export const transform = <F extends HKT>(M: Monad<F>) => {
     ...Functor,
     of: some,
     ap:
-      <_, E1, A>(fma: Kind<THKT, _, E1, A>) =>
+      <S, E1, A>(fma: Kind<THKT, S, E1, A>) =>
       <E2, B>(
-        self: Kind<THKT, _, E2, (a: A) => B>,
-      ): Kind<THKT, _, E1 | E2, B> =>
+        self: Kind<THKT, S, E2, (a: A) => B>,
+      ): Kind<THKT, S, E1 | E2, B> =>
         pipe (
           self,
           M.map (mf => (mg: option.Option<A>) => option.ap (mg) (mf)),

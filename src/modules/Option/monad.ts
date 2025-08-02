@@ -71,18 +71,18 @@ export const flatMapTo: {
 } = Monad.flatMapTo
 
 export const tap: {
-  <A, _>(
-    am_: (a: A) => option.Option<_>,
+  <A>(
+    f: (a: A) => option.Option<unknown>,
   ): (self: option.Option<A>) => option.Option<A>
 } = Monad.tap
 
 export const tapSync: {
-  <A, _>(am_: (a: A) => Sync<_>): (self: option.Option<A>) => option.Option<A>
+  <A>(f: (a: A) => Sync<unknown>): (self: option.Option<A>) => option.Option<A>
 } = Monad.tapSync
 
 export const tapResult: {
-  <E, A, _>(
-    afe: (a: A) => result.Result<E, _>,
+  <E, A>(
+    afe: (a: A) => result.Result<E, unknown>,
   ): (self: option.Option<A>) => option.Option<A>
 } = afe => self =>
   pipe (self, map (afe), flatMap (result.match (zero, constant (self))))

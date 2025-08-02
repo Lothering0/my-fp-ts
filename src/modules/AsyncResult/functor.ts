@@ -13,11 +13,11 @@ export const Bifunctor = createBifunctor<AsyncResultHKT> ({
 })
 
 export const map: {
-  <A, B>(ab: (a: A) => B): <_>(self: AsyncResult<_, A>) => AsyncResult<_, B>
+  <A, B>(ab: (a: A) => B): <E>(self: AsyncResult<E, A>) => AsyncResult<E, B>
 } = Functor.map
 
 export const mapLeft: {
-  <E, D>(ed: (e: E) => D): <_>(self: AsyncResult<E, _>) => AsyncResult<D, _>
+  <E, D>(ed: (e: E) => D): <A>(self: AsyncResult<E, A>) => AsyncResult<D, A>
 } = Bifunctor.mapLeft
 
 export const bimap: {

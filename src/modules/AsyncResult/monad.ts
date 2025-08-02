@@ -51,14 +51,14 @@ export const setTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     b: B,
-  ): <_>(self: AsyncResult<_, A>) => AsyncResult<_, DoObject<N, A, B>>
+  ): <E>(self: AsyncResult<E, A>) => AsyncResult<E, DoObject<N, A, B>>
 } = Monad.setTo
 
 export const mapTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     ab: (a: A) => B,
-  ): <_>(self: AsyncResult<_, A>) => AsyncResult<_, DoObject<N, A, B>>
+  ): <E>(self: AsyncResult<E, A>) => AsyncResult<E, DoObject<N, A, B>>
 } = Monad.mapTo
 
 export const flapTo: {
@@ -83,20 +83,20 @@ export const flatMapTo: {
 } = Monad.flatMapTo
 
 export const tap: {
-  <E1, A, _2>(
-    am_: (a: A) => AsyncResult<E1, _2>,
+  <E1, A>(
+    f: (a: A) => AsyncResult<E1, unknown>,
   ): <E2>(self: AsyncResult<E2, A>) => AsyncResult<E1 | E2, A>
 } = Monad.tap
 
 export const tapSync: {
-  <A, _>(
-    am_: (a: A) => Sync<_>,
-  ): <_2>(self: AsyncResult<_2, A>) => AsyncResult<_2, A>
+  <A>(
+    f: (a: A) => Sync<unknown>,
+  ): <E>(self: AsyncResult<E, A>) => AsyncResult<E, A>
 } = Monad.tapSync
 
 export const tapResult: {
-  <E1, A, _>(
-    f: (a: A) => result.Result<E1, _>,
+  <E1, A>(
+    f: (a: A) => result.Result<E1, unknown>,
   ): <E2>(self: AsyncResult<E2, A>) => AsyncResult<E1 | E2, A>
 } = f => self =>
   pipe (
@@ -107,8 +107,8 @@ export const tapResult: {
   )
 
 export const tapSyncResult: {
-  <E1, A, _>(
-    f: (a: A) => syncResult.SyncResult<E1, _>,
+  <E1, A>(
+    f: (a: A) => syncResult.SyncResult<E1, unknown>,
   ): <E2>(self: AsyncResult<E2, A>) => AsyncResult<E1 | E2, A>
 } = f => self =>
   pipe (
@@ -119,12 +119,12 @@ export const tapSyncResult: {
   )
 
 export const tapAsync =
-  <A, _>(f: (a: A) => async.Async<_>) =>
-  <_2>(self: AsyncResult<_2, A>): AsyncResult<_2, A> =>
+  <A>(f: (a: A) => async.Async<unknown>) =>
+  <E>(self: AsyncResult<E, A>): AsyncResult<E, A> =>
     pipe (
       Do,
       apS ("a", self),
-      tap (({ a }) => pipe (a, f, fromAsync<_2, _>)),
+      tap (({ a }) => pipe (a, f, fromAsync<E, unknown>)),
       map (({ a }) => a),
     )
 

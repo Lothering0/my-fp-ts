@@ -37,14 +37,14 @@ export const setTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     b: B,
-  ): <_>(self: SyncResult<_, A>) => SyncResult<_, DoObject<N, A, B>>
+  ): <E>(self: SyncResult<E, A>) => SyncResult<E, DoObject<N, A, B>>
 } = Monad.setTo
 
 export const mapTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     ab: (a: A) => B,
-  ): <_>(self: SyncResult<_, A>) => SyncResult<_, DoObject<N, A, B>>
+  ): <E>(self: SyncResult<E, A>) => SyncResult<E, DoObject<N, A, B>>
 } = Monad.mapTo
 
 export const flapTo: {
@@ -69,19 +69,19 @@ export const flatMapTo: {
 } = Monad.flatMapTo
 
 export const tap: {
-  <E1, A, _>(
-    am_: (a: A) => SyncResult<E1, _>,
+  <E1, A>(
+    f: (a: A) => SyncResult<E1, unknown>,
   ): <E2>(self: SyncResult<E2, A>) => SyncResult<E1 | E2, A>
 } = Monad.tap
 
 export const tapSync: {
-  <A, _>(
-    am_: (a: A) => Sync<_>,
-  ): <_2>(self: SyncResult<_2, A>) => SyncResult<_2, A>
+  <A>(
+    f: (a: A) => Sync<unknown>,
+  ): <E>(self: SyncResult<E, A>) => SyncResult<E, A>
 } = Monad.tapSync
 
 export const tapResult: {
-  <E1, A, _>(
-    f: (a: A) => result.Result<E1, _>,
+  <E1, A>(
+    f: (a: A) => result.Result<E1, unknown>,
   ): <E2>(self: SyncResult<E2, A>) => SyncResult<E1 | E2, A>
 } = f => self => () => pipe (self, execute, result.tap (f))

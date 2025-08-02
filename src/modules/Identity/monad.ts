@@ -62,9 +62,9 @@ export const flatMapTo: {
 } = Monad.flatMapTo
 
 export const tap: {
-  <A, _>(am_: (a: A) => Identity<_>): (self: Identity<A>) => Identity<A>
+  <A>(f: (a: A) => Identity<unknown>): (self: Identity<A>) => Identity<A>
 } = Monad.tap
 
 export const tapSync: {
-  <A, _>(am_: (a: A) => Sync<_>): (self: Identity<A>) => Identity<A>
+  <A>(f: (a: A) => Sync<unknown>): (self: Identity<A>) => Identity<A>
 } = Monad.tapSync

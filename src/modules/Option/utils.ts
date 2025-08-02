@@ -46,7 +46,7 @@ export const toVoid: {
 } = match (constVoid, identity)
 
 export const fromResult: {
-  <_, A>(ma: result.Result<_, A>): Option<A>
+  <E, A>(ma: result.Result<E, A>): Option<A>
 } = result.match (zero, some)
 
 export const toResult: {

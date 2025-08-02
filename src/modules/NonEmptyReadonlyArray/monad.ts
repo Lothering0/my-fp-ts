@@ -78,13 +78,13 @@ export const flatMapTo: {
 } = Monad.flatMapTo
 
 export const tap: {
-  <A, _>(
-    am_: (a: A) => NonEmptyReadonlyArray<_>,
+  <A>(
+    f: (a: A) => NonEmptyReadonlyArray<unknown>,
   ): (self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A>
 } = Monad.tap
 
 export const tapSync: {
-  <A, _>(
-    am_: (a: A) => Sync<_>,
+  <A>(
+    f: (a: A) => Sync<unknown>,
   ): (self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A>
 } = Monad.tapSync

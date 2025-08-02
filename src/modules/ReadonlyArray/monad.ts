@@ -64,11 +64,11 @@ export const flatMapTo: {
 } = Monad.flatMapTo
 
 export const tap: {
-  <A, _>(
-    am_: (a: A) => ReadonlyArray<_>,
+  <A>(
+    f: (a: A) => ReadonlyArray<unknown>,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<A>
 } = Monad.tap
 
 export const tapSync: {
-  <A, _>(am_: (a: A) => Sync<_>): (self: ReadonlyArray<A>) => ReadonlyArray<A>
+  <A>(f: (a: A) => Sync<unknown>): (self: ReadonlyArray<A>) => ReadonlyArray<A>
 } = Monad.tapSync
