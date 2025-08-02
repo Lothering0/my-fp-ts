@@ -37,41 +37,28 @@ describe ("applicative", () => {
         tree.make (number.add (30)),
       ])
 
-      expect (tree.ap (fa) (fab)).toEqual<tree.Tree<number>> ({
-        value: 11,
-        forest: [
-          { value: 12, forest: [{ value: 14, forest: [] }] },
-          { value: 13, forest: [{ value: 15, forest: [] }] },
-          {
-            value: 21,
-            forest: [
-              { value: 22, forest: [{ value: 24, forest: [] }] },
-              { value: 23, forest: [{ value: 25, forest: [] }] },
-              {
-                value: 41,
-                forest: [
-                  { value: 42, forest: [{ value: 44, forest: [] }] },
-                  { value: 43, forest: [{ value: 45, forest: [] }] },
-                ],
-              },
-              {
-                value: 51,
-                forest: [
-                  { value: 52, forest: [{ value: 54, forest: [] }] },
-                  { value: 53, forest: [{ value: 55, forest: [] }] },
-                ],
-              },
-            ],
-          },
-          {
-            value: 31,
-            forest: [
-              { value: 32, forest: [{ value: 34, forest: [] }] },
-              { value: 33, forest: [{ value: 35, forest: [] }] },
-            ],
-          },
-        ],
-      })
+      expect (tree.ap (fa) (fab)).toEqual<tree.Tree<number>> (
+        tree.make (11, [
+          tree.make (12, [tree.make (14)]),
+          tree.make (13, [tree.make (15)]),
+          tree.make (21, [
+            tree.make (22, [tree.make (24)]),
+            tree.make (23, [tree.make (25)]),
+            tree.make (41, [
+              tree.make (42, [tree.make (44)]),
+              tree.make (43, [tree.make (45)]),
+            ]),
+            tree.make (51, [
+              tree.make (52, [tree.make (54)]),
+              tree.make (53, [tree.make (55)]),
+            ]),
+          ]),
+          tree.make (31, [
+            tree.make (32, [tree.make (34)]),
+            tree.make (33, [tree.make (35)]),
+          ]),
+        ]),
+      )
     })
   })
 })
