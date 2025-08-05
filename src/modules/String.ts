@@ -32,8 +32,24 @@ export const Monoid: monoid.Monoid<string> = {
 }
 
 export const split: {
-  (separator: string): (self: string) => string[]
+  (separator: string): (self: string) => ReadonlyArray<string>
 } = separator => self => self.split (separator)
+
+export const trim: {
+  (self: string): string
+} = self => self.trim ()
+
+export const trimStart: {
+  (self: string): string
+} = self => self.trimStart ()
+
+export const trimEnd: {
+  (self: string): string
+} = self => self.trimEnd ()
+
+export const toReadonlyArray: {
+  (self: string): ReadonlyArray<string>
+} = split ("")
 
 export const show: {
   <S extends string>(self: S): `"${S}"`

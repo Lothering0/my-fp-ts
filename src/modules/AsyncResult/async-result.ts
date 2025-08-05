@@ -1,8 +1,9 @@
 import * as async from "../Async"
 import * as result from "../Result"
 import * as sync from "../Sync"
+import * as syncResult from "../SyncResult"
 import { identity } from "../Identity"
-import { flow } from "../../utils/flow"
+import { flow, pipe } from "../../utils/flow"
 import { HKT } from "../../types/HKT"
 
 export interface AsyncResultHKT extends HKT {
@@ -38,6 +39,14 @@ export const succeedAsync: {
 export const fromAsync: {
   <E, A>(ma: async.Async<A>): AsyncResult<E, A>
 } = ma => () => ma ().then (result.succeed, result.fail)
+
+export const fromResult: {
+  <E, A>(ma: result.Result<E, A>): AsyncResult<E, A>
+} = async.of
+
+export const fromSyncResult: {
+  <E, A>(mma: syncResult.SyncResult<E, A>): AsyncResult<E, A>
+} = mma => () => pipe (mma, syncResult.execute, ma => Promise.resolve (ma))
 
 export const toPromise: {
   <E, A>(ma: AsyncResult<E, A>): Promise<result.Result<E, A>>

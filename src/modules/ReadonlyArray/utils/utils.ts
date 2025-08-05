@@ -124,12 +124,12 @@ export const findLastIndex: {
 /** Is `a` element of an array by `Eq` instance */
 export const elem =
   <A>(
-    E: eq.Eq<A>,
+    Eq: eq.Eq<A>,
   ): {
     (a: A): (self: ReadonlyArray<A>) => boolean
   } =>
   a =>
-    flow (find (E.equals (a)), option.isSome)
+    flow (find (Eq.equals (a)), option.isSome)
 
 export const every: {
   <A, B extends A>(
