@@ -8,8 +8,28 @@ import { Monoid } from "../types/Monoid"
 import { Group } from "../types/Group"
 import { flow } from "../utils/flow"
 
+export const add: {
+  (y: number): (x: number) => number
+} = y => x => x + y
+
+export const subtract: {
+  (y: number): (x: number) => number
+} = y => x => x - y
+
+export const multiply: {
+  (y: number): (x: number) => number
+} = y => x => x * y
+
+export const divide: {
+  (y: number): (x: number) => number
+} = y => x => x / y
+
+export const divideSafe: {
+  (y: number): (x: number) => option.Option<number>
+} = y => x => y === 0 ? option.none : option.some (x / y)
+
 export const SemigroupSum: Semigroup<number> = {
-  concat: y => x => x + y,
+  concat: add,
 }
 
 export const MonoidSum: Monoid<number> = {
@@ -23,7 +43,7 @@ export const GroupSum: Group<number> = {
 }
 
 export const SemigroupProduct: Semigroup<number> = {
-  concat: y => x => x * y,
+  concat: multiply,
 }
 
 export const MonoidProduct: Monoid<number> = {
@@ -45,22 +65,6 @@ export const Show: show_.Show<number> = { show }
 export const Eq: eq.Eq<number> = eq.EqStrict
 
 export const { equals } = Eq
-
-export const add = SemigroupSum.concat
-
-export const subtract: {
-  (y: number): (x: number) => number
-} = y => x => x - y
-
-export const multiply = SemigroupProduct.concat
-
-export const divide: {
-  (y: number): (x: number) => number
-} = y => x => x / y
-
-export const divideSafe: {
-  (y: number): (x: number) => option.Option<number>
-} = y => x => y === 0 ? option.none : option.some (x / y)
 
 export const isEven: Predicate<number> = x => x % 2 === 0
 

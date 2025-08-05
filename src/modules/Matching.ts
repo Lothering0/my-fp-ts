@@ -44,7 +44,7 @@ export const on =
   })
 
 export const match =
-  <E, A>(pattern: E, a: LazyArg<A>) =>
+  <E, A>(pattern: NoInfer<E>, a: LazyArg<A>) =>
   <B>(self: Matching<E, B>): Matching<E, A | B> => ({
     ...self,
     patterns: pipe (
@@ -54,7 +54,7 @@ export const match =
   })
 
 export const matchInstance =
-  <E, A>(constructor: new (...args: unknown[]) => E, a: LazyArg<A>) =>
+  <E, A>(constructor: NoInfer<new (...args: unknown[]) => E>, a: LazyArg<A>) =>
   <B>(self: Matching<E, B>): Matching<E, A | B> => ({
     ...self,
     patterns: pipe (
@@ -67,7 +67,7 @@ export const matchInstance =
   })
 
 export const equals =
-  <E, A>(pattern: E, a: LazyArg<A>) =>
+  <E, A>(pattern: NoInfer<E>, a: LazyArg<A>) =>
   <B>(self: Matching<E, B>): Matching<E, A | B> => ({
     ...self,
     patterns: pipe (
