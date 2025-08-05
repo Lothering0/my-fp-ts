@@ -1,35 +1,31 @@
 import * as readonlyArray from "./ReadonlyArray"
 import * as option from "./Option"
+import * as result from "./Result"
 import * as eq from "../types/Eq"
 import { LazyArg } from "../types/utils"
-import { pipe } from "../utils/flow"
+import { flow, pipe } from "../utils/flow"
 import { Predicate } from "./Predicate"
 import { constant } from "../utils/constant"
 
 interface Matching<E, A> {
   readonly patterns: ReadonlyArray<[Predicate<E>, LazyArg<A>]>
   readonly value: E
-  readonly onDefault: (e: E) => A
   readonly defaultEq: option.Option<eq.Eq<E>>
 }
 
-const default_: {
-  <E, A>(onDefault: (e: E) => A): (value: E) => Matching<E, A>
-} = onDefault => value => ({
+export const match: {
+  <E>(value: E): Matching<E, never>
+} = value => ({
   patterns: [],
   value,
-  onDefault,
   defaultEq: option.none,
 })
 
-export { default_ as default }
-
-export const defaultEq: {
-  <E, A>(Eq: eq.Eq<E>, onDefault: (e: E) => A): (value: E) => Matching<E, A>
-} = (Eq, onDefault) => value => ({
+export const matchEq: {
+  <E>(Eq: eq.Eq<E>): <A>(value: E) => Matching<E, A>
+} = Eq => value => ({
   patterns: [],
   value,
-  onDefault,
   defaultEq: option.some (Eq),
 })
 
@@ -43,7 +39,7 @@ export const on =
     ),
   })
 
-export const match =
+export const when =
   <E, A>(pattern: NoInfer<E>, a: LazyArg<A>) =>
   <B>(self: Matching<E, B>): Matching<E, A | B> => ({
     ...self,
@@ -53,8 +49,8 @@ export const match =
     ),
   })
 
-export const matchInstance =
-  <E, A>(constructor: NoInfer<new (...args: unknown[]) => E>, a: LazyArg<A>) =>
+export const whenInstance =
+  <E, A>(constructor: new (...args: unknown[]) => NoInfer<E>, a: LazyArg<A>) =>
   <B>(self: Matching<E, B>): Matching<E, A | B> => ({
     ...self,
     patterns: pipe (
@@ -66,7 +62,7 @@ export const matchInstance =
     ),
   })
 
-export const equals =
+export const whenEquals =
   <E, A>(pattern: NoInfer<E>, a: LazyArg<A>) =>
   <B>(self: Matching<E, B>): Matching<E, A | B> => ({
     ...self,
@@ -81,14 +77,30 @@ export const equals =
     ),
   })
 
-export const run: {
-  <E, A>(self: Matching<E, A>): A
+export const getOrElse: {
+  <E, A>(onDefault: (e: E) => A): <B>(self: Matching<E, B>) => A | B
+} = onDefault => self =>
+  pipe (
+    self.patterns,
+    readonlyArray.find (([p]) => p (self.value)),
+    option.match (
+      () => onDefault (self.value),
+      ([, f]) => f (),
+    ),
+  )
+
+export const getResult: {
+  <E, A>(self: Matching<E, A>): result.Result<E, A>
 } = self =>
   pipe (
     self.patterns,
     readonlyArray.find (([p]) => p (self.value)),
     option.match (
-      () => self.onDefault (self.value),
-      ([, f]) => f (),
+      () => result.fail (self.value),
+      ([, f]) => result.succeed (f ()),
     ),
   )
+
+export const getOption: {
+  <E, A>(self: Matching<E, A>): option.Option<A>
+} = flow (getResult, option.fromResult)
