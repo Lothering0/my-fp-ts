@@ -5,12 +5,10 @@ import * as eq from "../types/Eq"
 import { LazyArg } from "../types/utils"
 import { flow, pipe } from "../utils/flow"
 import { Predicate } from "./Predicate"
-import { constant } from "../utils/constant"
 
-interface Matching<E, A> {
+export interface Matching<E, A> {
   readonly patterns: ReadonlyArray<[Predicate<E>, LazyArg<A>]>
   readonly value: E
-  readonly defaultEq: option.Option<eq.Eq<E>>
 }
 
 export const match: {
@@ -18,15 +16,6 @@ export const match: {
 } = value => ({
   patterns: [],
   value,
-  defaultEq: option.none,
-})
-
-export const matchEq: {
-  <E>(Eq: eq.Eq<E>): <A>(value: E) => Matching<E, A>
-} = Eq => value => ({
-  patterns: [],
-  value,
-  defaultEq: option.some (Eq),
 })
 
 export const on =
@@ -39,43 +28,28 @@ export const on =
     ),
   })
 
-export const when =
-  <E, A>(pattern: NoInfer<E>, a: LazyArg<A>) =>
-  <B>(self: Matching<E, B>): Matching<E, A | B> => ({
-    ...self,
-    patterns: pipe (
-      self.patterns,
-      readonlyArray.append ([eq.EqStrict.equals (pattern), a as LazyArg<A | B>]),
-    ),
-  })
+export const whenEquals: {
+  <E, A>(
+    Eq: eq.Eq<E>,
+    pattern: NoInfer<E>,
+    a: LazyArg<A>,
+  ): <B>(self: Matching<E, B>) => Matching<E, A | B>
+} = (Eq, pattern, a) => on (e => Eq.equals (pattern) (e), a)
 
-export const whenInstance =
-  <E, A>(constructor: new (...args: unknown[]) => NoInfer<E>, a: LazyArg<A>) =>
-  <B>(self: Matching<E, B>): Matching<E, A | B> => ({
-    ...self,
-    patterns: pipe (
-      self.patterns,
-      readonlyArray.append ([
-        e => e instanceof constructor,
-        a as LazyArg<A | B>,
-      ]),
-    ),
-  })
+export const when: {
+  <E, A>(
+    pattern: NoInfer<E>,
+    a: LazyArg<A>,
+  ): <B>(self: Matching<E, B>) => Matching<E, A | B>
+} = <E, A>(pattern: E, a: LazyArg<A>) =>
+  whenEquals<E, A> (eq.EqStrict, pattern, a)
 
-export const whenEquals =
-  <E, A>(pattern: NoInfer<E>, a: LazyArg<A>) =>
-  <B>(self: Matching<E, B>): Matching<E, A | B> => ({
-    ...self,
-    patterns: pipe (
-      self.defaultEq,
-      option.match (constant (self.patterns), Eq =>
-        pipe (
-          self.patterns,
-          readonlyArray.append ([Eq.equals (pattern), a as LazyArg<A | B>]),
-        ),
-      ),
-    ),
-  })
+export const whenInstance: {
+  <E, A>(
+    constructor: new (...args: unknown[]) => NoInfer<E>,
+    a: LazyArg<A>,
+  ): <B>(self: Matching<E, B>) => Matching<E, A | B>
+} = (constructor, a) => on (e => e instanceof constructor, a)
 
 export const getResult: {
   <E, A>(self: Matching<E, A>): result.Result<E, A>
