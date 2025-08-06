@@ -77,18 +77,6 @@ export const whenEquals =
     ),
   })
 
-export const getOrElse: {
-  <E, A>(onDefault: (e: E) => A): <B>(self: Matching<E, B>) => A | B
-} = onDefault => self =>
-  pipe (
-    self.patterns,
-    readonlyArray.find (([p]) => p (self.value)),
-    option.match (
-      () => onDefault (self.value),
-      ([, f]) => f (),
-    ),
-  )
-
 export const getResult: {
   <E, A>(self: Matching<E, A>): result.Result<E, A>
 } = self =>
@@ -104,3 +92,7 @@ export const getResult: {
 export const getOption: {
   <E, A>(self: Matching<E, A>): option.Option<A>
 } = flow (getResult, option.fromResult)
+
+export const getOrElse: {
+  <E, A>(onDefault: (e: E) => A): <B>(self: Matching<E, B>) => A | B
+} = onDefault => flow (getResult, result.getOrElse (onDefault))
