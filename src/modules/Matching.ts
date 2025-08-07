@@ -7,6 +7,7 @@ import { flow, pipe } from "../utils/flow"
 import { Predicate } from "./Predicate"
 
 export interface Matching<E, A> {
+  readonly Eq: eq.Eq<E>
   readonly patterns: ReadonlyArray<[Predicate<E>, LazyArg<A>]>
   readonly value: E
 }
@@ -14,6 +15,15 @@ export interface Matching<E, A> {
 export const match: {
   <E>(value: E): Matching<E, never>
 } = value => ({
+  Eq: eq.EqStrict,
+  patterns: [],
+  value,
+})
+
+export const matchEq: {
+  <E>(Eq: eq.Eq<E>): (value: E) => Matching<E, never>
+} = Eq => value => ({
+  Eq,
   patterns: [],
   value,
 })
