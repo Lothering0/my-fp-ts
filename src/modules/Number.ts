@@ -28,6 +28,22 @@ export const divideSafe: {
   (y: number): (x: number) => option.Option<number>
 } = y => x => y === 0 ? option.none : option.some (x / y)
 
+export const lessThan: {
+  (y: number): (x: number) => boolean
+} = y => x => x < y
+
+export const lessThanOrEquals: {
+  (y: number): (x: number) => boolean
+} = y => x => x <= y
+
+export const moreThan: {
+  (y: number): (x: number) => boolean
+} = y => x => x > y
+
+export const moreThanOrEquals: {
+  (y: number): (x: number) => boolean
+} = y => x => x >= y
+
 export const SemigroupSum: Semigroup<number> = {
   concat: add,
 }

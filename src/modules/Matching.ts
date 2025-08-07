@@ -2,13 +2,12 @@ import * as readonlyArray from "./ReadonlyArray"
 import * as option from "./Option"
 import * as result from "./Result"
 import * as eq from "../types/Eq"
-import { LazyArg } from "../types/utils"
 import { flow, pipe } from "../utils/flow"
 import { Predicate } from "./Predicate"
 
 export interface Matching<E, A> {
   readonly Eq: eq.Eq<E>
-  readonly patterns: ReadonlyArray<[Predicate<E>, LazyArg<A>]>
+  readonly patterns: ReadonlyArray<[Predicate<E>, (e: E) => A]>
   readonly value: E
 }
 
@@ -29,12 +28,12 @@ export const matchEq: {
 })
 
 export const on =
-  <E, A>(p: Predicate<E>, a: LazyArg<A>) =>
+  <E, A>(p: Predicate<E>, ea: (e: E) => A) =>
   <B>(self: Matching<E, B>): Matching<E, A | B> => ({
     ...self,
     patterns: pipe (
       self.patterns,
-      readonlyArray.append ([p, a as LazyArg<A | B>]),
+      readonlyArray.append ([p, ea as (e: E) => A | B]),
     ),
   })
 
@@ -42,24 +41,23 @@ export const whenEquals: {
   <E, A>(
     Eq: eq.Eq<E>,
     pattern: NoInfer<E>,
-    a: LazyArg<A>,
+    ea: (e: E) => A,
   ): <B>(self: Matching<E, B>) => Matching<E, A | B>
-} = (Eq, pattern, a) => on (e => Eq.equals (pattern) (e), a)
+} = (Eq, pattern, ea) => on (Eq.equals (pattern), ea)
 
 export const when: {
   <E, A>(
     pattern: NoInfer<E>,
-    a: LazyArg<A>,
+    ea: (e: E) => A,
   ): <B>(self: Matching<E, B>) => Matching<E, A | B>
-} = <E, A>(pattern: E, a: LazyArg<A>) =>
-  whenEquals<E, A> (eq.EqStrict, pattern, a)
+} = (pattern, ea) => self => whenEquals (self.Eq, pattern, ea) (self)
 
 export const whenInstance: {
   <E, A>(
     constructor: new (...args: unknown[]) => NoInfer<E>,
-    a: LazyArg<A>,
+    ea: (e: E) => A,
   ): <B>(self: Matching<E, B>) => Matching<E, A | B>
-} = (constructor, a) => on (e => e instanceof constructor, a)
+} = (constructor, ea) => on (e => e instanceof constructor, ea)
 
 export const getResult: {
   <E, A>(self: Matching<E, A>): result.Result<E, A>
@@ -69,7 +67,7 @@ export const getResult: {
     readonlyArray.find (([p]) => p (self.value)),
     option.match (
       () => result.fail (self.value),
-      ([, f]) => result.succeed (f ()),
+      ([, f]) => pipe (self.value, f, result.succeed),
     ),
   )
 
