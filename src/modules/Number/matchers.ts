@@ -29,7 +29,7 @@ export const matchNonPositive: {
 } = (onNonPositive, onPositive) => self =>
   pipe (self, lessThanOrEquals (0)) ? onNonPositive (self) : onPositive (self)
 
-/** Match float or integer */
+/** Match float and integer */
 export const matchFloat: {
   <A, B = A>(
     onFloat: (e: number) => A,
@@ -38,7 +38,7 @@ export const matchFloat: {
 } = (onFloat, onInteger) => self =>
   Number.isInteger (self) ? onInteger (self) : onFloat (self)
 
-/** Match odd or even number */
+/** Match odd and even number */
 export const matchOdd: {
   <A, B = A>(
     onOdd: (e: number) => A,

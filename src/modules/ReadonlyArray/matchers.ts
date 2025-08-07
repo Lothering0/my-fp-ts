@@ -1,6 +1,6 @@
-import * as nonEmptyReadonlyArray from "../../NonEmptyReadonlyArray"
-import { LazyArg } from "../../../types/utils"
-import { isNonEmpty } from "../refinements"
+import * as nonEmptyReadonlyArray from "../NonEmptyReadonlyArray"
+import { LazyArg } from "../../types/utils"
+import { isNonEmpty } from "./refinements"
 
 export const match: {
   <A, B, C = B>(

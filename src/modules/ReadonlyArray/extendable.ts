@@ -1,7 +1,8 @@
 import { createExtendable } from "../../types/Extendable"
 import { ReadonlyArrayHKT } from "./readonly-array"
 import { Functor } from "./functor"
-import { fromNonEmpty, matchLeft, prepend } from "./utils"
+import { fromNonEmpty, prepend } from "./utils"
+import { matchLeft } from "./matchers"
 import { constEmptyArray } from "../../utils/constant"
 import { pipe } from "../../utils/flow"
 
