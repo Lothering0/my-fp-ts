@@ -5,6 +5,8 @@ import { Monoid } from "../../types/Monoid"
 import { Semigroup } from "../../types/Semigroup"
 import { pipe } from "../../utils/flow"
 
+export const empty = none
+
 export const getMonoid: {
   <A>(Semigroup: Semigroup<A>): Monoid<Option<A>>
 } = S => ({

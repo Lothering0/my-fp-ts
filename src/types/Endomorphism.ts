@@ -7,11 +7,13 @@ export interface Endomorphism<A> {
   (a: A): A
 }
 
+export const empty = identity
+
 export const getSemigroup = <A>(): Semigroup<Endomorphism<A>> => ({
   concat: curry (compose),
 })
 
 export const getMonoid = <A>(): Monoid<Endomorphism<A>> => ({
   ...getSemigroup (),
-  empty: identity,
+  empty,
 })

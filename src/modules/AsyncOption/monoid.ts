@@ -4,9 +4,11 @@ import { Monoid } from "../../types/Monoid"
 import { _ } from "../../utils/underscore"
 import { getRaceSemigroup } from "./semigroup"
 
+export const empty: AsyncOption<never> = () => new Promise (() => some (_))
+
 export const getRaceMonoid: {
   <A>(): Monoid<AsyncOption<A>>
 } = () => ({
   ...getRaceSemigroup (),
-  empty: () => new Promise (() => some (_)),
+  empty,
 })

@@ -34,11 +34,13 @@ export const getSemigroup: {
   }),
 })
 
+export const empty: Eq<never> = {
+  equals: constant (constTrue),
+}
+
 export const getMonoid: {
   <A>(): Monoid<Eq<A>>
 } = () => ({
   ...getSemigroup (),
-  empty: {
-    equals: constant (constTrue),
-  },
+  empty,
 })

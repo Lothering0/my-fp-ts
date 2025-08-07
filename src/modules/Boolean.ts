@@ -7,7 +7,7 @@ export const not: {
 } = <B>(b: B) => !b as B extends true ? false : true
 
 export const match: {
-  <A, B>(onFalse: LazyArg<A>, onTrue: LazyArg<B>): (self: boolean) => A | B
+  <A, B = A>(onFalse: LazyArg<A>, onTrue: LazyArg<B>): (self: boolean) => A | B
 } = (onFalse, onTrue) => self => self ? onTrue () : onFalse ()
 
 export const show: {
