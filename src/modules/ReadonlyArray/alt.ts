@@ -1,5 +1,5 @@
 import * as alt from "../../types/Alt"
-import { concat } from "./semigroup"
+import { concat } from "./utils"
 import { ReadonlyArrayHKT } from "./readonly-array"
 
 export const orElse =

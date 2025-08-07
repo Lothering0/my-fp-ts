@@ -15,6 +15,7 @@
 | `TaskEither`                  | `AsyncResult`                   |
 | `let`                         | `setTo`                         |
 | `flatten`                     | `flat`                          |
+| `Semigroup.concat`            | `Semigroup.combine`             |
 
 - My implementation has neither `Array` nor `NonEmptyArray` monads. Instead there are only `ReadonlyArray` and `NonEmptyReadonlyArray`. Those modules don't contain `unsafe` operations.
 - There are modules and type classes which I have not implemented yet... or will never do.

@@ -159,6 +159,10 @@ export const successes: {
   <E, A>(self: ReadonlyArray<result.Result<E, A>>): ReadonlyArray<A>
 } = flatMap (result.match (constEmptyArray, of))
 
+export const concat: {
+  <A>(end: ReadonlyArray<A>): (start: ReadonlyArray<A>) => ReadonlyArray<A>
+} = nonEmptyReadonlyArray.concat
+
 export const prepend: {
   <A>(
     a: A,

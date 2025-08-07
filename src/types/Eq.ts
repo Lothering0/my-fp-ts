@@ -29,7 +29,7 @@ export const contramap: {
 export const getSemigroup: {
   <A>(): Semigroup<Eq<A>>
 } = () => ({
-  concat: Eq1 => Eq2 => ({
+  combine: Eq1 => Eq2 => ({
     equals: x => y => EqStrict.equals (Eq1.equals (x) (y)) (Eq2.equals (x) (y)),
   }),
 })

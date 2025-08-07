@@ -7,16 +7,22 @@ import { pipe } from "../../utils/flow"
 
 export const empty = none
 
-export const getMonoid: {
-  <A>(Semigroup: Semigroup<A>): Monoid<Option<A>>
-} = S => ({
-  empty: none,
-  concat: mx => my =>
+export const getSemigroup: {
+  <A>(Semigroup: Semigroup<A>): Semigroup<Option<A>>
+} = Semigroup => ({
+  combine: mx => my =>
     isNone (mx)
       ? isNone (my)
         ? none
         : my
       : isNone (my)
         ? mx
-        : pipe (S.concat (value (mx)) (value (my)), some),
+        : pipe (Semigroup.combine (value (mx)) (value (my)), some),
+})
+
+export const getMonoid: {
+  <A>(Semigroup: Semigroup<A>): Monoid<Option<A>>
+} = Semigroup => ({
+  empty: none,
+  ...getSemigroup (Semigroup),
 })

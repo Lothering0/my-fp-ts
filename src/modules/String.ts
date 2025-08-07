@@ -3,7 +3,6 @@ import * as monoid from "../types/Monoid"
 import * as show_ from "../types/Show"
 import * as eq from "../types/Eq"
 import * as number from "./Number"
-import { LazyArg } from "../types/utils"
 import { pipe } from "../utils/flow"
 
 export const empty = ""
@@ -17,11 +16,11 @@ export const isEmpty = (self: string): self is "" =>
 
 export const match: {
   <A, B = A>(
-    onEmpty: LazyArg<A>,
+    onEmpty: (e: "") => A,
     onNonEmpty: (a: string) => B,
   ): (self: string) => A | B
 } = (onEmpty, onNonEmpty) => self =>
-  isEmpty (self) ? onEmpty () : onNonEmpty (self)
+  isEmpty (self) ? onEmpty ("") : onNonEmpty (self)
 
 export const toLowerCase = <A extends string = string>(self: A): Lowercase<A> =>
   self.toLowerCase () as Lowercase<A>
@@ -91,7 +90,7 @@ export const Eq: eq.Eq<string> = eq.EqStrict
 export const { equals } = Eq
 
 export const Semigroup: semigroup.Semigroup<string> = {
-  concat,
+  combine: concat,
 }
 
 export const Monoid: monoid.Monoid<string> = {

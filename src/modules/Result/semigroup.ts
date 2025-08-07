@@ -7,12 +7,12 @@ import { pipe } from "../../utils/flow"
 export const getSemigroup: {
   <E, A>(Semigroup: Semigroup<A>): Semigroup<Result<E, A>>
 } = Semigroup => ({
-  concat: my => mx =>
+  combine: my => mx =>
     isFailure (mx)
       ? isFailure (my)
         ? mx
         : my
       : isFailure (my)
         ? mx
-        : pipe (Semigroup.concat (success (mx)) (success (my)), succeed),
+        : pipe (Semigroup.combine (success (mx)) (success (my)), succeed),
 })
