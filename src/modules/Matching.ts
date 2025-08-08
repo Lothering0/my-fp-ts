@@ -1,6 +1,7 @@
 import * as readonlyArray from "./ReadonlyArray"
 import * as option from "./Option"
 import * as result from "./Result"
+import * as boolean from "./Boolean"
 import * as eq from "../types/Eq"
 import { flow, pipe } from "../utils/flow"
 import { Predicate } from "./Predicate"
@@ -78,3 +79,39 @@ export const getOption: {
 export const getOrElse: {
   <E, A>(onDefault: (e: E) => A): <B>(self: Matching<E, B>) => A | B
 } = onDefault => flow (getResult, result.getOrElse (onDefault))
+
+export const getResults: {
+  <E, A>(self: Matching<E, A>): ReadonlyArray<result.Result<E, A>>
+} = self =>
+  pipe (
+    self.patterns,
+    readonlyArray.map (([p, f]) =>
+      pipe (
+        self.value,
+        p,
+        boolean.match (
+          () => result.fail (self.value),
+          () => pipe (self.value, f, result.succeed),
+        ),
+      ),
+    ),
+  )
+
+export const getFailures: {
+  <E, A>(self: Matching<E, A>): ReadonlyArray<E>
+} = flow (getResults, readonlyArray.failures)
+
+export const getSuccesses: {
+  <E, A>(self: Matching<E, A>): ReadonlyArray<A>
+} = flow (getResults, readonlyArray.successes)
+
+export const getOptions: {
+  <E, A>(self: Matching<E, A>): ReadonlyArray<option.Option<A>>
+} = flow (getResults, readonlyArray.map (option.fromResult))
+
+export const getOrElseAll: {
+  <E, A>(
+    onDefault: (e: E) => A,
+  ): <B>(self: Matching<E, B>) => ReadonlyArray<A | B>
+} = onDefault =>
+  flow (getResults, readonlyArray.map (result.getOrElse (onDefault)))
