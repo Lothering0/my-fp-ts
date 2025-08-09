@@ -21,7 +21,7 @@ export const put: {
 } = s => pipe (s, constant, modify)
 
 export const run: {
-  <S>(s: S): <A>(self: State<S, A>) => [A, S]
+  <S>(s: S): <A>(self: State<S, A>) => readonly [A, S]
 } = s => self => self (s)
 
 export const evaluate: {

@@ -6,5 +6,5 @@ export interface StateHKT extends HKT {
 }
 
 export interface State<S, A> {
-  (s: S): [A, S]
+  (s: S): readonly [A, S]
 }

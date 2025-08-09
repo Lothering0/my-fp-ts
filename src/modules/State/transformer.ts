@@ -8,7 +8,7 @@ import { pipe } from "../../utils/flow"
 export interface StateT<F extends HKT> extends HKT {
   readonly type: (
     s: this["_S"],
-  ) => Kind<F, this["_S"], this["_E"], [this["_A"], this["_S"]]>
+  ) => Kind<F, this["_S"], this["_E"], readonly [this["_A"], this["_S"]]>
 }
 
 export const transform = <F extends HKT>(F: Monad<F>) => {
@@ -27,7 +27,7 @@ export const transform = <F extends HKT>(F: Monad<F>) => {
     )
 
   const run: {
-    <S>(s: S): <E, A>(ma: Kind<THKT, S, E, A>) => Kind<F, S, E, [A, S]>
+    <S>(s: S): <E, A>(ma: Kind<THKT, S, E, A>) => Kind<F, S, E, readonly [A, S]>
   } = s => ma => ma (s)
 
   const evaluate: {
