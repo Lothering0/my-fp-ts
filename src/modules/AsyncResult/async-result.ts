@@ -4,9 +4,9 @@ import * as sync from "../Sync"
 import * as syncResult from "../SyncResult"
 import { identity } from "../Identity"
 import { flow, pipe } from "../../utils/flow"
-import { HKT } from "../../types/HKT"
+import { Hkt } from "../../types/Hkt"
 
-export interface AsyncResultHKT extends HKT {
+export interface AsyncResultHkt extends Hkt {
   readonly type: AsyncResult<this["_E"], this["_A"]>
 }
 

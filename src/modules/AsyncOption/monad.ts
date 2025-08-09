@@ -8,7 +8,7 @@ import * as syncResult from "../SyncResult"
 import { Sync } from "../Sync"
 import { createMonad } from "../../types/Monad"
 import {
-  AsyncOptionHKT,
+  AsyncOptionHkt,
   AsyncOption,
   toPromise,
   fromAsync,
@@ -18,7 +18,7 @@ import { Applicative } from "./applicative"
 import { pipe } from "../../utils/flow"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
 
-export const Monad = createMonad<AsyncOptionHKT> ({
+export const Monad = createMonad<AsyncOptionHkt> ({
   ...Applicative,
   flat: self => () =>
     toPromise (self).then (ma =>

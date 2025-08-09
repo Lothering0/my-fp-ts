@@ -1,9 +1,9 @@
-import { HKT, Kind } from "./HKT"
+import { Hkt, Kind } from "./Hkt"
 import { Applicative } from "./Applicative"
 import { FunctorWithIndex } from "./FunctorWithIndex"
 import { flip } from "../utils/flip"
 
-export interface ApplicativeWithIndex<F extends HKT, I>
+export interface ApplicativeWithIndex<F extends Hkt, I>
   extends FunctorWithIndex<F, I>,
     Applicative<F> {
   readonly apWithIndex: <S, E1, A>(
@@ -20,7 +20,7 @@ export interface ApplicativeWithIndex<F extends HKT, I>
   readonly flipApplyWithIndex: ApplicativeWithIndex<F, I>["flapWithIndex"]
 }
 
-export const createApplicativeWithIndex = <F extends HKT, I>(
+export const createApplicativeWithIndex = <F extends Hkt, I>(
   Applicative: Applicative<F> &
     FunctorWithIndex<F, I> &
     Pick<ApplicativeWithIndex<F, I>, "apWithIndex">,

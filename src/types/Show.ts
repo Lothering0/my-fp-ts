@@ -1,16 +1,16 @@
 import * as contravariant from "./Contravariant"
-import { HKT } from "./HKT"
+import { Hkt } from "./Hkt"
 import { flow } from "../utils/flow"
 
 export interface Show<A> {
   readonly show: (a: A) => string
 }
 
-export interface ShowHKT extends HKT {
+export interface ShowHkt extends Hkt {
   readonly type: Show<this["_A"]>
 }
 
-export const Contravariant: contravariant.Contravariant<ShowHKT> = {
+export const Contravariant: contravariant.Contravariant<ShowHkt> = {
   contramap: ba => self => ({
     show: flow (ba, self.show),
   }),

@@ -1,10 +1,10 @@
 import * as readonlyArray from "../ReadonlyArray"
 import * as functor from "../../types/Functor"
-import { Tree, TreeHKT } from "./tree"
+import { Tree, TreeHkt } from "./tree"
 import { make, value, forest } from "./utils"
 import { pipe } from "../../utils/flow"
 
-export const Functor: functor.Functor<TreeHKT> = {
+export const Functor: functor.Functor<TreeHkt> = {
   map: ab => self =>
     make (pipe (self, value, ab), pipe (self, forest, readonlyArray.map (map (ab)))),
 }

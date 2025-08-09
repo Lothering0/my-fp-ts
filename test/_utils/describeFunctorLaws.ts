@@ -1,12 +1,12 @@
 import * as number from "../../src/modules/Number"
-import { HKT, Kind } from "../../src/types/HKT"
+import { Hkt, Kind } from "../../src/types/Hkt"
 import { Functor } from "../../src/types/Functor"
 import { NonEmptyReadonlyArray } from "../../src/modules/NonEmptyReadonlyArray"
 import { identity } from "../../src/modules/Identity"
 import { pipe } from "../../src/utils/flow"
 
 export const describeFunctorLaws: {
-  <F extends HKT>(
+  <F extends Hkt>(
     Functor: Functor<F>,
     fas: NonEmptyReadonlyArray<Kind<F, unknown, unknown, number>>,
   ): void

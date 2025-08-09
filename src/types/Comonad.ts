@@ -1,6 +1,6 @@
 import { Extendable } from "./Extendable"
-import { HKT, Kind } from "./HKT"
+import { Hkt, Kind } from "./Hkt"
 
-export interface Comonad<F extends HKT> extends Extendable<F> {
+export interface Comonad<F extends Hkt> extends Extendable<F> {
   readonly extract: <S, E, A>(self: Kind<F, S, E, A>) => A
 }

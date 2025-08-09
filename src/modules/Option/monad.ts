@@ -11,7 +11,7 @@ import { zero } from "./alternative"
 import { pipe } from "../../utils/flow"
 import { constant } from "../../utils/constant"
 
-export const Monad = createMonad<option.OptionHKT> ({
+export const Monad = createMonad<option.OptionHkt> ({
   ...Applicative,
   flat: match (zero, identity),
 })

@@ -2,11 +2,11 @@
 import { Sync } from "../modules/Sync"
 import { Applicative } from "./Applicative"
 import { DoObject, DoObjectKey } from "./DoObject"
-import { HKT, Kind } from "./HKT"
+import { Hkt, Kind } from "./Hkt"
 import { flow, pipe } from "../utils/flow"
 import { constant } from "../utils/constant"
 
-export interface Monad<F extends HKT> extends Applicative<F> {
+export interface Monad<F extends Hkt> extends Applicative<F> {
   readonly Do: Kind<F, never, never, {}>
 
   readonly flat: <S, E1, E2, A>(
@@ -56,7 +56,7 @@ export interface Monad<F extends HKT> extends Applicative<F> {
   ) => <S, E>(self: Kind<F, S, E, A>) => Kind<F, S, E, A>
 }
 
-export const createMonad = <F extends HKT>(
+export const createMonad = <F extends Hkt>(
   Monad: Applicative<F> & Pick<Monad<F>, "flat">,
 ): Monad<F> => {
   const { of, map, flat } = Monad

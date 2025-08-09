@@ -1,6 +1,6 @@
-import { HKT } from "../../types/HKT"
+import { Hkt } from "../../types/Hkt"
 
-export interface TreeHKT extends HKT {
+export interface TreeHkt extends Hkt {
   readonly type: Tree<this["_A"]>
 }
 

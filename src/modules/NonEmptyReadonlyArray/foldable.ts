@@ -3,16 +3,16 @@ import * as foldable from "../../types/Foldable"
 import * as foldableWithIndex from "../../types/FoldableWithIndex"
 import {
   NonEmptyReadonlyArray,
-  NonEmptyReadonlyArrayHKT,
+  NonEmptyReadonlyArrayHkt,
 } from "./non-empty-readonly-array"
 
 export const Foldable = {
   ...readonlyArray.Foldable,
-} as foldable.Foldable<NonEmptyReadonlyArrayHKT>
+} as foldable.Foldable<NonEmptyReadonlyArrayHkt>
 
 export const FoldableWithIndex = {
   ...readonlyArray.FoldableWithIndex,
-} as foldableWithIndex.FoldableWithIndex<NonEmptyReadonlyArrayHKT, number>
+} as foldableWithIndex.FoldableWithIndex<NonEmptyReadonlyArrayHkt, number>
 
 export const reduce: {
   <A, B>(b: B, bab: (b: B, a: A) => B): (self: NonEmptyReadonlyArray<A>) => B

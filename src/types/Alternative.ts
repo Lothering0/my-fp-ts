@@ -1,6 +1,6 @@
 import { Alt } from "./Alt"
-import { HKT, Kind } from "./HKT"
+import { Hkt, Kind } from "./Hkt"
 
-export interface Alternative<F extends HKT> extends Alt<F> {
+export interface Alternative<F extends Hkt> extends Alt<F> {
   readonly zero: <S, E, A>() => Kind<F, S, E, A>
 }

@@ -1,6 +1,6 @@
-import { HKT } from "../../types/HKT"
+import { Hkt } from "../../types/Hkt"
 
-export interface SeparatedHKT extends HKT {
+export interface SeparatedHkt extends Hkt {
   readonly type: Separated<this["_E"], this["_A"]>
 }
 

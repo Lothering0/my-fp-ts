@@ -1,7 +1,7 @@
 import * as functor from "../../types/Functor"
-import { AsyncHKT, Async, toPromise } from "./async"
+import { AsyncHkt, Async, toPromise } from "./async"
 
-export const Functor: functor.Functor<AsyncHKT> = {
+export const Functor: functor.Functor<AsyncHkt> = {
   map: ab => self => () => toPromise (self).then (ab),
 }
 

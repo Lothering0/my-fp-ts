@@ -1,10 +1,10 @@
 import { createApplicative } from "../../types/Applicative"
 import { Functor, map } from "./functor"
-import { Result, ResultHKT, succeed } from "./result"
+import { Result, ResultHkt, succeed } from "./result"
 import { isSuccess } from "./refinements"
 import { success } from "./utils"
 
-export const Applicative = createApplicative<ResultHKT> ({
+export const Applicative = createApplicative<ResultHkt> ({
   ...Functor,
   of: succeed,
   ap: fa => self => isSuccess (self) ? map (success (self)) (fa) : self,

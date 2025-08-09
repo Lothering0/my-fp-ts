@@ -3,13 +3,13 @@ import * as monad from "../../types/Monad"
 import { Sync } from "../Sync"
 import {
   NonEmptyReadonlyArray,
-  NonEmptyReadonlyArrayHKT,
+  NonEmptyReadonlyArrayHkt,
 } from "./non-empty-readonly-array"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
 
 export const Monad = {
   ...readonlyArray.Monad,
-} as monad.Monad<NonEmptyReadonlyArrayHKT>
+} as monad.Monad<NonEmptyReadonlyArrayHkt>
 
 export const Do = Monad.Do
 

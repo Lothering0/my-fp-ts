@@ -5,7 +5,7 @@ import { createMonad } from "../../types/Monad"
 import { Applicative } from "./applicative"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
 
-export const Monad = createMonad<async.AsyncHKT> ({
+export const Monad = createMonad<async.AsyncHkt> ({
   ...Applicative,
   flat: self => () => async.toPromise (self).then (async.toPromise),
 })

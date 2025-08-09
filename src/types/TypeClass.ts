@@ -1,5 +1,5 @@
-import { HKT } from "./HKT"
+import { Hkt } from "./Hkt"
 
-export interface TypeClass<F extends HKT> {
+export interface TypeClass<F extends Hkt> {
   readonly _F?: F
 }

@@ -1,14 +1,14 @@
 import * as result from "../Result"
 import * as functor from "../../types/Functor"
 import { createBifunctor } from "../../types/Bifunctor"
-import { SyncResultHKT, SyncResult, execute } from "./sync-result"
+import { SyncResultHkt, SyncResult, execute } from "./sync-result"
 import { pipe } from "../../utils/flow"
 
-export const Functor: functor.Functor<SyncResultHKT> = {
+export const Functor: functor.Functor<SyncResultHkt> = {
   map: ab => self => () => pipe (self, execute, result.map (ab)),
 }
 
-export const Bifunctor = createBifunctor<SyncResultHKT> ({
+export const Bifunctor = createBifunctor<SyncResultHkt> ({
   ...Functor,
   mapLeft: ed => self => () => pipe (self, execute, result.mapLeft (ed)),
 })

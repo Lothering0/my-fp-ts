@@ -2,19 +2,19 @@ import { Option } from "../Option"
 import { Predicate } from "../Predicate"
 import { Result } from "../Result"
 import { Separated } from "../Separated"
-import { ReadonlyArrayHKT } from "./readonly-array"
+import { ReadonlyArrayHkt } from "./readonly-array"
 import { createFilterableWithIndex } from "../../types/FilterableWithIndex"
 import { createFilterable } from "../../types/Filterable"
 import { Compactable } from "./compactable"
 import { Functor, FunctorWithIndex } from "./functor"
 
-export const Filterable = createFilterable<ReadonlyArrayHKT> ({
+export const Filterable = createFilterable<ReadonlyArrayHkt> ({
   ...Compactable,
   ...Functor,
 })
 
 export const FilterableWithIndex = createFilterableWithIndex<
-  ReadonlyArrayHKT,
+  ReadonlyArrayHkt,
   number
 > ({
   ...Filterable,

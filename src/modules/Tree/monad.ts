@@ -1,10 +1,10 @@
 import * as monad from "../../types/Monad"
 import { Sync } from "../Sync"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
-import { Tree, TreeHKT } from "./tree"
+import { Tree, TreeHkt } from "./tree"
 import { Applicative, flat } from "./applicative"
 
-export const Monad: monad.Monad<TreeHKT> = monad.createMonad<TreeHKT> ({
+export const Monad: monad.Monad<TreeHkt> = monad.createMonad<TreeHkt> ({
   ...Applicative,
   flat,
 })

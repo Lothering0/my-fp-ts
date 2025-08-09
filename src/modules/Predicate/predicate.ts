@@ -1,6 +1,6 @@
-import { HKT } from "../../types/HKT"
+import { Hkt } from "../../types/Hkt"
 
-export interface PredicateHKT extends HKT {
+export interface PredicateHkt extends Hkt {
   readonly type: Predicate<this["_A"]>
 }
 

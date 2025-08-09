@@ -1,7 +1,7 @@
 import * as sync from "../Sync"
-import { HKT } from "../../types/HKT"
+import { Hkt } from "../../types/Hkt"
 
-export interface AsyncHKT extends HKT {
+export interface AsyncHkt extends Hkt {
   readonly type: Async<this["_A"]>
 }
 

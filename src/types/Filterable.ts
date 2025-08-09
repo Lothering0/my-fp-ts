@@ -3,11 +3,11 @@ import { Option, some, none } from "../modules/Option"
 import { Result, fail, succeed } from "../modules/Result"
 import { Compactable } from "./Compactable"
 import { Functor } from "./Functor"
-import { HKT, Kind } from "./HKT"
+import { Hkt, Kind } from "./Hkt"
 import { Predicate } from "../modules/Predicate"
 import { flow } from "../utils/flow"
 
-export interface Filterable<F extends HKT> extends Functor<F>, Compactable<F> {
+export interface Filterable<F extends Hkt> extends Functor<F>, Compactable<F> {
   /** Partitions and maps elements to new values */
   readonly partitionMap: <A, B, C>(
     p: (a: A) => Result<B, C>,
@@ -31,7 +31,7 @@ export interface Filterable<F extends HKT> extends Functor<F>, Compactable<F> {
   }
 }
 
-export const createFilterable = <F extends HKT>(
+export const createFilterable = <F extends Hkt>(
   Filterable: Functor<F> & Compactable<F>,
 ): Filterable<F> => {
   const { compact, separate, map } = Filterable

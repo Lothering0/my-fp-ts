@@ -1,10 +1,10 @@
 import * as option from "../Option"
 import { createApplicative } from "../../types/Applicative"
-import { AsyncOptionHKT, some, toPromise, AsyncOption } from "./async-option"
+import { AsyncOptionHkt, some, toPromise, AsyncOption } from "./async-option"
 import { pipe } from "../../utils/flow"
 import { Functor } from "./functor"
 
-export const Applicative = createApplicative<AsyncOptionHKT> ({
+export const Applicative = createApplicative<AsyncOptionHkt> ({
   ...Functor,
   of: some,
   ap: fma => self => () =>

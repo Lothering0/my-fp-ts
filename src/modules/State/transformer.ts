@@ -1,25 +1,25 @@
 import * as state from "../State"
-import { HKT, Kind } from "../../types/HKT"
+import { Hkt, Kind } from "../../types/Hkt"
 import { Functor } from "../../types/Functor"
 import { createApplicative } from "../../types/Applicative"
 import { createMonad, Monad } from "../../types/Monad"
 import { pipe } from "../../utils/flow"
 
-export interface StateT<F extends HKT> extends HKT {
+export interface StateT<F extends Hkt> extends Hkt {
   readonly type: (
     s: this["_S"],
   ) => Kind<F, this["_S"], this["_E"], readonly [this["_A"], this["_S"]]>
 }
 
-export const transform = <F extends HKT>(F: Monad<F>) => {
-  type THKT = StateT<F>
+export const transform = <F extends Hkt>(F: Monad<F>) => {
+  type THkt = StateT<F>
 
   const fromState: {
-    <S, E, A>(self: state.State<S, A>): Kind<THKT, S, E, A>
+    <S, E, A>(self: state.State<S, A>): Kind<THkt, S, E, A>
   } = self => s => F.of (state.run (s) (self))
 
   const fromF: {
-    <S, E, A>(self: Kind<F, S, E, A>): Kind<THKT, S, E, A>
+    <S, E, A>(self: Kind<F, S, E, A>): Kind<THkt, S, E, A>
   } = self => s =>
     pipe (
       self,
@@ -27,18 +27,18 @@ export const transform = <F extends HKT>(F: Monad<F>) => {
     )
 
   const run: {
-    <S>(s: S): <E, A>(ma: Kind<THKT, S, E, A>) => Kind<F, S, E, readonly [A, S]>
+    <S>(s: S): <E, A>(ma: Kind<THkt, S, E, A>) => Kind<F, S, E, readonly [A, S]>
   } = s => ma => ma (s)
 
   const evaluate: {
-    <S>(s: S): <E, A>(ma: Kind<THKT, S, E, A>) => Kind<F, S, E, A>
+    <S>(s: S): <E, A>(ma: Kind<THkt, S, E, A>) => Kind<F, S, E, A>
   } = s => ma => F.map (([a]) => a) (run (s) (ma))
 
   const execute: {
-    <S>(s: S): <E, A>(ma: Kind<THKT, S, E, A>) => Kind<F, S, E, S>
+    <S>(s: S): <E, A>(ma: Kind<THkt, S, E, A>) => Kind<F, S, E, S>
   } = s => ma => F.map (([, s]) => s) (run (s) (ma))
 
-  const Functor: Functor<THKT> = {
+  const Functor: Functor<THkt> = {
     map: f => self => s =>
       pipe (
         self (s),
@@ -46,7 +46,7 @@ export const transform = <F extends HKT>(F: Monad<F>) => {
       ),
   }
 
-  const Applicative = createApplicative<THKT> ({
+  const Applicative = createApplicative<THkt> ({
     ...Functor,
     of: a => s => F.of ([a, s]),
     ap: fa => self => s =>
@@ -58,7 +58,7 @@ export const transform = <F extends HKT>(F: Monad<F>) => {
       ),
   })
 
-  const Monad = createMonad<THKT> ({
+  const Monad = createMonad<THkt> ({
     ...Applicative,
     flat: self => s =>
       pipe (

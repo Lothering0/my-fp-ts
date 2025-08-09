@@ -1,6 +1,6 @@
-import { HKT } from "../../types/HKT"
+import { Hkt } from "../../types/Hkt"
 
-export interface SyncHKT extends HKT {
+export interface SyncHkt extends Hkt {
   readonly type: Sync<this["_A"]>
 }
 

@@ -6,9 +6,9 @@ import { createMonad } from "../../types/Monad"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
 import { Applicative } from "./applicative"
 import { pipe } from "../../utils/flow"
-import { SyncOptionHKT, execute, SyncOption } from "./sync-option"
+import { SyncOptionHkt, execute, SyncOption } from "./sync-option"
 
-export const Monad = createMonad<SyncOptionHKT> ({
+export const Monad = createMonad<SyncOptionHkt> ({
   ...Applicative,
   flat: self => () =>
     pipe (self, execute, ma =>

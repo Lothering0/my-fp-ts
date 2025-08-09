@@ -1,66 +1,66 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as result from "../Result"
 import { identity } from "../Identity"
-import { HKT, Kind } from "../../types/HKT"
+import { Hkt, Kind } from "../../types/Hkt"
 import { Functor } from "../../types/Functor"
 import { createBifunctor } from "../../types/Bifunctor"
 import { createApplicative } from "../../types/Applicative"
 import { createMonad, Monad } from "../../types/Monad"
 import { flow, pipe } from "../../utils/flow"
 
-export interface ResultT<F extends HKT> extends HKT {
+export interface ResultT<F extends Hkt> extends Hkt {
   readonly type: Kind<F, any, this["_S"], result.Result<this["_E"], this["_A"]>>
 }
 
-export const transform = <F extends HKT>(M: Monad<F>) => {
-  type THKT = ResultT<F>
+export const transform = <F extends Hkt>(M: Monad<F>) => {
+  type THkt = ResultT<F>
 
   const succeed: {
-    <A, S, E = never>(a: A): Kind<THKT, S, E, A>
+    <A, S, E = never>(a: A): Kind<THkt, S, E, A>
   } = flow (result.succeed, M.of)
 
   const succeedF: {
-    <A, S, E = never>(fe: Kind<F, never, S, A>): Kind<THKT, S, E, A>
+    <A, S, E = never>(fe: Kind<F, never, S, A>): Kind<THkt, S, E, A>
   } = M.map (result.succeed)
 
   const fail: {
-    <S, E, A = never>(e: E): Kind<THKT, S, E, A>
+    <S, E, A = never>(e: E): Kind<THkt, S, E, A>
   } = flow (result.fail, M.of)
 
   const failF: {
-    <S, E, A = never>(fe: Kind<F, never, S, E>): Kind<THKT, S, E, A>
+    <S, E, A = never>(fe: Kind<F, never, S, E>): Kind<THkt, S, E, A>
   } = M.map (result.fail)
 
   const match: {
     <S, R, E, A, B, C = B>(
       onFailure: (e: E) => B,
       onSuccess: (a: A) => C,
-    ): (self: Kind<THKT, S, E, A>) => Kind<F, R, S, B | C>
+    ): (self: Kind<THkt, S, E, A>) => Kind<F, R, S, B | C>
   } = flow (result.match, M.map)
 
   const swap: {
-    <S, E, A>(self: Kind<THKT, S, E, A>): Kind<THKT, S, A, E>
+    <S, E, A>(self: Kind<THkt, S, E, A>): Kind<THkt, S, A, E>
   } = M.map (result.swap)
 
   const toUnion: {
-    <S, R, E, A>(self: Kind<THKT, S, E, A>): Kind<F, R, S, E | A>
+    <S, R, E, A>(self: Kind<THkt, S, E, A>): Kind<F, R, S, E | A>
   } = M.map (result.toUnion)
 
-  const Functor: Functor<THKT> = {
+  const Functor: Functor<THkt> = {
     map: flow (result.map, M.map),
   }
 
-  const Bifunctor = createBifunctor<THKT> ({
+  const Bifunctor = createBifunctor<THkt> ({
     ...Functor,
     mapLeft: ed => flow (M.map (result.mapLeft (ed))),
   })
 
-  const Applicative = createApplicative<THKT> ({
+  const Applicative = createApplicative<THkt> ({
     ...Functor,
     of: succeed,
     ap:
-      <S, E1, A>(fma: Kind<THKT, S, E1, A>) =>
-      <E2, B>(self: Kind<THKT, S, E2, (a: A) => B>) =>
+      <S, E1, A>(fma: Kind<THkt, S, E1, A>) =>
+      <E2, B>(self: Kind<THkt, S, E2, (a: A) => B>) =>
         pipe (
           self,
           M.map (mf => (mg: result.Result<E1, A>) => result.ap (mg) (mf)),
@@ -68,11 +68,11 @@ export const transform = <F extends HKT>(M: Monad<F>) => {
         ),
   })
 
-  const Monad = createMonad<THKT> ({
+  const Monad = createMonad<THkt> ({
     ...Applicative,
     flat: <S, E1, E2, A>(
-      self: Kind<THKT, S, E1, Kind<THKT, S, E2, A>>,
-    ): Kind<THKT, any, E1 | E2, A> =>
+      self: Kind<THkt, S, E1, Kind<THkt, S, E2, A>>,
+    ): Kind<THkt, any, E1 | E2, A> =>
       pipe (self, M.flatMap (result.match (flow (result.fail, M.of), identity))),
   })
 

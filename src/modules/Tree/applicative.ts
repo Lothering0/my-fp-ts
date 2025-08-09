@@ -1,5 +1,5 @@
 import * as readonlyArray from "../ReadonlyArray"
-import { Tree, TreeHKT } from "./tree"
+import { Tree, TreeHkt } from "./tree"
 import { createApplicative } from "../../types/Applicative"
 import { Functor, map } from "./functor"
 import { make, value, forest } from "./utils"
@@ -15,7 +15,7 @@ export const flat: {
     ),
   )
 
-export const Applicative = createApplicative<TreeHKT> ({
+export const Applicative = createApplicative<TreeHkt> ({
   ...Functor,
   of: make,
   ap: fa =>

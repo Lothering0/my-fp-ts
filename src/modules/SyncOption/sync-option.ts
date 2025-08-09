@@ -2,9 +2,9 @@ import * as sync from "../Sync"
 import * as option from "../Option"
 import { tryDo } from "../../utils/exceptions"
 import { pipe } from "../../utils/flow"
-import { HKT } from "../../types/HKT"
+import { Hkt } from "../../types/Hkt"
 
-export interface SyncOptionHKT extends HKT {
+export interface SyncOptionHkt extends Hkt {
   readonly type: SyncOption<this["_A"]>
 }
 

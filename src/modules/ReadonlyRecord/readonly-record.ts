@@ -1,6 +1,6 @@
-import { HKT } from "../../types/HKT"
+import { Hkt } from "../../types/Hkt"
 
-export interface ReadonlyRecordHKT extends HKT {
+export interface ReadonlyRecordHkt extends Hkt {
   readonly type: ReadonlyRecord<
     this["_S"] extends string ? this["_S"] : never,
     this["_A"]

@@ -1,12 +1,12 @@
 import { createExtendable } from "../../types/Extendable"
-import { ReadonlyArrayHKT } from "./readonly-array"
+import { ReadonlyArrayHkt } from "./readonly-array"
 import { Functor } from "./functor"
 import { fromNonEmpty, prepend } from "./utils"
 import { matchLeft } from "./matchers"
 import { constEmptyArray } from "../../utils/constant"
 import { pipe } from "../../utils/flow"
 
-export const Extendable = createExtendable<ReadonlyArrayHKT> ({
+export const Extendable = createExtendable<ReadonlyArrayHkt> ({
   ...Functor,
   extend: fab =>
     matchLeft (constEmptyArray, (head, tail) =>

@@ -1,14 +1,14 @@
 import * as functor from "../../types/Functor"
-import { SeparatedHKT, Separated, left, right } from "./separated"
+import { SeparatedHkt, Separated, left, right } from "./separated"
 import { createBifunctor } from "../../types/Bifunctor"
 import { make } from "./utils"
 import { pipe } from "../../utils/flow"
 
-export const Functor: functor.Functor<SeparatedHKT> = {
+export const Functor: functor.Functor<SeparatedHkt> = {
   map: ab => self => make (left (self), pipe (self, right, ab)),
 }
 
-export const Bifunctor = createBifunctor<SeparatedHKT> ({
+export const Bifunctor = createBifunctor<SeparatedHkt> ({
   ...Functor,
   mapLeft: ed => self => make (pipe (self, left, ed), right (self)),
 })

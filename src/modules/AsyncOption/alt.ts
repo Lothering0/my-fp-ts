@@ -24,6 +24,6 @@ export const catchAll =
   <B>(self: asyncOption.AsyncOption<B>): asyncOption.AsyncOption<A | B> =>
     async.flatMap (option.match (that, asyncOption.some<A | B>)) (self)
 
-export const Alt: alt.Alt<asyncOption.AsyncOptionHKT> = {
+export const Alt: alt.Alt<asyncOption.AsyncOptionHkt> = {
   orElse,
 }

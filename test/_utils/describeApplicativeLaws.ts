@@ -1,11 +1,11 @@
 import * as number from "../../src/modules/Number"
-import { HKT, Kind } from "../../src/types/HKT"
+import { Hkt, Kind } from "../../src/types/Hkt"
 import { Applicative } from "../../src/types/Applicative"
 import { NonEmptyReadonlyArray } from "../../src/modules/NonEmptyReadonlyArray"
 import { identity } from "../../src/modules/Identity"
 
 export const describeApplicativeLaws: {
-  <F extends HKT>(
+  <F extends Hkt>(
     Applicative: Applicative<F>,
     fas: NonEmptyReadonlyArray<Kind<F, unknown, unknown, number>>,
     fabs: NonEmptyReadonlyArray<Kind<F, never, unknown, (x: number) => number>>,

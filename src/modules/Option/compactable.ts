@@ -1,13 +1,13 @@
 import * as result from "../Result"
 import * as separated from "../Separated"
 import * as compactable from "../../types/Compactable"
-import { Option, OptionHKT, some } from "./option"
+import { Option, OptionHkt, some } from "./option"
 import { flat, flatMap } from "./monad"
 import { fromResult } from "./utils"
 import { zero } from "./alternative"
 import { pipe } from "../../utils/flow"
 
-export const Compactable: compactable.Compactable<OptionHKT> = {
+export const Compactable: compactable.Compactable<OptionHkt> = {
   compact: flat,
   compactResults: flatMap (fromResult),
   separate: self =>

@@ -3,16 +3,16 @@ import * as applicative from "../../types/Applicative"
 import * as applicativeWithIndex from "../../types/ApplicativeWithIndex"
 import {
   NonEmptyReadonlyArray,
-  NonEmptyReadonlyArrayHKT,
+  NonEmptyReadonlyArrayHkt,
 } from "./non-empty-readonly-array"
 
 export const Applicative = {
   ...readonlyArray.Applicative,
-} as applicative.Applicative<NonEmptyReadonlyArrayHKT>
+} as applicative.Applicative<NonEmptyReadonlyArrayHkt>
 
 export const ApplicativeWithIndex = {
   ...readonlyArray.ApplicativeWithIndex,
-} as applicativeWithIndex.ApplicativeWithIndex<NonEmptyReadonlyArrayHKT, number>
+} as applicativeWithIndex.ApplicativeWithIndex<NonEmptyReadonlyArrayHkt, number>
 
 export const of: {
   <A>(a: A): NonEmptyReadonlyArray<A>

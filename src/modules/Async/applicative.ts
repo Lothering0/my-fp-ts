@@ -1,8 +1,8 @@
 import { createApplicative } from "../../types/Applicative"
 import { Functor } from "./functor"
-import { AsyncHKT, async, toPromise, Async } from "./async"
+import { AsyncHkt, async, toPromise, Async } from "./async"
 
-export const Applicative = createApplicative<AsyncHKT> ({
+export const Applicative = createApplicative<AsyncHkt> ({
   ...Functor,
   of: async,
   ap: fa => self => () =>

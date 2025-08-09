@@ -3,16 +3,16 @@ import * as functor from "../../types/Functor"
 import * as functorWithIndex from "../../types/FunctorWithIndex"
 import {
   NonEmptyReadonlyArray,
-  NonEmptyReadonlyArrayHKT,
+  NonEmptyReadonlyArrayHkt,
 } from "./non-empty-readonly-array"
 
 export const Functor = {
   ...readonlyArray.Functor,
-} as functor.Functor<NonEmptyReadonlyArrayHKT>
+} as functor.Functor<NonEmptyReadonlyArrayHkt>
 
 export const FunctorWithIndex = {
   ...readonlyArray.FunctorWithIndex,
-} as functorWithIndex.FunctorWithIndex<NonEmptyReadonlyArrayHKT, number>
+} as functorWithIndex.FunctorWithIndex<NonEmptyReadonlyArrayHkt, number>
 
 export const map: {
   <A, B>(

@@ -1,6 +1,6 @@
 import * as alt from "../../types/Alt"
 import { identity } from "../Identity"
-import { Result, ResultHKT, succeed } from "./result"
+import { Result, ResultHkt, succeed } from "./result"
 import { match } from "./utils"
 import { constant } from "../../utils/constant"
 
@@ -20,6 +20,6 @@ export const catchAll: {
   ): <A>(self: Result<E1, A>) => Result<E2, A | B>
 } = onFailure => match (onFailure, succeed)
 
-export const Alt: alt.Alt<ResultHKT> = {
+export const Alt: alt.Alt<ResultHkt> = {
   orElse,
 }

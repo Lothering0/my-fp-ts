@@ -1,13 +1,13 @@
 import * as functor from "../../types/Functor"
 import * as functorWithIndex from "../../types/FunctorWithIndex"
-import { ReadonlyArrayHKT } from "./readonly-array"
+import { ReadonlyArrayHkt } from "./readonly-array"
 
-export const Functor: functor.Functor<ReadonlyArrayHKT> = {
+export const Functor: functor.Functor<ReadonlyArrayHkt> = {
   map: ab => self => self.map (a => ab (a)),
 }
 
 export const FunctorWithIndex: functorWithIndex.FunctorWithIndex<
-  ReadonlyArrayHKT,
+  ReadonlyArrayHkt,
   number
 > = {
   ...Functor,

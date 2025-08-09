@@ -1,10 +1,10 @@
 import * as result from "../Result"
 import * as sync from "../Sync"
-import { HKT } from "../../types/HKT"
+import { Hkt } from "../../types/Hkt"
 import { pipe } from "../../utils/flow"
 import { tryDo } from "../../utils/exceptions"
 
-export interface SyncResultHKT extends HKT {
+export interface SyncResultHkt extends Hkt {
   readonly type: SyncResult<this["_E"], this["_A"]>
 }
 

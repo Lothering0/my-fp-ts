@@ -2,12 +2,12 @@ import * as async from "../Async"
 import * as asyncResult from "../AsyncResult"
 import * as result from "../Result"
 import * as option from "../Option"
-import { HKT } from "../../types/HKT"
+import { Hkt } from "../../types/Hkt"
 import { identity } from "../Identity"
 import { constant } from "../../utils/constant"
 import { flow } from "../../utils/flow"
 
-export interface AsyncOptionHKT extends HKT {
+export interface AsyncOptionHkt extends Hkt {
   readonly type: AsyncOption<this["_A"]>
 }
 

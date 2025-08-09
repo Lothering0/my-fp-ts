@@ -1,10 +1,10 @@
 import * as readonlyArray from "../ReadonlyArray"
 import { createExtendable } from "../../types/Extendable"
-import { Tree, TreeHKT } from "./tree"
+import { Tree, TreeHkt } from "./tree"
 import { Functor } from "./functor"
 import { forest, make } from "./utils"
 
-export const Extendable = createExtendable<TreeHKT> ({
+export const Extendable = createExtendable<TreeHkt> ({
   ...Functor,
   extend: fab => self =>
     make (fab (self), readonlyArray.map (extend (fab)) (forest (self))),

@@ -1,12 +1,12 @@
 import { Separated } from "../modules/Separated"
 import { Option, some, none } from "../modules/Option"
 import { Result, fail, succeed } from "../modules/Result"
-import { HKT, Kind } from "./HKT"
+import { Hkt, Kind } from "./Hkt"
 import { FunctorWithIndex } from "./FunctorWithIndex"
 import { Filterable } from "./Filterable"
 import { flow } from "../utils/flow"
 
-export interface FilterableWithIndex<F extends HKT, I>
+export interface FilterableWithIndex<F extends Hkt, I>
   extends FunctorWithIndex<F, I>,
     Filterable<F> {
   /** Partitions and maps elements to new values */
@@ -32,7 +32,7 @@ export interface FilterableWithIndex<F extends HKT, I>
   ) => <S, E>(self: Kind<F, S, E, A>) => Kind<F, S, E, A>
 }
 
-export const createFilterableWithIndex = <F extends HKT, I>(
+export const createFilterableWithIndex = <F extends Hkt, I>(
   Filterable: FunctorWithIndex<F, I> & Filterable<F>,
 ): FilterableWithIndex<F, I> => {
   const { compact, separate, mapWithIndex } = Filterable

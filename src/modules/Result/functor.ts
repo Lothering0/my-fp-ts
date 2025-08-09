@@ -1,14 +1,14 @@
 import * as functor from "../../types/Functor"
-import { Result, ResultHKT, fail, succeed } from "./result"
+import { Result, ResultHkt, fail, succeed } from "./result"
 import { createBifunctor } from "../../types/Bifunctor"
 import { match } from "./utils"
 import { flow } from "../../utils/flow"
 
-export const Functor: functor.Functor<ResultHKT> = {
+export const Functor: functor.Functor<ResultHkt> = {
   map: ab => match (fail, flow (ab, succeed)),
 }
 
-export const Bifunctor = createBifunctor<ResultHKT> ({
+export const Bifunctor = createBifunctor<ResultHkt> ({
   ...Functor,
   mapLeft: ed => match (flow (ed, fail), succeed),
 })

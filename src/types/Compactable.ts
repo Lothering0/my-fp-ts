@@ -1,10 +1,10 @@
 import { Separated } from "../modules/Separated"
 import { Result } from "../modules/Result"
 import { Option } from "../modules/Option"
-import { HKT, Kind } from "./HKT"
+import { Hkt, Kind } from "./Hkt"
 import { TypeClass } from "./TypeClass"
 
-export interface Compactable<F extends HKT> extends TypeClass<F> {
+export interface Compactable<F extends Hkt> extends TypeClass<F> {
   readonly compact: <S, E, A>(
     self: Kind<F, S, E, Option<A>>,
   ) => Kind<F, S, E, A>

@@ -2,7 +2,7 @@ import * as alt from "../../types/Alt"
 import * as async from "../Async"
 import * as result from "../Result"
 import { identity } from "../Identity"
-import { AsyncResult, AsyncResultHKT, succeed } from "./async-result"
+import { AsyncResult, AsyncResultHkt, succeed } from "./async-result"
 import { match } from "./utils"
 import { constant } from "../../utils/constant"
 
@@ -24,6 +24,6 @@ export const catchAll =
   (self: AsyncResult<E1, A>): AsyncResult<E2, A | B> =>
     async.flatMap (result.match (onFailure, succeed<E2, A | B>)) (self)
 
-export const Alt: alt.Alt<AsyncResultHKT> = {
+export const Alt: alt.Alt<AsyncResultHkt> = {
   orElse,
 }

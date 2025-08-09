@@ -2,10 +2,10 @@ import { Sync } from "../Sync"
 import { flow } from "../../utils/flow"
 import { createMonad } from "../../types/Monad"
 import { Applicative } from "./applicative"
-import { State, StateHKT } from "./state"
-import { DoObject, DoObjectKey } from "src/types/DoObject"
+import { State, StateHkt } from "./state"
+import { DoObject, DoObjectKey } from "../../types/DoObject"
 
-export const Monad = createMonad<StateHKT> ({
+export const Monad = createMonad<StateHkt> ({
   ...Applicative,
   flat: self => flow (self, ([ma, s1]) => ma (s1)),
 })

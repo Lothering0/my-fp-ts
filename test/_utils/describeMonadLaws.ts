@@ -1,10 +1,10 @@
-import { HKT, Kind } from "../../src/types/HKT"
+import { Hkt, Kind } from "../../src/types/Hkt"
 import { Monad } from "../../src/types/Monad"
 import { NonEmptyReadonlyArray } from "../../src/modules/NonEmptyReadonlyArray"
 import { pipe, flow } from "../../src/utils/flow"
 
 export const describeMonadLaws: {
-  <F extends HKT>(
+  <F extends Hkt>(
     Monad: Monad<F>,
     fas: NonEmptyReadonlyArray<Kind<F, unknown, unknown, number>>,
     afbs: NonEmptyReadonlyArray<

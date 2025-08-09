@@ -1,11 +1,11 @@
 import { createApplicative } from "../../types/Applicative"
-import { OptionHKT, Option, some } from "./option"
+import { OptionHkt, Option, some } from "./option"
 import { pipe } from "../../utils/flow"
 import { Functor } from "./functor"
 import { match } from "./utils"
 import { zero } from "./alternative"
 
-export const Applicative = createApplicative<OptionHKT> ({
+export const Applicative = createApplicative<OptionHkt> ({
   ...Functor,
   of: some,
   ap: fa => self =>

@@ -2,11 +2,11 @@ import * as option from "../Option"
 import * as result from "../Result"
 import * as separated from "../Separated"
 import * as compactable from "../../types/Compactable"
-import { SyncOption, SyncOptionHKT, execute, some, none } from "./sync-option"
+import { SyncOption, SyncOptionHkt, execute, some, none } from "./sync-option"
 import { flow, pipe } from "../../utils/flow"
 import { zero } from "./alternative"
 
-export const Compactable: compactable.Compactable<SyncOptionHKT> = {
+export const Compactable: compactable.Compactable<SyncOptionHkt> = {
   compact: self => () => pipe (self, execute, option.compact),
   compactResults: self => () => pipe (self, execute, option.compactResults),
   separate: flow (

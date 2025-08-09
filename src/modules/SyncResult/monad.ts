@@ -2,11 +2,11 @@ import * as result from "../Result"
 import { Sync } from "../Sync"
 import { createMonad } from "../../types/Monad"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
-import { SyncResultHKT, execute, SyncResult } from "./sync-result"
+import { SyncResultHkt, execute, SyncResult } from "./sync-result"
 import { Applicative } from "./applicative"
 import { pipe } from "../../utils/flow"
 
-export const Monad = createMonad<SyncResultHKT> ({
+export const Monad = createMonad<SyncResultHkt> ({
   ...Applicative,
   flat: self => () =>
     pipe (self, execute, ma =>

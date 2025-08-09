@@ -2,12 +2,12 @@ import * as option from "../Option"
 import * as result from "../Result"
 import * as separated from "../Separated"
 import * as compactable from "../../types/Compactable"
-import { AsyncOption, AsyncOptionHKT, toPromise, some } from "./async-option"
+import { AsyncOption, AsyncOptionHkt, toPromise, some } from "./async-option"
 import { zero } from "./alternative"
 import { flatMap } from "./monad"
 import { flow, pipe } from "../../utils/flow"
 
-export const Compactable: compactable.Compactable<AsyncOptionHKT> = {
+export const Compactable: compactable.Compactable<AsyncOptionHkt> = {
   compact: self => () => toPromise (self).then (option.compact),
   compactResults: self => () => toPromise (self).then (option.compactResults),
   separate: flow (

@@ -1,8 +1,8 @@
 import { createExtendable } from "../../types/Extendable"
-import { Option, OptionHKT } from "./option"
+import { Option, OptionHkt } from "./option"
 import { Functor, map } from "./functor"
 
-export const Extendable = createExtendable<OptionHKT> ({
+export const Extendable = createExtendable<OptionHkt> ({
   ...Functor,
   extend: fab => self => map (() => fab (self)) (self),
 })

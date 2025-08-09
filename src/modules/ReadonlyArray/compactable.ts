@@ -2,7 +2,7 @@ import * as option from "../Option"
 import * as result from "../Result"
 import * as separated from "../Separated"
 import * as compactable from "../../types/Compactable"
-import { ReadonlyArrayHKT } from "./readonly-array"
+import { ReadonlyArrayHkt } from "./readonly-array"
 import { of } from "./applicative"
 import { flatMap } from "./monad"
 import { reduce } from "./foldable"
@@ -14,7 +14,7 @@ const getInitialSeparated: {
   <E, A>(): separated.Separated<ReadonlyArray<E>, ReadonlyArray<A>>
 } = () => separated.make ([], [])
 
-export const Compactable: compactable.Compactable<ReadonlyArrayHKT> = {
+export const Compactable: compactable.Compactable<ReadonlyArrayHkt> = {
   compact: flatMap (option.match (constEmptyArray, of)),
   compactResults: successes,
   separate: reduce (getInitialSeparated (), (b, ma) =>

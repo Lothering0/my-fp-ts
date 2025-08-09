@@ -1,9 +1,9 @@
 import * as option from "../Option"
 import * as functor from "../../types/Functor"
-import { SyncOptionHKT, execute, SyncOption } from "./sync-option"
+import { SyncOptionHkt, execute, SyncOption } from "./sync-option"
 import { pipe } from "../../utils/flow"
 
-export const Functor: functor.Functor<SyncOptionHKT> = {
+export const Functor: functor.Functor<SyncOptionHkt> = {
   map: ab => self => () => pipe (self, execute, option.map (ab)),
 }
 

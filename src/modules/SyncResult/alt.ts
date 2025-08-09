@@ -2,7 +2,7 @@ import * as alt from "../../types/Alt"
 import * as result from "../Result"
 import { Sync } from "../Sync"
 import { identity } from "../Identity"
-import { SyncResult, SyncResultHKT, execute, succeed } from "./sync-result"
+import { SyncResult, SyncResultHkt, execute, succeed } from "./sync-result"
 import { match } from "./utils"
 import { constant } from "../../utils/constant"
 import { flow } from "../../utils/flow"
@@ -23,6 +23,6 @@ export const catchAll: {
   ): <A>(self: SyncResult<E1, A>) => SyncResult<E2, A | B>
 } = onFailure => flow (execute, result.match (onFailure, succeed))
 
-export const Alt: alt.Alt<SyncResultHKT> = {
+export const Alt: alt.Alt<SyncResultHkt> = {
   orElse,
 }

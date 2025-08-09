@@ -8,7 +8,7 @@ import { createMonad } from "../../types/Monad"
 import { map } from "./functor"
 import { Applicative } from "./applicative"
 import {
-  AsyncResultHKT,
+  AsyncResultHkt,
   AsyncResult,
   toPromise,
   fromAsync,
@@ -18,7 +18,7 @@ import { pipe } from "../../utils/flow"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
 import { match } from "./utils"
 
-export const Monad = createMonad<AsyncResultHKT> ({
+export const Monad = createMonad<AsyncResultHkt> ({
   ...Applicative,
   flat: self => () =>
     pipe (self, match (fail, identity), async.toPromise, promise =>

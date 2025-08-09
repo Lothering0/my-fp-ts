@@ -1,7 +1,7 @@
-import { HKT, Kind } from "./HKT"
+import { Hkt, Kind } from "./Hkt"
 import { TypeClass } from "./TypeClass"
 
-export interface Foldable<F extends HKT> extends TypeClass<F> {
+export interface Foldable<F extends Hkt> extends TypeClass<F> {
   readonly reduce: <A, B>(
     b: B,
     bab: (b: B, a: A) => B,

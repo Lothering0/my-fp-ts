@@ -1,10 +1,10 @@
 import { Sync } from "../Sync"
-import { ReadonlyArrayHKT } from "./readonly-array"
+import { ReadonlyArrayHkt } from "./readonly-array"
 import { createMonad } from "../../types/Monad"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
 import { Applicative } from "./applicative"
 
-export const Monad = createMonad<ReadonlyArrayHKT> ({
+export const Monad = createMonad<ReadonlyArrayHkt> ({
   ...Applicative,
   flat: self => self.flat (),
 })
