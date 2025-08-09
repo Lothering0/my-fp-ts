@@ -12,7 +12,7 @@ describe ("Matching", () => {
       expect (result_).toEqual<result.Result<number, string>> (result.fail (1))
     })
 
-    it ("should return `success` of first found matching", () => {
+    it ("should return `success` of first matching found", () => {
       const result_ = pipe (
         1,
         matching.match,
@@ -46,7 +46,7 @@ describe ("Matching", () => {
       expect<option.Option<string>> (result_).toEqual (option.none)
     })
 
-    it ("should return `some` of first found matching", () => {
+    it ("should return `some` of first matching found", () => {
       const result_ = pipe (
         1,
         matching.match,
@@ -70,7 +70,7 @@ describe ("Matching", () => {
       expect<string> (result_).toEqual ("1")
     })
 
-    it ("should return value of first found matching", () => {
+    it ("should return value of first matching found", () => {
       const result_ = pipe (
         1,
         matching.match,
@@ -158,7 +158,7 @@ describe ("Matching", () => {
   })
 
   describe ("on", () => {
-    it ("should return value of first found matching by predicate function", () => {
+    it ("should return value of first matching found by predicate function", () => {
       const result_ = pipe (
         5,
         matching.match,
@@ -171,7 +171,7 @@ describe ("Matching", () => {
   })
 
   describe ("matchEq", () => {
-    it ("should return value of first found matching by provided `Eq`", () => {
+    it ("should return value of first matching found by provided `Eq`", () => {
       const result_ = pipe (
         [1, 2, 3],
         matching.matchEq (readonlyArray.getEq (number.Eq)),
@@ -187,7 +187,7 @@ describe ("Matching", () => {
   })
 
   describe ("whenEquals", () => {
-    it ("should return value of first found matching by provided `Eq`", () => {
+    it ("should return value of first matching found by provided `Eq`", () => {
       const Eq = readonlyArray.getEq (number.Eq)
       const result_ = pipe (
         [1, 2, 3],
@@ -217,7 +217,7 @@ describe ("Matching", () => {
   })
 
   describe ("whenInstance", () => {
-    it ("should return value of first found matching by instanceof checking", () => {
+    it ("should return value of first matching found by instanceof checking", () => {
       const result_ = pipe (
         new Error ("a"),
         matching.match<Error | ReadonlyArray<number>>,
