@@ -5,10 +5,10 @@ import { constant } from "../../utils/constant"
 import { flow } from "../../utils/flow"
 
 export const getShow: {
-  <A>(S: Show<A>): Show<Option<A>>
-} = S => ({
+  <A>(Show: Show<A>): Show<Option<A>>
+} = Show => ({
   show: match (
     constant ("none"),
-    flow (S.show, x => `some (${x})`),
+    flow (Show.show, x => `some (${x})`),
   ),
 })

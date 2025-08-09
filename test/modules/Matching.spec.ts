@@ -82,8 +82,83 @@ describe ("Matching", () => {
     })
   })
 
+  describe ("getResults", () => {
+    it ("should return results of all checks", () => {
+      const result_ = pipe (
+        2,
+        matching.match,
+        matching.when (1, () => "a"),
+        matching.when (2, () => "b"),
+        matching.when (3, () => "c"),
+        matching.getResults,
+      )
+      expect (result_).toEqual ([
+        result.fail (2),
+        result.succeed ("b"),
+        result.fail (2),
+      ])
+    })
+  })
+
+  describe ("getFailures", () => {
+    it ("should return failures of all checks", () => {
+      const result_ = pipe (
+        2,
+        matching.match,
+        matching.when (1, () => "a"),
+        matching.when (2, () => "b"),
+        matching.when (3, () => "c"),
+        matching.getFailures,
+      )
+      expect<ReadonlyArray<number>> (result_).toEqual ([2, 2])
+    })
+  })
+
+  describe ("getSuccesses", () => {
+    it ("should return successes of all checks", () => {
+      const result_ = pipe (
+        2,
+        matching.match,
+        matching.when (1, () => "a"),
+        matching.when (2, () => "b"),
+        matching.when (2, () => "c"),
+        matching.when (3, () => "d"),
+        matching.getSuccesses,
+      )
+      expect<ReadonlyArray<string>> (result_).toEqual (["b", "c"])
+    })
+  })
+
+  describe ("getOptions", () => {
+    it ("should return options of all checks", () => {
+      const result_ = pipe (
+        2,
+        matching.match,
+        matching.when (1, () => "a"),
+        matching.when (2, () => "b"),
+        matching.when (3, () => "c"),
+        matching.getOptions,
+      )
+      expect (result_).toEqual ([option.none, option.some ("b"), option.none])
+    })
+  })
+
+  describe ("getOrElseAll", () => {
+    it ("should return values of all checks", () => {
+      const result_ = pipe (
+        2,
+        matching.match,
+        matching.when (1, () => "a"),
+        matching.when (2, () => "b"),
+        matching.when (3, () => "c"),
+        matching.getOrElseAll (() => "e"),
+      )
+      expect<ReadonlyArray<string>> (result_).toEqual (["e", "b", "e"])
+    })
+  })
+
   describe ("on", () => {
-    it ("should return value of first found instance by predicate function", () => {
+    it ("should return value of first found matching by predicate function", () => {
       const result_ = pipe (
         5,
         matching.match,
@@ -96,7 +171,7 @@ describe ("Matching", () => {
   })
 
   describe ("matchEq", () => {
-    it ("should return value of first found instance matching by provided `Eq`", () => {
+    it ("should return value of first found matching by provided `Eq`", () => {
       const result_ = pipe (
         [1, 2, 3],
         matching.matchEq (readonlyArray.getEq (number.Eq)),
@@ -112,7 +187,7 @@ describe ("Matching", () => {
   })
 
   describe ("whenEquals", () => {
-    it ("should return value of first found instance matching by provided `Eq`", () => {
+    it ("should return value of first found matching by provided `Eq`", () => {
       const Eq = readonlyArray.getEq (number.Eq)
       const result_ = pipe (
         [1, 2, 3],
@@ -138,6 +213,20 @@ describe ("Matching", () => {
         matching.getResult,
       )
       expect (result_).toEqual (result.succeed ("[1, 2, 3]"))
+    })
+  })
+
+  describe ("whenInstance", () => {
+    it ("should return value of first found matching by instanceof checking", () => {
+      const result_ = pipe (
+        new Error ("a"),
+        matching.match<Error | ReadonlyArray<number>>,
+        matching.whenInstance (Array, () => 1),
+        matching.whenInstance (Error, () => 2),
+        matching.whenInstance (Error, () => 3),
+        matching.getResult,
+      )
+      expect (result_).toEqual (result.succeed (2))
     })
   })
 })

@@ -4,7 +4,7 @@ import { flow } from "../../utils/flow"
 import { map } from "./functor"
 
 export const getShow: {
-  <A>(S: Show<A>): Show<ReadonlyArray<A>>
-} = S => ({
-  show: flow (map (S.show), join (", "), x => `[${x}]`),
+  <A>(Show: Show<A>): Show<ReadonlyArray<A>>
+} = Show => ({
+  show: flow (map (Show.show), join (", "), x => `[${x}]`),
 })

@@ -5,14 +5,14 @@ import { constFalse } from "../../utils/constant"
 import { pipe } from "../../utils/flow"
 
 export const getEq: {
-  <E, A>(EE: Eq<E>, EA: Eq<A>): Eq<Result<E, A>>
-} = (EE, EA) => ({
+  <E, A>(EqE: Eq<E>, EqA: Eq<A>): Eq<Result<E, A>>
+} = (EqE, EqA) => ({
   equals: mx => my =>
     pipe (
       mx,
       match (
-        x => match (EE.equals (x), constFalse) (my),
-        x => match (constFalse, EA.equals (x)) (my),
+        x => match (EqE.equals (x), constFalse) (my),
+        x => match (constFalse, EqA.equals (x)) (my),
       ),
     ),
 })
