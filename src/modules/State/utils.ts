@@ -5,29 +5,29 @@ import { pipe } from "../../utils/flow"
 import { State } from "./state"
 
 export const gets: {
-  <S, A>(f: (s: S) => A): State<S, A>
-} = f => s => [f (s), s]
+  <S, A>(sa: (s: S) => A): State<S, A>
+} = sa => s => [sa (s), s]
 
 export const get: {
   <S>(): State<S, S>
 } = () => gets (identity)
 
 export const modify: {
-  <S>(f: (s: S) => S): State<S, void>
-} = f => s => [_, f (s)]
+  <S>(ss: (s: S) => S): State<S, void>
+} = ss => s => [_, ss (s)]
 
 export const put: {
   <S>(s: S): State<S, void>
 } = s => pipe (s, constant, modify)
 
 export const run: {
-  <S>(s: S): <A>(ma: State<S, A>) => [A, S]
-} = s => ma => ma (s)
+  <S>(s: S): <A>(self: State<S, A>) => [A, S]
+} = s => self => self (s)
 
 export const evaluate: {
-  <S>(s: S): <A>(ma: State<S, A>) => A
-} = s => ma => run (s) (ma)[0]
+  <S>(s: S): <A>(self: State<S, A>) => A
+} = s => self => run (s) (self)[0]
 
 export const execute: {
-  <S>(s: S): <A>(ma: State<S, A>) => S
-} = s => ma => run (s) (ma)[1]
+  <S>(s: S): <A>(self: State<S, A>) => S
+} = s => self => run (s) (self)[1]
