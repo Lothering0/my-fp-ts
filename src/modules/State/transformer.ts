@@ -3,22 +3,24 @@ import { Hkt, Kind } from "../../types/Hkt"
 import { Functor } from "../../types/Functor"
 import { createApplicative } from "../../types/Applicative"
 import { createMonad, Monad } from "../../types/Monad"
-import { pipe } from "../../utils/flow"
+import { flow, pipe } from "../../utils/flow"
 
-export interface StateT<F extends Hkt> extends Hkt {
-  readonly type: (
-    s: this["_S"],
-  ) => Kind<F, this["_S"], this["_E"], readonly [this["_A"], this["_S"]]>
+export interface StateT<F extends Hkt, S, E, A> {
+  (s: S): Kind<F, S, E, readonly [A, S]>
+}
+
+export interface StateTHkt<F extends Hkt> extends Hkt {
+  readonly type: StateT<F, this["_S"], this["_E"], this["_A"]>
 }
 
 export const transform = <F extends Hkt>(F: Monad<F>) => {
-  type THkt = StateT<F>
+  type THkt = StateTHkt<F>
 
   const fromState: {
     <S, E, A>(self: state.State<S, A>): Kind<THkt, S, E, A>
   } = self => s => F.of (state.run (s) (self))
 
-  const fromF: {
+  const fromKind: {
     <S, E, A>(self: Kind<F, S, E, A>): Kind<THkt, S, E, A>
   } = self => s =>
     pipe (
@@ -39,9 +41,9 @@ export const transform = <F extends Hkt>(F: Monad<F>) => {
   } = s => ma => F.map (([, s]) => s) (run (s) (ma))
 
   const Functor: Functor<THkt> = {
-    map: f => self => s =>
-      pipe (
-        self (s),
+    map: f => self =>
+      flow (
+        self,
         F.map (([a, s]) => [f (a), s]),
       ),
   }
@@ -70,7 +72,7 @@ export const transform = <F extends Hkt>(F: Monad<F>) => {
 
   return {
     fromState,
-    fromF,
+    fromKind,
     run,
     evaluate,
     execute,

@@ -8,12 +8,19 @@ import { createApplicative } from "../../types/Applicative"
 import { createMonad, Monad } from "../../types/Monad"
 import { flow, pipe } from "../../utils/flow"
 
-export interface ResultT<F extends Hkt> extends Hkt {
-  readonly type: Kind<F, any, this["_S"], result.Result<this["_E"], this["_A"]>>
+export type ResultT<F extends Hkt, S, E, A> = Kind<
+  F,
+  any,
+  S,
+  result.Result<E, A>
+>
+
+export interface ResultTHkt<F extends Hkt> extends Hkt {
+  readonly type: ResultT<F, this["_S"], this["_E"], this["_A"]>
 }
 
 export const transform = <F extends Hkt>(M: Monad<F>) => {
-  type THkt = ResultT<F>
+  type THkt = ResultTHkt<F>
 
   const succeed: {
     <A, S, E = never>(a: A): Kind<THkt, S, E, A>

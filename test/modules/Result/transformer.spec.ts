@@ -1,5 +1,6 @@
 import * as result from "../../../src/modules/Result"
 import * as readonlyArray from "../../../src/modules/ReadonlyArray"
+import * as number from "../../../src/modules/Number"
 
 describe ("transformer", () => {
   it ("should correctly transform `ReadonlyArray` monad", () => {
@@ -23,9 +24,11 @@ describe ("transformer", () => {
       },
     ])
 
-    expect (readonlyArrayResult.map (String) (readonlyArrayResult.of (1))).toEqual<
-      ReadonlyArray<result.Result<never, string>>
-    > ([{ _tag: "Success", success: "1" }])
+    expect (
+      readonlyArrayResult.map (number.show) (readonlyArrayResult.of (1)),
+    ).toEqual<ReadonlyArray<result.Result<never, string>>> ([
+      { _tag: "Success", success: "1" },
+    ])
   })
 
   it ("should correctly compose multiple monads", () => {

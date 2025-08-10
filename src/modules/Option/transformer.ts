@@ -7,12 +7,14 @@ import { flow, pipe } from "../../utils/flow"
 import { identity } from "../Identity"
 import { LazyArg } from "../../types/utils"
 
-export interface OptionT<F extends Hkt> extends Hkt {
-  readonly type: Kind<F, this["_S"], this["_E"], option.Option<this["_A"]>>
+export type OptionT<F extends Hkt, S, E, A> = Kind<F, S, E, option.Option<A>>
+
+export interface OptionTHkt<F extends Hkt> extends Hkt {
+  readonly type: OptionT<F, this["_S"], this["_E"], this["_A"]>
 }
 
 export const transform = <F extends Hkt>(M: Monad<F>) => {
-  type THkt = OptionT<F>
+  type THkt = OptionTHkt<F>
 
   const some: {
     <S, E, A>(a: A): Kind<THkt, S, E, A>
@@ -22,7 +24,7 @@ export const transform = <F extends Hkt>(M: Monad<F>) => {
     <S, E, A = never>(): Kind<THkt, S, E, A>
   } = () => M.of (option.none)
 
-  const fromF: {
+  const fromKind: {
     <S, E, A>(ma: Kind<F, S, E, A>): Kind<THkt, S, E, A>
   } = M.map (option.some)
 
@@ -62,7 +64,7 @@ export const transform = <F extends Hkt>(M: Monad<F>) => {
   return {
     some,
     zero,
-    fromF,
+    fromKind,
     match,
     Functor,
     ...Functor,
