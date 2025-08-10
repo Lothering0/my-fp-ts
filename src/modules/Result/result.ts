@@ -17,14 +17,14 @@ export interface Success<A> {
 }
 
 export const fail: {
-  <E = never, A = never>(e: E): Result<E, A>
+  <E>(e: E): Result<E, never>
 } = value => ({
   _tag: "Failure",
   failure: value,
 })
 
 export const succeed: {
-  <E = never, A = never>(a: A): Result<E, A>
+  <A>(a: A): Result<never, A>
 } = value => ({
   _tag: "Success",
   success: value,

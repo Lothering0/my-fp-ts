@@ -23,19 +23,19 @@ export const transform = <F extends Hkt>(M: Monad<F>) => {
   type THkt = ResultTHkt<F>
 
   const succeed: {
-    <A, S, E = never>(a: A): Kind<THkt, S, E, A>
+    <A, S>(a: A): Kind<THkt, S, never, A>
   } = flow (result.succeed, M.of)
 
-  const succeedF: {
-    <A, S, E = never>(fe: Kind<F, never, S, A>): Kind<THkt, S, E, A>
+  const succeedKind: {
+    <A, S>(fe: Kind<F, never, S, A>): Kind<THkt, S, never, A>
   } = M.map (result.succeed)
 
   const fail: {
-    <S, E, A = never>(e: E): Kind<THkt, S, E, A>
+    <S, E>(e: E): Kind<THkt, S, E, never>
   } = flow (result.fail, M.of)
 
-  const failF: {
-    <S, E, A = never>(fe: Kind<F, never, S, E>): Kind<THkt, S, E, A>
+  const failKind: {
+    <S, E>(fe: Kind<F, never, S, E>): Kind<THkt, S, E, never>
   } = M.map (result.fail)
 
   const match: {
@@ -85,9 +85,9 @@ export const transform = <F extends Hkt>(M: Monad<F>) => {
 
   return {
     succeed,
-    succeedF,
+    succeedKind,
     fail,
-    failF,
+    failKind,
     match,
     swap,
     toUnion,
