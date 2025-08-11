@@ -256,3 +256,121 @@ describe ("appendAll", () => {
     expect (pipe ([1, 2], f)).toEqual ([1, 0, 2, 0])
   })
 })
+
+describe ("range", () => {
+  it ("should generate an array of numbers by given range from min to max value", () => {
+    expect (readonlyArray.range (1) (5)).toEqual ([1, 2, 3, 4, 5])
+    expect (readonlyArray.range (5) (1)).toEqual ([5, 4, 3, 2, 1])
+    expect (readonlyArray.range (0) (0)).toEqual ([0])
+  })
+})
+
+describe ("reverse", () => {
+  it ("should reverse an array", () => {
+    expect (readonlyArray.reverse ([])).toEqual ([])
+    expect (readonlyArray.reverse ([1])).toEqual ([1])
+    expect (readonlyArray.reverse ([1, 2, 3])).toEqual ([3, 2, 1])
+  })
+})
+
+describe ("join", () => {
+  it ("should concat all strings", () => {
+    expect (readonlyArray.join (",") ([])).toEqual ("")
+    expect (readonlyArray.join (",") (["a"])).toEqual ("a")
+    expect (readonlyArray.join (",") (["a", "b", "c"])).toEqual ("a,b,c")
+  })
+})
+
+describe ("comprehension", () => {
+  it ("should correctly generate an array without predicate", () => {
+    expect (
+      readonlyArray.comprehension ([[1, 2, 3, 4, 5]], number.add (1)),
+    ).toEqual ([2, 3, 4, 5, 6])
+    expect (
+      readonlyArray.comprehension (
+        [
+          [1, 2, 3, 4, 5],
+          ["a", "b", "c"],
+        ],
+        (num, str) => [num, str],
+      ),
+    ).toEqual ([
+      [1, "a"],
+      [1, "b"],
+      [1, "c"],
+      [2, "a"],
+      [2, "b"],
+      [2, "c"],
+      [3, "a"],
+      [3, "b"],
+      [3, "c"],
+      [4, "a"],
+      [4, "b"],
+      [4, "c"],
+      [5, "a"],
+      [5, "b"],
+      [5, "c"],
+    ])
+    expect (
+      readonlyArray.comprehension (
+        [[1, 2, 3, 4, 5], [], ["a", "b", "c"]],
+        (num, _, str) => [num, str],
+      ),
+    ).toEqual ([])
+    expect (
+      readonlyArray.comprehension (
+        [
+          ["a", "b"],
+          ["a", "b"],
+          ["a", "b"],
+        ],
+        (a, b, c) => `${a}${b}${c}`,
+      ),
+    ).toEqual (["aaa", "aab", "aba", "abb", "baa", "bab", "bba", "bbb"])
+  })
+
+  it ("should correctly generate an array with predicate", () => {
+    expect (
+      readonlyArray.comprehension (
+        [[1, 2, 3, 4, 5]],
+        number.add (1),
+        number.isEven,
+      ),
+    ).toEqual ([3, 5])
+    expect (
+      readonlyArray.comprehension (
+        [
+          [1, 2, 3, 4, 5],
+          ["a", "b", "c"],
+        ],
+        (num, str) => [num, str],
+        num => number.isEven (num),
+      ),
+    ).toEqual ([
+      [2, "a"],
+      [2, "b"],
+      [2, "c"],
+      [4, "a"],
+      [4, "b"],
+      [4, "c"],
+    ])
+    expect (
+      readonlyArray.comprehension (
+        [[1, 2, 3, 4, 5], [], ["a", "b", "c"]],
+        (num, _, str) => [num, str],
+        num => number.isEven (num),
+      ),
+    ).toEqual ([])
+    expect (
+      readonlyArray.comprehension (
+        [
+          ["a", "b"],
+          ["a", "b"],
+          ["a", "b"],
+        ],
+        (a, b, c) => `${a}${b}${c}`,
+        (_, b) => b !== "a",
+      ),
+    ).toEqual (["aba", "abb", "bba", "bbb"])
+  })
+})
