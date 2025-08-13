@@ -56,11 +56,3 @@ export const flatMapTo: {
     amb: (a: A) => Sync<B>,
   ): (self: Sync<A>) => Sync<DoObject<N, A, B>>
 } = Monad.flatMapTo
-
-export const tap: {
-  <A>(f: (a: A) => Sync<unknown>): (self: Sync<A>) => Sync<A>
-} = Monad.tap
-
-export const tapSync: {
-  <A>(f: (a: A) => Sync<unknown>): (self: Sync<A>) => Sync<A>
-} = Monad.tapSync

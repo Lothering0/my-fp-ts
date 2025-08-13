@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Sync } from "../modules/Sync"
 import { Applicative } from "./Applicative"
 import { DoObject, DoObjectKey } from "./DoObject"
 import { Hkt, Kind } from "./Hkt"
@@ -46,14 +45,6 @@ export interface Monad<F extends Hkt> extends Applicative<F> {
     name: Exclude<N, keyof A>,
     amb: (a: A) => Kind<F, S, E1, B>,
   ) => <E2>(self: Kind<F, S, E2, A>) => Kind<F, S, E1 | E2, DoObject<N, A, B>>
-
-  readonly tap: <S, E1, A>(
-    f: (a: A) => Kind<F, S, E1, unknown>,
-  ) => <E2>(self: Kind<F, S, E2, A>) => Kind<F, S, E1 | E2, A>
-
-  readonly tapSync: <A>(
-    f: (a: A) => Sync<unknown>,
-  ) => <S, E>(self: Kind<F, S, E, A>) => Kind<F, S, E, A>
 }
 
 export const createMonad = <F extends Hkt>(
@@ -77,34 +68,6 @@ export const createMonad = <F extends Hkt>(
     )
 
   const compose: Monad<F>["compose"] = (bmc, amb) => flow (amb, flatMap (bmc))
-
-  const tap: Monad<F>["tap"] = f => self =>
-    pipe (
-      Do,
-      apS ("a", self),
-      flatMap (({ a }) =>
-        pipe (
-          a,
-          f,
-          flatMap (() => of (a)),
-        ),
-      ),
-    )
-
-  const tapSync: Monad<F>["tapSync"] = f => self =>
-    pipe (
-      Do,
-      apS ("a", self),
-      flatMap (({ a }) =>
-        pipe (
-          a,
-          f,
-          sync => sync (), // From `Sync`
-          of,
-          flatMap (() => of (a)),
-        ),
-      ),
-    )
 
   const mapTo: Monad<F>["mapTo"] = (name, ab) =>
     flatMap (a =>
@@ -143,8 +106,6 @@ export const createMonad = <F extends Hkt>(
     Do,
     flatMap,
     compose,
-    tap,
-    tapSync,
     setTo,
     mapTo,
     flapTo,

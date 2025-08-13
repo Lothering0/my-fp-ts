@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as async from "./async"
-import { Sync } from "../Sync"
 import { createMonad } from "../../types/Monad"
 import { Applicative } from "./applicative"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
@@ -63,16 +62,6 @@ export const flatMapTo: {
     amb: (a: A) => async.Async<B>,
   ): (self: async.Async<A>) => async.Async<DoObject<N, A, B>>
 } = Monad.flatMapTo
-
-export const tap: {
-  <A>(
-    f: (a: A) => async.Async<unknown>,
-  ): (self: async.Async<A>) => async.Async<A>
-} = Monad.tap
-
-export const tapSync: {
-  <A>(f: (a: A) => Sync<unknown>): (self: async.Async<A>) => async.Async<A>
-} = Monad.tapSync
 
 export const parallel: {
   <N extends DoObjectKey, A, B>(

@@ -1,4 +1,3 @@
-import { Sync } from "../Sync"
 import { Applicative } from "./applicative"
 import { fail, Result, ResultHkt } from "./result"
 import { match } from "./utils"
@@ -64,13 +63,3 @@ export const flatMapTo: {
     amb: (a: A) => Result<E1, B>,
   ): <E2>(self: Result<E2, A>) => Result<E1 | E2, DoObject<N, A, B>>
 } = Monad.flatMapTo
-
-export const tap: {
-  <E1, A>(
-    f: (a: A) => Result<E1, unknown>,
-  ): <E2>(self: Result<E2, A>) => Result<E1 | E2, A>
-} = Monad.tap
-
-export const tapSync: {
-  <A>(f: (a: A) => Sync<unknown>): <E>(self: Result<E, A>) => Result<E, A>
-} = Monad.tapSync

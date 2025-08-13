@@ -1,4 +1,3 @@
-import { Sync } from "../Sync"
 import { flow } from "../../utils/flow"
 import { createMonad } from "../../types/Monad"
 import { Applicative } from "./applicative"
@@ -61,11 +60,3 @@ export const flatMapTo: {
     amb: (a: A) => State<S, B>,
   ): (self: State<S, A>) => State<S, DoObject<N, A, B>>
 } = Monad.flatMapTo
-
-export const tap: {
-  <S, A>(f: (a: A) => State<S, unknown>): (self: State<S, A>) => State<S, A>
-} = Monad.tap
-
-export const tapSync: {
-  <A>(f: (a: A) => Sync<unknown>): <S>(self: State<S, A>) => State<S, A>
-} = Monad.tapSync

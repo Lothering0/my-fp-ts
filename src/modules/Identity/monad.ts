@@ -2,7 +2,6 @@ import { createMonad } from "../../types/Monad"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
 import { Applicative } from "./applicative"
 import { Identity, IdentityHkt, identity } from "./identity"
-import { Sync } from "../Sync"
 
 export const Monad = createMonad<IdentityHkt> ({
   ...Applicative,
@@ -60,11 +59,3 @@ export const flatMapTo: {
     amb: (a: A) => Identity<B>,
   ): (self: Identity<A>) => Identity<DoObject<N, A, B>>
 } = Monad.flatMapTo
-
-export const tap: {
-  <A>(f: (a: A) => Identity<unknown>): (self: Identity<A>) => Identity<A>
-} = Monad.tap
-
-export const tapSync: {
-  <A>(f: (a: A) => Sync<unknown>): (self: Identity<A>) => Identity<A>
-} = Monad.tapSync

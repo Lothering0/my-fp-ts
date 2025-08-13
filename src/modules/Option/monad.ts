@@ -1,15 +1,10 @@
 import * as option from "./option"
-import * as result from "../Result"
-import { Sync } from "../Sync"
 import { createMonad } from "../../types/Monad"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
-import { map } from "./functor"
 import { Applicative } from "./applicative"
 import { identity } from "../Identity"
 import { match } from "./utils"
 import { zero } from "./alternative"
-import { pipe } from "../../utils/flow"
-import { constant } from "../../utils/constant"
 
 export const Monad = createMonad<option.OptionHkt> ({
   ...Applicative,
@@ -69,20 +64,3 @@ export const flatMapTo: {
     amb: (a: A) => option.Option<B>,
   ): (self: option.Option<A>) => option.Option<DoObject<N, A, B>>
 } = Monad.flatMapTo
-
-export const tap: {
-  <A>(
-    f: (a: A) => option.Option<unknown>,
-  ): (self: option.Option<A>) => option.Option<A>
-} = Monad.tap
-
-export const tapSync: {
-  <A>(f: (a: A) => Sync<unknown>): (self: option.Option<A>) => option.Option<A>
-} = Monad.tapSync
-
-export const tapResult: {
-  <E, A>(
-    afe: (a: A) => result.Result<E, unknown>,
-  ): (self: option.Option<A>) => option.Option<A>
-} = afe => self =>
-  pipe (self, map (afe), flatMap (result.match (zero, constant (self))))

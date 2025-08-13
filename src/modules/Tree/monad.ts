@@ -1,5 +1,4 @@
 import * as monad from "../../types/Monad"
-import { Sync } from "../Sync"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
 import { Tree, TreeHkt } from "./tree"
 import { Applicative, flat } from "./applicative"
@@ -53,11 +52,3 @@ export const flatMapTo: {
     amb: (a: A) => Tree<B>,
   ): (self: Tree<A>) => Tree<DoObject<N, A, B>>
 } = Monad.flatMapTo
-
-export const tap: {
-  <A>(f: (a: A) => Tree<unknown>): (self: Tree<A>) => Tree<A>
-} = Monad.tap
-
-export const tapSync: {
-  <A>(f: (a: A) => Sync<unknown>): (self: Tree<A>) => Tree<A>
-} = Monad.tapSync

@@ -1,19 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as result from "../Result"
 import * as async from "../Async"
-import * as syncResult from "../SyncResult"
-import { Sync } from "../Sync"
 import { identity } from "../Identity"
 import { createMonad } from "../../types/Monad"
-import { map } from "./functor"
 import { Applicative } from "./applicative"
-import {
-  AsyncResultHkt,
-  AsyncResult,
-  toPromise,
-  fromAsync,
-  fail,
-} from "./async-result"
+import { AsyncResultHkt, AsyncResult, toPromise, fail } from "./async-result"
 import { pipe } from "../../utils/flow"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
 import { match } from "./utils"
@@ -81,52 +72,6 @@ export const flatMapTo: {
     amb: (a: A) => AsyncResult<E1, B>,
   ): <E2>(self: AsyncResult<E2, A>) => AsyncResult<E1 | E2, DoObject<N, A, B>>
 } = Monad.flatMapTo
-
-export const tap: {
-  <E1, A>(
-    f: (a: A) => AsyncResult<E1, unknown>,
-  ): <E2>(self: AsyncResult<E2, A>) => AsyncResult<E1 | E2, A>
-} = Monad.tap
-
-export const tapSync: {
-  <A>(
-    f: (a: A) => Sync<unknown>,
-  ): <E>(self: AsyncResult<E, A>) => AsyncResult<E, A>
-} = Monad.tapSync
-
-export const tapResult: {
-  <E1, A>(
-    f: (a: A) => result.Result<E1, unknown>,
-  ): <E2>(self: AsyncResult<E2, A>) => AsyncResult<E1 | E2, A>
-} = f => self =>
-  pipe (
-    Do,
-    apS ("a", self),
-    tap (({ a }) => pipe (a, f, async.of)),
-    map (({ a }) => a),
-  )
-
-export const tapSyncResult: {
-  <E1, A>(
-    f: (a: A) => syncResult.SyncResult<E1, unknown>,
-  ): <E2>(self: AsyncResult<E2, A>) => AsyncResult<E1 | E2, A>
-} = f => self =>
-  pipe (
-    Do,
-    apS ("a", self),
-    tap (({ a }) => pipe (a, f, syncResult.execute, async.of)),
-    map (({ a }) => a),
-  )
-
-export const tapAsync =
-  <A>(f: (a: A) => async.Async<unknown>) =>
-  <E>(self: AsyncResult<E, A>): AsyncResult<E, A> =>
-    pipe (
-      Do,
-      apS ("a", self),
-      tap (({ a }) => pipe (a, f, fromAsync<E, unknown>)),
-      map (({ a }) => a),
-    )
 
 export const parallel: {
   <N extends DoObjectKey, E1, B>(

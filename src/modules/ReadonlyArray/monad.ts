@@ -1,4 +1,3 @@
-import { Sync } from "../Sync"
 import { ReadonlyArrayHkt } from "./readonly-array"
 import { createMonad } from "../../types/Monad"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
@@ -62,13 +61,3 @@ export const flatMapTo: {
     amb: (a: A) => ReadonlyArray<B>,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<DoObject<N, A, B>>
 } = Monad.flatMapTo
-
-export const tap: {
-  <A>(
-    f: (a: A) => ReadonlyArray<unknown>,
-  ): (self: ReadonlyArray<A>) => ReadonlyArray<A>
-} = Monad.tap
-
-export const tapSync: {
-  <A>(f: (a: A) => Sync<unknown>): (self: ReadonlyArray<A>) => ReadonlyArray<A>
-} = Monad.tapSync
