@@ -30,20 +30,18 @@ export const isEmpty = (
   pipe (self, keys, readonlyArray.isEmpty)
 
 export const has: {
-  (key: string): (self: ReadonlyRecord<string, unknown>) => boolean
-} = key => self => key in self
+  (k: string): (self: ReadonlyRecord<string, unknown>) => boolean
+} = k => self => k in self
 
 export const lookup: {
   <K extends string, A>(
-    key: TheseOrAnyString<NoInfer<K>>,
+    k: TheseOrAnyString<NoInfer<K>>,
   ): (self: ReadonlyRecord<K, A>) => option.Option<A>
-} = key => self =>
+} = k => self =>
   pipe (
     self,
-    has (key),
-    boolean.match (option.zero, () =>
-      option.some (self[key as keyof typeof self]),
-    ),
+    has (k),
+    boolean.match (option.zero, () => option.some (self[k as keyof typeof self])),
   )
 
 export const copy: {
@@ -52,18 +50,18 @@ export const copy: {
 
 export const deleteAt: {
   <K1 extends string, K2 extends TheseOrAnyString<K1>, A>(
-    key: K2,
+    k: K2,
   ): (
     self: ReadonlyRecord<K1, A>,
-  ) => ReadonlyRecord<K1 extends typeof key ? Exclude<K1, K2> : K1, A>
-} = key => self =>
+  ) => ReadonlyRecord<K1 extends typeof k ? Exclude<K1, K2> : K1, A>
+} = k => self =>
   pipe (
     identity.Do,
     identity.apS ("copy", copy (self)),
     identity.tapSync (
       ({ copy }) =>
         () =>
-          delete copy[key as string as keyof typeof copy],
+          delete copy[k as string as keyof typeof copy],
     ),
     identity.map (({ copy }) => copy),
   )
@@ -86,9 +84,38 @@ export const every: {
 } = (<A>(p: Predicate<A>) =>
   flow (values, readonlyArray.every (p))) as typeof every
 
+export const everyWithIndex: {
+  <K extends string, A>(
+    p: (k: K, a: A) => boolean,
+  ): Predicate<ReadonlyRecord<K, A>>
+  <A>(p: (k: string, a: A) => boolean): Predicate<ReadonlyRecord<string, A>>
+} = <A>(
+  p: (k: string, a: A) => boolean,
+): Predicate<ReadonlyRecord<string, A>> =>
+  flow (
+    toEntries,
+    readonlyArray.every (([k, a]) => p (k, a)),
+  )
+
 export const exists: {
-  <A>(p: Predicate<A>): (self: ReadonlyRecord<string, A>) => boolean
+  <A>(p: Predicate<A>): Predicate<ReadonlyRecord<string, A>>
 } = p => flow (values, readonlyArray.exists (p))
 
-/** Alias for exists */
+/** Alias for `exists` */
 export const some = exists
+
+export const existsWithIndex: {
+  <K extends string, A>(
+    p: (k: K, a: A) => boolean,
+  ): Predicate<ReadonlyRecord<K, A>>
+  <A>(p: (k: string, a: A) => boolean): Predicate<ReadonlyRecord<string, A>>
+} = <A>(
+  p: (k: string, a: A) => boolean,
+): Predicate<ReadonlyRecord<string, A>> =>
+  flow (
+    toEntries,
+    readonlyArray.exists (([k, a]) => p (k, a)),
+  )
+
+/** Alias for `existsWithIndex` */
+export const someWithIndex = existsWithIndex
