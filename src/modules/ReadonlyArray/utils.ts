@@ -55,9 +55,13 @@ export const at: {
     ? pipe (self.at (i)!, option.some)
     : option.none
 
+export const has: {
+  <A>(i: number): Predicate<ReadonlyArray<A>>
+} = i => self => Object.hasOwn (self, Number (i))
+
 export const isOutOfBounds: {
-  <A>(i: number): (self: ReadonlyArray<A>) => boolean
-} = i => self => !Object.hasOwn (self, Number (i))
+  <A>(i: number): Predicate<ReadonlyArray<A>>
+} = i => flow (has (i), boolean.not)
 
 export const findMap: {
   <A, B>(
