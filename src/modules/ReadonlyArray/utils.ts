@@ -3,9 +3,9 @@ import * as option from "../Option"
 import * as result from "../Result"
 import * as boolean from "../Boolean"
 import * as eq from "../../types/Eq"
-import { Refinement } from "../../types/utils"
-import { Predicate } from "../Predicate"
-import { identity } from "../Identity"
+import * as identity from "../Identity"
+import { Refinement, RefinementWithIndex } from "../../types/utils"
+import { Predicate, PredicateWithIndex } from "../Predicate"
 import { flatMap } from "./monad"
 import { filterMap } from "./filterable"
 import { constant, constEmptyArray } from "../../utils/constant"
@@ -16,7 +16,7 @@ import { of } from "./applicative"
 
 export const fromNonEmpty: {
   <A>(as: nonEmptyReadonlyArray.NonEmptyReadonlyArray<A>): ReadonlyArray<A>
-} = identity
+} = identity.identity
 
 export const length: {
   <A>(self: ReadonlyArray<A>): number
@@ -76,6 +76,25 @@ export const findMap: {
     ),
   )
 
+export const findMapWithIndex: {
+  <A, B>(
+    iamb: (i: number, a: A) => option.Option<B>,
+  ): (self: ReadonlyArray<A>) => option.Option<B>
+} = iamb => {
+  const f: {
+    (index: number): typeof findMapWithIndex
+  } = i => iamb =>
+    matchLeft (option.zero, (head, tail) =>
+      pipe (
+        head,
+        a => iamb (i, a),
+        option.match (() => f (i + 1) (iamb) (tail), option.some),
+      ),
+    )
+
+  return f (0) (iamb)
+}
+
 export const find: {
   <A, B extends A>(
     p: Refinement<A, B>,
@@ -86,11 +105,33 @@ export const find: {
     pipe (a, p, boolean.match (option.zero, flow (constant (a), option.some))),
   )
 
+export const findWithIndex: {
+  <A, B extends A>(
+    p: RefinementWithIndex<number, A, B>,
+  ): (self: ReadonlyArray<A>) => option.Option<B>
+  <A>(
+    p: PredicateWithIndex<number, A>,
+  ): (self: ReadonlyArray<A>) => option.Option<A>
+} = <A>(p: PredicateWithIndex<number, A>) =>
+  findMapWithIndex<A, A> ((i, a) =>
+    pipe (p (i, a), boolean.match (option.zero, flow (constant (a), option.some))),
+  )
+
 export const findIndex: {
   <A>(p: Predicate<A>): (self: ReadonlyArray<A>) => option.Option<number>
 } = p => self =>
   pipe (
     self.findIndex (a => p (a)),
+    i => i > -1 ? option.some (i) : option.none,
+  )
+
+export const findIndexWithIndex: {
+  <A>(
+    p: PredicateWithIndex<number, A>,
+  ): (self: ReadonlyArray<A>) => option.Option<number>
+} = p => self =>
+  pipe (
+    self.findIndex ((a, i) => p (i, a)),
     i => i > -1 ? option.some (i) : option.none,
   )
 
@@ -107,6 +148,25 @@ export const findLastMap: {
     ),
   )
 
+export const findLastMapWithIndex: {
+  <A, B>(
+    iamb: (i: number, a: A) => option.Option<B>,
+  ): (self: ReadonlyArray<A>) => option.Option<B>
+} = iamb => self => {
+  const f: {
+    (index: number): typeof findLastMapWithIndex
+  } = i => iamb =>
+    matchRight (option.zero, (init, last) =>
+      pipe (
+        last,
+        a => iamb (i, a),
+        option.match (() => f (i - 1) (iamb) (init), option.some),
+      ),
+    )
+
+  return f (length (self) - 1) (iamb) (self)
+}
+
 export const findLast: {
   <A, B extends A>(
     p: Refinement<A, B>,
@@ -117,11 +177,33 @@ export const findLast: {
     pipe (a, p, boolean.match (option.zero, flow (constant (a), option.some))),
   )
 
+export const findLastWithIndex: {
+  <A, B extends A>(
+    p: RefinementWithIndex<number, A, B>,
+  ): (self: ReadonlyArray<A>) => option.Option<B>
+  <A>(
+    p: PredicateWithIndex<number, A>,
+  ): (self: ReadonlyArray<A>) => option.Option<A>
+} = <A>(p: (i: number, a: A) => boolean) =>
+  findLastMapWithIndex<A, A> ((i, a) =>
+    pipe (p (i, a), boolean.match (option.zero, flow (constant (a), option.some))),
+  )
+
 export const findLastIndex: {
   <A>(p: Predicate<A>): (self: ReadonlyArray<A>) => option.Option<number>
 } = p => self =>
   pipe (
     self.findLastIndex (a => p (a)),
+    i => i > -1 ? option.some (i) : option.none,
+  )
+
+export const findLastIndexWithIndex: {
+  <A>(
+    p: PredicateWithIndex<number, A>,
+  ): (self: ReadonlyArray<A>) => option.Option<number>
+} = p => self =>
+  pipe (
+    self.findLastIndex ((a, i) => p (i, a)),
     i => i > -1 ? option.some (i) : option.none,
   )
 
@@ -145,6 +227,16 @@ export const every: {
   (self: ReadonlyArray<A>) =>
     self.every (a => p (a))
 
+export const everyWithIndex: {
+  <A, B extends A>(
+    p: RefinementWithIndex<number, A, B>,
+  ): Refinement<ReadonlyArray<A>, ReadonlyArray<B>>
+  <A>(p: PredicateWithIndex<number, A>): Predicate<ReadonlyArray<A>>
+} =
+  <A, B extends A>(p: RefinementWithIndex<number, A, B>) =>
+  (self: ReadonlyArray<A>) =>
+    self.every ((a, i) => p (i, a))
+
 export const exists =
   <A>(p: Predicate<A>) =>
   (
@@ -152,8 +244,18 @@ export const exists =
   ): self is nonEmptyReadonlyArray.NonEmptyReadonlyArray<A> =>
     self.some (a => p (a))
 
-/** Alias for exists */
+/** Alias for `exists` */
 export const some = exists
+
+export const existsWithIndex =
+  <A>(p: PredicateWithIndex<number, A>) =>
+  (
+    self: ReadonlyArray<A>,
+  ): self is nonEmptyReadonlyArray.NonEmptyReadonlyArray<A> =>
+    self.some ((a, i) => p (i, a))
+
+/** Alias for `existsWithIndex` */
+export const someWithIndex = existsWithIndex
 
 export const failures: {
   <E, A>(self: ReadonlyArray<result.Result<E, A>>): ReadonlyArray<E>
