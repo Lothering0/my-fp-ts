@@ -2,6 +2,7 @@ import * as nonEmptyReadonlyArray from "../NonEmptyReadonlyArray"
 import * as option from "../Option"
 import * as result from "../Result"
 import * as boolean from "../Boolean"
+import * as number from "../Number"
 import * as eq from "../../types/Eq"
 import * as identity from "../Identity"
 import { Refinement, RefinementWithIndex } from "../../types/utils"
@@ -11,8 +12,9 @@ import { filterMap } from "./filterable"
 import { constant, constEmptyArray } from "../../utils/constant"
 import { flow, pipe } from "../../utils/flow"
 import { match, matchLeft, matchRight } from "./matchers"
-import { isNonEmpty } from "./refinements"
+import { isEmpty, isNonEmpty } from "./refinements"
 import { of } from "./applicative"
+import { mapWithIndex } from "./functor"
 
 export const fromNonEmpty: {
   <A>(as: nonEmptyReadonlyArray.NonEmptyReadonlyArray<A>): ReadonlyArray<A>
@@ -315,6 +317,65 @@ export const reverse: {
 export const join: {
   (separator: string): (self: ReadonlyArray<string>) => string
 } = separator => self => self.join (separator)
+
+export const slice: {
+  (start: number, end?: number): <A>(self: ReadonlyArray<A>) => ReadonlyArray<A>
+} = (start, end) => self => self.slice (start, end)
+
+export const zipWith: {
+  <A, B, C>(
+    bs: ReadonlyArray<B>,
+    abc: (a: A, b: B) => C,
+  ): (self: ReadonlyArray<A>) => ReadonlyArray<C>
+} = (bs, abc) => self =>
+  pipe (
+    length (bs) > length (self),
+    boolean.match (
+      () =>
+        pipe (
+          bs,
+          mapWithIndex ((i, b) => abc (self.at (i)!, b)),
+        ),
+      () =>
+        pipe (
+          self,
+          mapWithIndex ((i, a) => abc (a, bs.at (i)!)),
+        ),
+    ),
+  )
+
+export const zip: {
+  <B>(
+    as: ReadonlyArray<B>,
+  ): <A>(self: ReadonlyArray<A>) => ReadonlyArray<readonly [A, B]>
+} = as => zipWith (as, (b, a) => [b, a])
+
+export const chunksOf: {
+  (
+    n: number,
+  ): <A>(
+    self: ReadonlyArray<A>,
+  ) => ReadonlyArray<nonEmptyReadonlyArray.NonEmptyReadonlyArray<A>>
+} = n => self =>
+  pipe (
+    n,
+    number.lessThanOrEquals (0),
+    boolean.or (isEmpty (self)),
+    boolean.match (
+      () =>
+        pipe (
+          self,
+          length,
+          number.moreThan (n),
+          boolean.match (constant ([self]), () => [
+            slice (0, n) (self),
+            ...chunksOf (n) (slice (n) (self)),
+          ]),
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ) as ReadonlyArray<any>,
+      constant ([]),
+    ),
+  )
 
 /** [f (a, b, ...) | a <- as, b <- bs, ..., p (a, b, ...)] */
 export function comprehension<A, R>(

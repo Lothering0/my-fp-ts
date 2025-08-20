@@ -4,12 +4,12 @@ import { getDoWhile } from "../loops"
 import { now } from "../time"
 import { _ } from "../underscore"
 
-export const wait_: {
+export const wait: {
   (ms: number): sync.Sync<void>
 } = ms => {
   const start = sync.execute (now)
   const predicate: Predicate<void> = () => sync.execute (now) - start < ms
-  const doWhile_ = getDoWhile (sync.Applicative)
+  const doWhile = getDoWhile (sync.Applicative)
 
-  return doWhile_ (predicate) (() => _)
+  return doWhile (predicate) (() => _)
 }

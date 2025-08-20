@@ -398,6 +398,87 @@ describe ("join", () => {
   })
 })
 
+describe ("zipWith", () => {
+  it ("should zip arrays with provided function", () => {
+    expect (
+      pipe (
+        [],
+        readonlyArray.zipWith ([1, 2, 3], (a, b) => a - b),
+      ),
+    ).toEqual ([])
+    expect (
+      pipe (
+        [1, 2, 3],
+        readonlyArray.zipWith ([], (a, b) => a - b),
+      ),
+    ).toEqual ([])
+    expect (
+      pipe (
+        [4, 6, 8],
+        readonlyArray.zipWith ([1, 2, 3], (a, b) => a - b),
+      ),
+    ).toEqual ([3, 4, 5])
+    expect (
+      pipe (
+        [4, 6],
+        readonlyArray.zipWith ([1, 2, 3], (a, b) => a - b),
+      ),
+    ).toEqual ([3, 4])
+    expect (
+      pipe (
+        [4, 6, 8],
+        readonlyArray.zipWith ([1, 2], (a, b) => a - b),
+      ),
+    ).toEqual ([3, 4])
+  })
+})
+
+describe ("slice", () => {
+  it ("should correctly slice an array", () => {
+    expect (pipe ([], readonlyArray.slice (0))).toEqual ([])
+    expect (pipe ([], readonlyArray.slice (1))).toEqual ([])
+    expect (pipe ([], readonlyArray.slice (0, 2))).toEqual ([])
+    expect (pipe ([], readonlyArray.slice (1, 2))).toEqual ([])
+    expect (pipe ([1, 2, 3], readonlyArray.slice (0))).toEqual ([1, 2, 3])
+    expect (pipe ([1, 2, 3], readonlyArray.slice (1))).toEqual ([2, 3])
+    expect (pipe ([1, 2, 3, 4], readonlyArray.slice (0, 2))).toEqual ([1, 2])
+    expect (pipe ([1, 2, 3, 4], readonlyArray.slice (1, 3))).toEqual ([2, 3])
+  })
+})
+
+describe ("zipWith", () => {
+  it ("should zip arrays with provided function", () => {
+    expect (pipe ([], readonlyArray.zip ([3, 4, 5]))).toEqual ([])
+    expect (pipe ([1, 2, 3], readonlyArray.zip ([]))).toEqual ([])
+    expect (pipe ([1, 2, 3], readonlyArray.zip ([3, 4, 5]))).toEqual ([
+      [1, 3],
+      [2, 4],
+      [3, 5],
+    ])
+    expect (pipe ([1, 2], readonlyArray.zip ([3, 4, 5]))).toEqual ([
+      [1, 3],
+      [2, 4],
+    ])
+    expect (pipe ([1, 2, 3], readonlyArray.zip ([3, 4]))).toEqual ([
+      [1, 3],
+      [2, 4],
+    ])
+  })
+})
+
+describe ("chunksOf", () => {
+  it ("should correctly slice an array", () => {
+    expect (pipe ([], readonlyArray.chunksOf (0))).toEqual ([])
+    expect (pipe ([], readonlyArray.chunksOf (1))).toEqual ([])
+    expect (pipe ([1, 2, 3], readonlyArray.chunksOf (-1))).toEqual ([])
+    expect (pipe ([1, 2, 3], readonlyArray.chunksOf (0))).toEqual ([])
+    expect (pipe ([1, 2, 3], readonlyArray.chunksOf (1))).toEqual ([[1], [2], [3]])
+    expect (pipe ([1, 2, 3], readonlyArray.chunksOf (2))).toEqual ([[1, 2], [3]])
+    expect (pipe ([1, 2, 3], readonlyArray.chunksOf (3))).toEqual ([[1, 2, 3]])
+    expect (pipe ([1, 2, 3], readonlyArray.chunksOf (4))).toEqual ([[1, 2, 3]])
+  })
+})
+
 describe ("comprehension", () => {
   it ("should correctly generate an array without predicate", () => {
     expect (

@@ -52,7 +52,7 @@ export const endsWith =
     self.endsWith (substring)
 
 export const slice: {
-  (start: number, end: number): (self: string) => string
+  (start: number, end?: number): (self: string) => string
 } = (start, end) => self => self.slice (start, end)
 
 export const split: {
