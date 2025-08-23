@@ -28,3 +28,20 @@ export const toUnion: {
 export const swap: {
   <E, A>(self: Result<E, A>): Result<A, E>
 } = match (succeed, fail)
+/* export const match: {
+  <E, A, B, C = B>(
+    onFailure: (e: E) => B,
+    onSuccess: (a: A) => C,
+  ): (self: Result<A, E>) => B | C
+} = (onFailure, onSuccess) => self =>
+  isFailure (self)
+    ? pipe (self, failure, onFailure)
+    : pipe (self, success, onSuccess)
+
+export const toUnion: {
+  <A, E>(self: Result<A, E>): A | E
+} = match (identity, identity)
+
+export const swap: {
+  <A, E>(self: Result<A, E>): Result<E, A>
+} = match (succeed, fail) */

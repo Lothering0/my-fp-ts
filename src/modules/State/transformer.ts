@@ -5,20 +5,26 @@ import { createApplicative } from "../../types/Applicative"
 import { createMonad, Monad } from "../../types/Monad"
 import { flow, pipe } from "../../utils/flow"
 
-export interface StateT<F extends Hkt, In, Collectable, Fixed> {
-  (s: Fixed): Kind<F, readonly [In, Fixed], Collectable, Fixed>
+export interface StateT<F extends Hkt, In, Collectable, Fixed, TFixed> {
+  (s: TFixed): Kind<F, readonly [In, TFixed], Collectable, Fixed>
 }
 
-export interface StateTHkt<F extends Hkt> extends Hkt {
-  readonly type: StateT<F, this["_in"], this["_collectable"], this["_fixed"]>
+export interface StateTHkt<F extends Hkt, TFixed> extends Hkt {
+  readonly type: StateT<
+    F,
+    this["_in"],
+    this["_collectable"],
+    this["_fixed"],
+    TFixed
+  >
 }
 
-export const transform = <F extends Hkt>(F: Monad<F>) => {
-  type THkt = StateTHkt<F>
+export const transform = <F extends Hkt, TFixed>(F: Monad<F>) => {
+  type THkt = StateTHkt<F, TFixed>
 
   const fromState: {
     <In, Collectable, Fixed>(
-      self: state.State<Fixed, In>,
+      self: state.State<TFixed, In>,
     ): Kind<THkt, In, Collectable, Fixed>
   } = self => s => F.of (state.run (s) (self))
 
@@ -33,27 +39,27 @@ export const transform = <F extends Hkt>(F: Monad<F>) => {
     )
 
   const run: {
-    <Fixed>(
-      s: Fixed,
-    ): <In, Collectable>(
+    (
+      s: TFixed,
+    ): <In, Collectable, Fixed>(
       ma: Kind<THkt, In, Collectable, Fixed>,
-    ) => Kind<F, readonly [In, Fixed], Collectable, Fixed>
+    ) => Kind<F, readonly [In, TFixed], Collectable, Fixed>
   } = s => ma => ma (s)
 
   const evaluate: {
-    <Fixed>(
-      s: Fixed,
-    ): <In, Collectable>(
+    (
+      s: TFixed,
+    ): <In, Collectable, Fixed>(
       ma: Kind<THkt, In, Collectable, Fixed>,
     ) => Kind<F, In, Collectable, Fixed>
   } = s => ma => F.map (([a]) => a) (run (s) (ma))
 
   const execute: {
-    <Fixed>(
-      s: Fixed,
-    ): <In, Collectable>(
+    (
+      s: TFixed,
+    ): <In, Collectable, Fixed>(
       ma: Kind<THkt, In, Collectable, Fixed>,
-    ) => Kind<F, Fixed, Collectable, Fixed>
+    ) => Kind<F, TFixed, Collectable, Fixed>
   } = s => ma => F.map (([, s]) => s) (run (s) (ma))
 
   const Functor: Functor<THkt> = {
