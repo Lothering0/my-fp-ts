@@ -41,7 +41,7 @@ export const match: {
   ): (self: List<A>) => B | C
 } = (onNil, onCons) => self => isNil (self) ? onNil () : onCons (self.head)
 
-export const fromArray = <A>(as: ReadonlyArray<A>): List<A> =>
+export const fromReadonlyArray = <A>(as: ReadonlyArray<A>): List<A> =>
   pipe (
     as,
     readonlyArray.reduceRight (nil as List<A>, (x, acc) => cons (x, acc)),

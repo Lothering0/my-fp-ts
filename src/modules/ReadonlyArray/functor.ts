@@ -11,15 +11,11 @@ export const FunctorWithIndex: functorWithIndex.FunctorWithIndex<
   number
 > = {
   ...Functor,
-  mapWithIndex: iab => self => self.map ((a, i) => iab (i, a)),
+  mapWithIndex: aib => self => self.map ((a, i) => aib (a, i)),
 }
 
 export const map: {
-  <A, B>(ab: (a: A) => B): (self: ReadonlyArray<A>) => ReadonlyArray<B>
-} = Functor.map
-
-export const mapWithIndex: {
   <A, B>(
-    iab: (i: number, a: A) => B,
+    aib: (a: A, i: number) => B,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<B>
 } = FunctorWithIndex.mapWithIndex

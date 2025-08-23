@@ -11,24 +11,24 @@ export interface FilterableWithIndex<F extends Hkt, I>
     Filterable<F> {
   /** Partitions and maps elements to new values */
   readonly partitionMapWithIndex: <A, B, C>(
-    p: (i: I, a: A) => Result<B, C>,
+    p: (a: A, i: I) => Result<B, C>,
   ) => <S, E>(
     self: Kind<F, S, E, A>,
   ) => Separated<Kind<F, S, E, B>, Kind<F, S, E, C>>
 
   readonly partitionWithIndex: <A>(
-    p: (i: I, a: A) => boolean,
+    p: (a: A, i: I) => boolean,
   ) => <S, E>(
     self: Kind<F, S, E, A>,
   ) => Separated<Kind<F, S, E, A>, Kind<F, S, E, A>>
 
   /** Removes element if predicate function returns `none`. Otherwise maps it to value of `some` */
   readonly filterMapWithIndex: <A, B>(
-    p: (i: I, a: A) => Option<B>,
+    p: (a: A, i: I) => Option<B>,
   ) => <S, E>(self: Kind<F, S, E, A>) => Kind<F, S, E, B>
 
   readonly filterWithIndex: <A>(
-    p: (i: I, a: A) => boolean,
+    p: (a: A, i: I) => boolean,
   ) => <S, E>(self: Kind<F, S, E, A>) => Kind<F, S, E, A>
 }
 
@@ -43,7 +43,7 @@ export const createFilterableWithIndex = <F extends Hkt, I>(
   >["filterMapWithIndex"] = p => flow (mapWithIndex (p), compact)
 
   const filterWithIndex: FilterableWithIndex<F, I>["filterWithIndex"] = p =>
-    filterMapWithIndex ((i, a) => p (i, a) ? some (a) : none)
+    filterMapWithIndex ((a, i) => p (a, i) ? some (a) : none)
 
   const partitionMapWithIndex: FilterableWithIndex<
     F,
@@ -54,7 +54,7 @@ export const createFilterableWithIndex = <F extends Hkt, I>(
     F,
     I
   >["partitionWithIndex"] = p =>
-    partitionMapWithIndex ((i, a) => p (i, a) ? succeed (a) : fail (a))
+    partitionMapWithIndex ((a, i) => p (a, i) ? succeed (a) : fail (a))
 
   return {
     ...Filterable,

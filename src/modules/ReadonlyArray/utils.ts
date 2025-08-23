@@ -14,11 +14,13 @@ import { flow, pipe } from "../../utils/flow"
 import { match, matchLeft, matchRight } from "./matchers"
 import { isEmpty, isNonEmpty } from "./refinements"
 import { of } from "./applicative"
-import { mapWithIndex } from "./functor"
+import { map } from "./functor"
 
 export const fromNonEmpty: {
   <A>(as: nonEmptyReadonlyArray.NonEmptyReadonlyArray<A>): ReadonlyArray<A>
 } = identity.identity
+
+export const toArray = <A>(self: ReadonlyArray<A>): A[] => self as A[]
 
 export const length: {
   <A>(self: ReadonlyArray<A>): number
@@ -65,31 +67,22 @@ export const isOutOfBounds: {
   <A>(i: number): Predicate<ReadonlyArray<A>>
 } = i => flow (has (i), boolean.not)
 
+export const lastIndex: {
+  <A>(self: ReadonlyArray<A>): number
+} = self => length (self) - 1
+
 export const findMap: {
   <A, B>(
-    amb: (a: A) => option.Option<B>,
-  ): (self: ReadonlyArray<A>) => option.Option<B>
-} = amb =>
-  matchLeft (option.zero, (head, tail) =>
-    pipe (
-      head,
-      amb,
-      option.match (() => findMap (amb) (tail), option.some),
-    ),
-  )
-
-export const findMapWithIndex: {
-  <A, B>(
-    iamb: (i: number, a: A) => option.Option<B>,
+    iamb: (a: A, i: number) => option.Option<B>,
   ): (self: ReadonlyArray<A>) => option.Option<B>
 } = iamb => {
   const f: {
-    (index: number): typeof findMapWithIndex
+    (index: number): typeof findMap
   } = i => iamb =>
     matchLeft (option.zero, (head, tail) =>
       pipe (
         head,
-        a => iamb (i, a),
+        a => iamb (a, i),
         option.match (() => f (i + 1) (iamb) (tail), option.some),
       ),
     )
@@ -99,113 +92,64 @@ export const findMapWithIndex: {
 
 export const find: {
   <A, B extends A>(
-    p: Refinement<A, B>,
-  ): (self: ReadonlyArray<A>) => option.Option<B>
-  <A>(p: Predicate<A>): (self: ReadonlyArray<A>) => option.Option<A>
-} = <A>(p: Predicate<A>) =>
-  findMap (a =>
-    pipe (a, p, boolean.match (option.zero, flow (constant (a), option.some))),
-  )
-
-export const findWithIndex: {
-  <A, B extends A>(
-    p: RefinementWithIndex<number, A, B>,
+    p: RefinementWithIndex<A, B, number>,
   ): (self: ReadonlyArray<A>) => option.Option<B>
   <A>(
-    p: PredicateWithIndex<number, A>,
+    p: PredicateWithIndex<A, number>,
   ): (self: ReadonlyArray<A>) => option.Option<A>
-} = <A>(p: PredicateWithIndex<number, A>) =>
-  findMapWithIndex<A, A> ((i, a) =>
-    pipe (p (i, a), boolean.match (option.zero, flow (constant (a), option.some))),
+} = <A>(p: PredicateWithIndex<A, number>) =>
+  findMap<A, A> ((a, i) =>
+    pipe (p (a, i), boolean.match (option.zero, flow (constant (a), option.some))),
   )
 
 export const findIndex: {
-  <A>(p: Predicate<A>): (self: ReadonlyArray<A>) => option.Option<number>
-} = p => self =>
-  pipe (
-    self.findIndex (a => p (a)),
-    i => i > -1 ? option.some (i) : option.none,
-  )
-
-export const findIndexWithIndex: {
   <A>(
-    p: PredicateWithIndex<number, A>,
+    p: PredicateWithIndex<A, number>,
   ): (self: ReadonlyArray<A>) => option.Option<number>
 } = p => self =>
   pipe (
-    self.findIndex ((a, i) => p (i, a)),
+    self.findIndex ((a, i) => p (a, i)),
     i => i > -1 ? option.some (i) : option.none,
   )
 
 export const findLastMap: {
   <A, B>(
-    amb: (a: A) => option.Option<B>,
-  ): (self: ReadonlyArray<A>) => option.Option<B>
-} = amb =>
-  matchRight (option.zero, (init, last) =>
-    pipe (
-      last,
-      amb,
-      option.match (() => findLastMap (amb) (init), option.some),
-    ),
-  )
-
-export const findLastMapWithIndex: {
-  <A, B>(
-    iamb: (i: number, a: A) => option.Option<B>,
+    iamb: (a: A, i: number) => option.Option<B>,
   ): (self: ReadonlyArray<A>) => option.Option<B>
 } = iamb => self => {
   const f: {
-    (index: number): typeof findLastMapWithIndex
+    (index: number): typeof findLastMap
   } = i => iamb =>
     matchRight (option.zero, (init, last) =>
       pipe (
         last,
-        a => iamb (i, a),
+        a => iamb (a, i),
         option.match (() => f (i - 1) (iamb) (init), option.some),
       ),
     )
 
-  return f (length (self) - 1) (iamb) (self)
+  return f (lastIndex (self)) (iamb) (self)
 }
 
 export const findLast: {
   <A, B extends A>(
-    p: Refinement<A, B>,
-  ): (self: ReadonlyArray<A>) => option.Option<B>
-  <A>(p: Predicate<A>): (self: ReadonlyArray<A>) => option.Option<A>
-} = <A>(p: Predicate<A>) =>
-  findLastMap (a =>
-    pipe (a, p, boolean.match (option.zero, flow (constant (a), option.some))),
-  )
-
-export const findLastWithIndex: {
-  <A, B extends A>(
-    p: RefinementWithIndex<number, A, B>,
+    p: RefinementWithIndex<A, B, number>,
   ): (self: ReadonlyArray<A>) => option.Option<B>
   <A>(
-    p: PredicateWithIndex<number, A>,
+    p: PredicateWithIndex<A, number>,
   ): (self: ReadonlyArray<A>) => option.Option<A>
-} = <A>(p: (i: number, a: A) => boolean) =>
-  findLastMapWithIndex<A, A> ((i, a) =>
-    pipe (p (i, a), boolean.match (option.zero, flow (constant (a), option.some))),
+} = <A>(p: PredicateWithIndex<A, number>) =>
+  findLastMap<A, A> ((a, i) =>
+    pipe (p (a, i), boolean.match (option.zero, flow (constant (a), option.some))),
   )
 
 export const findLastIndex: {
-  <A>(p: Predicate<A>): (self: ReadonlyArray<A>) => option.Option<number>
-} = p => self =>
-  pipe (
-    self.findLastIndex (a => p (a)),
-    i => i > -1 ? option.some (i) : option.none,
-  )
-
-export const findLastIndexWithIndex: {
   <A>(
-    p: PredicateWithIndex<number, A>,
+    p: PredicateWithIndex<A, number>,
   ): (self: ReadonlyArray<A>) => option.Option<number>
 } = p => self =>
   pipe (
-    self.findLastIndex ((a, i) => p (i, a)),
+    self.findLastIndex ((a, i) => p (a, i)),
     i => i > -1 ? option.some (i) : option.none,
   )
 
@@ -221,43 +165,23 @@ export const elem =
 
 export const every: {
   <A, B extends A>(
-    p: Refinement<A, B>,
+    p: RefinementWithIndex<A, B, number>,
   ): Refinement<ReadonlyArray<A>, ReadonlyArray<B>>
-  <A>(p: Predicate<A>): Predicate<ReadonlyArray<A>>
+  <A>(p: PredicateWithIndex<A, number>): Predicate<ReadonlyArray<A>>
 } =
-  <A, B extends A>(p: Refinement<A, B>) =>
+  <A, B extends A>(p: RefinementWithIndex<A, B, number>) =>
   (self: ReadonlyArray<A>) =>
-    self.every (a => p (a))
-
-export const everyWithIndex: {
-  <A, B extends A>(
-    p: RefinementWithIndex<number, A, B>,
-  ): Refinement<ReadonlyArray<A>, ReadonlyArray<B>>
-  <A>(p: PredicateWithIndex<number, A>): Predicate<ReadonlyArray<A>>
-} =
-  <A, B extends A>(p: RefinementWithIndex<number, A, B>) =>
-  (self: ReadonlyArray<A>) =>
-    self.every ((a, i) => p (i, a))
+    self.every ((a, i) => p (a, i))
 
 export const exists =
-  <A>(p: Predicate<A>) =>
+  <A>(p: PredicateWithIndex<A, number>) =>
   (
     self: ReadonlyArray<A>,
   ): self is nonEmptyReadonlyArray.NonEmptyReadonlyArray<A> =>
-    self.some (a => p (a))
+    self.some ((a, i) => p (a, i))
 
 /** Alias for `exists` */
 export const some = exists
-
-export const existsWithIndex =
-  <A>(p: PredicateWithIndex<number, A>) =>
-  (
-    self: ReadonlyArray<A>,
-  ): self is nonEmptyReadonlyArray.NonEmptyReadonlyArray<A> =>
-    self.some ((a, i) => p (i, a))
-
-/** Alias for `existsWithIndex` */
-export const someWithIndex = existsWithIndex
 
 export const failures: {
   <E, A>(self: ReadonlyArray<result.Result<E, A>>): ReadonlyArray<E>
@@ -278,8 +202,8 @@ export const prepend: {
 } = a => self => nonEmptyReadonlyArray.concat (self) ([a])
 
 export const prependAllWith: {
-  <A>(f: (a: A) => A): (self: ReadonlyArray<A>) => ReadonlyArray<A>
-} = f => flatMap (x => [f (x), x])
+  <A>(f: (a: A, i: number) => A): (self: ReadonlyArray<A>) => ReadonlyArray<A>
+} = f => flatMap ((a, i) => [f (a, i), a])
 
 export const prependAll: {
   <A>(a: A): (self: ReadonlyArray<A>) => ReadonlyArray<A>
@@ -292,8 +216,8 @@ export const append: {
 } = a => nonEmptyReadonlyArray.concat ([a])
 
 export const appendAllWith: {
-  <A>(f: (a: A) => A): (self: ReadonlyArray<A>) => ReadonlyArray<A>
-} = f => flatMap (x => [x, f (x)])
+  <A>(f: (a: A, i: number) => A): (self: ReadonlyArray<A>) => ReadonlyArray<A>
+} = f => flatMap ((a, i) => [a, f (a, i)])
 
 export const appendAll: {
   <A>(a: A): (self: ReadonlyArray<A>) => ReadonlyArray<A>
@@ -325,7 +249,7 @@ export const slice: {
 export const zipWith: {
   <A, B, C>(
     bs: ReadonlyArray<B>,
-    abc: (a: A, b: B) => C,
+    abic: (a: A, b: B, i: number) => C,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<C>
 } = (bs, abc) => self =>
   pipe (
@@ -334,12 +258,12 @@ export const zipWith: {
       () =>
         pipe (
           bs,
-          mapWithIndex ((i, b) => abc (self.at (i)!, b)),
+          map ((b, i) => abc (self.at (i)!, b, i)),
         ),
       () =>
         pipe (
           self,
-          mapWithIndex ((i, a) => abc (a, bs.at (i)!)),
+          map ((a, i) => abc (a, bs.at (i)!, i)),
         ),
     ),
   )
@@ -349,6 +273,50 @@ export const zip: {
     as: ReadonlyArray<B>,
   ): <A>(self: ReadonlyArray<A>) => ReadonlyArray<readonly [A, B]>
 } = as => zipWith (as, (b, a) => [b, a])
+
+export const takeLeftWhile: {
+  <A>(
+    p: PredicateWithIndex<A, number>,
+  ): (self: ReadonlyArray<A>) => ReadonlyArray<A>
+} = p => {
+  const f: {
+    (i: number): typeof takeLeftWhile
+  } = i => p =>
+    matchLeft (
+      () => [],
+      (head, tail) =>
+        p (head, i) ? pipe (f (i + 1) (p) (tail), prepend (head)) : [],
+    )
+
+  return f (0) (p)
+}
+
+export const takeLeft: {
+  (n: number): <A>(self: ReadonlyArray<A>) => ReadonlyArray<A>
+} = n => slice (0, number.toNonNegative (n))
+
+export const takeRightWhile: {
+  <A>(
+    p: PredicateWithIndex<A, number>,
+  ): (self: ReadonlyArray<A>) => ReadonlyArray<A>
+} = p => self => {
+  const f: {
+    (i: number): typeof takeRightWhile
+  } = i => p =>
+    matchRight (
+      () => [],
+      (init, last) => p (last, i) ? pipe (f (i - 1) (p) (init), append (last)) : [],
+    )
+
+  return f (lastIndex (self)) (p) (self)
+}
+
+export const takeRight: {
+  (n: number): <A>(self: ReadonlyArray<A>) => ReadonlyArray<A>
+} = number.matchNonPositive (
+  () => constant ([]),
+  n => slice (-n),
+)
 
 export const chunksOf: {
   (

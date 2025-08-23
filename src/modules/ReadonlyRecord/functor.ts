@@ -19,25 +19,19 @@ export const FunctorWithIndex: functorWithIndex.FunctorWithIndex<
   string
 > = {
   ...Functor,
-  mapWithIndex: kab =>
+  mapWithIndex: akb =>
     flow (
       toEntries,
-      readonlyArray.map (([k, a]) => [k, kab (k, a)] as const),
+      readonlyArray.map (([k, a]) => [k, akb (a, k)] as const),
       fromEntries,
     ),
 }
 
 export const map: {
-  <A, B>(
-    ab: (a: A) => B,
-  ): <K extends string>(self: ReadonlyRecord<K, A>) => ReadonlyRecord<K, B>
-} = Functor.map as typeof map
-
-export const mapWithIndex: {
   <A, B, K extends string>(
-    kab: (k: K, a: A) => B,
+    akb: (a: A, k: K) => B,
   ): (self: ReadonlyRecord<K, A>) => ReadonlyRecord<K, B>
   <A, B>(
-    kab: (k: string, a: A) => B,
+    akb: (a: A, k: string) => B,
   ): <K extends string>(self: ReadonlyRecord<K, A>) => ReadonlyRecord<K, B>
-} = FunctorWithIndex.mapWithIndex as typeof mapWithIndex
+} = FunctorWithIndex.mapWithIndex as typeof map

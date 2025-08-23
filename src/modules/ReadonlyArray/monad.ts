@@ -1,11 +1,17 @@
 import { ReadonlyArrayHkt } from "./readonly-array"
 import { createMonad } from "../../types/Monad"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
-import { Applicative } from "./applicative"
+import { Applicative, ApplicativeWithIndex } from "./applicative"
+import { createMonadWithIndex } from "../../types/MonadWithIndex"
 
 export const Monad = createMonad<ReadonlyArrayHkt> ({
   ...Applicative,
   flat: self => self.flat (),
+})
+
+export const MonadWithIndex = createMonadWithIndex<ReadonlyArrayHkt, number> ({
+  ...ApplicativeWithIndex,
+  ...Monad,
 })
 
 export const Do = Monad.Do
@@ -16,16 +22,16 @@ export const flat: {
 
 export const flatMap: {
   <A, B>(
-    amb: (a: A) => ReadonlyArray<B>,
+    amb: (a: A, i: number) => ReadonlyArray<B>,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<B>
-} = Monad.flatMap
+} = MonadWithIndex.flatMapWithIndex
 
 export const compose: {
   <A, B, C>(
-    bmc: (b: B) => ReadonlyArray<C>,
+    bmc: (b: B, i: number) => ReadonlyArray<C>,
     amb: (a: A) => ReadonlyArray<B>,
   ): (a: A) => ReadonlyArray<C>
-} = Monad.compose
+} = MonadWithIndex.composeWithIndex
 
 export const setTo: {
   <N extends DoObjectKey, A, B>(
@@ -37,16 +43,16 @@ export const setTo: {
 export const mapTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
-    ab: (a: A) => B,
+    ab: (a: A, i: number) => B,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<DoObject<N, A, B>>
-} = Monad.mapTo
+} = MonadWithIndex.mapToWithIndex
 
 export const flapTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
-    fab: ReadonlyArray<(a: A) => B>,
+    fab: ReadonlyArray<(a: A, i: number) => B>,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<DoObject<N, A, B>>
-} = Monad.flapTo
+} = MonadWithIndex.flapToWithIndex
 
 export const apS: {
   <N extends DoObjectKey, A, B>(
@@ -58,6 +64,6 @@ export const apS: {
 export const flatMapTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
-    amb: (a: A) => ReadonlyArray<B>,
+    amb: (a: A, i: number) => ReadonlyArray<B>,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<DoObject<N, A, B>>
-} = Monad.flatMapTo
+} = MonadWithIndex.flatMapToWithIndex

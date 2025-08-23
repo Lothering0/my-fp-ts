@@ -1,7 +1,10 @@
 import * as option from "../Option"
-import { not } from "../Boolean"
+import * as boolean from "../Boolean"
 import { Predicate } from "../Predicate"
 import { flow } from "../../utils/flow"
+import { constant } from "../../utils/constant"
+import { matchNegative } from "./matchers"
+import { identity } from "../Identity"
 
 export const add: {
   (y: number): (x: number) => number
@@ -41,4 +44,8 @@ export const moreThanOrEquals: {
 
 export const isEven: Predicate<number> = x => x % 2 === 0
 
-export const isOdd: Predicate<number> = flow (isEven, not)
+export const isOdd: Predicate<number> = flow (isEven, boolean.not)
+
+export const toNonNegative: {
+  (self: number): number
+} = matchNegative (constant (0), identity)

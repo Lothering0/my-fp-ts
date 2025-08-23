@@ -82,11 +82,9 @@ describe ("findMap", () => {
     expect (pipe ([1, 2], f)).toEqual (option.some (12))
     expect (pipe ([1, 2, 3, 4], f)).toEqual (option.some (12))
   })
-})
 
-describe ("findMapWithIndex", () => {
-  it ("should return `some` of found mapped element", () => {
-    const f = readonlyArray.findMapWithIndex<number, string> ((i, a) =>
+  it ("should return `some` of found with index mapped element", () => {
+    const f = readonlyArray.findMap<number, string> ((a, i) =>
       pipe (
         i,
         number.isEven,
@@ -111,11 +109,9 @@ describe ("find", () => {
     expect (pipe ([1, 2], f)).toEqual (option.some (2))
     expect (pipe ([1, 2, 3, 4], f)).toEqual (option.some (2))
   })
-})
 
-describe ("findWithIndex", () => {
-  it ("should return `some` of found element", () => {
-    const f = readonlyArray.findWithIndex<number> ((i, a) =>
+  it ("should return `some` of found with index element", () => {
+    const f = readonlyArray.find<number> ((a, i) =>
       pipe (i, number.isEven, boolean.and (a > 1)),
     )
 
@@ -135,11 +131,9 @@ describe ("findIndex", () => {
     expect (pipe ([1, 2], f)).toEqual (option.some (1))
     expect (pipe ([1, 2, 3, 4], f)).toEqual (option.some (1))
   })
-})
 
-describe ("findIndexWithIndex", () => {
-  it ("should return `some` of found element", () => {
-    const f = readonlyArray.findIndexWithIndex<number> ((i, a) =>
+  it ("should return `some` of found with index element", () => {
+    const f = readonlyArray.findIndex<number> ((a, i) =>
       pipe (i, number.isEven, boolean.and (a > 1)),
     )
 
@@ -160,11 +154,9 @@ describe ("findLastMap", () => {
     expect (pipe ([1, 2], f)).toEqual (option.some (12))
     expect (pipe ([1, 2, 3, 4], f)).toEqual (option.some (14))
   })
-})
 
-describe ("findLastMapWithIndex", () => {
-  it ("should return `some` of found mapped element", () => {
-    const f = readonlyArray.findLastMapWithIndex<number, string> ((i, a) =>
+  it ("should return `some` of found with index mapped element", () => {
+    const f = readonlyArray.findLastMap<number, string> ((a, i) =>
       pipe (
         i,
         number.isOdd,
@@ -189,11 +181,9 @@ describe ("findLast", () => {
     expect (pipe ([1, 2], f)).toEqual (option.some (2))
     expect (pipe ([1, 2, 3, 4], f)).toEqual (option.some (4))
   })
-})
 
-describe ("findLastWithIndex", () => {
-  it ("should return `some` of last found element", () => {
-    const f = readonlyArray.findLastWithIndex<number> ((i, a) =>
+  it ("should return `some` of last found with index element", () => {
+    const f = readonlyArray.findLast<number> ((a, i) =>
       pipe (i, number.isOdd, boolean.and (a > 1)),
     )
 
@@ -213,11 +203,9 @@ describe ("findLastIndex", () => {
     expect (pipe ([1, 2], f)).toEqual (option.some (1))
     expect (pipe ([1, 2, 3, 4], f)).toEqual (option.some (3))
   })
-})
 
-describe ("findLastIndexWithIndex", () => {
-  it ("should return `some` of found element", () => {
-    const f = readonlyArray.findLastIndexWithIndex<number> ((i, a) =>
+  it ("should return `some` of found with index element", () => {
+    const f = readonlyArray.findLastIndex<number> ((a, i) =>
       pipe (i, number.isOdd, boolean.and (a > 1)),
     )
 
@@ -247,11 +235,9 @@ describe ("every", () => {
     expect (pipe ([1, 2, 3], f)).toBe (false)
     expect (pipe ([2, 4, 6], f)).toBe (true)
   })
-})
 
-describe ("everyWithIndex", () => {
-  it ("should return `true` if every element match predicate", () => {
-    const f = readonlyArray.everyWithIndex<number> ((i, a) =>
+  it ("should return `true` if every element match predicate with index", () => {
+    const f = readonlyArray.every<number> ((a, i) =>
       pipe (i, number.lessThan (3), pipe (a, number.lessThan (2), boolean.and)),
     )
 
@@ -272,11 +258,9 @@ describe ("exists", () => {
     expect (pipe ([1, 2, 3], f)).toBe (true)
     expect (pipe ([1, 3, 5], f)).toBe (false)
   })
-})
 
-describe ("existsWithIndex", () => {
-  it ("should return `true` if array has element which matches predicate", () => {
-    const f = readonlyArray.existsWithIndex ((i, a) =>
+  it ("should return `true` if array has element which matches predicate with index", () => {
+    const f = readonlyArray.exists ((a, i) =>
       pipe (i, number.isEven, pipe (a, number.lessThan (2), boolean.and)),
     )
 
@@ -476,6 +460,61 @@ describe ("chunksOf", () => {
     expect (pipe ([1, 2, 3], readonlyArray.chunksOf (2))).toEqual ([[1, 2], [3]])
     expect (pipe ([1, 2, 3], readonlyArray.chunksOf (3))).toEqual ([[1, 2, 3]])
     expect (pipe ([1, 2, 3], readonlyArray.chunksOf (4))).toEqual ([[1, 2, 3]])
+  })
+})
+
+describe ("takeLeftWhile", () => {
+  it ("should take elements from the start of an array while predicate holds true", () => {
+    const f = readonlyArray.takeLeftWhile<number> ((a, i) => a + i < 6)
+    expect (pipe ([], f)).toEqual ([])
+    expect (pipe ([1, 2, 3], f)).toEqual ([1, 2, 3])
+    expect (pipe ([1, 2, 3, 4, 5], f)).toEqual ([1, 2, 3])
+    expect (pipe ([6, 7, 8], f)).toEqual ([])
+  })
+})
+
+describe ("takeLeft", () => {
+  it ("should take n elements from the start of an array", () => {
+    expect (pipe ([], readonlyArray.takeLeft (0))).toEqual ([])
+    expect (pipe ([], readonlyArray.takeLeft (2))).toEqual ([])
+    expect (pipe ([], readonlyArray.takeLeft (-2))).toEqual ([])
+    expect (pipe ([1, 2, 3], readonlyArray.takeLeft (0))).toEqual ([])
+    expect (pipe ([1, 2, 3], readonlyArray.takeLeft (2))).toEqual ([1, 2])
+    expect (pipe ([1, 2, 3], readonlyArray.takeLeft (-2))).toEqual ([])
+  })
+})
+
+describe ("takeRightWhile", () => {
+  it ("should take elements from the end of an array while predicate holds true", () => {
+    expect (
+      pipe (
+        [],
+        readonlyArray.takeRightWhile ((a, i) => a + i > 0),
+      ),
+    ).toEqual ([])
+    expect (
+      pipe (
+        [1, 2, 3],
+        readonlyArray.takeRightWhile ((a, i) => a + i > 0),
+      ),
+    ).toEqual ([1, 2, 3])
+    expect (
+      pipe (
+        [1, 2, 3, 4, 5],
+        readonlyArray.takeRightWhile ((a, i) => a + i > 3),
+      ),
+    ).toEqual ([3, 4, 5])
+  })
+})
+
+describe ("takeRight", () => {
+  it ("should take n elements from the end of an array", () => {
+    expect (pipe ([], readonlyArray.takeRight (0))).toEqual ([])
+    expect (pipe ([], readonlyArray.takeRight (2))).toEqual ([])
+    expect (pipe ([], readonlyArray.takeRight (-2))).toEqual ([])
+    expect (pipe ([1, 2, 3], readonlyArray.takeRight (0))).toEqual ([])
+    expect (pipe ([1, 2, 3], readonlyArray.takeRight (2))).toEqual ([2, 3])
+    expect (pipe ([1, 2, 3], readonlyArray.takeRight (-2))).toEqual ([])
   })
 })
 

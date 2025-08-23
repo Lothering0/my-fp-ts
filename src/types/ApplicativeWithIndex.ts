@@ -9,12 +9,12 @@ export interface ApplicativeWithIndex<F extends Hkt, I>
   readonly apWithIndex: <S, E1, A>(
     fa: Kind<F, S, E1, A>,
   ) => <E2, B>(
-    self: Kind<F, S, E2, (i: I, a: A) => B>,
+    self: Kind<F, S, E2, (a: A, i: I) => B>,
   ) => Kind<F, S, E1 | E2, B>
   /** Alias for `apWithIndex` */
   readonly applyWithIndex: ApplicativeWithIndex<F, I>["apWithIndex"]
   readonly flapWithIndex: <S, E1, A, B>(
-    fiab: Kind<F, S, E1, (i: I, a: A) => B>,
+    fiab: Kind<F, S, E1, (a: A, i: I) => B>,
   ) => <E2>(self: Kind<F, S, E2, A>) => Kind<F, S, E1 | E2, B>
   /** Alias for `flapWithIndex` */
   readonly flipApplyWithIndex: ApplicativeWithIndex<F, I>["flapWithIndex"]

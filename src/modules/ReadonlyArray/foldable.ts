@@ -12,30 +12,22 @@ export const FoldableWithIndex: foldableWithIndex.FoldableWithIndex<
   number
 > = {
   ...Foldable,
-  reduceWithIndex: (b, ibab) => self =>
-    self.reduce ((b, a, i) => ibab (i, b, a), b),
-  reduceRightWithIndex: (b, iabb) => self =>
-    self.reduceRight ((b, a, i) => iabb (i, a, b), b),
+  reduceWithIndex: (b, baib) => self =>
+    self.reduce ((b, a, i) => baib (b, a, i), b),
+  reduceRightWithIndex: (b, abib) => self =>
+    self.reduceRight ((b, a, i) => abib (a, b, i), b),
 }
 
 export const reduce: {
-  <A, B>(b: B, bab: (b: B, a: A) => B): (self: ReadonlyArray<A>) => B
-} = Foldable.reduce
-
-export const reduceWithIndex: {
   <A, B>(
     b: B,
-    ibab: (i: number, b: B, a: A) => B,
+    baib: (b: B, a: A, i: number) => B,
   ): (self: ReadonlyArray<A>) => B
 } = FoldableWithIndex.reduceWithIndex
 
 export const reduceRight: {
-  <A, B>(b: B, abb: (a: A, b: B) => B): (self: ReadonlyArray<A>) => B
-} = Foldable.reduceRight
-
-export const reduceRightWithIndex: {
   <A, B>(
     b: B,
-    iabb: (i: number, a: A, b: B) => B,
+    iabb: (a: A, b: B, i: number) => B,
   ): (self: ReadonlyArray<A>) => B
 } = FoldableWithIndex.reduceRightWithIndex
