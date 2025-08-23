@@ -1,7 +1,7 @@
 import { Hkt } from "../../types/Hkt"
 
 export interface TreeHkt extends Hkt {
-  readonly type: Tree<this["_A"]>
+  readonly type: Tree<this["_in"]>
 }
 
 export interface Tree<A> {

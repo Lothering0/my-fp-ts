@@ -1,7 +1,7 @@
 import { Hkt } from "../../types/Hkt"
 
 export interface PredicateHkt extends Hkt {
-  readonly type: Predicate<this["_A"]>
+  readonly type: Predicate<this["_in"]>
 }
 
 export interface Predicate<A> {

@@ -1,7 +1,7 @@
 import { Hkt } from "../../types/Hkt"
 
 export interface ResultHkt extends Hkt {
-  readonly type: Result<this["_E"], this["_A"]>
+  readonly type: Result<this["_collectable"], this["_in"]>
 }
 
 export type Result<E, A> = Failure<E> | Success<A>

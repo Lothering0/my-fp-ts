@@ -2,7 +2,7 @@ import * as sync from "../Sync"
 import { Hkt } from "../../types/Hkt"
 
 export interface AsyncHkt extends Hkt {
-  readonly type: Async<this["_A"]>
+  readonly type: Async<this["_in"]>
 }
 
 export interface Async<A> extends sync.Sync<Promise<A>> {}

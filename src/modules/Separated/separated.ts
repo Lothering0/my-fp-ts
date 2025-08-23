@@ -1,7 +1,7 @@
 import { Hkt } from "../../types/Hkt"
 
 export interface SeparatedHkt extends Hkt {
-  readonly type: Separated<this["_E"], this["_A"]>
+  readonly type: Separated<this["_collectable"], this["_in"]>
 }
 
 export interface Separated<E, A> {

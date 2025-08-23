@@ -8,7 +8,7 @@ import { constant } from "../../utils/constant"
 import { flow } from "../../utils/flow"
 
 export interface AsyncOptionHkt extends Hkt {
-  readonly type: AsyncOption<this["_A"]>
+  readonly type: AsyncOption<this["_in"]>
 }
 
 export interface AsyncOption<A> extends async.Async<option.Option<A>> {}

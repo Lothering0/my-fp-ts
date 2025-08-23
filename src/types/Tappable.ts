@@ -5,13 +5,17 @@ import { Monad } from "./Monad"
 import { TypeClass } from "./TypeClass"
 
 export interface Tappable<F extends Hkt> extends TypeClass<F> {
-  readonly tap: <S, E1, A>(
-    f: (a: A) => Kind<F, S, E1, unknown>,
-  ) => <E2>(self: Kind<F, S, E2, A>) => Kind<F, S, E1 | E2, A>
+  readonly tap: <In, Collectable1, Fixed>(
+    f: (a: In) => Kind<F, unknown, Collectable1, Fixed>,
+  ) => <Collectable2>(
+    self: Kind<F, In, Collectable2, Fixed>,
+  ) => Kind<F, In, Collectable1 | Collectable2, Fixed>
 
-  readonly tapSync: <A>(
-    f: (a: A) => Sync<unknown>,
-  ) => <S, E>(self: Kind<F, S, E, A>) => Kind<F, S, E, A>
+  readonly tapSync: <In>(
+    f: (a: In) => Sync<unknown>,
+  ) => <Collectable, Fixed>(
+    self: Kind<F, In, Collectable, Fixed>,
+  ) => Kind<F, In, Collectable, Fixed>
 }
 
 export const createTappable: {

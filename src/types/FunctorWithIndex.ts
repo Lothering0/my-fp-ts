@@ -1,8 +1,10 @@
 import { Functor } from "./Functor"
 import { Hkt, Kind } from "./Hkt"
 
-export interface FunctorWithIndex<F extends Hkt, I> extends Functor<F> {
-  readonly mapWithIndex: <A, B>(
-    iab: (a: A, i: I) => B,
-  ) => <S, E>(self: Kind<F, S, E, A>) => Kind<F, S, E, B>
+export interface FunctorWithIndex<F extends Hkt, Index> extends Functor<F> {
+  readonly mapWithIndex: <In, Out>(
+    iab: (a: In, i: Index) => Out,
+  ) => <Collectable, Fixed>(
+    self: Kind<F, In, Collectable, Fixed>,
+  ) => Kind<F, Out, Collectable, Fixed>
 }

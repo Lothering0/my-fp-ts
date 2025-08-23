@@ -2,6 +2,6 @@ import { Prettify } from "./utils"
 
 export type DoObjectKey = string
 
-export type DoObject<N extends DoObjectKey, A, B> = Prettify<{
-  readonly [K in N | keyof A]: K extends keyof A ? A[K] : B
+export type DoObject<N extends DoObjectKey, In, Out> = Prettify<{
+  readonly [K in N | keyof In]: K extends keyof In ? In[K] : Out
 }>

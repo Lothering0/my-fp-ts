@@ -8,7 +8,7 @@ import { pipe } from "../../src/utils/flow"
 export const describeFunctorLaws: {
   <F extends Hkt>(
     Functor: Functor<F>,
-    fas: NonEmptyReadonlyArray<Kind<F, unknown, unknown, number>>,
+    fas: NonEmptyReadonlyArray<Kind<F, number, unknown, unknown>>,
   ): void
 } = (Functor, fas) => {
   describe ("functor", () => {

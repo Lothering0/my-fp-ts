@@ -1,4 +1,4 @@
-export interface Semigroup<A> {
+export interface Semigroup<In> {
   /** Associative operation */
-  readonly combine: (y: A) => (x: A) => A
+  readonly combine: (y: In) => (x: In) => In
 }

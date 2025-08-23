@@ -3,15 +3,19 @@ import { Functor } from "./Functor"
 import { flip } from "../utils/flip"
 
 export interface Applicative<F extends Hkt> extends Functor<F> {
-  readonly of: <A>(a: A) => Kind<F, never, never, A>
-  readonly ap: <S, E1, A>(
-    fa: Kind<F, S, E1, A>,
-  ) => <E2, B>(self: Kind<F, S, E2, (a: A) => B>) => Kind<F, S, E1 | E2, B>
+  readonly of: <A>(a: A) => Kind<F, A>
+  readonly ap: <In, Collectable1, Fixed>(
+    fa: Kind<F, In, Collectable1, Fixed>,
+  ) => <Out, Collectable2>(
+    self: Kind<F, (a: In) => Out, Collectable2, Fixed>,
+  ) => Kind<F, Out, Collectable1 | Collectable2, Fixed>
   /** Alias for `ap` */
   readonly apply: Applicative<F>["ap"]
-  readonly flap: <S, E1, A, B>(
-    fab: Kind<F, S, E1, (a: A) => B>,
-  ) => <E2>(self: Kind<F, S, E2, A>) => Kind<F, S, E1 | E2, B>
+  readonly flap: <In, Out, Collectable1, Fixed>(
+    fab: Kind<F, (a: In) => Out, Collectable1, Fixed>,
+  ) => <Collectable2>(
+    self: Kind<F, In, Collectable2, Fixed>,
+  ) => Kind<F, Out, Collectable1 | Collectable2, Fixed>
   /** Alias for `flap` */
   readonly flipApply: Applicative<F>["flap"]
 }

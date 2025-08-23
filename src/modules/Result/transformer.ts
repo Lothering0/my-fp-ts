@@ -8,49 +8,57 @@ import { createApplicative } from "../../types/Applicative"
 import { createMonad, Monad } from "../../types/Monad"
 import { flow, pipe } from "../../utils/flow"
 
-export type ResultT<F extends Hkt, S, E, A> = Kind<
+export type ResultT<F extends Hkt, In, Collectable, Fixed> = Kind<
   F,
-  any,
-  S,
-  result.Result<E, A>
+  result.Result<Collectable, In>,
+  Fixed,
+  any
 >
 
 export interface ResultTHkt<F extends Hkt> extends Hkt {
-  readonly type: ResultT<F, this["_S"], this["_E"], this["_A"]>
+  readonly type: ResultT<F, this["_in"], this["_collectable"], this["_fixed"]>
 }
 
 export const transform = <F extends Hkt>(M: Monad<F>) => {
   type THkt = ResultTHkt<F>
 
   const succeed: {
-    <A, S>(a: A): Kind<THkt, S, never, A>
+    <In, Fixed>(a: In): Kind<THkt, In, never, Fixed>
   } = flow (result.succeed, M.of)
 
   const succeedKind: {
-    <A, S>(fe: Kind<F, never, S, A>): Kind<THkt, S, never, A>
+    <In, Fixed>(fe: Kind<F, In, Fixed, never>): Kind<THkt, In, never, Fixed>
   } = M.map (result.succeed)
 
   const fail: {
-    <S, E>(e: E): Kind<THkt, S, E, never>
+    <Collectable, Fixed>(e: Collectable): Kind<THkt, never, Collectable, Fixed>
   } = flow (result.fail, M.of)
 
   const failKind: {
-    <S, E>(fe: Kind<F, never, S, E>): Kind<THkt, S, E, never>
+    <Collectable, Fixed>(
+      fe: Kind<F, Collectable, Fixed, never>,
+    ): Kind<THkt, never, Collectable, Fixed>
   } = M.map (result.fail)
 
   const match: {
-    <S, R, E, A, B, C = B>(
-      onFailure: (e: E) => B,
-      onSuccess: (a: A) => C,
-    ): (self: Kind<THkt, S, E, A>) => Kind<F, R, S, B | C>
+    <In, Collectable, CollectableOut, Fixed1, Fixed2, Out = CollectableOut>(
+      onFailure: (e: Collectable) => CollectableOut,
+      onSuccess: (a: In) => Out,
+    ): (
+      self: Kind<THkt, In, Collectable, Fixed1>,
+    ) => Kind<F, Out | CollectableOut, Fixed1, Fixed2>
   } = flow (result.match, M.map)
 
   const swap: {
-    <S, E, A>(self: Kind<THkt, S, E, A>): Kind<THkt, S, A, E>
+    <In, Collectable, Fixed>(
+      self: Kind<THkt, In, Collectable, Fixed>,
+    ): Kind<THkt, Collectable, In, Fixed>
   } = M.map (result.swap)
 
   const toUnion: {
-    <S, R, E, A>(self: Kind<THkt, S, E, A>): Kind<F, R, S, E | A>
+    <Fixed1, Fixed2, Collectable, In>(
+      self: Kind<THkt, In, Collectable, Fixed1>,
+    ): Kind<F, Collectable | In, Fixed1, Fixed2>
   } = M.map (result.toUnion)
 
   const Functor: Functor<THkt> = {
@@ -66,20 +74,29 @@ export const transform = <F extends Hkt>(M: Monad<F>) => {
     ...Functor,
     of: succeed,
     ap:
-      <S, E1, A>(fma: Kind<THkt, S, E1, A>) =>
-      <E2, B>(self: Kind<THkt, S, E2, (a: A) => B>) =>
+      <In, Collectable1, Fixed>(fma: Kind<THkt, In, Collectable1, Fixed>) =>
+      <Out, Collectable2>(
+        self: Kind<THkt, (a: In) => Out, Collectable2, Fixed>,
+      ) =>
         pipe (
           self,
-          M.map (mf => (mg: result.Result<E1, A>) => result.ap (mg) (mf)),
+          M.map (
+            mf => (mg: result.Result<Collectable1, In>) => result.ap (mg) (mf),
+          ),
           M.ap (fma),
         ),
   })
 
   const Monad = createMonad<THkt> ({
     ...Applicative,
-    flat: <S, E1, E2, A>(
-      self: Kind<THkt, S, E1, Kind<THkt, S, E2, A>>,
-    ): Kind<THkt, any, E1 | E2, A> =>
+    flat: <In, Collectable1, Collectable2, Fixed>(
+      self: Kind<
+        THkt,
+        Kind<THkt, In, Collectable2, Fixed>,
+        Collectable1,
+        Fixed
+      >,
+    ): Kind<THkt, In, Collectable1 | Collectable2, any> =>
       pipe (self, M.flatMap (result.match (flow (result.fail, M.of), identity))),
   })
 

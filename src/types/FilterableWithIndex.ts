@@ -6,53 +6,63 @@ import { FunctorWithIndex } from "./FunctorWithIndex"
 import { Filterable } from "./Filterable"
 import { flow } from "../utils/flow"
 
-export interface FilterableWithIndex<F extends Hkt, I>
-  extends FunctorWithIndex<F, I>,
+export interface FilterableWithIndex<F extends Hkt, Index>
+  extends FunctorWithIndex<F, Index>,
     Filterable<F> {
   /** Partitions and maps elements to new values */
-  readonly partitionMapWithIndex: <A, B, C>(
-    p: (a: A, i: I) => Result<B, C>,
-  ) => <S, E>(
-    self: Kind<F, S, E, A>,
-  ) => Separated<Kind<F, S, E, B>, Kind<F, S, E, C>>
+  readonly partitionMapWithIndex: <In, Out, CollectableOut>(
+    p: (a: In, i: Index) => Result<Out, CollectableOut>,
+  ) => <Collectable, Fixed>(
+    self: Kind<F, In, Collectable, Fixed>,
+  ) => Separated<
+    Kind<F, Out, Collectable, Fixed>,
+    Kind<F, CollectableOut, Collectable, Fixed>
+  >
 
-  readonly partitionWithIndex: <A>(
-    p: (a: A, i: I) => boolean,
-  ) => <S, E>(
-    self: Kind<F, S, E, A>,
-  ) => Separated<Kind<F, S, E, A>, Kind<F, S, E, A>>
+  readonly partitionWithIndex: <In>(
+    p: (a: In, i: Index) => boolean,
+  ) => <Collectable, Fixed>(
+    self: Kind<F, In, Collectable, Fixed>,
+  ) => Separated<
+    Kind<F, In, Collectable, Fixed>,
+    Kind<F, In, Collectable, Fixed>
+  >
 
   /** Removes element if predicate function returns `none`. Otherwise maps it to value of `some` */
-  readonly filterMapWithIndex: <A, B>(
-    p: (a: A, i: I) => Option<B>,
-  ) => <S, E>(self: Kind<F, S, E, A>) => Kind<F, S, E, B>
+  readonly filterMapWithIndex: <In, Out>(
+    p: (a: In, i: Index) => Option<Out>,
+  ) => <Collectable, Fixed>(
+    self: Kind<F, In, Collectable, Fixed>,
+  ) => Kind<F, Out, Collectable, Fixed>
 
-  readonly filterWithIndex: <A>(
-    p: (a: A, i: I) => boolean,
-  ) => <S, E>(self: Kind<F, S, E, A>) => Kind<F, S, E, A>
+  readonly filterWithIndex: <In>(
+    p: (a: In, i: Index) => boolean,
+  ) => <Collectable, Fixed>(
+    self: Kind<F, In, Collectable, Fixed>,
+  ) => Kind<F, In, Collectable, Fixed>
 }
 
-export const createFilterableWithIndex = <F extends Hkt, I>(
-  Filterable: FunctorWithIndex<F, I> & Filterable<F>,
-): FilterableWithIndex<F, I> => {
+export const createFilterableWithIndex = <F extends Hkt, Index>(
+  Filterable: FunctorWithIndex<F, Index> & Filterable<F>,
+): FilterableWithIndex<F, Index> => {
   const { compact, separate, mapWithIndex } = Filterable
 
   const filterMapWithIndex: FilterableWithIndex<
     F,
-    I
+    Index
   >["filterMapWithIndex"] = p => flow (mapWithIndex (p), compact)
 
-  const filterWithIndex: FilterableWithIndex<F, I>["filterWithIndex"] = p =>
+  const filterWithIndex: FilterableWithIndex<F, Index>["filterWithIndex"] = p =>
     filterMapWithIndex ((a, i) => p (a, i) ? some (a) : none)
 
   const partitionMapWithIndex: FilterableWithIndex<
     F,
-    I
+    Index
   >["partitionMapWithIndex"] = p => flow (mapWithIndex (p), separate)
 
   const partitionWithIndex: FilterableWithIndex<
     F,
-    I
+    Index
   >["partitionWithIndex"] = p =>
     partitionMapWithIndex ((a, i) => p (a, i) ? succeed (a) : fail (a))
 

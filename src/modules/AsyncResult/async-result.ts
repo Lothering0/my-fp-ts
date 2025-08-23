@@ -7,7 +7,7 @@ import { flow, pipe } from "../../utils/flow"
 import { Hkt } from "../../types/Hkt"
 
 export interface AsyncResultHkt extends Hkt {
-  readonly type: AsyncResult<this["_E"], this["_A"]>
+  readonly type: AsyncResult<this["_collectable"], this["_in"]>
 }
 
 export interface AsyncResult<E, A> extends async.Async<result.Result<E, A>> {}

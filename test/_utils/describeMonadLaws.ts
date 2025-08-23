@@ -6,12 +6,12 @@ import { pipe, flow } from "../../src/utils/flow"
 export const describeMonadLaws: {
   <F extends Hkt>(
     Monad: Monad<F>,
-    fas: NonEmptyReadonlyArray<Kind<F, unknown, unknown, number>>,
+    fas: NonEmptyReadonlyArray<Kind<F, number, unknown, unknown>>,
     afbs: NonEmptyReadonlyArray<
-      (x: number) => Kind<F, unknown, unknown, number>
+      (x: number) => Kind<F, number, unknown, unknown>
     >,
     bfcs: NonEmptyReadonlyArray<
-      (x: number) => Kind<F, unknown, unknown, number>
+      (x: number) => Kind<F, number, unknown, unknown>
     >,
   ): void
 } = (Monad, fas, afbs, bfcs) => {

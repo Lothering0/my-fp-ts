@@ -1,5 +1,5 @@
 import { Semigroup } from "./Semigroup"
 
-export interface Monoid<A> extends Semigroup<A> {
-  readonly empty: A
+export interface Monoid<In> extends Semigroup<In> {
+  readonly empty: In
 }

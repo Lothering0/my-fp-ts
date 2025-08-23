@@ -9,25 +9,37 @@ import { flow } from "../utils/flow"
 
 export interface Filterable<F extends Hkt> extends Functor<F>, Compactable<F> {
   /** Partitions and maps elements to new values */
-  readonly partitionMap: <A, B, C>(
-    p: (a: A) => Result<B, C>,
-  ) => <S, E>(
-    self: Kind<F, S, E, A>,
-  ) => Separated<Kind<F, S, E, B>, Kind<F, S, E, C>>
+  readonly partitionMap: <In, Out, CollectableOut>(
+    p: (a: In) => Result<Out, CollectableOut>,
+  ) => <Collectable, Fixed>(
+    self: Kind<F, In, Collectable, Fixed>,
+  ) => Separated<
+    Kind<F, Out, Collectable, Fixed>,
+    Kind<F, CollectableOut, Collectable, Fixed>
+  >
 
-  readonly partition: <A>(
-    p: Predicate<A>,
-  ) => <S, E>(
-    self: Kind<F, S, E, A>,
-  ) => Separated<Kind<F, S, E, A>, Kind<F, S, E, A>>
+  readonly partition: <In>(
+    p: Predicate<In>,
+  ) => <Collectable, Fixed>(
+    self: Kind<F, In, Collectable, Fixed>,
+  ) => Separated<
+    Kind<F, In, Collectable, Fixed>,
+    Kind<F, In, Collectable, Fixed>
+  >
 
   /** Removes element if predicate function returns `none`. Otherwise maps it to value of `some` */
-  readonly filterMap: <A, B>(
-    p: (a: A) => Option<B>,
-  ) => <S, E>(self: Kind<F, S, E, A>) => Kind<F, S, E, B>
+  readonly filterMap: <In, Out>(
+    p: (a: In) => Option<Out>,
+  ) => <Fixed, Collectable>(
+    self: Kind<F, In, Collectable, Fixed>,
+  ) => Kind<F, Out, Collectable, Fixed>
 
   readonly filter: {
-    <A>(p: Predicate<A>): <S, E>(self: Kind<F, S, E, A>) => Kind<F, S, E, A>
+    <In>(
+      p: Predicate<In>,
+    ): <Collectable, Fixed>(
+      self: Kind<F, In, Collectable, Fixed>,
+    ) => Kind<F, In, Collectable, Fixed>
   }
 }
 

@@ -4,12 +4,12 @@ import { Semigroup } from "./Semigroup"
 import { Monoid } from "./Monoid"
 import { constant, constTrue } from "../utils/constant"
 
-export interface Eq<A> {
-  readonly equals: (x: A) => (y: A) => boolean
+export interface Eq<In> {
+  readonly equals: (x: In) => (y: In) => boolean
 }
 
 export interface EqHkt extends Hkt {
-  readonly type: Eq<this["_A"]>
+  readonly type: Eq<this["_in"]>
 }
 
 export const EqStrict: Eq<unknown> = {
@@ -23,11 +23,11 @@ export const Contravariant: contravariant.Contravariant<EqHkt> = {
 }
 
 export const contramap: {
-  <A, B>(ba: (b: B) => A): (self: Eq<A>) => Eq<B>
+  <In, Out>(ba: (b: Out) => In): (self: Eq<In>) => Eq<Out>
 } = Contravariant.contramap
 
 export const getSemigroup: {
-  <A>(): Semigroup<Eq<A>>
+  <In>(): Semigroup<Eq<In>>
 } = () => ({
   combine: Eq1 => Eq2 => ({
     equals: x => y => EqStrict.equals (Eq1.equals (x) (y)) (Eq2.equals (x) (y)),
@@ -39,7 +39,7 @@ export const empty: Eq<never> = {
 }
 
 export const getMonoid: {
-  <A>(): Monoid<Eq<A>>
+  <In>(): Monoid<Eq<In>>
 } = () => ({
   ...getSemigroup (),
   empty,

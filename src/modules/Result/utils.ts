@@ -22,7 +22,7 @@ export const match: {
     : pipe (self, success, onSuccess)
 
 export const toUnion: {
-  <E, A>(self: Result<E, A>): E | A
+  <A, E>(self: Result<A, E>): A | E
 } = match (identity, identity)
 
 export const swap: {

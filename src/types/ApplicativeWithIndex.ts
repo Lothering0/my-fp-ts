@@ -3,29 +3,31 @@ import { Applicative } from "./Applicative"
 import { FunctorWithIndex } from "./FunctorWithIndex"
 import { flip } from "../utils/flip"
 
-export interface ApplicativeWithIndex<F extends Hkt, I>
-  extends FunctorWithIndex<F, I>,
+export interface ApplicativeWithIndex<F extends Hkt, Index>
+  extends FunctorWithIndex<F, Index>,
     Applicative<F> {
-  readonly apWithIndex: <S, E1, A>(
-    fa: Kind<F, S, E1, A>,
-  ) => <E2, B>(
-    self: Kind<F, S, E2, (a: A, i: I) => B>,
-  ) => Kind<F, S, E1 | E2, B>
+  readonly apWithIndex: <In, Collectable1, Fixed>(
+    fa: Kind<F, In, Collectable1, Fixed>,
+  ) => <Out, Collectable2>(
+    self: Kind<F, (a: In, i: Index) => Out, Collectable2, Fixed>,
+  ) => Kind<F, Out, Collectable1 | Collectable2, Fixed>
   /** Alias for `apWithIndex` */
-  readonly applyWithIndex: ApplicativeWithIndex<F, I>["apWithIndex"]
-  readonly flapWithIndex: <S, E1, A, B>(
-    fiab: Kind<F, S, E1, (a: A, i: I) => B>,
-  ) => <E2>(self: Kind<F, S, E2, A>) => Kind<F, S, E1 | E2, B>
+  readonly applyWithIndex: ApplicativeWithIndex<F, Index>["apWithIndex"]
+  readonly flapWithIndex: <In, Out, Collectable1, Fixed>(
+    fiab: Kind<F, (a: In, i: Index) => Out, Collectable1, Fixed>,
+  ) => <Collectable2>(
+    self: Kind<F, In, Collectable2, Fixed>,
+  ) => Kind<F, Out, Collectable1 | Collectable2, Fixed>
   /** Alias for `flapWithIndex` */
-  readonly flipApplyWithIndex: ApplicativeWithIndex<F, I>["flapWithIndex"]
+  readonly flipApplyWithIndex: ApplicativeWithIndex<F, Index>["flapWithIndex"]
 }
 
-export const createApplicativeWithIndex = <F extends Hkt, I>(
+export const createApplicativeWithIndex = <F extends Hkt, Index>(
   Applicative: Applicative<F> &
-    FunctorWithIndex<F, I> &
-    Pick<ApplicativeWithIndex<F, I>, "apWithIndex">,
-): ApplicativeWithIndex<F, I> => {
-  const flapWithIndex: ApplicativeWithIndex<F, I>["flapWithIndex"] = flip (
+    FunctorWithIndex<F, Index> &
+    Pick<ApplicativeWithIndex<F, Index>, "apWithIndex">,
+): ApplicativeWithIndex<F, Index> => {
+  const flapWithIndex: ApplicativeWithIndex<F, Index>["flapWithIndex"] = flip (
     Applicative.apWithIndex,
   ) as typeof flapWithIndex
 

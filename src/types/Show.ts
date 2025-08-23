@@ -2,12 +2,12 @@ import * as contravariant from "./Contravariant"
 import { Hkt } from "./Hkt"
 import { flow } from "../utils/flow"
 
-export interface Show<A> {
-  readonly show: (a: A) => string
+export interface Show<In> {
+  readonly show: (a: In) => string
 }
 
 export interface ShowHkt extends Hkt {
-  readonly type: Show<this["_A"]>
+  readonly type: Show<this["_in"]>
 }
 
 export const Contravariant: contravariant.Contravariant<ShowHkt> = {

@@ -7,32 +7,41 @@ import { flow, pipe } from "../../utils/flow"
 import { identity } from "../Identity"
 import { LazyArg } from "../../types/utils"
 
-export type OptionT<F extends Hkt, S, E, A> = Kind<F, S, E, option.Option<A>>
+export type OptionT<F extends Hkt, In, Collectable, Fixed> = Kind<
+  F,
+  option.Option<In>,
+  Collectable,
+  Fixed
+>
 
 export interface OptionTHkt<F extends Hkt> extends Hkt {
-  readonly type: OptionT<F, this["_S"], this["_E"], this["_A"]>
+  readonly type: OptionT<F, this["_in"], this["_collectable"], this["_fixed"]>
 }
 
 export const transform = <F extends Hkt>(M: Monad<F>) => {
   type THkt = OptionTHkt<F>
 
   const some: {
-    <S, E, A>(a: A): Kind<THkt, S, E, A>
+    <In, Collectable, Fixed>(a: In): Kind<THkt, In, Collectable, Fixed>
   } = flow (option.some, M.of)
 
   const zero: {
-    <S, E, A = never>(): Kind<THkt, S, E, A>
+    <Collectable, Fixed>(): Kind<THkt, never, Collectable, Fixed>
   } = () => M.of (option.none)
 
   const fromKind: {
-    <S, E, A>(ma: Kind<F, S, E, A>): Kind<THkt, S, E, A>
+    <In, Collectable, Fixed>(
+      ma: Kind<F, In, Collectable, Fixed>,
+    ): Kind<THkt, In, Collectable, Fixed>
   } = M.map (option.some)
 
   const match: {
-    <S, E, A, B, C = B>(
-      onNone: LazyArg<B>,
-      onSome: (a: A) => C,
-    ): (self: Kind<THkt, S, E, A>) => Kind<F, S, E, B | C>
+    <In, Out1, Collectable, Fixed, Out2 = Out1>(
+      onNone: LazyArg<Out1>,
+      onSome: (a: In) => Out2,
+    ): (
+      self: Kind<THkt, In, Collectable, Fixed>,
+    ) => Kind<F, Out1 | Out2, Collectable, Fixed>
   } = flow (option.match, M.map)
 
   const Functor: Functor<THkt> = {
@@ -43,13 +52,13 @@ export const transform = <F extends Hkt>(M: Monad<F>) => {
     ...Functor,
     of: some,
     ap:
-      <S, E1, A>(fma: Kind<THkt, S, E1, A>) =>
-      <E2, B>(
-        self: Kind<THkt, S, E2, (a: A) => B>,
-      ): Kind<THkt, S, E1 | E2, B> =>
+      <In, Collectable1, Fixed>(fma: Kind<THkt, In, Collectable1, Fixed>) =>
+      <Collectable2, Out>(
+        self: Kind<THkt, (a: In) => Out, Collectable2, Fixed>,
+      ): Kind<THkt, Out, Collectable1 | Collectable2, Fixed> =>
         pipe (
           self,
-          M.map (mf => (mg: option.Option<A>) => option.ap (mg) (mf)),
+          M.map (mf => (mg: option.Option<In>) => option.ap (mg) (mf)),
           M.ap (fma),
         ),
   })

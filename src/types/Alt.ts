@@ -2,7 +2,9 @@ import { Hkt, Kind } from "./Hkt"
 import { TypeClass } from "./TypeClass"
 
 export interface Alt<F extends Hkt> extends TypeClass<F> {
-  readonly orElse: <S, E1, A>(
-    that: Kind<F, S, E1, A>,
-  ) => <E2, B>(self: Kind<F, S, E1, B>) => Kind<F, S, E2 | E1, A | B>
+  readonly orElse: <In, Collectable1, Fixed>(
+    that: Kind<F, In, Collectable1, Fixed>,
+  ) => <Out, Collectable2>(
+    self: Kind<F, Out, Collectable1, Fixed>,
+  ) => Kind<F, In | Out, Collectable1 | Collectable2, Fixed>
 }

@@ -3,14 +3,18 @@ import { Functor } from "./Functor"
 import { flow } from "../utils/flow"
 
 export interface Bifunctor<F extends Hkt> extends Functor<F> {
-  readonly mapLeft: <E, D>(
-    ed: (e: E) => D,
-  ) => <S, A>(self: Kind<F, S, E, A>) => Kind<F, S, D, A>
+  readonly mapLeft: <CollectableIn, CollectableOut>(
+    ed: (e: CollectableIn) => CollectableOut,
+  ) => <In, Fixed>(
+    self: Kind<F, In, CollectableIn, Fixed>,
+  ) => Kind<F, In, CollectableOut, Fixed>
 
-  readonly bimap: <E, A, D, B>(
-    ed: (e: E) => D,
-    ab: (a: A) => B,
-  ) => <S>(self: Kind<F, S, E, A>) => Kind<F, S, D, B>
+  readonly bimap: <CollectableIn, CollectableOut, In, Out>(
+    ed: (e: CollectableIn) => CollectableOut,
+    ab: (a: In) => Out,
+  ) => <Fixed>(
+    self: Kind<F, In, CollectableIn, Fixed>,
+  ) => Kind<F, Out, CollectableOut, Fixed>
 }
 
 export const createBifunctor = <F extends Hkt>(

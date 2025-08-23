@@ -1,25 +1,27 @@
 import { Hkt, Kind } from "./Hkt"
 
-export type Prettify<A> = {
-  [K in keyof A]: A[K]
+export type Prettify<In> = {
+  [K in keyof In]: In[K]
 } & {}
 
-export interface LazyArg<A> {
-  (): A
+export interface LazyArg<Out> {
+  (): Out
 }
 
 export interface NaturalTransformation<F extends Hkt, G extends Hkt> {
-  <S, E, A>(fa: Kind<F, S, E, A>): Kind<G, S, E, A>
+  <In, Collectable, Fixed>(
+    fa: Kind<F, In, Collectable, Fixed>,
+  ): Kind<G, In, Collectable, Fixed>
 }
 
-export interface Refinement<A, B extends A> {
-  (a: A): a is B
+export interface Refinement<In, Out extends In> {
+  (a: In): a is Out
 }
 
-export interface RefinementWithIndex<A, B extends A, I> {
-  (a: A, i: I): a is B
+export interface RefinementWithIndex<In, Out extends In, Index> {
+  (a: In, i: Index): a is Out
 }
 
-export type TheseOrAnyString<A extends string> = A | (string & {})
+export type TheseOrAnyString<Out extends string> = Out | (string & {})
 
-export type TheseOrAnyNumber<A extends number> = A | (number & {})
+export type TheseOrAnyNumber<Out extends number> = Out | (number & {})

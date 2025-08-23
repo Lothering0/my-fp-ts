@@ -5,7 +5,7 @@ import { pipe } from "../../utils/flow"
 import { Hkt } from "../../types/Hkt"
 
 export interface SyncOptionHkt extends Hkt {
-  readonly type: SyncOption<this["_A"]>
+  readonly type: SyncOption<this["_in"]>
 }
 
 export interface SyncOption<A> extends sync.Sync<option.Option<A>> {}

@@ -2,8 +2,8 @@ import { Hkt } from "../../types/Hkt"
 
 export interface ReadonlyRecordHkt extends Hkt {
   readonly type: ReadonlyRecord<
-    this["_S"] extends string ? this["_S"] : never,
-    this["_A"]
+    this["_fixed"] extends string ? this["_fixed"] : never,
+    this["_in"]
   >
 }
 

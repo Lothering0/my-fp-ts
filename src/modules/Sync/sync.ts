@@ -1,7 +1,7 @@
 import { Hkt } from "../../types/Hkt"
 
 export interface SyncHkt extends Hkt {
-  readonly type: Sync<this["_A"]>
+  readonly type: Sync<this["_in"]>
 }
 
 export interface Sync<A> {

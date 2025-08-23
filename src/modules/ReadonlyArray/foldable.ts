@@ -28,6 +28,6 @@ export const reduce: {
 export const reduceRight: {
   <A, B>(
     b: B,
-    iabb: (a: A, b: B, i: number) => B,
+    abib: (a: A, b: B, i: number) => B,
   ): (self: ReadonlyArray<A>) => B
 } = FoldableWithIndex.reduceRightWithIndex
