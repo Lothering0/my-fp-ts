@@ -3,12 +3,12 @@ import * as option from "./Option"
 import * as result from "./Result"
 import * as boolean from "./Boolean"
 import * as eq from "../types/Eq"
+import * as predicate from "./Predicate"
 import { flow, pipe } from "../utils/flow"
-import { Predicate } from "./Predicate"
 
 export interface Matching<E, A> {
   readonly Eq: eq.Eq<E>
-  readonly patterns: ReadonlyArray<[Predicate<E>, (e: E) => A]>
+  readonly patterns: ReadonlyArray<[predicate.Predicate<E>, (e: E) => A]>
   readonly value: E
 }
 
@@ -29,7 +29,7 @@ export const matchEq: {
 })
 
 export const on =
-  <E, A>(p: Predicate<E>, ea: (e: E) => A) =>
+  <E, A>(p: predicate.Predicate<E>, ea: (e: E) => A) =>
   <B>(self: Matching<E, B>): Matching<E, A | B> => ({
     ...self,
     patterns: pipe (
@@ -37,6 +37,13 @@ export const on =
       readonlyArray.append ([p, ea as (e: E) => A | B]),
     ),
   })
+
+export const onNot: {
+  <E, A>(
+    p: predicate.Predicate<E>,
+    ea: (e: E) => A,
+  ): <B>(self: Matching<E, B>) => Matching<E, A | B>
+} = (p, ea) => on (predicate.not (p), ea)
 
 export const whenEquals: {
   <E, A>(
@@ -46,6 +53,14 @@ export const whenEquals: {
   ): <B>(self: Matching<E, B>) => Matching<E, A | B>
 } = (Eq, pattern, ea) => on (Eq.equals (pattern), ea)
 
+export const whenNotEquals: {
+  <E, A>(
+    Eq: eq.Eq<E>,
+    pattern: NoInfer<E>,
+    ea: (e: E) => A,
+  ): <B>(self: Matching<E, B>) => Matching<E, A | B>
+} = (Eq, pattern, ea) => whenEquals (eq.inverse (Eq), pattern, ea)
+
 export const when: {
   <E, A>(
     pattern: NoInfer<E>,
@@ -53,12 +68,27 @@ export const when: {
   ): <B>(self: Matching<E, B>) => Matching<E, A | B>
 } = (pattern, ea) => self => whenEquals (self.Eq, pattern, ea) (self)
 
+export const whenNot: {
+  <E, A>(
+    pattern: NoInfer<E>,
+    ea: (e: E) => A,
+  ): <B>(self: Matching<E, B>) => Matching<E, A | B>
+} = (pattern, ea) => self => whenEquals (eq.inverse (self.Eq), pattern, ea) (self)
+
 export const whenInstance: {
   <E, A>(
     constructor: new (...args: unknown[]) => NoInfer<E>,
     ea: (e: E) => A,
   ): <B>(self: Matching<E, B>) => Matching<E, A | B>
 } = (constructor, ea) => on (e => e instanceof constructor, ea)
+
+export const whenNotInstance: {
+  <E, A>(
+    constructor: new (...args: unknown[]) => NoInfer<E>,
+    ea: (e: E) => A,
+  ): <B>(self: Matching<E, B>) => Matching<E, A | B>
+} = (constructor, ea) =>
+  on (e => pipe (e instanceof constructor, boolean.not), ea)
 
 export const getResult: {
   <E, A>(self: Matching<E, A>): result.Result<E, A>

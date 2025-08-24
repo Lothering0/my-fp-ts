@@ -16,6 +16,12 @@ export const EqStrict: Eq<unknown> = {
   equals: x => y => x === y,
 }
 
+export const inverse: {
+  <In>(Eq: Eq<In>): Eq<In>
+} = Eq => ({
+  equals: x => y => !Eq.equals (x) (y),
+})
+
 export const Contravariant: contravariant.Contravariant<EqHkt> = {
   contramap: ba => self => ({
     equals: x => y => self.equals (ba (x)) (ba (y)),

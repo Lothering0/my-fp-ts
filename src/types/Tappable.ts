@@ -37,13 +37,12 @@ export const createTappable: {
     pipe (
       Monad.Do,
       Monad.apS ("a", self),
-      Monad.flatMap (({ a }) =>
+      Monad.map (({ a }) =>
         pipe (
           a,
           f,
           sync => sync (), // From `Sync`
-          Monad.of,
-          Monad.flatMap (() => Monad.of (a)),
+          () => a,
         ),
       ),
     ),
