@@ -150,7 +150,7 @@ export const findLastIndex: {
 } = p => self =>
   pipe (
     self.findLastIndex ((a, i) => p (a, i)),
-    i => i > -1 ? option.some (i) : option.none,
+    number.matchNegative (option.zero, option.some),
   )
 
 /** Is `a` element of an array by `Eq` instance */
@@ -278,18 +278,12 @@ export const takeLeftWhile: {
   <A>(
     p: PredicateWithIndex<A, number>,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<A>
-} = p => {
-  const f: {
-    (i: number): typeof takeLeftWhile
-  } = i => p =>
-    matchLeft (
-      () => [],
-      (head, tail) =>
-        p (head, i) ? pipe (f (i + 1) (p) (tail), prepend (head)) : [],
-    )
-
-  return f (0) (p)
-}
+} = p => self =>
+  pipe (
+    self,
+    findIndex (flow (p, boolean.not)),
+    option.match (constant (self), i => slice (0, i) (self)),
+  )
 
 export const takeLeft: {
   (n: number): <A>(self: ReadonlyArray<A>) => ReadonlyArray<A>
@@ -299,17 +293,12 @@ export const takeRightWhile: {
   <A>(
     p: PredicateWithIndex<A, number>,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<A>
-} = p => self => {
-  const f: {
-    (i: number): typeof takeRightWhile
-  } = i => p =>
-    matchRight (
-      () => [],
-      (init, last) => p (last, i) ? pipe (f (i - 1) (p) (init), append (last)) : [],
-    )
-
-  return f (lastIndex (self)) (p) (self)
-}
+} = p => self =>
+  pipe (
+    self,
+    findLastIndex (flow (p, boolean.not)),
+    option.match (constant (self), i => slice (i - length (self) + 1) (self)),
+  )
 
 export const takeRight: {
   (n: number): <A>(self: ReadonlyArray<A>) => ReadonlyArray<A>
@@ -317,6 +306,60 @@ export const takeRight: {
   () => constant ([]),
   n => slice (-n),
 )
+
+export const dropLeftWhile: {
+  <A>(
+    p: PredicateWithIndex<A, number>,
+  ): (self: ReadonlyArray<A>) => ReadonlyArray<A>
+} = p => self =>
+  pipe (
+    self,
+    findIndex (flow (p, boolean.not)),
+    option.match (constant ([]), i => slice (i) (self)),
+  )
+
+export const dropLeft: {
+  (n: number): <A>(self: ReadonlyArray<A>) => ReadonlyArray<A>
+} = n => self => number.matchNonPositive (constant (self), n => slice (n) (self)) (n)
+
+export const dropRightWhile: {
+  <A>(
+    p: PredicateWithIndex<A, number>,
+  ): (self: ReadonlyArray<A>) => ReadonlyArray<A>
+} = p => self =>
+  pipe (
+    self,
+    findLastIndex (flow (p, boolean.not)),
+    option.match (constant ([]), i => slice (0, i + 1) (self)),
+  )
+
+export const dropRight: {
+  (n: number): <A>(self: ReadonlyArray<A>) => ReadonlyArray<A>
+} = n => self =>
+  number.matchNonPositive (constant (self), n => slice (0, -n) (self)) (n)
+
+export const dropBothWhile: {
+  <A>(
+    p: PredicateWithIndex<A, number>,
+  ): (self: ReadonlyArray<A>) => ReadonlyArray<A>
+} = p => self =>
+  slice (
+    pipe (
+      self,
+      findIndex (flow (p, boolean.not)),
+      option.getOrElse (constant (length (self))),
+    ),
+    pipe (
+      self,
+      findLastIndex (flow (p, boolean.not)),
+      option.match (constant (0), number.add (1)),
+    ),
+  ) (self)
+
+export const dropBoth: {
+  (n: number): <A>(self: ReadonlyArray<A>) => ReadonlyArray<A>
+} = n => self =>
+  number.matchNonPositive (constant (self), n => slice (0, -n) (self)) (n)
 
 export const chunksOf: {
   (

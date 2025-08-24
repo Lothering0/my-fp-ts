@@ -518,6 +518,65 @@ describe ("takeRight", () => {
   })
 })
 
+describe ("dropLeftWhile", () => {
+  it ("should drop elements from the start of an array while predicate holds true", () => {
+    const f = readonlyArray.dropLeftWhile<number> ((a, i) => a + i < 6)
+    expect (pipe ([], f)).toEqual ([])
+    expect (pipe ([1, 2, 3], f)).toEqual ([])
+    expect (pipe ([1, 2, 3, 4, 5], f)).toEqual ([4, 5])
+    expect (pipe ([6, 7, 8], f)).toEqual ([6, 7, 8])
+  })
+})
+
+describe ("dropLeft", () => {
+  it ("should drop n elements from the start of an array", () => {
+    expect (pipe ([], readonlyArray.dropLeft (0))).toEqual ([])
+    expect (pipe ([], readonlyArray.dropLeft (2))).toEqual ([])
+    expect (pipe ([], readonlyArray.dropLeft (-2))).toEqual ([])
+    expect (pipe ([1, 2, 3], readonlyArray.dropLeft (0))).toEqual ([1, 2, 3])
+    expect (pipe ([1, 2, 3], readonlyArray.dropLeft (2))).toEqual ([3])
+    expect (pipe ([1, 2, 3], readonlyArray.dropLeft (-2))).toEqual ([1, 2, 3])
+  })
+})
+
+describe ("dropRightWhile", () => {
+  it ("should drop elements from the end of an array while predicate holds true", () => {
+    const f = readonlyArray.dropRightWhile<number> ((a, i) => a + i > 3)
+    expect (pipe ([], f)).toEqual ([])
+    expect (pipe ([1, 2], f)).toEqual ([1, 2])
+    expect (pipe ([1, 2, 3, 4, 5], f)).toEqual ([1, 2])
+    expect (pipe ([6, 7, 8], f)).toEqual ([])
+  })
+})
+
+describe ("dropRight", () => {
+  it ("should drop n elements from the end of an array", () => {
+    expect (pipe ([], readonlyArray.dropRight (0))).toEqual ([])
+    expect (pipe ([], readonlyArray.dropRight (2))).toEqual ([])
+    expect (pipe ([], readonlyArray.dropRight (-2))).toEqual ([])
+    expect (pipe ([1, 2, 3], readonlyArray.dropRight (0))).toEqual ([1, 2, 3])
+    expect (pipe ([1, 2, 3], readonlyArray.dropRight (2))).toEqual ([1])
+    expect (pipe ([1, 2, 3], readonlyArray.dropRight (-2))).toEqual ([1, 2, 3])
+  })
+})
+
+describe ("dropBothWhile", () => {
+  it ("should drop elements from the start and the end of an array while predicate holds true", () => {
+    const f = readonlyArray.dropBothWhile<number> (
+      (a, i) => a + i < 4 || a + i > 7,
+    )
+    expect (pipe ([], f)).toEqual ([])
+    expect (pipe ([1, 2], f)).toEqual ([])
+    expect (pipe ([1, 2, 3, 4, 5], f)).toEqual ([3, 4])
+    expect (
+      pipe (
+        [1, 2, 3, 4],
+        readonlyArray.dropBothWhile (flow (number.equals (3), boolean.not)),
+      ),
+    ).toEqual ([3])
+  })
+})
+
 describe ("comprehension", () => {
   it ("should correctly generate an array without predicate", () => {
     expect (
