@@ -1,6 +1,6 @@
 import * as tappableBoth from "../../types/TappableBoth"
+import * as sync from "../Sync"
 import { createTappable } from "../../types/Tappable"
-import { Sync } from "../Sync"
 import { Monad } from "./monad"
 import { fail, Result, ResultHkt, succeed } from "./result"
 import { pipe } from "../../utils/flow"
@@ -21,16 +21,7 @@ export const TappableBoth: tappableBoth.TappableBoth<ResultHkt> = {
       succeed,
     ),
   tapLeftSync: f =>
-    match (
-      e =>
-        pipe (
-          e,
-          f,
-          sync => sync (), // From `Sync`
-          () => fail (e),
-        ),
-      succeed,
-    ),
+    match (e => pipe (e, f, sync.execute, () => fail (e)), succeed),
 }
 
 export const tap: {
@@ -40,7 +31,7 @@ export const tap: {
 } = Tappable.tap
 
 export const tapSync: {
-  <A>(f: (a: A) => Sync<unknown>): <E>(self: Result<E, A>) => Result<E, A>
+  <A>(f: (a: A) => sync.Sync<unknown>): <E>(self: Result<E, A>) => Result<E, A>
 } = Tappable.tapSync
 
 export const tapLeft: {
@@ -50,5 +41,5 @@ export const tapLeft: {
 } = TappableBoth.tapLeft
 
 export const tapLeftSync: {
-  <E>(f: (e: E) => Sync<unknown>): <A>(self: Result<E, A>) => Result<E, A>
+  <E>(f: (e: E) => sync.Sync<unknown>): <A>(self: Result<E, A>) => Result<E, A>
 } = TappableBoth.tapLeftSync

@@ -5,6 +5,7 @@ import * as boolean from "./Boolean"
 import * as eq from "../types/Eq"
 import * as predicate from "./Predicate"
 import { flow, pipe } from "../utils/flow"
+import { Refinement } from "../types/utils"
 
 export interface Matching<E, A> {
   readonly Eq: eq.Eq<E>
@@ -28,7 +29,16 @@ export const matchEq: {
   value,
 })
 
-export const on =
+export const on: {
+  <E, D extends E, A>(
+    p: Refinement<E, D>,
+    ea: (e: E) => A,
+  ): <B>(self: Matching<E, B>) => Matching<E, A | B>
+  <E, A>(
+    p: predicate.Predicate<E>,
+    ea: (e: E) => A,
+  ): <B>(self: Matching<E, B>) => Matching<E, A | B>
+} =
   <E, A>(p: predicate.Predicate<E>, ea: (e: E) => A) =>
   <B>(self: Matching<E, B>): Matching<E, A | B> => ({
     ...self,
@@ -46,46 +56,45 @@ export const onNot: {
 } = (p, ea) => on (predicate.not (p), ea)
 
 export const whenEquals: {
-  <E, A>(
+  <E, D extends E, A>(
     Eq: eq.Eq<E>,
-    pattern: NoInfer<E>,
-    ea: (e: E) => A,
+    pattern: D,
+    da: (d: D) => A,
   ): <B>(self: Matching<E, B>) => Matching<E, A | B>
-} = (Eq, pattern, ea) => on (Eq.equals (pattern), ea)
+} = (Eq, pattern, da) => on (Eq.equals (pattern), da)
 
-export const whenNotEquals: {
-  <E, A>(
+export const whenNotEquals =
+  <E, const D extends E, A>(
     Eq: eq.Eq<E>,
-    pattern: NoInfer<E>,
-    ea: (e: E) => A,
-  ): <B>(self: Matching<E, B>) => Matching<E, A | B>
-} = (Eq, pattern, ea) => whenEquals (eq.inverse (Eq), pattern, ea)
+    pattern: D,
+    ea: (e: Exclude<E, D>) => A,
+  ) =>
+  <B>(self: Matching<E, B>): Matching<E, A | B> =>
+    whenEquals (eq.inverse (Eq), pattern as Exclude<E, D>, ea) (self)
 
 export const when: {
-  <E, A>(
-    pattern: NoInfer<E>,
-    ea: (e: E) => A,
+  <E, const D extends E, A>(
+    pattern: D,
+    ea: (e: D) => A,
   ): <B>(self: Matching<E, B>) => Matching<E, A | B>
 } = (pattern, ea) => self => whenEquals (self.Eq, pattern, ea) (self)
 
-export const whenNot: {
-  <E, A>(
-    pattern: NoInfer<E>,
-    ea: (e: E) => A,
-  ): <B>(self: Matching<E, B>) => Matching<E, A | B>
-} = (pattern, ea) => self => whenEquals (eq.inverse (self.Eq), pattern, ea) (self)
+export const whenNot =
+  <E, const D extends E, A>(pattern: D, ea: (e: Exclude<E, D>) => A) =>
+  <B>(self: Matching<E, B>): Matching<E, A | B> =>
+    whenEquals (eq.inverse (self.Eq), pattern as Exclude<E, D>, ea) (self)
 
 export const whenInstance: {
-  <E, A>(
-    constructor: new (...args: unknown[]) => NoInfer<E>,
-    ea: (e: E) => A,
+  <E, D extends E, A>(
+    constructor: new (...args: unknown[]) => D,
+    ea: (e: D) => A,
   ): <B>(self: Matching<E, B>) => Matching<E, A | B>
 } = (constructor, ea) => on (e => e instanceof constructor, ea)
 
 export const whenNotInstance: {
-  <E, A>(
-    constructor: new (...args: unknown[]) => NoInfer<E>,
-    ea: (e: E) => A,
+  <E, D extends E, A>(
+    constructor: new (...args: unknown[]) => D,
+    ea: (e: Exclude<E, D>) => A,
   ): <B>(self: Matching<E, B>) => Matching<E, A | B>
 } = (constructor, ea) =>
   on (e => pipe (e instanceof constructor, boolean.not), ea)
