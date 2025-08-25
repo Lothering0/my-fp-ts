@@ -1,58 +1,57 @@
 import * as matching from "./Matching"
 import * as identity from "./Identity"
-import * as string from "./String"
 import * as readonlyArray from "./ReadonlyArray"
 import * as readonlyRecord from "./ReadonlyRecord"
+import * as option from "./Option"
 import { flow, pipe } from "../utils/flow"
 import { isObject, isString } from "../utils/typeChecks"
 
-export interface Duration {
-  readonly years?: number
-  readonly y?: number
+const durationKeys = [
+  "years",
+  "y",
+  "months",
+  "mn",
+  "weeks",
+  "w",
+  "days",
+  "d",
+  "hours",
+  "h",
+  "minutes",
+  "m",
+  "seconds",
+  "s",
+  "milliseconds",
+  "ms",
+] as const
 
-  readonly months?: number
-  readonly mn?: number
+type DurationKey = (typeof durationKeys)[number]
 
-  readonly weeks?: number
-  readonly w?: number
+export type Duration = Partial<
+  readonlyRecord.ReadonlyRecord<DurationKey, number>
+>
 
-  readonly days?: number
-  readonly d?: number
-
-  readonly hours?: number
-  readonly h?: number
-
-  readonly minutes?: number
-  readonly m?: number
-
-  readonly seconds?: number
-  readonly s?: number
-
-  readonly milliseconds?: number
-  readonly ms?: number
-}
-
-type DurationTemplateMilliseconds = `${number} milliseconds`
+type DurationTemplateMilliseconds = `${number} ${"milliseconds" | "ms"}`
 type DurationTemplateSeconds =
-  | `${number} seconds${"" | DurationTemplateMilliseconds}`
+  | `${number} ${"seconds" | "s"}${"" | ` ${DurationTemplateMilliseconds}`}`
   | DurationTemplateMilliseconds
 type DurationTemplateMinutes =
-  | `${number} minutes${"" | DurationTemplateSeconds}`
+  | `${number} ${"minutes" | "m"}${"" | ` ${DurationTemplateSeconds}`}`
   | DurationTemplateSeconds
 type DurationTemplateHours =
-  | `${number} hours${"" | DurationTemplateMinutes}`
+  | `${number} ${"hours" | "h"}${"" | ` ${DurationTemplateMinutes}`}`
   | DurationTemplateMinutes
 type DurationTemplateDays =
-  | `${number} days${"" | DurationTemplateHours}`
+  | `${number} ${"days" | "d"}${"" | ` ${DurationTemplateHours}`}`
   | DurationTemplateHours
 type DurationTemplateWeeks =
-  | `${number} weeks${"" | DurationTemplateDays}`
+  | `${number} ${"weeks" | "w"}${"" | ` ${DurationTemplateDays}`}`
   | DurationTemplateDays
 type DurationTemplateMonths =
-  | `${number} months${"" | DurationTemplateWeeks}`
+  | `${number} ${"months" | "mn"}${"" | ` ${DurationTemplateWeeks}`}`
   | DurationTemplateWeeks
 type DurationTemplateYears =
-  | `${number} years${"" | DurationTemplateMonths}`
+  | `${number} ${"years" | "y"}${"" | ` ${DurationTemplateMonths}`}`
   | DurationTemplateMonths
 export type DurationTemplate =
   | DurationTemplateMilliseconds
@@ -66,12 +65,19 @@ export type DurationTemplate =
 
 export type DurationInput = Duration | DurationTemplate
 
+const arrayOption = option.transform (readonlyArray.Monad)
+
 export const fromTemplate: {
   (template: DurationTemplate): Duration
 } = flow (
-  string.split (" "),
-  readonlyArray.chunksOf (2),
-  readonlyArray.map (([value, unit]) => [unit, Number (value)]),
+  template => template.matchAll (/(-?\d+) +(\w+)/g),
+  Array.from<string[]>,
+  readonlyArray.map (readonlyArray.tail),
+  arrayOption.map (([value, unit]) => [unit!, Number (value)] as const),
+  readonlyArray.compact,
+  readonlyArray.filter (([key]) =>
+    pipe (durationKeys, readonlyArray.includes (key)),
+  ),
   readonlyRecord.fromEntries,
 )
 

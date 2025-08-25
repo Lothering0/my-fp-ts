@@ -183,6 +183,10 @@ export const exists =
 /** Alias for `exists` */
 export const some = exists
 
+export const includes: {
+  <A>(a: A): (self: ReadonlyArray<A>) => boolean
+} = a => self => self.includes (a)
+
 export const failures: {
   <E, A>(self: ReadonlyArray<result.Result<E, A>>): ReadonlyArray<E>
 } = flatMap (result.match (of, constEmptyArray))
