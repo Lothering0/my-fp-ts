@@ -15,7 +15,7 @@ import {
   durationUnitsFull,
   durationUnitsShort,
 } from "./duration"
-import { constFalse } from "../../utils/constant"
+import { constant, constFalse } from "../../utils/constant"
 import { empty } from "./monoid"
 
 export const fromMilliseconds: {
@@ -60,15 +60,16 @@ export const isTemplateValid: {
     readonlyArray.reduce ("", (acc, unit, i) =>
       pipe (
         identity.Do,
-        identity.apS (
+        identity.apS ("shortUnit", durationUnitsShort[i]),
+        identity.mapTo (
           "part",
-          `(\\d+ (${unit}|${durationUnitsShort[i]}))|(1 ${unit}?)`,
+          ({ shortUnit }) => `(\\d+ (${unit}|${shortUnit}))|(1 ${unit}?)`,
         ),
         identity.map (({ part }) => acc ? `(${part})? ?(${acc})?` : part),
       ),
     ),
-    string.append ("$"),
     string.prepend ("^"),
+    string.append ("$"),
     pattern => new RegExp (pattern),
     regExp =>
       pipe (
@@ -87,7 +88,7 @@ export const fromTemplate: {
     boolean.match (option.zero, () =>
       pipe (
         template.matchAll (/(-?\d+) +(\w+)/g),
-        Array.from<string[]>,
+        Array.from<ReadonlyArray<string>>,
         readonlyArray.map (readonlyArray.tail),
         arrayOption.map (([value, unit]) => [unit!, Number (value)] as const),
         readonlyArray.compact,
@@ -102,10 +103,7 @@ export const fromTemplate: {
 
 export const fromTemplateOrZero: {
   (template: string): Duration
-} = flow (
-  fromTemplate,
-  option.getOrElse (() => empty),
-)
+} = flow (fromTemplate, option.getOrElse (constant (empty)))
 
 export const make: {
   (input: DurationInput): Duration
@@ -114,7 +112,7 @@ export const make: {
   matching.on (isObject, identity.identity<Duration>),
   matching.on (isString, fromTemplateOrZero),
   matching.on (isNumber, fromMilliseconds),
-  matching.getOrElse (() => ({ milliseconds: 0 })),
+  matching.getOrElse (constant (empty)),
 )
 
 const millisecondsFromSeconds: {
