@@ -12,9 +12,10 @@ export const show: {
   readonlyArray.filter (([unit]) =>
     pipe (durationUnits, readonlyArray.includes (unit)),
   ),
-  readonlyArray.reduce ("", (template, [unit, value]) =>
-    pipe (template, string.prepend (`${unit} ${value}`)),
-  ),
+  readonlyArray.map (([unit, value]) => `${value} ${unit}`),
+  readonlyArray.join (" "),
+  string.prepend ('make ("'),
+  string.append ('")'),
 )
 
 export const Show: show_.Show<Duration> = { show }
