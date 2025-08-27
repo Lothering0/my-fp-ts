@@ -36,6 +36,13 @@ export const concat: {
   <B extends string>(end: B): <A extends string>(start: A) => `${A}${B}`
 } = end => start => `${start}${end}`
 
+/** Alias for `concat` */
+export const append = concat
+
+export const prepend: {
+  <A extends string>(start: A): <B extends string>(end: B) => `${A}${B}`
+} = start => end => `${start}${end}`
+
 export const includes =
   <A extends string = string>(substring: A) =>
   (self: string): self is `${string}${A}${string}` =>

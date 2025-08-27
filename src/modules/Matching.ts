@@ -32,7 +32,7 @@ export const matchEq: {
 export const on: {
   <E, D extends E, A>(
     p: Refinement<E, D>,
-    ea: (e: E) => A,
+    da: (d: D) => A,
   ): <B>(self: Matching<E, B>) => Matching<E, A | B>
   <E, A>(
     p: predicate.Predicate<E>,
