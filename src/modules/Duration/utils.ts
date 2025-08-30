@@ -3,6 +3,7 @@ import * as identity from "../Identity"
 import * as readonlyArray from "../ReadonlyArray"
 import * as readonlyRecord from "../ReadonlyRecord"
 import * as option from "../Option"
+import * as result from "../Result"
 import * as number from "../Number"
 import * as string from "../String"
 import * as boolean from "../Boolean"
@@ -79,31 +80,43 @@ export const isTemplateValid: {
       ),
   )
 
+export class DurationTemplateParseError extends SyntaxError {
+  constructor(message: string) {
+    super (message)
+    this.name = "DurationTemplateParseError"
+  }
+}
+
 export const fromTemplate: {
-  (template: string): option.Option<Duration>
+  (template: string): result.Result<DurationTemplateParseError, Duration>
 } = template =>
   pipe (
     template,
     isTemplateValid,
-    boolean.match (option.zero, () =>
-      pipe (
-        template.matchAll (/(-?\d+) +(\w+)/g),
-        Array.from<ReadonlyArray<string>>,
-        readonlyArray.map (readonlyArray.tail),
-        arrayOption.map (([value, unit]) => [unit!, Number (value)] as const),
-        readonlyArray.compact,
-        readonlyArray.filter (([key]) =>
-          pipe (durationUnits, readonlyArray.includes (key)),
+    boolean.match (
+      () =>
+        result.fail (
+          new DurationTemplateParseError ("Invalid duration template"),
         ),
-        readonlyRecord.fromEntries,
-        option.some,
-      ),
+      () =>
+        pipe (
+          template.matchAll (/(-?\d+) +(\w+)/g),
+          Array.from<ReadonlyArray<string>>,
+          readonlyArray.map (readonlyArray.tail),
+          arrayOption.map (([value, unit]) => [unit!, Number (value)] as const),
+          readonlyArray.compact,
+          readonlyArray.filter (([key]) =>
+            pipe (durationUnits, readonlyArray.includes (key)),
+          ),
+          readonlyRecord.fromEntries,
+          result.succeed,
+        ),
     ),
   )
 
 export const fromTemplateOrZero: {
   (template: string): Duration
-} = flow (fromTemplate, option.getOrElse (constant (empty)))
+} = flow (fromTemplate, result.getOrElse (constant (empty)))
 
 export const make: {
   (input: DurationInput): Duration
