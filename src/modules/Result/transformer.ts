@@ -5,9 +5,10 @@ import { Functor } from "../../types/Functor"
 import { createBifunctor } from "../../types/Bifunctor"
 import { createApplicative } from "../../types/Applicative"
 import { createMonad, Monad } from "../../types/Monad"
+import { createTappable } from "../../types/Tappable"
 import { flow, pipe } from "../../utils/flow"
 
-export type ResultT<F extends Hkt, In, TCollectable, Fixed, Collectable> = Kind<
+export type ResultT<F extends Hkt, In, Collectable, Fixed, TCollectable> = Kind<
   F,
   result.Result<Collectable, In>,
   TCollectable,
@@ -18,9 +19,9 @@ export interface ResultTHkt<F extends Hkt, TCollectable> extends Hkt {
   readonly type: ResultT<
     F,
     this["_in"],
-    TCollectable,
+    this["_collectable"],
     this["_fixed"],
-    this["_collectable"]
+    TCollectable
   >
 }
 
@@ -118,6 +119,8 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad<F>) => {
       ),
   })
 
+  const Tappable = createTappable (Monad)
+
   return {
     succeed,
     succeedKind,
@@ -134,5 +137,7 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad<F>) => {
     ...Applicative,
     Monad,
     ...Monad,
+    Tappable,
+    ...Tappable,
   }
 }

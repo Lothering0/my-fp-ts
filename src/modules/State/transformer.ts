@@ -3,6 +3,7 @@ import { Hkt, Kind } from "../../types/Hkt"
 import { Functor } from "../../types/Functor"
 import { createApplicative } from "../../types/Applicative"
 import { createMonad, Monad } from "../../types/Monad"
+import { createTappable } from "../../types/Tappable"
 import { flow, pipe } from "../../utils/flow"
 
 export interface StateT<F extends Hkt, In, Collectable, Fixed, TFixed> {
@@ -92,6 +93,8 @@ export const transform = <F extends Hkt, TFixed>(F: Monad<F>) => {
       ),
   })
 
+  const Tappable = createTappable (Monad)
+
   return {
     fromState,
     fromKind,
@@ -104,5 +107,7 @@ export const transform = <F extends Hkt, TFixed>(F: Monad<F>) => {
     ...Applicative,
     Monad,
     ...Monad,
+    Tappable,
+    ...Tappable,
   }
 }
