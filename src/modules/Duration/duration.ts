@@ -6,20 +6,10 @@ export const durationUnitsFull = [
   "minutes",
   "hours",
   "days",
-  "weeks",
   "months",
   "years",
 ] as const
-export const durationUnitsShort = [
-  "ms",
-  "s",
-  "m",
-  "h",
-  "d",
-  "w",
-  "mn",
-  "y",
-] as const
+export const durationUnitsShort = ["ms", "s", "m", "h", "d", "mn", "y"] as const
 export const durationUnits = [
   ...durationUnitsFull,
   ...durationUnitsShort,

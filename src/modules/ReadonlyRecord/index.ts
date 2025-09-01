@@ -1,4 +1,7 @@
 export * from "./readonly-record"
 export * from "./functor"
+export * from "./foldable"
+export * from "./compactable"
+export * from "./filterable"
 export * from "./eq"
 export * from "./utils"

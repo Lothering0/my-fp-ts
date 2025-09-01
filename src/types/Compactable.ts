@@ -11,10 +11,10 @@ export interface Compactable<F extends Hkt> extends TypeClass<F> {
   readonly compactResults: <In, Collectable, Fixed>(
     self: Kind<F, Result<unknown, In>, Collectable, Fixed>,
   ) => Kind<F, In, Collectable, Fixed>
-  readonly separate: <In, Out, Collectable, Fixed>(
-    self: Kind<F, Result<In, Out>, Collectable, Fixed>,
+  readonly separate: <In1, In2, Collectable, Fixed>(
+    self: Kind<F, Result<In1, In2>, Collectable, Fixed>,
   ) => Separated<
-    Kind<F, In, Collectable, Fixed>,
-    Kind<F, Out, Collectable, Fixed>
+    Kind<F, In1, Collectable, Fixed>,
+    Kind<F, In2, Collectable, Fixed>
   >
 }

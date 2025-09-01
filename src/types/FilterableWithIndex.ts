@@ -5,6 +5,8 @@ import { Hkt, Kind } from "./Hkt"
 import { FunctorWithIndex } from "./FunctorWithIndex"
 import { Filterable } from "./Filterable"
 import { flow } from "../utils/flow"
+import { RefinementWithIndex } from "./utils"
+import { PredicateWithIndex } from "../modules/Predicate"
 
 export interface FilterableWithIndex<F extends Hkt, Index>
   extends FunctorWithIndex<F, Index>,
@@ -20,7 +22,7 @@ export interface FilterableWithIndex<F extends Hkt, Index>
   >
 
   readonly partitionWithIndex: <In>(
-    p: (a: In, i: Index) => boolean,
+    p: PredicateWithIndex<In, Index>,
   ) => <Collectable, Fixed>(
     self: Kind<F, In, Collectable, Fixed>,
   ) => Separated<
@@ -35,11 +37,18 @@ export interface FilterableWithIndex<F extends Hkt, Index>
     self: Kind<F, In, Collectable, Fixed>,
   ) => Kind<F, Out, Collectable, Fixed>
 
-  readonly filterWithIndex: <In>(
-    p: (a: In, i: Index) => boolean,
-  ) => <Collectable, Fixed>(
-    self: Kind<F, In, Collectable, Fixed>,
-  ) => Kind<F, In, Collectable, Fixed>
+  readonly filterWithIndex: {
+    <In, B extends In>(
+      p: RefinementWithIndex<In, B, Index>,
+    ): <Collectable, Fixed>(
+      self: Kind<F, In, Collectable, Fixed>,
+    ) => Kind<F, B, Collectable, Fixed>
+    <In>(
+      p: PredicateWithIndex<In, Index>,
+    ): <Collectable, Fixed>(
+      self: Kind<F, In, Collectable, Fixed>,
+    ) => Kind<F, In, Collectable, Fixed>
+  }
 }
 
 export const createFilterableWithIndex = <F extends Hkt, Index>(
@@ -52,8 +61,11 @@ export const createFilterableWithIndex = <F extends Hkt, Index>(
     Index
   >["filterMapWithIndex"] = p => flow (mapWithIndex (p), compact)
 
-  const filterWithIndex: FilterableWithIndex<F, Index>["filterWithIndex"] = p =>
-    filterMapWithIndex ((a, i) => p (a, i) ? some (a) : none)
+  const filterWithIndex: FilterableWithIndex<F, Index>["filterWithIndex"] = <
+    In,
+  >(
+    p: PredicateWithIndex<In, Index>,
+  ) => filterMapWithIndex<In, In> ((a, i) => p (a, i) ? some (a) : none)
 
   const partitionMapWithIndex: FilterableWithIndex<
     F,

@@ -16,7 +16,7 @@ export const EqStrict: Eq<unknown> = {
   equals: x => y => x === y,
 }
 
-export const inverse: {
+export const reverse: {
   <In>(Eq: Eq<In>): Eq<In>
 } = Eq => ({
   equals: x => y => !Eq.equals (x) (y),

@@ -6,6 +6,7 @@ import { Functor } from "./Functor"
 import { Hkt, Kind } from "./Hkt"
 import { Predicate } from "../modules/Predicate"
 import { flow } from "../utils/flow"
+import { Refinement } from "./utils"
 
 export interface Filterable<F extends Hkt> extends Functor<F>, Compactable<F> {
   /** Partitions and maps elements to new values */
@@ -35,6 +36,11 @@ export interface Filterable<F extends Hkt> extends Functor<F>, Compactable<F> {
   ) => Kind<F, Out, Collectable, Fixed>
 
   readonly filter: {
+    <In, B extends In>(
+      p: Refinement<In, B>,
+    ): <Collectable, Fixed>(
+      self: Kind<F, In, Collectable, Fixed>,
+    ) => Kind<F, B, Collectable, Fixed>
     <In>(
       p: Predicate<In>,
     ): <Collectable, Fixed>(
@@ -50,8 +56,8 @@ export const createFilterable = <F extends Hkt>(
 
   const filterMap: Filterable<F>["filterMap"] = p => flow (map (p), compact)
 
-  const filter: Filterable<F>["filter"] = p =>
-    filterMap (a => p (a) ? some (a) : none)
+  const filter: Filterable<F>["filter"] = <In>(p: Predicate<In>) =>
+    filterMap<In, In> (a => p (a) ? some (a) : none)
 
   const partitionMap: Filterable<F>["partitionMap"] = p =>
     flow (map (p), separate)

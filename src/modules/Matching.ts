@@ -70,7 +70,7 @@ export const whenNotEquals =
     ea: (e: Exclude<E, D>) => A,
   ) =>
   <B>(self: Matching<E, B>): Matching<E, A | B> =>
-    whenEquals (eq.inverse (Eq), pattern as Exclude<E, D>, ea) (self)
+    whenEquals (eq.reverse (Eq), pattern as Exclude<E, D>, ea) (self)
 
 export const when: {
   <E, const D extends E, A>(
@@ -82,7 +82,7 @@ export const when: {
 export const whenNot =
   <E, const D extends E, A>(pattern: D, ea: (e: Exclude<E, D>) => A) =>
   <B>(self: Matching<E, B>): Matching<E, A | B> =>
-    whenEquals (eq.inverse (self.Eq), pattern as Exclude<E, D>, ea) (self)
+    whenEquals (eq.reverse (self.Eq), pattern as Exclude<E, D>, ea) (self)
 
 export const whenInstance: {
   <E, D extends E, A>(

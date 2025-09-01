@@ -107,3 +107,17 @@ export const exists: {
 
 /** Alias for `exists` */
 export const some = exists
+
+export const prepend: {
+  <A, K extends string>(
+    k: K,
+    a: A,
+  ): (self: ReadonlyRecord<K, A>) => ReadonlyRecord<K, A>
+} = (k, a) => self => ({ [k]: a, ...self })
+
+export const append: {
+  <A, K extends string>(
+    k: K,
+    a: A,
+  ): (self: ReadonlyRecord<K, A>) => ReadonlyRecord<K, A>
+} = (k, a) => self => ({ ...self, [k]: a })

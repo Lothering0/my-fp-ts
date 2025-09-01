@@ -23,8 +23,6 @@ describe ("isTemplateValid", () => {
     expect (duration.isTemplateValid ("10 hour")).toBe (false)
     expect (duration.isTemplateValid ("1 day")).toBe (true)
     expect (duration.isTemplateValid ("10 day")).toBe (false)
-    expect (duration.isTemplateValid ("1 week")).toBe (true)
-    expect (duration.isTemplateValid ("10 week")).toBe (false)
     expect (duration.isTemplateValid ("1 month")).toBe (true)
     expect (duration.isTemplateValid ("10 month")).toBe (false)
     expect (duration.isTemplateValid ("1 year")).toBe (true)
@@ -38,18 +36,34 @@ describe ("isTemplateValid", () => {
     expect (duration.isTemplateValid ("500 ms 1 second")).toBe (false)
     expect (
       duration.isTemplateValid (
-        "1 year 9 months 3 weeks 5 days 10 hours 12 minutes 59 seconds 124 milliseconds",
+        "1 year 9 months 5 days 10 hours 12 minutes 59 seconds 124 milliseconds",
       ),
     ).toBe (true)
     expect (
       duration.isTemplateValid (
-        // Weeks and days are swapped
-        "1 year 9 months 3 days 5 weeks 10 hours 12 minutes 59 seconds 124 milliseconds",
+        // Months and days are swapped
+        "1 year 3 days 9 months 10 hours 12 minutes 59 seconds 124 milliseconds",
       ),
     ).toBe (false)
   })
 
   it ("should ignore trailing spaces", () => {
     expect (duration.isTemplateValid ("    500 ms    ")).toBe (true)
+  })
+})
+
+describe ("prettify", () => {
+  it ("should return duration where milliseconds no longer than 999, seconds and minutes no longer than 59 and so on", () => {
+    expect (duration.prettify ({ milliseconds: 5000 })).toEqual ({ seconds: 5 })
+    expect (duration.prettify ({ seconds: 122, milliseconds: 5000 })).toEqual ({
+      minutes: 2,
+      seconds: 7,
+    })
+    expect (duration.prettify ({ seconds: 122, milliseconds: 5500 })).toEqual ({
+      minutes: 2,
+      seconds: 7,
+      milliseconds: 500,
+    })
+    expect (duration.prettify ({ months: 24 })).toEqual ({ years: 2 })
   })
 })

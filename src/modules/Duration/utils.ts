@@ -41,7 +41,7 @@ export const fromDays: {
 
 export const fromWeeks: {
   (weeks: number): Duration
-} = weeks => ({ weeks })
+} = weeks => ({ days: weeks * 7 })
 
 export const fromMonths: {
   (months: number): Duration
@@ -128,6 +128,33 @@ export const make: {
   matching.getOrElse (constant (empty)),
 )
 
+export const prettify: {
+  (self: Duration): Duration
+} = self =>
+  pipe (
+    identity.Do,
+    identity.apS ("ms", toMilliseconds (self)),
+    identity.mapTo ("milliseconds", ({ ms }) => ms % 1000),
+    identity.mapTo ("seconds", ({ ms }) => Math.floor (toSeconds (ms)) % 60),
+    identity.mapTo ("minutes", ({ ms }) => Math.floor (toMinutes (ms)) % 60),
+    identity.mapTo ("hours", ({ ms }) => Math.floor (toHours (ms)) % 24),
+    identity.mapTo ("days", ({ ms }) => Math.floor (toDays (ms)) % 30),
+    identity.mapTo ("months", ({ ms }) => Math.floor (toMonths (ms)) % 12),
+    identity.mapTo ("years", ({ ms }) => Math.floor (toYears (ms))),
+    identity.map (
+      ({ years, months, days, hours, minutes, seconds, milliseconds }) => ({
+        years,
+        months,
+        days,
+        hours,
+        minutes,
+        seconds,
+        milliseconds,
+      }),
+    ),
+    readonlyRecord.filter (value => value !== 0),
+  )
+
 const millisecondsFromSeconds: {
   (seconds: number): number
 } = seconds => seconds * 1000
@@ -144,70 +171,83 @@ const millisecondsFromDays: {
   (days: number): number
 } = days => millisecondsFromHours (days * 24)
 
-const millisecondsFromWeeks: {
-  (weeks: number): number
-} = weeks => millisecondsFromDays (weeks * 7)
-
 const millisecondsFromMonths: {
   (months: number): number
 } = months => millisecondsFromDays (months * 30)
 
 const millisecondsFromYears: {
   (years: number): number
-} = years => millisecondsFromDays (years * 365)
+} = years => millisecondsFromMonths (years * 12)
 
 export const toMilliseconds: {
-  (duration: Duration): number
-} = duration =>
+  (input: DurationInput): number
+} = input =>
   pipe (
     identity.Do,
-    identity.apS ("years", duration.years ?? duration.years ?? 0),
-    identity.apS ("months", duration.months ?? duration.mn ?? 0),
-    identity.apS ("weeks", duration.weeks ?? duration.w ?? 0),
-    identity.apS ("days", duration.days ?? duration.d ?? 0),
-    identity.apS ("hours", duration.hours ?? duration.h ?? 0),
-    identity.apS ("minutes", duration.minutes ?? duration.m ?? 0),
-    identity.apS ("seconds", duration.seconds ?? duration.s ?? 0),
-    identity.apS ("milliseconds", duration.milliseconds ?? duration.ms ?? 0),
+    identity.apS ("duration", make (input)),
+    identity.mapTo (
+      "years",
+      ({ duration }) => duration.years ?? duration.y ?? 0,
+    ),
+    identity.mapTo (
+      "months",
+      ({ duration }) => duration.months ?? duration.mn ?? 0,
+    ),
+    identity.mapTo ("days", ({ duration }) => duration.days ?? duration.d ?? 0),
+    identity.mapTo (
+      "hours",
+      ({ duration }) => duration.hours ?? duration.h ?? 0,
+    ),
+    identity.mapTo (
+      "minutes",
+      ({ duration }) => duration.minutes ?? duration.m ?? 0,
+    ),
+    identity.mapTo (
+      "seconds",
+      ({ duration }) => duration.seconds ?? duration.s ?? 0,
+    ),
+    identity.mapTo (
+      "milliseconds",
+      ({ duration }) => duration.milliseconds ?? duration.ms ?? 0,
+    ),
     identity.map (
-      ({ milliseconds, seconds, minutes, hours, days, weeks, months, years }) =>
+      ({ milliseconds, seconds, minutes, hours, days, months, years }) =>
         milliseconds +
         millisecondsFromSeconds (seconds) +
         millisecondsFromMinutes (minutes) +
         millisecondsFromHours (hours) +
         millisecondsFromDays (days) +
-        millisecondsFromWeeks (weeks) +
         millisecondsFromMonths (months) +
         millisecondsFromYears (years),
     ),
   )
 
 export const toSeconds: {
-  (duration: Duration): number
+  (duration: DurationInput): number
 } = flow (toMilliseconds, number.divide (1000))
 
 export const toMinutes: {
-  (duration: Duration): number
+  (duration: DurationInput): number
 } = flow (toSeconds, number.divide (60))
 
 export const toHours: {
-  (duration: Duration): number
+  (duration: DurationInput): number
 } = flow (toMinutes, number.divide (60))
 
 export const toDays: {
-  (duration: Duration): number
+  (duration: DurationInput): number
 } = flow (toHours, number.divide (24))
 
 export const toWeeks: {
-  (duration: Duration): number
+  (duration: DurationInput): number
 } = flow (toDays, number.divide (7))
 
 export const toMonths: {
-  (duration: Duration): number
+  (duration: DurationInput): number
 } = flow (toDays, number.divide (30))
 
 export const toYears: {
-  (duration: Duration): number
+  (duration: DurationInput): number
 } = flow (toMonths, number.divide (12))
 
 export const fromDate: {

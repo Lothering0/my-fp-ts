@@ -7,6 +7,7 @@ import { createFilterableWithIndex } from "../../types/FilterableWithIndex"
 import { createFilterable } from "../../types/Filterable"
 import { Compactable } from "./compactable"
 import { Functor, FunctorWithIndex } from "./functor"
+import { RefinementWithIndex } from "../../types/utils"
 
 export const Filterable = createFilterable<ReadonlyArrayHkt> ({
   ...Compactable,
@@ -28,6 +29,9 @@ export const filterMap: {
 } = FilterableWithIndex.filterMapWithIndex
 
 export const filter: {
+  <A, B extends A>(
+    p: RefinementWithIndex<A, B, number>,
+  ): (self: ReadonlyArray<A>) => ReadonlyArray<B>
   <A>(
     p: PredicateWithIndex<A, number>,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<A>
