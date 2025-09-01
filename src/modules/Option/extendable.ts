@@ -1,4 +1,4 @@
-import { createExtendable } from "../../types/Extendable"
+import { createExtendable } from "../../typeclasses/Extendable"
 import { Option, OptionHkt } from "./option"
 import { Functor, map } from "./functor"
 

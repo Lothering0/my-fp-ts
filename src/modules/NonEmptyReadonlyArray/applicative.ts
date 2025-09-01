@@ -1,6 +1,6 @@
 import * as readonlyArray from "../ReadonlyArray"
-import * as applicative from "../../types/Applicative"
-import * as applicativeWithIndex from "../../types/ApplicativeWithIndex"
+import * as applicative from "../../typeclasses/Applicative"
+import * as applicativeWithIndex from "../../typeclasses/ApplicativeWithIndex"
 import {
   NonEmptyReadonlyArray,
   NonEmptyReadonlyArrayHkt,

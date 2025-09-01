@@ -1,4 +1,4 @@
-import * as alt from "../../types/Alt"
+import * as alt from "../../typeclasses/Alt"
 import { some, Option, OptionHkt } from "./option"
 import { identity } from "../Identity"
 import { LazyArg } from "../../types/utils"

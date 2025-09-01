@@ -1,6 +1,6 @@
 import { AsyncOption } from "./async-option"
 import { some } from "../Option"
-import { Monoid } from "../../types/Monoid"
+import { Monoid } from "../../typeclasses/Monoid"
 import { _ } from "../../utils/underscore"
 import { getRaceSemigroup } from "./semigroup"
 

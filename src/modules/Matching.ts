@@ -2,10 +2,10 @@ import * as readonlyArray from "./ReadonlyArray"
 import * as option from "./Option"
 import * as result from "./Result"
 import * as boolean from "./Boolean"
-import * as eq from "../types/Eq"
+import * as eq from "../typeclasses/Eq"
 import * as predicate from "./Predicate"
 import { flow, pipe } from "../utils/flow"
-import { Refinement } from "../types/utils"
+import { Refinement } from "./Refinement"
 
 export interface Matching<E, A> {
   readonly Eq: eq.Eq<E>

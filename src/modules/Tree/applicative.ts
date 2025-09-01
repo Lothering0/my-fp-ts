@@ -1,6 +1,6 @@
 import * as readonlyArray from "../ReadonlyArray"
 import { Tree, TreeHkt } from "./tree"
-import { createApplicative } from "../../types/Applicative"
+import { createApplicative } from "../../typeclasses/Applicative"
 import { Functor, map } from "./functor"
 import { make, value, forest } from "./utils"
 import { pipe, flow } from "../../utils/flow"

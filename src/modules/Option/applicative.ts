@@ -1,4 +1,4 @@
-import { createApplicative } from "../../types/Applicative"
+import { createApplicative } from "../../typeclasses/Applicative"
 import { OptionHkt, Option, some } from "./option"
 import { pipe } from "../../utils/flow"
 import { Functor } from "./functor"

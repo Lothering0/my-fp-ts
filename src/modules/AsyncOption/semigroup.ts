@@ -1,5 +1,5 @@
 import { AsyncOption, toPromise } from "./async-option"
-import { Semigroup } from "../../types/Semigroup"
+import { Semigroup } from "../../typeclasses/Semigroup"
 
 export const getRaceSemigroup: {
   <A>(): Semigroup<AsyncOption<A>>

@@ -1,5 +1,5 @@
 import * as async from "./async"
-import { createTappable } from "../../types/Tappable"
+import { createTappable } from "../../typeclasses/Tappable"
 import { Sync } from "../Sync"
 import { Monad } from "./monad"
 

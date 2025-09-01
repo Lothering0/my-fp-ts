@@ -2,8 +2,8 @@ import * as result from "../Result"
 import * as async from "../Async"
 import * as syncResult from "../SyncResult"
 import * as sync from "../Sync"
-import * as tappableBoth from "../../types/TappableBoth"
-import { createTappable } from "../../types/Tappable"
+import * as tappableBoth from "../../typeclasses/TappableBoth"
+import { createTappable } from "../../typeclasses/Tappable"
 import { map } from "./functor"
 import {
   AsyncResult,

@@ -1,9 +1,9 @@
 import * as state from "../State"
-import { Hkt, Kind } from "../../types/Hkt"
-import { Functor } from "../../types/Functor"
-import { createApplicative } from "../../types/Applicative"
-import { createMonad, Monad } from "../../types/Monad"
-import { createTappable } from "../../types/Tappable"
+import { Hkt, Kind } from "../../typeclasses/Hkt"
+import { Functor } from "../../typeclasses/Functor"
+import { createApplicative } from "../../typeclasses/Applicative"
+import { createMonad, Monad } from "../../typeclasses/Monad"
+import { createTappable } from "../../typeclasses/Tappable"
 import { flow, pipe } from "../../utils/flow"
 
 export interface StateT<F extends Hkt, In, Collectable, Fixed, TFixed> {

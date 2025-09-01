@@ -1,6 +1,6 @@
 import { ReadonlyArrayHkt } from "./readonly-array"
-import { createApplicative } from "../../types/Applicative"
-import { createApplicativeWithIndex } from "../../types/ApplicativeWithIndex"
+import { createApplicative } from "../../typeclasses/Applicative"
+import { createApplicativeWithIndex } from "../../typeclasses/ApplicativeWithIndex"
 import { Functor, FunctorWithIndex, map } from "./functor"
 import { pipe } from "../../utils/flow"
 

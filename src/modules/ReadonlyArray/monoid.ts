@@ -1,4 +1,4 @@
-import { Monoid } from "../../types/Monoid"
+import { Monoid } from "../../typeclasses/Monoid"
 import { getSemigroup } from "./semigroup"
 
 export const empty: ReadonlyArray<never> = []

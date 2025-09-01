@@ -1,4 +1,4 @@
-import { Eq } from "../../types/Eq"
+import { Eq } from "../../typeclasses/Eq"
 import { length } from "./utils"
 
 export const getEq: {

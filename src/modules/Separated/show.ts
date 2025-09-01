@@ -1,4 +1,4 @@
-import { Show } from "../../types/Show"
+import { Show } from "../../typeclasses/Show"
 import { left, right, Separated } from "./separated"
 import { pipe } from "../../utils/flow"
 

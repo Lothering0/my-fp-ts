@@ -1,5 +1,5 @@
 import * as readonlyArray from "../ReadonlyArray"
-import * as extendable from "../../types/Extendable"
+import * as extendable from "../../typeclasses/Extendable"
 import {
   NonEmptyReadonlyArray,
   NonEmptyReadonlyArrayHkt,

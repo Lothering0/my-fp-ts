@@ -1,4 +1,4 @@
-import * as alt from "../../types/Alt"
+import * as alt from "../../typeclasses/Alt"
 import * as result from "../Result"
 import { Sync } from "../Sync"
 import { identity } from "../Identity"

@@ -6,7 +6,7 @@ import { map } from "./functor"
 import { zero } from "./alternative"
 import { pipe } from "../../utils/flow"
 import { constant } from "../../utils/constant"
-import { createTappable } from "../../types/Tappable"
+import { createTappable } from "../../typeclasses/Tappable"
 
 export const Tappable = createTappable (Monad)
 

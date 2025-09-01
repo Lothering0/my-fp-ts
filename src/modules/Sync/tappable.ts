@@ -1,6 +1,6 @@
 import { Sync } from "./sync"
 import { Monad } from "./monad"
-import { createTappable } from "../../types/Tappable"
+import { createTappable } from "../../typeclasses/Tappable"
 
 export const Tappable = createTappable (Monad)
 

@@ -1,5 +1,5 @@
 import * as readonlyArray from "../ReadonlyArray"
-import * as foldable from "../../types/Foldable"
+import * as foldable from "../../typeclasses/Foldable"
 import { Tree, TreeHkt } from "./tree"
 import { forest, value } from "./utils"
 import { pipe } from "../../utils/flow"

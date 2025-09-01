@@ -1,4 +1,4 @@
-import * as eq from "../../src/types/Eq"
+import * as eq from "../../src/typeclasses/Eq"
 
 const permutations = [
   { a: 0, b: 0, c: 0 },

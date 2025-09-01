@@ -1,4 +1,4 @@
-import { Semigroup } from "../../types/Semigroup"
+import { Semigroup } from "../../typeclasses/Semigroup"
 import { Result, succeed } from "./result"
 import { isFailure } from "./refinements"
 import { success } from "./utils"

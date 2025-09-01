@@ -1,7 +1,7 @@
 import * as readonlyArray from "../ReadonlyArray"
 import * as boolean from "../Boolean"
 import { Tree } from "./tree"
-import { Show } from "../../types/Show"
+import { Show } from "../../typeclasses/Show"
 import { pipe } from "../../utils/flow"
 import { forest, hasForest, value } from "./utils"
 

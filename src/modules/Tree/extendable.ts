@@ -1,5 +1,5 @@
 import * as readonlyArray from "../ReadonlyArray"
-import { createExtendable } from "../../types/Extendable"
+import { createExtendable } from "../../typeclasses/Extendable"
 import { Tree, TreeHkt } from "./tree"
 import { Functor } from "./functor"
 import { forest, make } from "./utils"

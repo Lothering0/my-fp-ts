@@ -1,4 +1,4 @@
-import * as comonad from "../../types/Comonad"
+import * as comonad from "../../typeclasses/Comonad"
 import {
   NonEmptyReadonlyArray,
   NonEmptyReadonlyArrayHkt,

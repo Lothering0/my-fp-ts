@@ -1,4 +1,4 @@
-import * as eq from "../../types/Eq"
+import * as eq from "../../typeclasses/Eq"
 
 export const Eq: eq.Eq<number> = eq.EqStrict
 

@@ -1,4 +1,4 @@
-import * as alternative from "../../types/Alternative"
+import * as alternative from "../../typeclasses/Alternative"
 import { Alt } from "./alt"
 import { ReadonlyArrayHkt } from "./readonly-array"
 

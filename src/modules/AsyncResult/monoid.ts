@@ -1,4 +1,4 @@
-import { Monoid } from "../../types/Monoid"
+import { Monoid } from "../../typeclasses/Monoid"
 import { getRaceSemigroup } from "./semigroup"
 import { AsyncResult } from "./async-result"
 import { succeed } from "../Result"

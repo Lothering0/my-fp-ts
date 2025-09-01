@@ -1,6 +1,6 @@
 import * as readonlyArray from "../ReadonlyArray"
-import * as monad from "../../types/Monad"
-import * as monadWithIndex from "../../types/MonadWithIndex"
+import * as monad from "../../typeclasses/Monad"
+import * as monadWithIndex from "../../typeclasses/MonadWithIndex"
 import {
   NonEmptyReadonlyArray,
   NonEmptyReadonlyArrayHkt,

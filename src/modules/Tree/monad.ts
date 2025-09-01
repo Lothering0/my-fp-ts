@@ -1,4 +1,4 @@
-import * as monad from "../../types/Monad"
+import * as monad from "../../typeclasses/Monad"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
 import { Tree, TreeHkt } from "./tree"
 import { Applicative, flat } from "./applicative"

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as option from "../Option"
-import { createMonad } from "../../types/Monad"
+import { createMonad } from "../../typeclasses/Monad"
 import { AsyncOptionHkt, AsyncOption, toPromise } from "./async-option"
 import { Applicative } from "./applicative"
 import { pipe } from "../../utils/flow"

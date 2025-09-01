@@ -1,4 +1,4 @@
-import { Semigroup } from "../../types/Semigroup"
+import { Semigroup } from "../../typeclasses/Semigroup"
 import { Async, toPromise } from "./async"
 
 export const getRaceSemigroup: {

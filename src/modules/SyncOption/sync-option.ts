@@ -2,7 +2,7 @@ import * as sync from "../Sync"
 import * as option from "../Option"
 import { tryDo } from "../../utils/exceptions"
 import { pipe } from "../../utils/flow"
-import { Hkt } from "../../types/Hkt"
+import { Hkt } from "../../typeclasses/Hkt"
 
 export interface SyncOptionHkt extends Hkt {
   readonly type: SyncOption<this["_in"]>

@@ -1,4 +1,4 @@
-import * as alternative from "../../types/Alternative"
+import * as alternative from "../../typeclasses/Alternative"
 import { none, Option, OptionHkt } from "./option"
 import { constant } from "../../utils/constant"
 import { Alt } from "./alt"

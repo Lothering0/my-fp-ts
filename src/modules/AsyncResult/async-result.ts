@@ -4,7 +4,7 @@ import * as sync from "../Sync"
 import * as syncResult from "../SyncResult"
 import { identity } from "../Identity"
 import { flow, pipe } from "../../utils/flow"
-import { Hkt } from "../../types/Hkt"
+import { Hkt } from "../../typeclasses/Hkt"
 
 export interface AsyncResultHkt extends Hkt {
   readonly type: AsyncResult<this["_collectable"], this["_in"]>

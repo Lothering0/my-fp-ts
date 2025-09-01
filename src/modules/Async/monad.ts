@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as async from "./async"
-import { createMonad } from "../../types/Monad"
+import { createMonad } from "../../typeclasses/Monad"
 import { Applicative } from "./applicative"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
 

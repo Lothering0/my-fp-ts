@@ -1,5 +1,5 @@
 import * as option from "../Option"
-import { createApplicative } from "../../types/Applicative"
+import { createApplicative } from "../../typeclasses/Applicative"
 import { AsyncOptionHkt, some, toPromise, AsyncOption } from "./async-option"
 import { pipe } from "../../utils/flow"
 import { Functor } from "./functor"

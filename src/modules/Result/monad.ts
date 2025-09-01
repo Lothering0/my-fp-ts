@@ -1,7 +1,7 @@
 import { Applicative } from "./applicative"
 import { fail, Result, ResultHkt } from "./result"
 import { match } from "./utils"
-import { createMonad } from "../../types/Monad"
+import { createMonad } from "../../typeclasses/Monad"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
 import { identity } from "../Identity"
 

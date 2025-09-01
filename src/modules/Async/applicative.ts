@@ -1,4 +1,4 @@
-import { createApplicative } from "../../types/Applicative"
+import { createApplicative } from "../../typeclasses/Applicative"
 import { Functor } from "./functor"
 import { AsyncHkt, async, toPromise, Async } from "./async"
 

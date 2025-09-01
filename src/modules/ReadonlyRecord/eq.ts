@@ -1,4 +1,4 @@
-import { Eq } from "../../types/Eq"
+import { Eq } from "../../typeclasses/Eq"
 import { pipe } from "../../utils/flow"
 import { ReadonlyRecord } from "./readonly-record"
 import { has, every } from "./utils"

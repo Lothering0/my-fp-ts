@@ -1,4 +1,4 @@
-import { Hkt } from "../../types/Hkt"
+import { Hkt } from "../../typeclasses/Hkt"
 
 export interface NonEmptyReadonlyArrayHkt extends Hkt {
   readonly type: NonEmptyReadonlyArray<this["_in"]>

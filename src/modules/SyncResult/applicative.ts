@@ -1,5 +1,5 @@
 import * as result from "../Result"
-import { createApplicative } from "../../types/Applicative"
+import { createApplicative } from "../../typeclasses/Applicative"
 import { succeed, execute, SyncResult, SyncResultHkt } from "./sync-result"
 import { pipe } from "../../utils/flow"
 import { Functor } from "./functor"

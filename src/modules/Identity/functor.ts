@@ -1,4 +1,4 @@
-import * as functor from "../../types/Functor"
+import * as functor from "../../typeclasses/Functor"
 import { Identity, IdentityHkt } from "./identity"
 
 export const Functor: functor.Functor<IdentityHkt> = {

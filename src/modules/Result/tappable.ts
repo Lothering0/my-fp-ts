@@ -1,6 +1,6 @@
-import * as tappableBoth from "../../types/TappableBoth"
+import * as tappableBoth from "../../typeclasses/TappableBoth"
 import * as sync from "../Sync"
-import { createTappable } from "../../types/Tappable"
+import { createTappable } from "../../typeclasses/Tappable"
 import { Monad } from "./monad"
 import { fail, Result, ResultHkt, succeed } from "./result"
 import { pipe } from "../../utils/flow"

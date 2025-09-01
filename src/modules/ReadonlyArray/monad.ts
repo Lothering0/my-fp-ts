@@ -1,8 +1,8 @@
 import { ReadonlyArrayHkt } from "./readonly-array"
-import { createMonad } from "../../types/Monad"
+import { createMonad } from "../../typeclasses/Monad"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
 import { Applicative, ApplicativeWithIndex } from "./applicative"
-import { createMonadWithIndex } from "../../types/MonadWithIndex"
+import { createMonadWithIndex } from "../../typeclasses/MonadWithIndex"
 
 export const Monad = createMonad<ReadonlyArrayHkt> ({
   ...Applicative,

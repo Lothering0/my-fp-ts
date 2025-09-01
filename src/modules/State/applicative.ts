@@ -1,5 +1,5 @@
 import { flow, pipe } from "../../utils/flow"
-import { createApplicative } from "../../types/Applicative"
+import { createApplicative } from "../../typeclasses/Applicative"
 import { Functor } from "./functor"
 import { State, StateHkt } from "./state"
 

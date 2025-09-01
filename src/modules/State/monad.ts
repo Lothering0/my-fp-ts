@@ -1,5 +1,5 @@
 import { flow } from "../../utils/flow"
-import { createMonad } from "../../types/Monad"
+import { createMonad } from "../../typeclasses/Monad"
 import { Applicative } from "./applicative"
 import { State, StateHkt } from "./state"
 import { DoObject, DoObjectKey } from "../../types/DoObject"

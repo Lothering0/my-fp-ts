@@ -1,4 +1,4 @@
-import * as functor from "../../types/Functor"
+import * as functor from "../../typeclasses/Functor"
 import { SyncHkt, Sync, execute } from "./sync"
 import { pipe } from "../../utils/flow"
 

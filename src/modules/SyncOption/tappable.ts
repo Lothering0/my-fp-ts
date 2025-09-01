@@ -5,7 +5,7 @@ import { Result } from "../Result"
 import { Monad } from "./monad"
 import { pipe } from "../../utils/flow"
 import { execute, SyncOption } from "./sync-option"
-import { createTappable } from "../../types/Tappable"
+import { createTappable } from "../../typeclasses/Tappable"
 
 export const Tappable = createTappable (Monad)
 

@@ -1,8 +1,8 @@
 import { Option, none, some } from "./option"
 import { isNone } from "./refinements"
 import { value } from "./utils"
-import { Monoid } from "../../types/Monoid"
-import { Semigroup } from "../../types/Semigroup"
+import { Monoid } from "../../typeclasses/Monoid"
+import { Semigroup } from "../../typeclasses/Semigroup"
 import { pipe } from "../../utils/flow"
 
 export const empty = none

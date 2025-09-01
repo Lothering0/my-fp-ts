@@ -1,4 +1,4 @@
-import { Monoid } from "../../types/Monoid"
+import { Monoid } from "../../typeclasses/Monoid"
 import { Duration } from "./duration"
 import { SemigroupSum } from "./semigroup"
 

@@ -1,7 +1,7 @@
 import * as option from "../Option"
 import * as result from "../Result"
 import * as separated from "../Separated"
-import * as compactable from "../../types/Compactable"
+import * as compactable from "../../typeclasses/Compactable"
 import { SyncOption, SyncOptionHkt, execute, some, none } from "./sync-option"
 import { flow, pipe } from "../../utils/flow"
 import { zero } from "./alternative"

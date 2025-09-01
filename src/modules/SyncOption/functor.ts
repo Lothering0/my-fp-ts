@@ -1,5 +1,5 @@
 import * as option from "../Option"
-import * as functor from "../../types/Functor"
+import * as functor from "../../typeclasses/Functor"
 import { SyncOptionHkt, execute, SyncOption } from "./sync-option"
 import { pipe } from "../../utils/flow"
 

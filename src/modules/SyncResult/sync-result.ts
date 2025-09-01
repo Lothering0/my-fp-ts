@@ -1,6 +1,6 @@
 import * as result from "../Result"
 import * as sync from "../Sync"
-import { Hkt } from "../../types/Hkt"
+import { Hkt } from "../../typeclasses/Hkt"
 import { pipe } from "../../utils/flow"
 import { tryDo } from "../../utils/exceptions"
 

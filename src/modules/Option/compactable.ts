@@ -1,6 +1,6 @@
 import * as result from "../Result"
 import * as separated from "../Separated"
-import * as compactable from "../../types/Compactable"
+import * as compactable from "../../typeclasses/Compactable"
 import { Option, OptionHkt, some } from "./option"
 import { flat, flatMap } from "./monad"
 import { fromResult } from "./utils"

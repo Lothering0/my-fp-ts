@@ -1,6 +1,6 @@
 import * as result from "../Result"
-import * as functor from "../../types/Functor"
-import { createBifunctor } from "../../types/Bifunctor"
+import * as functor from "../../typeclasses/Functor"
+import { createBifunctor } from "../../typeclasses/Bifunctor"
 import { SyncResultHkt, SyncResult, execute } from "./sync-result"
 import { pipe } from "../../utils/flow"
 

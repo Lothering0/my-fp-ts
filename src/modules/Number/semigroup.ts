@@ -1,4 +1,4 @@
-import { Semigroup } from "../../types/Semigroup"
+import { Semigroup } from "../../typeclasses/Semigroup"
 import { add, multiply } from "./utils"
 
 export const SemigroupSum: Semigroup<number> = {

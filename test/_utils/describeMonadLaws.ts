@@ -1,5 +1,5 @@
-import { Hkt, Kind } from "../../src/types/Hkt"
-import { Monad } from "../../src/types/Monad"
+import { Hkt, Kind } from "../../src/typeclasses/Hkt"
+import { Monad } from "../../src/typeclasses/Monad"
 import { NonEmptyReadonlyArray } from "../../src/modules/NonEmptyReadonlyArray"
 import { pipe, flow } from "../../src/utils/flow"
 

@@ -1,5 +1,5 @@
 import * as option from "../Option"
-import * as functor from "../../types/Functor"
+import * as functor from "../../typeclasses/Functor"
 import { AsyncOptionHkt, AsyncOption, toPromise } from "./async-option"
 
 export const Functor: functor.Functor<AsyncOptionHkt> = {

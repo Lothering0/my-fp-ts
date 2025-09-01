@@ -1,6 +1,6 @@
 import * as number from "../../src/modules/Number"
-import { Hkt, Kind } from "../../src/types/Hkt"
-import { Applicative } from "../../src/types/Applicative"
+import { Hkt, Kind } from "../../src/typeclasses/Hkt"
+import { Applicative } from "../../src/typeclasses/Applicative"
 import { NonEmptyReadonlyArray } from "../../src/modules/NonEmptyReadonlyArray"
 import { identity } from "../../src/modules/Identity"
 

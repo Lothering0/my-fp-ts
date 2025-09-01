@@ -1,6 +1,6 @@
-import * as functor from "../../types/Functor"
+import * as functor from "../../typeclasses/Functor"
 import { SeparatedHkt, Separated, left, right } from "./separated"
-import { createBifunctor } from "../../types/Bifunctor"
+import { createBifunctor } from "../../typeclasses/Bifunctor"
 import { make } from "./utils"
 import { pipe } from "../../utils/flow"
 

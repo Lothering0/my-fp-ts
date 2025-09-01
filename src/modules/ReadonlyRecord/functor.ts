@@ -1,5 +1,5 @@
-import * as functor from "../../types/Functor"
-import * as functorWithIndex from "../../types/FunctorWithIndex"
+import * as functor from "../../typeclasses/Functor"
+import * as functorWithIndex from "../../typeclasses/FunctorWithIndex"
 import * as readonlyArray from "../ReadonlyArray"
 import { flow } from "../../utils/flow"
 import { ReadonlyRecord, ReadonlyRecordHkt } from "./readonly-record"

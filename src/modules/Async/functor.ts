@@ -1,4 +1,4 @@
-import * as functor from "../../types/Functor"
+import * as functor from "../../typeclasses/Functor"
 import { AsyncHkt, Async, toPromise } from "./async"
 
 export const Functor: functor.Functor<AsyncHkt> = {

@@ -1,6 +1,6 @@
-import * as functor from "../../types/Functor"
+import * as functor from "../../typeclasses/Functor"
 import { Result, ResultHkt, fail, succeed } from "./result"
-import { createBifunctor } from "../../types/Bifunctor"
+import { createBifunctor } from "../../typeclasses/Bifunctor"
 import { match } from "./utils"
 import { flow } from "../../utils/flow"
 

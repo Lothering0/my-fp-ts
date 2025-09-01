@@ -1,5 +1,5 @@
 import * as readonlyArray from "../ReadonlyArray"
-import * as functor from "../../types/Functor"
+import * as functor from "../../typeclasses/Functor"
 import { Tree, TreeHkt } from "./tree"
 import { make, value, forest } from "./utils"
 import { pipe } from "../../utils/flow"

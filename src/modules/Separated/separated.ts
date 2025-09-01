@@ -1,4 +1,4 @@
-import { Hkt } from "../../types/Hkt"
+import { Hkt } from "../../typeclasses/Hkt"
 
 export interface SeparatedHkt extends Hkt {
   readonly type: Separated<this["_collectable"], this["_in"]>

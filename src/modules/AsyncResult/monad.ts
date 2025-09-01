@@ -2,7 +2,7 @@
 import * as result from "../Result"
 import * as async from "../Async"
 import { identity } from "../Identity"
-import { createMonad } from "../../types/Monad"
+import { createMonad } from "../../typeclasses/Monad"
 import { Applicative } from "./applicative"
 import { AsyncResultHkt, AsyncResult, toPromise, fail } from "./async-result"
 import { pipe } from "../../utils/flow"

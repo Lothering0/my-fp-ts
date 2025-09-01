@@ -1,6 +1,6 @@
 import * as result from "../Result"
-import * as functor from "../../types/Functor"
-import { createBifunctor } from "../../types/Bifunctor"
+import * as functor from "../../typeclasses/Functor"
+import { createBifunctor } from "../../typeclasses/Bifunctor"
 import { AsyncResultHkt, toPromise, AsyncResult } from "./async-result"
 
 export const Functor: functor.Functor<AsyncResultHkt> = {

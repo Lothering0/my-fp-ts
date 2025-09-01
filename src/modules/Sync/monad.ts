@@ -1,4 +1,4 @@
-import { createMonad } from "../../types/Monad"
+import { createMonad } from "../../typeclasses/Monad"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
 import { Applicative } from "./applicative"
 import { SyncHkt, Sync, execute } from "./sync"

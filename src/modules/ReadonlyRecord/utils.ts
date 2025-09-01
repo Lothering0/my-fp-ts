@@ -2,15 +2,12 @@ import * as option from "../Option"
 import * as readonlyArray from "../ReadonlyArray"
 import * as boolean from "../Boolean"
 import * as identity from "../Identity"
-import * as eq from "../../types/Eq"
+import * as eq from "../../typeclasses/Eq"
 import { flow, pipe } from "../../utils/flow"
 import { ReadonlyRecord } from "./readonly-record"
-import {
-  Refinement,
-  RefinementWithIndex,
-  TheseOrAnyString,
-} from "../../types/utils"
+import { TheseOrAnyString } from "../../types/utils"
 import { Predicate, PredicateWithIndex } from "../Predicate"
+import { Refinement, RefinementWithIndex } from "../Refinement"
 
 export const keys: {
   <K extends string, A>(self: ReadonlyRecord<K, A>): ReadonlyArray<K>

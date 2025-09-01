@@ -1,4 +1,4 @@
-import { Semigroup } from "../../types/Semigroup"
+import { Semigroup } from "../../typeclasses/Semigroup"
 import { NonEmptyReadonlyArray } from "./non-empty-readonly-array"
 import { concat } from "./utils"
 

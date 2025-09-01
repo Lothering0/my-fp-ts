@@ -1,4 +1,4 @@
-import * as alt from "../../types/Alt"
+import * as alt from "../../typeclasses/Alt"
 import { concat } from "./utils"
 import { ReadonlyArrayHkt } from "./readonly-array"
 

@@ -1,5 +1,5 @@
-import * as foldable from "../../types/Foldable"
-import * as foldableWithIndex from "../../types/FoldableWithIndex"
+import * as foldable from "../../typeclasses/Foldable"
+import * as foldableWithIndex from "../../typeclasses/FoldableWithIndex"
 import * as readonlyArray from "../ReadonlyArray"
 import { flow } from "../../utils/flow"
 import { ReadonlyRecord, ReadonlyRecordHkt } from "./readonly-record"

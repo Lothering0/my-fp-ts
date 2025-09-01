@@ -1,4 +1,4 @@
-import { Show } from "../../types/Show"
+import { Show } from "../../typeclasses/Show"
 import { Option } from "./option"
 import { match } from "./utils"
 import { constant } from "../../utils/constant"

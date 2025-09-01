@@ -3,11 +3,11 @@ import { PredicateWithIndex } from "../Predicate"
 import { Result } from "../Result"
 import { Separated } from "../Separated"
 import { ReadonlyArrayHkt } from "./readonly-array"
-import { createFilterableWithIndex } from "../../types/FilterableWithIndex"
-import { createFilterable } from "../../types/Filterable"
+import { createFilterableWithIndex } from "../../typeclasses/FilterableWithIndex"
+import { createFilterable } from "../../typeclasses/Filterable"
 import { Compactable } from "./compactable"
 import { Functor, FunctorWithIndex } from "./functor"
-import { RefinementWithIndex } from "../../types/utils"
+import { RefinementWithIndex } from "../Refinement"
 
 export const Filterable = createFilterable<ReadonlyArrayHkt> ({
   ...Compactable,

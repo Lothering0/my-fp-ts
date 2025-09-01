@@ -1,5 +1,5 @@
 import { left, right, Separated } from "./separated"
-import { Eq } from "../../types/Eq"
+import { Eq } from "../../typeclasses/Eq"
 
 export const getEq: {
   <E, A>(EqE: Eq<E>, EqA: Eq<A>): Eq<Separated<E, A>>

@@ -1,4 +1,4 @@
-import { Hkt } from "../../types/Hkt"
+import { Hkt } from "../../typeclasses/Hkt"
 
 export interface ResultHkt extends Hkt {
   readonly type: Result<this["_collectable"], this["_in"]>

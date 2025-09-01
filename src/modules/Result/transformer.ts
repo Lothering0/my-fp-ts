@@ -1,11 +1,11 @@
 import * as result from "../Result"
 import { identity } from "../Identity"
-import { Hkt, Kind } from "../../types/Hkt"
-import { Functor } from "../../types/Functor"
-import { createBifunctor } from "../../types/Bifunctor"
-import { createApplicative } from "../../types/Applicative"
-import { createMonad, Monad } from "../../types/Monad"
-import { createTappable } from "../../types/Tappable"
+import { Hkt, Kind } from "../../typeclasses/Hkt"
+import { Functor } from "../../typeclasses/Functor"
+import { createBifunctor } from "../../typeclasses/Bifunctor"
+import { createApplicative } from "../../typeclasses/Applicative"
+import { createMonad, Monad } from "../../typeclasses/Monad"
+import { createTappable } from "../../typeclasses/Tappable"
 import { flow, pipe } from "../../utils/flow"
 
 export type ResultT<F extends Hkt, In, Collectable, Fixed, TCollectable> = Kind<

@@ -1,5 +1,5 @@
 import * as result from "../Result"
-import { createMonad } from "../../types/Monad"
+import { createMonad } from "../../typeclasses/Monad"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
 import { SyncResultHkt, execute, SyncResult } from "./sync-result"
 import { Applicative } from "./applicative"

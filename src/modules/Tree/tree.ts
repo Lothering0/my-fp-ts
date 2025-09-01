@@ -1,4 +1,4 @@
-import { Hkt } from "../../types/Hkt"
+import { Hkt } from "../../typeclasses/Hkt"
 
 export interface TreeHkt extends Hkt {
   readonly type: Tree<this["_in"]>

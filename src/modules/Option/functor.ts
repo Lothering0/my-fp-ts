@@ -1,4 +1,4 @@
-import * as functor from "../../types/Functor"
+import * as functor from "../../typeclasses/Functor"
 import { OptionHkt, Option, some } from "./option"
 import { flow } from "../../utils/flow"
 import { match } from "./utils"

@@ -1,7 +1,7 @@
-import * as semigroup from "../types/Semigroup"
-import * as monoid from "../types/Monoid"
-import * as show_ from "../types/Show"
-import * as eq from "../types/Eq"
+import * as semigroup from "../typeclasses/Semigroup"
+import * as monoid from "../typeclasses/Monoid"
+import * as show_ from "../typeclasses/Show"
+import * as eq from "../typeclasses/Eq"
 import * as number from "./Number"
 import { pipe } from "../utils/flow"
 

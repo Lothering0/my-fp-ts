@@ -1,4 +1,4 @@
-import { Eq } from "../../types/Eq"
+import { Eq } from "../../typeclasses/Eq"
 import { Identity, identity } from "./identity"
 
 export const getEq: {

@@ -1,6 +1,6 @@
 import * as readonlyArray from "../ReadonlyArray"
 import { Tree } from "./tree"
-import { Eq } from "../../types/Eq"
+import { Eq } from "../../typeclasses/Eq"
 import { forest, value } from "./utils"
 
 export const getEq: {

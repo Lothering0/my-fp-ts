@@ -1,5 +1,5 @@
-import * as foldable from "../../types/Foldable"
-import * as foldableWithIndex from "../../types/FoldableWithIndex"
+import * as foldable from "../../typeclasses/Foldable"
+import * as foldableWithIndex from "../../typeclasses/FoldableWithIndex"
 import { ReadonlyArrayHkt } from "./readonly-array"
 
 export const Foldable: foldable.Foldable<ReadonlyArrayHkt> = {

@@ -1,4 +1,4 @@
-import { createExtendable } from "../../types/Extendable"
+import { createExtendable } from "../../typeclasses/Extendable"
 import { Result, ResultHkt } from "./result"
 import { Functor, map } from "./functor"
 

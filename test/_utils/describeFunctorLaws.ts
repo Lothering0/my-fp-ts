@@ -1,6 +1,6 @@
 import * as number from "../../src/modules/Number"
-import { Hkt, Kind } from "../../src/types/Hkt"
-import { Functor } from "../../src/types/Functor"
+import { Hkt, Kind } from "../../src/typeclasses/Hkt"
+import { Functor } from "../../src/typeclasses/Functor"
 import { NonEmptyReadonlyArray } from "../../src/modules/NonEmptyReadonlyArray"
 import { identity } from "../../src/modules/Identity"
 import { pipe } from "../../src/utils/flow"

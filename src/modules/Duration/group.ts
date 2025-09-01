@@ -1,4 +1,4 @@
-import { Group } from "../../types/Group"
+import { Group } from "../../typeclasses/Group"
 import { Duration } from "./duration"
 import { MonoidSum } from "./monoid"
 import { multiply } from "./utils"

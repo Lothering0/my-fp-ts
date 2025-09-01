@@ -1,4 +1,4 @@
-import { Eq } from "../../types/Eq"
+import { Eq } from "../../typeclasses/Eq"
 import { Result } from "./result"
 import { match } from "./utils"
 import { constFalse } from "../../utils/constant"

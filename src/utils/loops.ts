@@ -1,8 +1,8 @@
 import { _ } from "./underscore"
-import { Applicative } from "../types/Applicative"
+import { Applicative } from "../typeclasses/Applicative"
 import { Predicate } from "../modules/Predicate"
 import { LazyArg } from "../types/utils"
-import { Hkt, Kind } from "../types/Hkt"
+import { Hkt, Kind } from "../typeclasses/Hkt"
 
 export const getDoWhile: {
   <F extends Hkt>(

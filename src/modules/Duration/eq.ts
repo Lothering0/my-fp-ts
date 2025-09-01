@@ -1,4 +1,4 @@
-import * as eq from "../../types/Eq"
+import * as eq from "../../typeclasses/Eq"
 import { Duration } from "./duration"
 import { equals } from "./utils"
 

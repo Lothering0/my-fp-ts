@@ -1,4 +1,4 @@
-import { createExtendable } from "../../types/Extendable"
+import { createExtendable } from "../../typeclasses/Extendable"
 import { ReadonlyArrayHkt } from "./readonly-array"
 import { Functor } from "./functor"
 import { fromNonEmpty, prepend } from "./utils"

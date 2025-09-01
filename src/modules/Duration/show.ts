@@ -1,4 +1,4 @@
-import * as show_ from "../../types/Show"
+import * as show_ from "../../typeclasses/Show"
 import * as readonlyArray from "../ReadonlyArray"
 import * as readonlyRecord from "../ReadonlyRecord"
 import * as string from "../String"

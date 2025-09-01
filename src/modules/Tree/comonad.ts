@@ -1,4 +1,4 @@
-import * as comonad from "../../types/Comonad"
+import * as comonad from "../../typeclasses/Comonad"
 import { Tree, TreeHkt } from "./tree"
 import { value } from "./utils"
 import { Extendable } from "./extendable"

@@ -1,4 +1,4 @@
-import { createApplicative } from "../../types/Applicative"
+import { createApplicative } from "../../typeclasses/Applicative"
 import { Functor, map } from "./functor"
 import { Result, ResultHkt, succeed } from "./result"
 import { isSuccess } from "./refinements"

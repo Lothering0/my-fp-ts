@@ -1,4 +1,4 @@
-import { Show } from "../../types/Show"
+import { Show } from "../../typeclasses/Show"
 import { join } from "./utils"
 import { flow } from "../../utils/flow"
 import { map } from "./functor"

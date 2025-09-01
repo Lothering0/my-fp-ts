@@ -1,4 +1,4 @@
-import { Eq } from "../../types/Eq"
+import { Eq } from "../../typeclasses/Eq"
 import { Option } from "./option"
 import { match } from "./utils"
 import { isNone } from "./refinements"

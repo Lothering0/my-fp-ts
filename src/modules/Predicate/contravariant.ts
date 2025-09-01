@@ -1,4 +1,4 @@
-import * as contravariant from "../../types/Contravariant"
+import * as contravariant from "../../typeclasses/Contravariant"
 import { Predicate, PredicateHkt } from "./predicate"
 import { flow } from "../../utils/flow"
 

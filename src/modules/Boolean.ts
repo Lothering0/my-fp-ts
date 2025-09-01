@@ -1,8 +1,8 @@
-import * as show_ from "../types/Show"
-import * as eq from "../types/Eq"
+import * as show_ from "../typeclasses/Show"
+import * as eq from "../typeclasses/Eq"
 import { LazyArg } from "../types/utils"
-import { Semigroup } from "../types/Semigroup"
-import { Monoid } from "../types/Monoid"
+import { Semigroup } from "../typeclasses/Semigroup"
+import { Monoid } from "../typeclasses/Monoid"
 
 export const not: {
   <A extends boolean>(a: A): A extends true ? false : true

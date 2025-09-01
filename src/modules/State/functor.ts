@@ -1,4 +1,4 @@
-import * as functor from "../../types/Functor"
+import * as functor from "../../typeclasses/Functor"
 import { StateHkt, State } from "./state"
 import { run } from "./utils"
 import { flow } from "../../utils/flow"

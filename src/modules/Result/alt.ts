@@ -1,4 +1,4 @@
-import * as alt from "../../types/Alt"
+import * as alt from "../../typeclasses/Alt"
 import { identity } from "../Identity"
 import { Result, ResultHkt, succeed } from "./result"
 import { match } from "./utils"

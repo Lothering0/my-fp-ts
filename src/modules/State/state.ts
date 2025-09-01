@@ -1,4 +1,4 @@
-import { Hkt } from "../../types/Hkt"
+import { Hkt } from "../../typeclasses/Hkt"
 import { _ } from "../../utils/underscore"
 
 export interface StateHkt extends Hkt {

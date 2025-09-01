@@ -1,4 +1,4 @@
-import { Show } from "../../types/Show"
+import { Show } from "../../typeclasses/Show"
 import { Result } from "./result"
 import { match } from "./utils"
 import { flow } from "../../utils/flow"
