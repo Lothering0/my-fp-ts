@@ -5,15 +5,17 @@ describe ("getDifferenceMagma", () => {
   const Magma = readonlyRecord.getDifferenceMagma ()
 
   it ("should return record containing all keys with its values which not included in first or second record", () => {
-    expect (pipe ({}, Magma.combine ({ b: 2, c: 3 }))).toEqual ({ b: 2, c: 3 })
-    expect (pipe ({ a: 1 }, Magma.combine ({}))).toEqual ({ a: 1 })
-    expect (pipe ({ a: 1, b: 2, c: 3 }, Magma.combine ({ b: 2, c: 3 }))).toEqual ({
+    pipe ({}, Magma.combine ({ b: 2, c: 3 }), expect).toEqual ({ b: 2, c: 3 })
+    pipe ({ a: 1 }, Magma.combine ({}), expect).toEqual ({ a: 1 })
+    pipe ({ a: 1, b: 2, c: 3 }, Magma.combine ({ b: 2, c: 3 }), expect).toEqual ({
       a: 1,
     })
-    expect (
-      pipe ({ a: 1, b: 2, c: 3 }, Magma.combine ({ a: 1, b: 2, c: 3 })),
+    pipe (
+      { a: 1, b: 2, c: 3 },
+      Magma.combine ({ a: 1, b: 2, c: 3 }),
+      expect,
     ).toEqual ({})
-    expect (pipe ({ a: 1, b: 2, c: 3 }, Magma.combine ({ a: 1, b: 2 }))).toEqual ({
+    pipe ({ a: 1, b: 2, c: 3 }, Magma.combine ({ a: 1, b: 2 }), expect).toEqual ({
       c: 3,
     })
   })

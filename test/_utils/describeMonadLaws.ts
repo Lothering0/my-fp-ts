@@ -26,7 +26,7 @@ export const describeMonadLaws: {
 
       it ("should satisfy right identity law", () => {
         fas.forEach (fa => {
-          expect (pipe (fa, Monad.flatMap (Monad.of))).toEqual (fa)
+          pipe (fa, Monad.flatMap (Monad.of), expect).toEqual (fa)
         })
       })
 

@@ -24,11 +24,10 @@ export const describeFunctorLaws: {
         const bc = number.divide (2)
 
         fas.forEach (fa => {
-          expect (
-            pipe (
-              fa,
-              Functor.map (a => bc (ab (a))),
-            ),
+          pipe (
+            fa,
+            Functor.map (a => bc (ab (a))),
+            expect,
           ).toEqual (Functor.map (bc) (Functor.map (ab) (fa)))
         })
       })

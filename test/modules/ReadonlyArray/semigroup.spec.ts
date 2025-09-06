@@ -6,11 +6,11 @@ describe ("getIntersectionSemigroup", () => {
   const Semigroup = readonlyArray.getIntersectionSemigroup (number.Eq)
 
   it ("should return all elements that contained by both arrays", () => {
-    expect (pipe ([1, 2, 3], Semigroup.combine ([2, 3]))).toEqual ([2, 3])
-    expect (pipe ([1, 2, 3], Semigroup.combine ([2, 3, 4]))).toEqual ([2, 3])
-    expect (pipe ([1, 2, 3], Semigroup.combine ([4, 5, 6]))).toEqual ([])
-    expect (pipe ([1, 2, 3], Semigroup.combine ([1, 2, 3]))).toEqual ([1, 2, 3])
-    expect (pipe ([], Semigroup.combine ([1, 2, 3]))).toEqual ([])
-    expect (pipe ([1, 2, 3], Semigroup.combine ([]))).toEqual ([])
+    pipe ([1, 2, 3], Semigroup.combine ([2, 3]), expect).toEqual ([2, 3])
+    pipe ([1, 2, 3], Semigroup.combine ([2, 3, 4]), expect).toEqual ([2, 3])
+    pipe ([1, 2, 3], Semigroup.combine ([4, 5, 6]), expect).toEqual ([])
+    pipe ([1, 2, 3], Semigroup.combine ([1, 2, 3]), expect).toEqual ([1, 2, 3])
+    pipe ([], Semigroup.combine ([1, 2, 3]), expect).toEqual ([])
+    pipe ([1, 2, 3], Semigroup.combine ([]), expect).toEqual ([])
   })
 })
