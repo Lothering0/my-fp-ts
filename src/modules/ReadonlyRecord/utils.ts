@@ -10,6 +10,8 @@ import { Predicate, PredicateWithIndex } from "../Predicate"
 import { Refinement, RefinementWithIndex } from "../Refinement"
 import { Magma } from "../../typeclasses/Magma"
 import { map } from "./functor"
+import { Endomorphism } from "../../typeclasses/Endomorphism"
+import { constant } from "../../utils/constant"
 
 export const keys: {
   <K extends string, A>(self: ReadonlyRecord<K, A>): ReadonlyArray<K>
@@ -50,24 +52,6 @@ export const lookup: {
 export const copy: {
   <K extends string, A>(self: ReadonlyRecord<K, A>): ReadonlyRecord<K, A>
 } = self => ({ ...self })
-
-export const deleteAt: {
-  <K1 extends string, K2 extends TheseOrAnyString<K1>, A>(
-    k: K2,
-  ): (
-    self: ReadonlyRecord<K1, A>,
-  ) => ReadonlyRecord<K1 extends typeof k ? Exclude<K1, K2> : K1, A>
-} = k => self =>
-  pipe (
-    identity.Do,
-    identity.apS ("copy", copy (self)),
-    identity.tapSync (
-      ({ copy }) =>
-        () =>
-          delete copy[k as string as keyof typeof copy],
-    ),
-    identity.map (({ copy }) => copy),
-  )
 
 /** Is `a` element of a record by `Eq` instance */
 export const elem =
@@ -154,4 +138,48 @@ export const getUnion: {
         ),
       ),
     ),
+  )
+
+export const upsertAt: {
+  <A, K extends string>(
+    k: K,
+    a: A,
+  ): (self: ReadonlyRecord<K, A>) => ReadonlyRecord<K, A>
+} = append
+
+export const modifyAt: {
+  <A, K extends string>(
+    k: K,
+    f: Endomorphism<A>,
+  ): (self: ReadonlyRecord<K, A>) => option.Option<ReadonlyRecord<K, A>>
+} = (k, f) => self =>
+  pipe (
+    self,
+    lookup (k),
+    option.map (a => ({ ...self, [k]: f (a) })),
+  )
+
+export const updateAt: {
+  <A, K extends string>(
+    k: K,
+    a: A,
+  ): (self: ReadonlyRecord<K, A>) => option.Option<ReadonlyRecord<K, A>>
+} = (k, a) => modifyAt (k, constant (a))
+
+export const removeAt: {
+  <K1 extends string, K2 extends TheseOrAnyString<K1>, A>(
+    k: K2,
+  ): (
+    self: ReadonlyRecord<K1, A>,
+  ) => ReadonlyRecord<K1 extends typeof k ? Exclude<K1, K2> : K1, A>
+} = k => self =>
+  pipe (
+    identity.Do,
+    identity.apS ("copy", copy (self)),
+    identity.tapSync (
+      ({ copy }) =>
+        () =>
+          delete copy[k as string as keyof typeof copy],
+    ),
+    identity.map (({ copy }) => copy),
   )

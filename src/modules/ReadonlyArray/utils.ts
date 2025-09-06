@@ -15,6 +15,7 @@ import { match, matchLeft, matchRight } from "./matchers"
 import { isEmpty, isNonEmpty } from "./refinements"
 import { of } from "./applicative"
 import { map } from "./functor"
+import { Endomorphism } from "../../typeclasses/Endomorphism"
 
 export const fromNonEmpty: {
   <A>(as: nonEmptyReadonlyArray.NonEmptyReadonlyArray<A>): ReadonlyArray<A>
@@ -390,6 +391,62 @@ export const chunksOf: {
         ) as ReadonlyArray<any>,
       constant ([]),
     ),
+  )
+
+export const insertAt: {
+  <A>(
+    i: number,
+    a: A,
+  ): (
+    self: ReadonlyArray<A>,
+  ) => option.Option<nonEmptyReadonlyArray.NonEmptyReadonlyArray<A>>
+} = (i, a) => self =>
+  pipe (
+    option.Do,
+    option.tap (() =>
+      pipe (
+        self,
+        lookup (i),
+        option.orElse (pipe (i === length (self), option.some)),
+      ),
+    ),
+    option.apS ("start", pipe (self, slice (0, i), option.some)),
+    option.apS ("end", pipe (self, slice (i), option.some)),
+    option.map (({ start, end }) =>
+      pipe (start, append (a), nonEmptyReadonlyArray.concat (end)),
+    ),
+  )
+
+export const modifyAt: {
+  <A>(
+    i: number,
+    f: Endomorphism<A>,
+  ): (self: ReadonlyArray<A>) => option.Option<ReadonlyArray<A>>
+} = (i, f) => self =>
+  pipe (
+    option.Do,
+    option.apS ("a", pipe (self, lookup (i))),
+    option.apS ("start", pipe (self, slice (0, i), option.some)),
+    option.apS ("end", pipe (self, slice (i + 1), option.some)),
+    option.map (({ start, a, end }) => pipe (start, append (f (a)), concat (end))),
+  )
+
+export const updateAt: {
+  <A>(
+    i: number,
+    a: A,
+  ): (self: ReadonlyArray<A>) => option.Option<ReadonlyArray<A>>
+} = (i, a) => modifyAt (i, constant (a))
+
+export const removeAt: {
+  <A>(i: number): (self: ReadonlyArray<A>) => option.Option<ReadonlyArray<A>>
+} = i => self =>
+  pipe (
+    option.Do,
+    option.tap (() => pipe (self, lookup (i))),
+    option.apS ("start", pipe (self, slice (0, i), option.some)),
+    option.apS ("end", pipe (self, slice (i + 2), option.some)),
+    option.map (({ start, end }) => pipe (start, concat (end))),
   )
 
 /** [f (a, b, ...) | a <- as, b <- bs, ..., p (a, b, ...)] */

@@ -4,6 +4,7 @@ import { pipe } from "../../utils/flow"
 import { filterMap } from "./filterable"
 import { ReadonlyRecord } from "./readonly-record"
 import { lookup } from "./utils"
+import { getUnionMagma } from "./magma"
 
 export const getIntersectionSemigroup: {
   <A>(Semigroup: Semigroup<A>): Semigroup<ReadonlyRecord<string, A>>
@@ -16,3 +17,9 @@ export const getIntersectionSemigroup: {
       ),
     ),
 })
+
+export const getUnionSemigroup: {
+  <A, K extends string>(
+    Semigroup: Semigroup<A>,
+  ): Semigroup<ReadonlyRecord<K, A>>
+} = getUnionMagma
