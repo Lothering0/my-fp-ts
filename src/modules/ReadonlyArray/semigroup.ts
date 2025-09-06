@@ -1,6 +1,26 @@
+import * as boolean from "../Boolean"
+import { Eq } from "../../typeclasses/Eq"
 import { Semigroup } from "../../typeclasses/Semigroup"
-import { concat } from "./utils"
+import { pipe } from "../../utils/flow"
+import { reduce } from "./foldable"
+import { append, concat, elem } from "./utils"
 
 export const getSemigroup = <A>(): Semigroup<ReadonlyArray<A>> => ({
   combine: concat,
+})
+
+export const getIntersectionSemigroup = <A>(
+  Eq: Eq<A>,
+): Semigroup<ReadonlyArray<A>> => ({
+  combine: ys =>
+    reduce ([] as ReadonlyArray<A>, (out, x) =>
+      pipe (
+        ys,
+        elem (Eq) (x),
+        boolean.match (
+          () => out,
+          () => pipe (out, append (x)),
+        ),
+      ),
+    ),
 })

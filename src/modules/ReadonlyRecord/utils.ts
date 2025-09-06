@@ -8,6 +8,8 @@ import { ReadonlyRecord } from "./readonly-record"
 import { TheseOrAnyString } from "../../types/utils"
 import { Predicate, PredicateWithIndex } from "../Predicate"
 import { Refinement, RefinementWithIndex } from "../Refinement"
+import { Magma } from "../../typeclasses/Magma"
+import { map } from "./functor"
 
 export const keys: {
   <K extends string, A>(self: ReadonlyRecord<K, A>): ReadonlyArray<K>
@@ -118,3 +120,38 @@ export const append: {
     a: A,
   ): (self: ReadonlyRecord<K, A>) => ReadonlyRecord<K, A>
 } = (k, a) => self => ({ ...self, [k]: a })
+
+export const concat: {
+  <A, K1 extends string>(
+    a: ReadonlyRecord<K1, A>,
+  ): <B, K2 extends string>(
+    self: ReadonlyRecord<K2, B>,
+  ) => ReadonlyRecord<K1 | K2, A | B>
+} = a => self => ({ ...self, ...a })
+
+export const getUnion: {
+  <A>(
+    Magma: Magma<A>,
+  ): <K1 extends string>(
+    as: ReadonlyRecord<K1, A>,
+  ) => <K2 extends string>(
+    self: ReadonlyRecord<K2, A>,
+  ) => ReadonlyRecord<K1 | K2, A>
+} = Magma => as => self =>
+  pipe (
+    as,
+    concat (self),
+    map ((a, k) =>
+      pipe (
+        has (k) (as),
+        boolean.and (has (k) (self)),
+        boolean.match (
+          () => a,
+          () =>
+            Magma.combine (as[k as keyof typeof as]) (
+              self[k as keyof typeof self],
+            ),
+        ),
+      ),
+    ),
+  )
