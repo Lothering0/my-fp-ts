@@ -46,7 +46,10 @@ export const lookup: {
   pipe (
     self,
     has (k),
-    boolean.match (option.zero, () => option.some (self[k as keyof typeof self])),
+    boolean.match ({
+      onFalse: option.zero,
+      onTrue: () => option.some (self[k as keyof typeof self]),
+    }),
   )
 
 export const copy: {
@@ -129,13 +132,13 @@ export const getUnion: {
       pipe (
         has (k) (as),
         boolean.and (has (k) (self)),
-        boolean.match (
-          () => a,
-          () =>
+        boolean.match ({
+          onFalse: () => a,
+          onTrue: () =>
             Magma.combine (as[k as keyof typeof as]) (
               self[k as keyof typeof self],
             ),
-        ),
+        }),
       ),
     ),
   )

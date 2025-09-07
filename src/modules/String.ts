@@ -14,13 +14,15 @@ export const length: {
 export const isEmpty = (self: string): self is "" =>
   pipe (self, length, number.equals (0))
 
+export interface Matchers<A, B = A> {
+  readonly onEmpty: (e: "") => A
+  readonly onNonEmpty: (a: string) => B
+}
+
 export const match: {
-  <A, B = A>(
-    onEmpty: (e: "") => A,
-    onNonEmpty: (a: string) => B,
-  ): (self: string) => A | B
-} = (onEmpty, onNonEmpty) => self =>
-  isEmpty (self) ? onEmpty ("") : onNonEmpty (self)
+  <A, B = A>(matchers: Matchers<A, B>): (self: string) => A | B
+} = matchers => self =>
+  isEmpty (self) ? matchers.onEmpty ("") : matchers.onNonEmpty (self)
 
 export const toLowerCase = <A extends string = string>(self: A): Lowercase<A> =>
   self.toLowerCase () as Lowercase<A>

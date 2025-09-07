@@ -2,19 +2,27 @@ import { createApplicative } from "../../typeclasses/Applicative"
 import { OptionHkt, Option, some } from "./option"
 import { pipe } from "../../utils/flow"
 import { Functor } from "./functor"
-import { match } from "./utils"
+import { match } from "./matchers"
 import { zero } from "./alternative"
 
 export const Applicative = createApplicative<OptionHkt> ({
   ...Functor,
   of: some,
   ap: fa => self =>
-    match (zero, a =>
-      pipe (
-        self,
-        match (zero, ab => pipe (a, ab, some)),
-      ),
-    ) (fa),
+    pipe (
+      fa,
+      match ({
+        onNone: zero,
+        onSome: a =>
+          pipe (
+            self,
+            match ({
+              onNone: zero,
+              onSome: ab => pipe (a, ab, some),
+            }),
+          ),
+      }),
+    ),
 })
 
 export const of: {

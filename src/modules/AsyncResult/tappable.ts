@@ -21,22 +21,27 @@ export const TappableBoth: tappableBoth.TappableBoth<AsyncResultHkt> = {
   tapLeft: f => self => () =>
     pipe (self, toPromise, promise =>
       promise.then (
-        result.match (
-          e =>
+        result.match ({
+          onFailure: e =>
             pipe (e, f, toPromise, promise =>
-              promise.then (result.match (result.fail, () => result.fail (e))),
+              promise.then (
+                result.match ({
+                  onFailure: result.fail,
+                  onSuccess: () => result.fail (e),
+                }),
+              ),
             ),
-          result.succeed,
-        ),
+          onSuccess: result.succeed,
+        }),
       ),
     ),
   tapLeftSync: f => self => () =>
     pipe (self, toPromise, promise =>
       promise.then (
-        result.match (
-          e => pipe (e, f, sync.execute, () => result.fail (e)),
-          result.succeed,
-        ),
+        result.match ({
+          onFailure: e => pipe (e, f, sync.execute, () => result.fail (e)),
+          onSuccess: result.succeed,
+        }),
       ),
     ),
 }
@@ -108,15 +113,18 @@ export const tapLeftResult: {
 } = f => self => () =>
   pipe (self, toPromise, promise =>
     promise.then (
-      result.match (
-        e =>
+      result.match ({
+        onFailure: e =>
           pipe (
             e,
             f,
-            result.match (result.fail, () => result.fail (e)),
+            result.match ({
+              onFailure: result.fail,
+              onSuccess: () => result.fail (e),
+            }),
           ),
-        result.succeed,
-      ),
+        onSuccess: result.succeed,
+      }),
     ),
   )
 
@@ -127,16 +135,19 @@ export const tapLeftSyncResult: {
 } = f => self => () =>
   pipe (self, toPromise, promise =>
     promise.then (
-      result.match (
-        e =>
+      result.match ({
+        onFailure: e =>
           pipe (
             e,
             f,
             syncResult.execute,
-            result.match (result.fail, () => result.fail (e)),
+            result.match ({
+              onFailure: result.fail,
+              onSuccess: () => result.fail (e),
+            }),
           ),
-        result.succeed,
-      ),
+        onSuccess: result.succeed,
+      }),
     ),
   )
 
@@ -147,12 +158,12 @@ export const tapLeftAsync: {
 } = f => self => () =>
   pipe (self, toPromise, promise =>
     promise.then (
-      result.match (
-        e =>
+      result.match ({
+        onFailure: e =>
           pipe (e, f, async.toPromise, promise =>
             promise.then (() => result.fail (e)),
           ),
-        result.succeed,
-      ),
+        onSuccess: result.succeed,
+      }),
     ),
   )

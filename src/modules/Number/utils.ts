@@ -48,7 +48,10 @@ export const isOdd: Predicate<number> = flow (isEven, boolean.not)
 
 export const toNonNegative: {
   (self: number): number
-} = matchNegative (constant (0), identity)
+} = matchNegative ({
+  onNegative: constant (0),
+  onNonNegative: identity,
+})
 
 export const toFixedString: {
   (fractionDigits: number): (self: number) => string

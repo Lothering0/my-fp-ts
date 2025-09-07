@@ -17,10 +17,10 @@ export const getIntersectionSemigroup = <A>(
       pipe (
         ys,
         elem (Eq) (x),
-        boolean.match (
-          () => out,
-          () => pipe (out, append (x)),
-        ),
+        boolean.match ({
+          onFalse: () => out,
+          onTrue: () => pipe (out, append (x)),
+        }),
       ),
     ),
 })

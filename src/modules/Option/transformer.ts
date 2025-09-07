@@ -6,7 +6,6 @@ import { createMonad, Monad } from "../../typeclasses/Monad"
 import { createTappable } from "../../typeclasses/Tappable"
 import { flow, pipe } from "../../utils/flow"
 import { identity } from "../Identity"
-import { LazyArg } from "../../types/utils"
 
 export type OptionT<F extends Hkt, In, Collectable, Fixed> = Kind<
   F,
@@ -38,8 +37,7 @@ export const transform = <F extends Hkt>(M: Monad<F>) => {
 
   const match: {
     <In, Out1, Collectable, Fixed, Out2 = Out1>(
-      onNone: LazyArg<Out1>,
-      onSome: (a: In) => Out2,
+      matchers: option.Matchers<In, Out1, Out2>,
     ): (
       self: Kind<THkt, In, Collectable, Fixed>,
     ) => Kind<F, Out1 | Out2, Collectable, Fixed>
@@ -67,7 +65,10 @@ export const transform = <F extends Hkt>(M: Monad<F>) => {
   const Monad = createMonad<THkt> ({
     ...Applicative,
     flat: M.flatMap (
-      option.match (() => M.of (option.none), identity),
+      option.match ({
+        onNone: () => M.of (option.none),
+        onSome: identity,
+      }),
     ) as Monad<THkt>["flat"],
   })
 

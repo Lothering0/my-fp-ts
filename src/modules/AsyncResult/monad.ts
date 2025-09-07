@@ -7,13 +7,16 @@ import { Applicative } from "./applicative"
 import { AsyncResultHkt, AsyncResult, toPromise, fail } from "./async-result"
 import { pipe } from "../../utils/flow"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
-import { match } from "./utils"
+import { match } from "./matchers"
 
 export const Monad = createMonad<AsyncResultHkt> ({
   ...Applicative,
   flat: self => () =>
-    pipe (self, match (fail, identity), async.toPromise, promise =>
-      promise.then (toPromise),
+    pipe (
+      self,
+      match ({ onFailure: fail, onSuccess: identity }),
+      async.toPromise,
+      promise => promise.then (toPromise),
     ),
 })
 

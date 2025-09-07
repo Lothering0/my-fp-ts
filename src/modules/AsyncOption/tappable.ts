@@ -71,10 +71,10 @@ export const tapAsyncResult: {
       pipe (
         a,
         f,
-        asyncResult.match (
-          () => option.none,
-          () => option.some (a),
-        ),
+        asyncResult.match ({
+          onFailure: () => option.none,
+          onSuccess: () => option.some (a),
+        }),
       ),
     ),
     map (({ a }) => a),

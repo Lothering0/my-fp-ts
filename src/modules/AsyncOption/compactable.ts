@@ -15,8 +15,8 @@ export const Compactable: compactable.Compactable<AsyncOptionHkt> = {
     ma => () => ma,
     mma =>
       separated.make (
-        pipe (mma, flatMap (result.match (some, zero))),
-        pipe (mma, flatMap (result.match (zero, some))),
+        pipe (mma, flatMap (result.match ({ onFailure: some, onSuccess: zero }))),
+        pipe (mma, flatMap (result.match ({ onFailure: zero, onSuccess: some }))),
       ),
   ),
 }

@@ -3,12 +3,15 @@ import { createMonad } from "../../typeclasses/Monad"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
 import { Applicative } from "./applicative"
 import { identity } from "../Identity"
-import { match } from "./utils"
+import { match } from "./matchers"
 import { zero } from "./alternative"
 
 export const Monad = createMonad<option.OptionHkt> ({
   ...Applicative,
-  flat: match (zero, identity),
+  flat: match ({
+    onNone: zero,
+    onSome: identity,
+  }),
 })
 
 export const Do = Monad.Do

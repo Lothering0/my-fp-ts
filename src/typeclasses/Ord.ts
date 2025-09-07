@@ -47,12 +47,28 @@ export const moreThanOrEquals: {
 export const min: {
   <A>(Ord: Ord<A>): (y: A) => (x: A) => A
 } = Ord => y => x =>
-  pipe (x, Ord.compare (y), ordering.match (constant (x), constant (x), constant (y)))
+  pipe (
+    x,
+    Ord.compare (y),
+    ordering.match ({
+      onLessThan: constant (x),
+      onEqual: constant (x),
+      onMoreThan: constant (y),
+    }),
+  )
 
 export const max: {
   <A>(Ord: Ord<A>): (y: A) => (x: A) => A
 } = Ord => y => x =>
-  pipe (x, Ord.compare (y), ordering.match (constant (y), constant (x), constant (x)))
+  pipe (
+    x,
+    Ord.compare (y),
+    ordering.match ({
+      onLessThan: constant (y),
+      onEqual: constant (x),
+      onMoreThan: constant (x),
+    }),
+  )
 
 export const clamp: {
   <A>(Ord: Ord<A>): (low: A, high: A) => Endomorphism<A>
@@ -84,7 +100,11 @@ export const getSemigroup: {
       pipe (
         x,
         ordX.compare (y),
-        ordering.match (identity, () => ordY.compare (y) (x), identity),
+        ordering.match ({
+          onLessThan: identity,
+          onEqual: () => ordY.compare (y) (x),
+          onMoreThan: identity,
+        }),
       ),
   }),
 })

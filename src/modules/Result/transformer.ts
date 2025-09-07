@@ -50,8 +50,7 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad<F>) => {
 
   const match: {
     <In, Out, Collectable, Fixed, CollectableOut>(
-      onFailure: (e: Collectable) => CollectableOut,
-      onSuccess: (a: In) => Out,
+      matchers: result.Matchers<Collectable, In, Out, CollectableOut>,
     ): (
       self: Kind<THkt, In, Collectable, Fixed>,
     ) => Kind<F, Out | CollectableOut, TCollectable, Fixed>
@@ -115,7 +114,12 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad<F>) => {
           result.Result<Collectable1 | Collectable2, In>,
           TCollectable,
           Fixed
-        > (result.match (flow (result.fail, M.of), identity)),
+        > (
+          result.match ({
+            onFailure: flow (result.fail, M.of),
+            onSuccess: identity,
+          }),
+        ),
       ),
   })
 

@@ -15,23 +15,28 @@ const getInitialSeparated: {
 } = () => separated.make ([], [])
 
 export const Compactable: compactable.Compactable<ReadonlyArrayHkt> = {
-  compact: flatMap (option.match (constEmptyArray, of)),
+  compact: flatMap (
+    option.match ({
+      onNone: constEmptyArray,
+      onSome: of,
+    }),
+  ),
   compactResults: successes,
   separate: reduce (getInitialSeparated (), (b, ma) =>
     pipe (
       ma,
-      result.match (
-        e =>
+      result.match ({
+        onFailure: e =>
           separated.make (
             pipe (b, separated.left, append (e)),
             separated.right (b),
           ),
-        a =>
+        onSuccess: a =>
           separated.make (
             separated.left (b),
             pipe (b, separated.right, append (a), fromNonEmpty),
           ),
-      ),
+      }),
     ),
   ),
 }

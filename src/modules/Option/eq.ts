@@ -1,6 +1,6 @@
 import { Eq } from "../../typeclasses/Eq"
 import { Option } from "./option"
-import { match } from "./utils"
+import { match } from "./matchers"
 import { isNone } from "./refinements"
 import { constFalse } from "../../utils/constant"
 import { pipe } from "../../utils/flow"
@@ -11,9 +11,16 @@ export const getEq: {
   equals: mx => my =>
     pipe (
       mx,
-      match (
-        () => isNone (my),
-        x => match (constFalse, Eq.equals (x)) (my),
-      ),
+      match ({
+        onNone: () => isNone (my),
+        onSome: x =>
+          pipe (
+            my,
+            match ({
+              onNone: constFalse,
+              onSome: Eq.equals (x),
+            }),
+          ),
+      }),
     ),
 })

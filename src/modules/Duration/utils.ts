@@ -76,7 +76,10 @@ export const isTemplateValid: {
       pipe (
         template,
         string.trim,
-        string.match (constFalse, trimmed => regExp.test (trimmed)),
+        string.match ({
+          onEmpty: constFalse,
+          onNonEmpty: trimmed => regExp.test (trimmed),
+        }),
       ),
   )
 
@@ -93,12 +96,12 @@ export const fromTemplate: {
   pipe (
     template,
     isTemplateValid,
-    boolean.match (
-      () =>
+    boolean.match ({
+      onFalse: () =>
         result.fail (
           new DurationTemplateParseError ("Invalid duration template"),
         ),
-      () =>
+      onTrue: () =>
         pipe (
           template.matchAll (/(-?\d+) +(\w+)/g),
           Array.from<ReadonlyArray<string>>,
@@ -111,7 +114,7 @@ export const fromTemplate: {
           readonlyRecord.fromEntries,
           result.succeed,
         ),
-    ),
+    }),
   )
 
 export const fromTemplateOrZero: {

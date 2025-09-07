@@ -1,6 +1,6 @@
 import { Eq } from "../../typeclasses/Eq"
 import { Result } from "./result"
-import { match } from "./utils"
+import { match } from "./matchers"
 import { constFalse } from "../../utils/constant"
 import { pipe } from "../../utils/flow"
 
@@ -10,9 +10,17 @@ export const getEq: {
   equals: mx => my =>
     pipe (
       mx,
-      match (
-        x => match (EqE.equals (x), constFalse) (my),
-        x => match (constFalse, EqA.equals (x)) (my),
-      ),
+      match ({
+        onFailure: x =>
+          match ({
+            onFailure: EqE.equals (x),
+            onSuccess: constFalse,
+          }) (my),
+        onSuccess: x =>
+          match ({
+            onFailure: constFalse,
+            onSuccess: EqA.equals (x),
+          }) (my),
+      }),
     ),
 })

@@ -25,4 +25,13 @@ export const tapResult: {
     afe: (a: A) => result.Result<E, unknown>,
   ): (self: option.Option<A>) => option.Option<A>
 } = afe => self =>
-  pipe (self, map (afe), flatMap (result.match (zero, constant (self))))
+  pipe (
+    self,
+    map (afe),
+    flatMap (
+      result.match ({
+        onFailure: zero,
+        onSuccess: constant (self),
+      }),
+    ),
+  )

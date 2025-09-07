@@ -4,24 +4,30 @@ import { createTappable } from "../../typeclasses/Tappable"
 import { Monad } from "./monad"
 import { fail, Result, ResultHkt, succeed } from "./result"
 import { pipe } from "../../utils/flow"
-import { match } from "./utils"
+import { match } from "./matchers"
 
 export const Tappable = createTappable (Monad)
 
 export const TappableBoth: tappableBoth.TappableBoth<ResultHkt> = {
   ...Tappable,
   tapLeft: f =>
-    match (
-      e =>
+    match ({
+      onFailure: e =>
         pipe (
           e,
           f,
-          match (fail, () => fail (e)),
+          match ({
+            onFailure: fail,
+            onSuccess: () => fail (e),
+          }),
         ),
-      succeed,
-    ),
+      onSuccess: succeed,
+    }),
   tapLeftSync: f =>
-    match (e => pipe (e, f, sync.execute, () => fail (e)), succeed),
+    match ({
+      onFailure: e => pipe (e, f, sync.execute, () => fail (e)),
+      onSuccess: succeed,
+    }),
 }
 
 export const tap: {

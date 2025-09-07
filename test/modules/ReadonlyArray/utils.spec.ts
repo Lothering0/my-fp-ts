@@ -74,7 +74,10 @@ describe ("isOutOfBounds", () => {
 
 describe ("findMap", () => {
   it ("should return `some` of found mapped element", () => {
-    const p = number.matchOdd (option.zero, flow (number.add (10), option.some))
+    const p = number.matchOdd ({
+      onOdd: option.zero,
+      onEven: flow (number.add (10), option.some),
+    })
     const f = readonlyArray.findMap (p)
 
     pipe ([], f, expect).toEqual (option.none)
@@ -89,7 +92,10 @@ describe ("findMap", () => {
         i,
         number.isEven,
         boolean.and (a > 1),
-        boolean.match (option.zero, () => option.some (`${a}-${i}`)),
+        boolean.match ({
+          onFalse: option.zero,
+          onTrue: () => option.some (`${a}-${i}`),
+        }),
       ),
     )
 
@@ -146,7 +152,10 @@ describe ("findIndex", () => {
 
 describe ("findLastMap", () => {
   it ("should return `some` of last found mapped element", () => {
-    const p = number.matchOdd (option.zero, flow (number.add (10), option.some))
+    const p = number.matchOdd ({
+      onOdd: option.zero,
+      onEven: flow (number.add (10), option.some),
+    })
     const f = readonlyArray.findLastMap (p)
 
     pipe ([], f, expect).toEqual (option.none)
@@ -161,7 +170,10 @@ describe ("findLastMap", () => {
         i,
         number.isOdd,
         boolean.and (a > 1),
-        boolean.match (option.zero, () => option.some (`${a}-${i}`)),
+        boolean.match ({
+          onFalse: option.zero,
+          onTrue: () => option.some (`${a}-${i}`),
+        }),
       ),
     )
 

@@ -7,23 +7,31 @@ import { flow } from "../utils/flow"
 
 export type Ordering = -1 | 0 | 1
 
+export interface OrderingMatchers<A, B, C> {
+  readonly onLessThan: (e: -1) => A
+  readonly onEqual: (e: 0) => B
+  readonly onMoreThan: (e: 1) => C
+}
+
 export const match: {
   <A, B = A, C = B>(
-    onLessThan: (e: -1) => A,
-    onEqual: (e: 0) => B,
-    onMoreThan: (e: 1) => C,
+    matchers: OrderingMatchers<A, B, C>,
   ): (self: Ordering) => A | B | C
-} = (onLessThan, onEqual, onMoreThan) =>
+} = matchers =>
   flow (
     matching.match,
-    matching.when (-1, onLessThan),
-    matching.when (1, onMoreThan),
-    matching.getOrElse (() => onEqual (0)),
+    matching.when (-1, matchers.onLessThan),
+    matching.when (1, matchers.onMoreThan),
+    matching.getOrElse (() => matchers.onEqual (0)),
   )
 
 export const reverse: {
   (self: Ordering): Ordering
-} = match (constant (1), constant (0), constant (-1))
+} = match ({
+  onLessThan: constant (1),
+  onEqual: constant (0),
+  onMoreThan: constant (-1),
+})
 
 export const fromNumber: {
   (n: number): Ordering

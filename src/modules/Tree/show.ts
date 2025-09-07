@@ -13,11 +13,11 @@ export const getShow: {
       pipe (
         self,
         hasForest,
-        boolean.match (
-          () => `make (${s})`,
-          () =>
+        boolean.match ({
+          onFalse: () => `make (${s})`,
+          onTrue: () =>
             `make (${s}, ${pipe (self, forest, readonlyArray.getShow (getShow (Show)).show)})`,
-        ),
+        }),
       ),
     ),
 })

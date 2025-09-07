@@ -12,8 +12,8 @@ export const Compactable: compactable.Compactable<OptionHkt> = {
   compactResults: flatMap (fromResult),
   separate: self =>
     separated.make (
-      pipe (self, flatMap (result.match (some, zero))),
-      pipe (self, flatMap (result.match (zero, some))),
+      pipe (self, flatMap (result.match ({ onFailure: some, onSuccess: zero }))),
+      pipe (self, flatMap (result.match ({ onFailure: zero, onSuccess: some }))),
     ),
 }
 

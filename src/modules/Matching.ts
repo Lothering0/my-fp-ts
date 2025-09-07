@@ -105,10 +105,10 @@ export const getResult: {
   pipe (
     self.patterns,
     readonlyArray.find (([p]) => p (self.value)),
-    option.match (
-      () => result.fail (self.value),
-      ([, f]) => pipe (self.value, f, result.succeed),
-    ),
+    option.match ({
+      onNone: () => result.fail (self.value),
+      onSome: ([, f]) => pipe (self.value, f, result.succeed),
+    }),
   )
 
 export const getOption: {
@@ -128,10 +128,10 @@ export const getResults: {
       pipe (
         self.value,
         p,
-        boolean.match (
-          () => result.fail (self.value),
-          () => pipe (self.value, f, result.succeed),
-        ),
+        boolean.match ({
+          onFalse: () => result.fail (self.value),
+          onTrue: () => pipe (self.value, f, result.succeed),
+        }),
       ),
     ),
   )

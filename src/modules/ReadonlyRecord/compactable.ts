@@ -21,7 +21,10 @@ export const Compactable: compactable.Compactable<ReadonlyRecordHkt> = {
     readonlyArray.filterMap (([k, ma]) =>
       pipe (
         ma,
-        option.match (option.zero, a => option.some ([k, a] as const)),
+        option.match ({
+          onNone: option.zero,
+          onSome: a => option.some ([k, a] as const),
+        }),
       ),
     ),
     fromEntries,
@@ -31,7 +34,10 @@ export const Compactable: compactable.Compactable<ReadonlyRecordHkt> = {
     readonlyArray.filterMap (([k, ma]) =>
       pipe (
         ma,
-        result.match (option.zero, a => option.some ([k, a] as const)),
+        result.match ({
+          onFailure: option.zero,
+          onSuccess: a => option.some ([k, a] as const),
+        }),
       ),
     ),
     fromEntries,
@@ -39,18 +45,18 @@ export const Compactable: compactable.Compactable<ReadonlyRecordHkt> = {
   separate: reduce (getInitialSeparated (), (b, ma, k) =>
     pipe (
       ma,
-      result.match (
-        e =>
+      result.match ({
+        onFailure: e =>
           separated.make (
             pipe (b, separated.left, append (k, e)),
             separated.right (b),
           ),
-        a =>
+        onSuccess: a =>
           separated.make (
             separated.left (b),
             pipe (b, separated.right, append (k, a)),
           ),
-      ),
+      }),
     ),
   ),
 }

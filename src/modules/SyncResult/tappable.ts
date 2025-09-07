@@ -14,25 +14,28 @@ export const TappableBoth: tappableBoth.TappableBoth<SyncResultHkt> = {
     pipe (
       self,
       execute,
-      result.match (
-        e =>
+      result.match ({
+        onFailure: e =>
           pipe (
             e,
             f,
             execute,
-            result.match (result.fail, () => result.fail (e)),
+            result.match ({
+              onFailure: result.fail,
+              onSuccess: () => result.fail (e),
+            }),
           ),
-        result.succeed,
-      ),
+        onSuccess: result.succeed,
+      }),
     ),
   tapLeftSync: f => self => () =>
     pipe (
       self,
       execute,
-      result.match (
-        e => pipe (e, f, fromSync, execute, () => result.fail (e)),
-        result.succeed,
-      ),
+      result.match ({
+        onFailure: e => pipe (e, f, fromSync, execute, () => result.fail (e)),
+        onSuccess: result.succeed,
+      }),
     ),
 }
 
@@ -74,13 +77,16 @@ export const tapLeftResult: {
   pipe (
     self,
     execute,
-    result.match (
-      e =>
+    result.match ({
+      onFailure: e =>
         pipe (
           e,
           f,
-          result.match (result.fail, () => result.fail (e)),
+          result.match ({
+            onFailure: result.fail,
+            onSuccess: () => result.fail (e),
+          }),
         ),
-      result.succeed,
-    ),
+      onSuccess: result.succeed,
+    }),
   )

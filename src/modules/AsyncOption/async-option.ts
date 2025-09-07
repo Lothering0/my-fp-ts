@@ -31,6 +31,9 @@ export const fromAsyncResult: {
   <E, A>(ma: asyncResult.AsyncResult<E, A>): AsyncOption<A>
 } = ma => () =>
   ma ().then (
-    result.match (constant (option.none), option.some),
+    result.match ({
+      onFailure: constant (option.none),
+      onSuccess: option.some,
+    }),
     constant (option.none),
   )

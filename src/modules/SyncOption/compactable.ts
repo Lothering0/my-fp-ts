@@ -11,14 +11,14 @@ export const Compactable: compactable.Compactable<SyncOptionHkt> = {
   compactResults: self => () => pipe (self, execute, option.compactResults),
   separate: flow (
     execute,
-    option.match (
-      () => separated.make (none, none),
-      ma =>
+    option.match ({
+      onNone: () => separated.make (none, none),
+      onSome: ma =>
         separated.make (
-          pipe (ma, result.match (some, zero)),
-          pipe (ma, result.match (zero, some)),
+          pipe (ma, result.match ({ onFailure: some, onSuccess: zero })),
+          pipe (ma, result.match ({ onFailure: zero, onSuccess: some })),
         ),
-    ),
+    }),
   ),
 }
 

@@ -34,12 +34,15 @@ export const isNil: {
   (xs: List<unknown>): xs is Nil
 } = xs => xs._tag === "Nil"
 
+export interface Matchers<A, B, C = B> {
+  readonly onNil: LazyArg<B>
+  readonly onCons: (a: A) => C
+}
+
 export const match: {
-  <A, B, C = B>(
-    onNil: LazyArg<B>,
-    onCons: (a: A) => C,
-  ): (self: List<A>) => B | C
-} = (onNil, onCons) => self => isNil (self) ? onNil () : onCons (self.head)
+  <A, B, C = B>(matchers: Matchers<A, B, C>): (self: List<A>) => B | C
+} = matchers => self =>
+  isNil (self) ? matchers.onNil () : matchers.onCons (self.head)
 
 export const fromReadonlyArray = <A>(as: ReadonlyArray<A>): List<A> =>
   pipe (

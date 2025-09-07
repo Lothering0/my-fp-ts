@@ -9,14 +9,16 @@ import { pipe } from "../../utils/flow"
 export const Extendable = createExtendable<ReadonlyArrayHkt> ({
   ...Functor,
   extend: fab =>
-    matchLeft (constEmptyArray, (head, tail) =>
-      pipe (
-        tail,
-        extend (fab),
-        pipe (prepend (head) (tail), fab, prepend),
-        fromNonEmpty,
-      ),
-    ),
+    matchLeft ({
+      onEmpty: constEmptyArray,
+      onNonEmpty: (head, tail) =>
+        pipe (
+          tail,
+          extend (fab),
+          pipe (prepend (head) (tail), fab, prepend),
+          fromNonEmpty,
+        ),
+    }),
 })
 
 export const extend: {

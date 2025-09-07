@@ -33,19 +33,31 @@ export const copy: {
 
 export const head: {
   <A>(self: ReadonlyArray<A>): option.Option<A>
-} = match (option.zero, flow (nonEmptyReadonlyArray.head, option.some))
+} = match ({
+  onEmpty: option.zero,
+  onNonEmpty: flow (nonEmptyReadonlyArray.head, option.some),
+})
 
 export const init: {
   <A>(self: ReadonlyArray<A>): option.Option<ReadonlyArray<A>>
-} = match (option.zero, flow (nonEmptyReadonlyArray.init, option.some))
+} = match ({
+  onEmpty: option.zero,
+  onNonEmpty: flow (nonEmptyReadonlyArray.init, option.some),
+})
 
 export const last: {
   <A>(self: ReadonlyArray<A>): option.Option<A>
-} = match (option.zero, flow (nonEmptyReadonlyArray.last, option.some))
+} = match ({
+  onEmpty: option.zero,
+  onNonEmpty: flow (nonEmptyReadonlyArray.last, option.some),
+})
 
 export const tail: {
   <A>(self: ReadonlyArray<A>): option.Option<ReadonlyArray<A>>
-} = match (option.zero, flow (nonEmptyReadonlyArray.tail, option.some))
+} = match ({
+  onEmpty: option.zero,
+  onNonEmpty: flow (nonEmptyReadonlyArray.tail, option.some),
+})
 
 export const lookup: {
   <A>(i: number): (self: ReadonlyArray<A>) => option.Option<A>
@@ -80,13 +92,18 @@ export const findMap: {
   const f: {
     (index: number): typeof findMap
   } = i => iamb =>
-    matchLeft (option.zero, (head, tail) =>
-      pipe (
-        head,
-        a => iamb (a, i),
-        option.match (() => f (i + 1) (iamb) (tail), option.some),
-      ),
-    )
+    matchLeft ({
+      onEmpty: option.zero,
+      onNonEmpty: (head, tail) =>
+        pipe (
+          head,
+          a => iamb (a, i),
+          option.match ({
+            onNone: () => f (i + 1) (iamb) (tail),
+            onSome: option.some,
+          }),
+        ),
+    })
 
   return f (0) (iamb)
 }
@@ -100,7 +117,13 @@ export const find: {
   ): (self: ReadonlyArray<A>) => option.Option<A>
 } = <A>(p: PredicateWithIndex<A, number>) =>
   findMap<A, A> ((a, i) =>
-    pipe (p (a, i), boolean.match (option.zero, flow (constant (a), option.some))),
+    pipe (
+      p (a, i),
+      boolean.match ({
+        onFalse: option.zero,
+        onTrue: () => option.some (a),
+      }),
+    ),
   )
 
 export const findIndex: {
@@ -121,13 +144,18 @@ export const findLastMap: {
   const f: {
     (index: number): typeof findLastMap
   } = i => iamb =>
-    matchRight (option.zero, (init, last) =>
-      pipe (
-        last,
-        a => iamb (a, i),
-        option.match (() => f (i - 1) (iamb) (init), option.some),
-      ),
-    )
+    matchRight ({
+      onEmpty: option.zero,
+      onNonEmpty: (init, last) =>
+        pipe (
+          last,
+          a => iamb (a, i),
+          option.match ({
+            onNone: () => f (i - 1) (iamb) (init),
+            onSome: option.some,
+          }),
+        ),
+    })
 
   return f (lastIndex (self)) (iamb) (self)
 }
@@ -141,7 +169,13 @@ export const findLast: {
   ): (self: ReadonlyArray<A>) => option.Option<A>
 } = <A>(p: PredicateWithIndex<A, number>) =>
   findLastMap<A, A> ((a, i) =>
-    pipe (p (a, i), boolean.match (option.zero, flow (constant (a), option.some))),
+    pipe (
+      p (a, i),
+      boolean.match ({
+        onFalse: option.zero,
+        onTrue: () => option.some (a),
+      }),
+    ),
   )
 
 export const findLastIndex: {
@@ -151,7 +185,10 @@ export const findLastIndex: {
 } = p => self =>
   pipe (
     self.findLastIndex ((a, i) => p (a, i)),
-    number.matchNegative (option.zero, option.some),
+    number.matchNegative ({
+      onNegative: option.zero,
+      onNonNegative: option.some,
+    }),
   )
 
 /** Is `a` element of an array by `Eq` instance */
@@ -190,11 +227,11 @@ export const includes: {
 
 export const failures: {
   <E, A>(self: ReadonlyArray<result.Result<E, A>>): ReadonlyArray<E>
-} = flatMap (result.match (of, constEmptyArray))
+} = flatMap (result.match ({ onFailure: of, onSuccess: constEmptyArray }))
 
 export const successes: {
   <E, A>(self: ReadonlyArray<result.Result<E, A>>): ReadonlyArray<A>
-} = flatMap (result.match (constEmptyArray, of))
+} = flatMap (result.match ({ onFailure: constEmptyArray, onSuccess: of }))
 
 export const concat: {
   <A>(end: ReadonlyArray<A>): (start: ReadonlyArray<A>) => ReadonlyArray<A>
@@ -259,18 +296,18 @@ export const zipWith: {
 } = (bs, abc) => self =>
   pipe (
     length (bs) > length (self),
-    boolean.match (
-      () =>
+    boolean.match ({
+      onFalse: () =>
         pipe (
           bs,
           map ((b, i) => abc (self.at (i)!, b, i)),
         ),
-      () =>
+      onTrue: () =>
         pipe (
           self,
           map ((a, i) => abc (a, bs.at (i)!, i)),
         ),
-    ),
+    }),
   )
 
 export const zip: {
@@ -287,7 +324,10 @@ export const takeLeftWhile: {
   pipe (
     self,
     findIndex (flow (p, boolean.not)),
-    option.match (constant (self), i => slice (0, i) (self)),
+    option.match ({
+      onNone: constant (self),
+      onSome: i => slice (0, i) (self),
+    }),
   )
 
 export const takeLeft: {
@@ -302,15 +342,18 @@ export const takeRightWhile: {
   pipe (
     self,
     findLastIndex (flow (p, boolean.not)),
-    option.match (constant (self), i => slice (i - length (self) + 1) (self)),
+    option.match ({
+      onNone: constant (self),
+      onSome: i => slice (i - length (self) + 1) (self),
+    }),
   )
 
 export const takeRight: {
   (n: number): <A>(self: ReadonlyArray<A>) => ReadonlyArray<A>
-} = number.matchNonPositive (
-  () => constant ([]),
-  n => slice (-n),
-)
+} = number.matchNonPositive ({
+  onNonPositive: () => constant ([]),
+  onPositive: n => slice (-n),
+})
 
 export const dropLeftWhile: {
   <A>(
@@ -320,12 +363,19 @@ export const dropLeftWhile: {
   pipe (
     self,
     findIndex (flow (p, boolean.not)),
-    option.match (constant ([]), i => slice (i) (self)),
+    option.match ({
+      onNone: constant ([]),
+      onSome: i => slice (i) (self),
+    }),
   )
 
 export const dropLeft: {
   (n: number): <A>(self: ReadonlyArray<A>) => ReadonlyArray<A>
-} = n => self => number.matchNonPositive (constant (self), n => slice (n) (self)) (n)
+} = n => self =>
+  number.matchNonPositive ({
+    onNonPositive: constant (self),
+    onPositive: n => slice (n) (self),
+  }) (n)
 
 export const dropRightWhile: {
   <A>(
@@ -335,13 +385,19 @@ export const dropRightWhile: {
   pipe (
     self,
     findLastIndex (flow (p, boolean.not)),
-    option.match (constant ([]), i => slice (0, i + 1) (self)),
+    option.match ({
+      onNone: constant ([]),
+      onSome: i => slice (0, i + 1) (self),
+    }),
   )
 
 export const dropRight: {
   (n: number): <A>(self: ReadonlyArray<A>) => ReadonlyArray<A>
 } = n => self =>
-  number.matchNonPositive (constant (self), n => slice (0, -n) (self)) (n)
+  number.matchNonPositive ({
+    onNonPositive: constant (self),
+    onPositive: n => slice (0, -n) (self),
+  }) (n)
 
 export const dropBothWhile: {
   <A>(
@@ -357,14 +413,20 @@ export const dropBothWhile: {
     pipe (
       self,
       findLastIndex (flow (p, boolean.not)),
-      option.match (constant (0), number.add (1)),
+      option.match ({
+        onNone: constant (0),
+        onSome: number.add (1),
+      }),
     ),
   ) (self)
 
 export const dropBoth: {
   (n: number): <A>(self: ReadonlyArray<A>) => ReadonlyArray<A>
 } = n => self =>
-  number.matchNonPositive (constant (self), n => slice (0, -n) (self)) (n)
+  number.matchNonPositive ({
+    onNonPositive: constant (self),
+    onPositive: n => slice (0, -n) (self),
+  }) (n)
 
 export const chunksOf: {
   (
@@ -377,20 +439,20 @@ export const chunksOf: {
     n,
     number.lessThanOrEquals (0),
     boolean.or (isEmpty (self)),
-    boolean.match (
-      () =>
+    boolean.match ({
+      onFalse: () =>
         pipe (
           self,
           length,
           number.moreThan (n),
-          boolean.match (constant ([self]), () => [
-            slice (0, n) (self),
-            ...chunksOf (n) (slice (n) (self)),
-          ]),
+          boolean.match ({
+            onFalse: constant ([self]),
+            onTrue: () => [slice (0, n) (self), ...chunksOf (n) (slice (n) (self))],
+          }),
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ) as ReadonlyArray<any>,
-      constant ([]),
-    ),
+      onTrue: constant ([]),
+    }),
   )
 
 export const insertAt: {

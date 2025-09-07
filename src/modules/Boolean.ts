@@ -1,6 +1,5 @@
 import * as show_ from "../typeclasses/Show"
 import * as eq from "../typeclasses/Eq"
-import { LazyArg } from "../types/utils"
 import { Semigroup } from "../typeclasses/Semigroup"
 import { Monoid } from "../typeclasses/Monoid"
 
@@ -16,9 +15,14 @@ export const and: {
   (a: boolean): (self: boolean) => boolean
 } = a => self => a && self
 
+export interface Matchers<A, B = A> {
+  readonly onFalse: (e: false) => A
+  readonly onTrue: (a: true) => B
+}
+
 export const match: {
-  <A, B = A>(onFalse: LazyArg<A>, onTrue: LazyArg<B>): (self: boolean) => A | B
-} = (onFalse, onTrue) => self => self ? onTrue () : onFalse ()
+  <A, B = A>(matchers: Matchers<A, B>): (self: boolean) => A | B
+} = matchers => self => self ? matchers.onTrue (true) : matchers.onFalse (false)
 
 export const show: {
   <B extends boolean>(self: B): `${B}`
