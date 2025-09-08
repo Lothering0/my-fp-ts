@@ -59,10 +59,18 @@ export const tail: {
   onNonEmpty: flow (nonEmptyReadonlyArray.tail, option.some),
 })
 
+export const has: {
+  <A>(i: number): Predicate<ReadonlyArray<A>>
+} = i => self => Object.hasOwn (self, Number (i))
+
+export const isOutOfBounds: {
+  <A>(i: number): Predicate<ReadonlyArray<A>>
+} = i => flow (has (i), boolean.not)
+
 export const lookup: {
   <A>(i: number): (self: ReadonlyArray<A>) => option.Option<A>
 } = i => self =>
-  i >= 0 && i < length (self) ? pipe (self.at (i)!, option.some) : option.none
+  pipe (self, has (i)) ? pipe (self.at (i)!, option.some) : option.none
 
 /** Like `lookup` but accepts also negative integers where -1 is index of the last element, -2 of the pre-last and so on. */
 export const at: {
@@ -71,14 +79,6 @@ export const at: {
   i < length (self) && i >= -length (self)
     ? pipe (self.at (i)!, option.some)
     : option.none
-
-export const has: {
-  <A>(i: number): Predicate<ReadonlyArray<A>>
-} = i => self => Object.hasOwn (self, Number (i))
-
-export const isOutOfBounds: {
-  <A>(i: number): Predicate<ReadonlyArray<A>>
-} = i => flow (has (i), boolean.not)
 
 export const lastIndex: {
   <A>(self: ReadonlyArray<A>): number

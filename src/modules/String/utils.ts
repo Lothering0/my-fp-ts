@@ -1,28 +1,11 @@
-import * as semigroup from "../typeclasses/Semigroup"
-import * as monoid from "../typeclasses/Monoid"
-import * as show_ from "../typeclasses/Show"
-import * as eq from "../typeclasses/Eq"
-import * as number from "./Number"
-import { pipe } from "../utils/flow"
-
-export const empty = ""
+import * as option from "../Option"
+import * as boolean from "../Boolean"
+import * as readonlyArray from "../ReadonlyArray"
+import { flow, pipe } from "../../utils/flow"
 
 export const length: {
   (self: string): number
 } = self => self.length
-
-export const isEmpty = (self: string): self is "" =>
-  pipe (self, length, number.equals (0))
-
-export interface Matchers<A, B = A> {
-  readonly onEmpty: (e: "") => A
-  readonly onNonEmpty: (a: string) => B
-}
-
-export const match: {
-  <A, B = A>(matchers: Matchers<A, B>): (self: string) => A | B
-} = matchers => self =>
-  isEmpty (self) ? matchers.onEmpty ("") : matchers.onNonEmpty (self)
 
 export const toLowerCase = <A extends string = string>(self: A): Lowercase<A> =>
   self.toLowerCase () as Lowercase<A>
@@ -88,21 +71,60 @@ export const toReadonlyArray: {
   (self: string): ReadonlyArray<string>
 } = split ("")
 
-export const show: {
-  <S extends string>(self: S): `"${S}"`
-} = self => `"${self}"`
+export const has: {
+  (i: number): (self: string) => boolean
+} = i => self => i >= 0 && i < length (self)
 
-export const Show: show_.Show<string> = { show }
+export const isOutOfBounds: {
+  (i: number): (self: string) => boolean
+} = i => flow (has (i), boolean.not)
 
-export const Eq: eq.Eq<string> = eq.EqStrict
+export const lookup: {
+  (i: number): (self: string) => option.Option<string>
+} = i => self =>
+  pipe (
+    self,
+    has (i),
+    boolean.match ({
+      onTrue: () => pipe (self[i]!, option.some),
+      onFalse: option.zero,
+    }),
+  )
 
-export const { equals } = Eq
+/** Like `lookup` but accepts also negative integers where -1 is index of the last char, -2 of the pre-last and so on. */
+export const at: {
+  (i: number): (self: string) => option.Option<string>
+} = i => self =>
+  pipe (
+    i < length (self),
+    boolean.and (i >= -length (self)),
+    boolean.match ({
+      onTrue: () => pipe (self.at (i)!, option.some),
+      onFalse: option.zero,
+    }),
+  )
 
-export const Semigroup: semigroup.Semigroup<string> = {
-  combine: concat,
-}
+export const lookupCharCode: {
+  (i: number): (self: string) => option.Option<number>
+} = i => self =>
+  pipe (
+    self,
+    has (i),
+    boolean.match ({
+      onTrue: () => pipe (self.charCodeAt (i), option.some),
+      onFalse: option.zero,
+    }),
+  )
 
-export const Monoid: monoid.Monoid<string> = {
-  ...Semigroup,
-  empty,
-}
+/** Like `lookupCharCode` but accepts also negative integers where -1 is index of the last char, -2 of the pre-last and so on. */
+export const charCodeAt: {
+  (i: number): (self: string) => option.Option<number>
+} = i =>
+  flow (
+    at (i),
+    option.map (char => char.charCodeAt (0)),
+  )
+
+export const reverse: {
+  (self: string): string
+} = flow (toReadonlyArray, readonlyArray.reverse, readonlyArray.join (""))
