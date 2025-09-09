@@ -56,14 +56,8 @@ export interface MonadWithIndex<F extends Hkt, Index>
 export const createMonadWithIndex = <F extends Hkt, Index>(
   Monad: Monad<F> & ApplicativeWithIndex<F, Index>,
 ): MonadWithIndex<F, Index> => {
-  const flatMapWithIndex: MonadWithIndex<F, Index>["flatMapWithIndex"] =
-    aimb => self =>
-      pipe (
-        Monad.Do,
-        Monad.apS ("a", self),
-        Monad.mapWithIndex (({ a }, i) => aimb (a, i)),
-        Monad.flat,
-      )
+  const flatMapWithIndex: MonadWithIndex<F, Index>["flatMapWithIndex"] = aimb =>
+    flow (Monad.mapWithIndex (aimb), Monad.flat)
 
   const composeWithIndex: MonadWithIndex<F, Index>["composeWithIndex"] = (
     bmc,

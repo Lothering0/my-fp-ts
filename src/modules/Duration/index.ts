@@ -1,6 +1,7 @@
 export * from "./duration"
 export * from "./utils"
 export * from "./eq"
+export * from "./ord"
 export * from "./show"
 export * from "./semigroup"
 export * from "./monoid"

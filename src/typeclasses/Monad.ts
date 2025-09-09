@@ -71,13 +71,7 @@ export const createMonad = <F extends Hkt>(
       flat,
     )
 
-  const flatMap: Monad<F>["flatMap"] = amb => self =>
-    pipe (
-      Do,
-      apS ("a", self),
-      map (({ a }) => amb (a)),
-      flat,
-    )
+  const flatMap: Monad<F>["flatMap"] = amb => flow (map (amb), flat)
 
   const compose: Monad<F>["compose"] = (bmc, amb) => flow (amb, flatMap (bmc))
 
