@@ -2,7 +2,9 @@ import * as readonlyArray from "../../../src/modules/ReadonlyArray"
 import * as option from "../../../src/modules/Option"
 import * as result from "../../../src/modules/Result"
 import * as number from "../../../src/modules/Number"
+import * as string from "../../../src/modules/String"
 import * as boolean from "../../../src/modules/Boolean"
+import * as ord from "../../../src/typeclasses/Ord"
 import { flow, pipe } from "../../../src/utils/flow"
 
 describe ("head", () => {
@@ -374,9 +376,9 @@ describe ("appendAll", () => {
 
 describe ("range", () => {
   it ("should generate an array of numbers by given range from min to max value", () => {
-    expect (readonlyArray.range (1) (5)).toEqual ([1, 2, 3, 4, 5])
-    expect (readonlyArray.range (5) (1)).toEqual ([5, 4, 3, 2, 1])
-    expect (readonlyArray.range (0) (0)).toEqual ([0])
+    pipe (0, readonlyArray.range (0), expect).toEqual ([0])
+    pipe (1, readonlyArray.range (5), expect).toEqual ([1, 2, 3, 4, 5])
+    pipe (5, readonlyArray.range (1), expect).toEqual ([5, 4, 3, 2, 1])
   })
 })
 
@@ -385,6 +387,72 @@ describe ("reverse", () => {
     expect (readonlyArray.reverse ([])).toEqual ([])
     expect (readonlyArray.reverse ([1])).toEqual ([1])
     expect (readonlyArray.reverse ([1, 2, 3])).toEqual ([3, 2, 1])
+  })
+})
+
+describe ("sort", () => {
+  it ("should sort an array by provided `Ord` instance", () => {
+    pipe ([], readonlyArray.sort (number.Ord), expect).toEqual ([])
+    pipe ([1], readonlyArray.sort (number.Ord), expect).toEqual ([1])
+    pipe ([5, 2, 1, 3, 4], readonlyArray.sort (number.Ord), expect).toEqual ([
+      1, 2, 3, 4, 5,
+    ])
+  })
+})
+
+describe ("sortBy", () => {
+  it ("should sort an array by provided `Ord` instances", () => {
+    interface User {
+      readonly id: number
+      readonly name: string
+      readonly isActive: boolean
+    }
+
+    const users: ReadonlyArray<User> = [
+      { id: 1, name: "Bob", isActive: false },
+      { id: 2, name: "Alex", isActive: true },
+      { id: 3, name: "Dylan", isActive: true },
+      { id: 4, name: "Clare", isActive: false },
+    ]
+
+    pipe (users, readonlyArray.sortBy ([]), expect).toEqual (users)
+
+    pipe (
+      users,
+      readonlyArray.sortBy ([
+        pipe (
+          string.Ord,
+          ord.contramap (({ name }) => name),
+        ),
+      ]),
+      expect,
+    ).toEqual<ReadonlyArray<User>> ([
+      { id: 2, name: "Alex", isActive: true },
+      { id: 1, name: "Bob", isActive: false },
+      { id: 4, name: "Clare", isActive: false },
+      { id: 3, name: "Dylan", isActive: true },
+    ])
+
+    pipe (
+      users,
+      readonlyArray.sortBy ([
+        pipe (
+          string.Ord,
+          ord.contramap (({ name }) => name),
+        ),
+        pipe (
+          boolean.Ord,
+          ord.reverse,
+          ord.contramap (({ isActive }) => isActive),
+        ),
+      ]),
+      expect,
+    ).toEqual<ReadonlyArray<User>> ([
+      { id: 2, name: "Alex", isActive: true },
+      { id: 3, name: "Dylan", isActive: true },
+      { id: 1, name: "Bob", isActive: false },
+      { id: 4, name: "Clare", isActive: false },
+    ])
   })
 })
 

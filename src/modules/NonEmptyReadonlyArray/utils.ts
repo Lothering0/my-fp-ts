@@ -1,3 +1,4 @@
+import * as ord from "../../typeclasses/Ord"
 import { NonEmptyReadonlyArray } from "./non-empty-readonly-array"
 
 export const head: {
@@ -28,3 +29,21 @@ export const concat: {
     unknown,
     ...ReadonlyArray<unknown>,
   ] as NonEmptyReadonlyArray<unknown>
+
+export const reverse = <A>(
+  self: NonEmptyReadonlyArray<A>,
+): NonEmptyReadonlyArray<A> =>
+  self.toReversed () as unknown as NonEmptyReadonlyArray<A>
+
+export const sort =
+  <A>(Ord: ord.Ord<A>) =>
+  (self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<A> =>
+    self.toSorted ((x, y) =>
+      Ord.compare (y) (x),
+    ) as unknown as NonEmptyReadonlyArray<A>
+
+export const sortBy: {
+  <A>(
+    ords: ReadonlyArray<ord.Ord<A>>,
+  ): (self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A>
+} = ords => self => ords.reduce ((out, Ord) => sort (Ord) (out), self)

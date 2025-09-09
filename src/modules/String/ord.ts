@@ -1,5 +1,5 @@
 import * as ord from "../../typeclasses/Ord"
-import * as ordering from "../../typeclasses/Ordering"
+import * as ordering from "../Ordering"
 import * as option from "../Option"
 import * as readonlyArray from "../ReadonlyArray"
 import * as number from "../Number"
@@ -20,13 +20,13 @@ export const Ord: ord.Ord<string> = {
           option.apS ("x", pipe (char, lookupCharCode (0))),
           option.apS (
             "y",
-            // If there is no char in second string then first string should always be more than second
+            // If there is no char in the second string then the first string should always be more than the second
             pipe (ys, lookupCharCode (i), option.orElse (option.some (-1))),
           ),
           option.flatMap (({ x, y }) =>
             pipe (
               number.compare (y) (x),
-              // If both chars are same then return `none` for `readonlyArray.findMap` and continue iterations
+              // If both chars are the same then return `none` for `readonlyArray.findMap` and continue iterations
               number.matchZero ({
                 onNonZero: (a: ordering.Ordering) => option.some (a),
                 onZero: option.zero,
@@ -35,8 +35,8 @@ export const Ord: ord.Ord<string> = {
           ),
         ),
       ),
-      // In the case when unequal chars was not found and the first string length is less than length of second
-      // then first string is less than second. Otherwise both strings are same
+      // In the case when unequal chars was not found and length of the first string is less than length of the second
+      // then the first string is less than the second. Otherwise both strings are the same
       option.getOrElse (() =>
         pipe (
           length (ys) > length (xs),

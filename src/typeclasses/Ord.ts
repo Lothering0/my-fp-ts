@@ -1,4 +1,4 @@
-import * as ordering from "./Ordering"
+import * as ordering from "../modules/Ordering"
 import * as contravariant from "./Contravariant"
 import * as boolean from "../modules/Boolean"
 import { flow, pipe } from "../utils/flow"

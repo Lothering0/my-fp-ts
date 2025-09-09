@@ -4,6 +4,7 @@ import * as result from "../Result"
 import * as boolean from "../Boolean"
 import * as number from "../Number"
 import * as eq from "../../typeclasses/Eq"
+import * as ord from "../../typeclasses/Ord"
 import * as identity from "../Identity"
 import { Refinement, RefinementWithIndex } from "../Refinement"
 import { Predicate, PredicateWithIndex } from "../Predicate"
@@ -267,18 +268,28 @@ export const appendAll: {
 
 export const range: {
   (
-    from: number,
-  ): (to: number) => nonEmptyReadonlyArray.NonEmptyReadonlyArray<number>
-} = from => to =>
+    to: number,
+  ): (from: number) => nonEmptyReadonlyArray.NonEmptyReadonlyArray<number>
+} = to => from =>
   from === to
     ? [from]
     : from < to
-      ? prepend (from) (range (from + 1) (to))
-      : prepend (from) (range (from - 1) (to))
+      ? pipe (from + 1, range (to), prepend (from))
+      : pipe (from - 1, range (to), prepend (from))
 
 export const reverse: {
   <A>(self: ReadonlyArray<A>): ReadonlyArray<A>
-} = self => self.toReversed ()
+} = nonEmptyReadonlyArray.reverse
+
+export const sort: {
+  <A>(Ord: ord.Ord<A>): (self: ReadonlyArray<A>) => ReadonlyArray<A>
+} = nonEmptyReadonlyArray.sort
+
+export const sortBy: {
+  <A>(
+    ords: ReadonlyArray<ord.Ord<A>>,
+  ): (self: ReadonlyArray<A>) => ReadonlyArray<A>
+} = nonEmptyReadonlyArray.sortBy
 
 export const join: {
   (separator: string): (self: ReadonlyArray<string>) => string
