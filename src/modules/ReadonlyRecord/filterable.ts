@@ -1,7 +1,6 @@
 import { Option } from "../Option"
 import { PredicateWithIndex } from "../Predicate"
 import { Result } from "../Result"
-import { Separated } from "../Separated"
 import { createFilterableWithIndex } from "../../typeclasses/FilterableWithIndex"
 import { createFilterable } from "../../typeclasses/Filterable"
 import { Compactable } from "./compactable"
@@ -42,7 +41,7 @@ export const partitionMap: {
     p: (a: A, k: K) => Result<E, B>,
   ): (
     self: ReadonlyRecord<K, A>,
-  ) => Separated<ReadonlyRecord<string, E>, ReadonlyRecord<string, B>>
+  ) => readonly [ReadonlyRecord<string, E>, ReadonlyRecord<string, B>]
 } = FilterableWithIndex.partitionMapWithIndex as typeof partitionMap
 
 export const partition: {
@@ -50,5 +49,5 @@ export const partition: {
     p: PredicateWithIndex<A, K>,
   ): (
     self: ReadonlyRecord<K, A>,
-  ) => Separated<ReadonlyRecord<string, A>, ReadonlyRecord<string, A>>
+  ) => readonly [ReadonlyRecord<string, A>, ReadonlyRecord<string, A>]
 } = FilterableWithIndex.partitionWithIndex as typeof partition

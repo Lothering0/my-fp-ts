@@ -1,4 +1,3 @@
-import { Separated } from "../modules/Separated"
 import { Option, some, none } from "../modules/Option"
 import { Result, fail, succeed } from "../modules/Result"
 import { Compactable } from "./Compactable"
@@ -14,19 +13,19 @@ export interface Filterable<F extends Hkt> extends Functor<F>, Compactable<F> {
     p: (a: In) => Result<Out, CollectableOut>,
   ) => <Collectable, Fixed>(
     self: Kind<F, In, Collectable, Fixed>,
-  ) => Separated<
+  ) => readonly [
     Kind<F, Out, Collectable, Fixed>,
-    Kind<F, CollectableOut, Collectable, Fixed>
-  >
+    Kind<F, CollectableOut, Collectable, Fixed>,
+  ]
 
   readonly partition: <In>(
     p: Predicate<In>,
   ) => <Collectable, Fixed>(
     self: Kind<F, In, Collectable, Fixed>,
-  ) => Separated<
+  ) => readonly [
     Kind<F, In, Collectable, Fixed>,
-    Kind<F, In, Collectable, Fixed>
-  >
+    Kind<F, In, Collectable, Fixed>,
+  ]
 
   /** Removes element if predicate function returns `none`. Otherwise maps it to value of `some` */
   readonly filterMap: <In, Out>(

@@ -1,25 +1,25 @@
 import * as option from "../Option"
 import * as result from "../Result"
-import * as separated from "../Separated"
-import * as compactable from "../../typeclasses/Compactable"
-import { AsyncOption, AsyncOptionHkt, toPromise, some } from "./async-option"
-import { zero } from "./alternative"
+import { createCompactable } from "../../typeclasses/Compactable"
+import { AsyncOption, AsyncOptionHkt, some, toPromise } from "./async-option"
+import { Functor } from "./functor"
+import { pipe } from "../../utils/flow"
 import { flatMap } from "./monad"
-import { flow, pipe } from "../../utils/flow"
+import { zero } from "./alternative"
 
-export const Compactable: compactable.Compactable<AsyncOptionHkt> = {
+export const Compactable = createCompactable<AsyncOptionHkt> (Functor, {
   compact: self => () => toPromise (self).then (option.compact),
-  compactResults: self => () => toPromise (self).then (option.compactResults),
-  separate: flow (
-    toPromise,
-    ma => () => ma,
-    mma =>
-      separated.make (
+  separate: self =>
+    pipe (
+      self,
+      toPromise,
+      ma => () => ma,
+      mma => [
         pipe (mma, flatMap (result.match ({ onFailure: some, onSuccess: zero }))),
         pipe (mma, flatMap (result.match ({ onFailure: zero, onSuccess: some }))),
-      ),
-  ),
-}
+      ],
+    ),
+})
 
 export const compact: {
   <A>(self: AsyncOption<option.Option<A>>): AsyncOption<A>
@@ -32,5 +32,5 @@ export const compactResults: {
 export const separate: {
   <E, A>(
     self: AsyncOption<result.Result<E, A>>,
-  ): separated.Separated<AsyncOption<E>, AsyncOption<A>>
+  ): readonly [AsyncOption<E>, AsyncOption<A>]
 } = Compactable.separate

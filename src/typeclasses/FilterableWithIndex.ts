@@ -1,4 +1,3 @@
-import { Separated } from "../modules/Separated"
 import { Option, some, none } from "../modules/Option"
 import { Result, fail, succeed } from "../modules/Result"
 import { Hkt, Kind } from "./Hkt"
@@ -16,19 +15,19 @@ export interface FilterableWithIndex<F extends Hkt, Index>
     p: (a: In, i: Index) => Result<Out, CollectableOut>,
   ) => <Collectable, Fixed>(
     self: Kind<F, In, Collectable, Fixed>,
-  ) => Separated<
+  ) => readonly [
     Kind<F, Out, Collectable, Fixed>,
-    Kind<F, CollectableOut, Collectable, Fixed>
-  >
+    Kind<F, CollectableOut, Collectable, Fixed>,
+  ]
 
   readonly partitionWithIndex: <In>(
     p: PredicateWithIndex<In, Index>,
   ) => <Collectable, Fixed>(
     self: Kind<F, In, Collectable, Fixed>,
-  ) => Separated<
+  ) => readonly [
     Kind<F, In, Collectable, Fixed>,
-    Kind<F, In, Collectable, Fixed>
-  >
+    Kind<F, In, Collectable, Fixed>,
+  ]
 
   /** Removes element if predicate function returns `none`. Otherwise maps it to value of `some` */
   readonly filterMapWithIndex: <In, Out>(

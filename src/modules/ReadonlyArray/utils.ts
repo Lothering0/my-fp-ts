@@ -282,13 +282,15 @@ export const reverse: {
 } = nonEmptyReadonlyArray.reverse
 
 export const sort: {
-  <A>(Ord: ord.Ord<A>): (self: ReadonlyArray<A>) => ReadonlyArray<A>
+  <B>(
+    Ord: ord.Ord<B>,
+  ): <A extends B>(self: ReadonlyArray<A>) => ReadonlyArray<A>
 } = nonEmptyReadonlyArray.sort
 
 export const sortBy: {
-  <A>(
-    ords: ReadonlyArray<ord.Ord<A>>,
-  ): (self: ReadonlyArray<A>) => ReadonlyArray<A>
+  <B>(
+    ords: ReadonlyArray<ord.Ord<B>>,
+  ): <A extends B>(self: ReadonlyArray<A>) => ReadonlyArray<A>
 } = nonEmptyReadonlyArray.sortBy
 
 export const join: {

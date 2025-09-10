@@ -12,9 +12,9 @@ describe ("separate", () => {
         }),
     )
 
-    const separated = asyncOption.separate (fa)
-    await separated.left ()
-    await separated.right ()
+    const [left, right] = asyncOption.separate (fa)
+    await left ()
+    await right ()
 
     expect (fa).toHaveBeenCalledTimes (1)
   })

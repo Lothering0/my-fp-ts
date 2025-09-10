@@ -36,14 +36,14 @@ export const reverse = <A>(
   self.toReversed () as unknown as NonEmptyReadonlyArray<A>
 
 export const sort =
-  <A>(Ord: ord.Ord<A>) =>
-  (self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<A> =>
+  <B>(Ord: ord.Ord<B>) =>
+  <A extends B>(self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<A> =>
     self.toSorted ((x, y) =>
       Ord.compare (y) (x),
     ) as unknown as NonEmptyReadonlyArray<A>
 
 export const sortBy: {
-  <A>(
-    ords: ReadonlyArray<ord.Ord<A>>,
-  ): (self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A>
+  <B>(
+    ords: ReadonlyArray<ord.Ord<B>>,
+  ): <A extends B>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A>
 } = ords => self => ords.reduce ((out, Ord) => sort (Ord) (out), self)

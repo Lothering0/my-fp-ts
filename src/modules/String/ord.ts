@@ -25,7 +25,8 @@ export const Ord: ord.Ord<string> = {
           ),
           option.flatMap (({ x, y }) =>
             pipe (
-              number.compare (y) (x),
+              x,
+              number.compare (y),
               // If both chars are the same then return `none` for `readonlyArray.findMap` and continue iterations
               number.matchZero ({
                 onNonZero: (a: ordering.Ordering) => option.some (a),

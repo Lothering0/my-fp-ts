@@ -1,7 +1,6 @@
 import { Option } from "../Option"
 import { PredicateWithIndex } from "../Predicate"
 import { Result } from "../Result"
-import { Separated } from "../Separated"
 import { ReadonlyArrayHkt } from "./readonly-array"
 import { createFilterableWithIndex } from "../../typeclasses/FilterableWithIndex"
 import { createFilterable } from "../../typeclasses/Filterable"
@@ -40,11 +39,11 @@ export const filter: {
 export const partitionMap: {
   <A, E, B>(
     p: (a: A, i: number) => Result<E, B>,
-  ): (self: ReadonlyArray<A>) => Separated<ReadonlyArray<E>, ReadonlyArray<B>>
+  ): (self: ReadonlyArray<A>) => readonly [ReadonlyArray<E>, ReadonlyArray<B>]
 } = FilterableWithIndex.partitionMapWithIndex
 
 export const partition: {
   <A>(
     p: PredicateWithIndex<A, number>,
-  ): (self: ReadonlyArray<A>) => Separated<ReadonlyArray<A>, ReadonlyArray<A>>
+  ): (self: ReadonlyArray<A>) => readonly [ReadonlyArray<A>, ReadonlyArray<A>]
 } = FilterableWithIndex.partitionWithIndex
