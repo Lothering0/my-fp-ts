@@ -1,8 +1,10 @@
 import * as option from "../Option"
 import * as readonlyArray from "../ReadonlyArray"
+import * as iterable from "../Iterable"
 import * as boolean from "../Boolean"
 import * as identity from "../Identity"
 import * as eq from "../../typeclasses/Eq"
+import * as ord from "../../typeclasses/Ord"
 import { flow, pipe } from "../../utils/flow"
 import { ReadonlyRecord } from "./readonly-record"
 import { TheseOrAnyString } from "../../types/utils"
@@ -26,7 +28,9 @@ export const toEntries: {
 } = Object.entries
 
 export const fromEntries: {
-  <K extends string, A>(entries: ReadonlyArray<[K, A]>): ReadonlyRecord<K, A>
+  <K extends string, A>(
+    entries: Iterable<readonly [K, A]>,
+  ): ReadonlyRecord<K, A>
 } = Object.fromEntries
 
 export const isEmpty = (
@@ -185,4 +189,62 @@ export const removeAt: {
           delete copy[k as string as keyof typeof copy],
     ),
     identity.map (({ copy }) => copy),
+  )
+
+export const sortValues: {
+  <B>(
+    Ord: ord.Ord<B>,
+  ): <A extends B, K extends string>(
+    self: ReadonlyRecord<K, A>,
+  ) => ReadonlyRecord<K, A>
+} = Ord =>
+  flow (
+    toEntries,
+    readonlyArray.sort (
+      pipe (
+        Ord,
+        ord.contramap (([, a]) => a),
+      ),
+    ),
+    fromEntries,
+  )
+
+export const sortValuesBy: {
+  <B>(
+    ords: Iterable<ord.Ord<B>>,
+  ): <A extends B, K extends string>(
+    self: ReadonlyRecord<K, A>,
+  ) => ReadonlyRecord<K, A>
+} = ords =>
+  flow (
+    toEntries,
+    readonlyArray.sortBy (pipe (ords, iterable.map (ord.contramap (([, a]) => a)))),
+    fromEntries,
+  )
+
+export const sortKeys: {
+  (
+    Ord: ord.Ord<string>,
+  ): <A, K extends string>(self: ReadonlyRecord<K, A>) => ReadonlyRecord<K, A>
+} = Ord =>
+  flow (
+    toEntries,
+    readonlyArray.sort (
+      pipe (
+        Ord,
+        ord.contramap (([k]) => k),
+      ),
+    ),
+    fromEntries,
+  )
+
+export const sortKeysBy: {
+  (
+    ords: Iterable<ord.Ord<string>>,
+  ): <A, K extends string>(self: ReadonlyRecord<K, A>) => ReadonlyRecord<K, A>
+} = ords =>
+  flow (
+    toEntries,
+    readonlyArray.sortBy (pipe (ords, iterable.map (ord.contramap (([k]) => k)))),
+    fromEntries,
   )

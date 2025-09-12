@@ -44,6 +44,6 @@ export const sort =
 
 export const sortBy: {
   <B>(
-    ords: ReadonlyArray<ord.Ord<B>>,
+    ords: Iterable<ord.Ord<B>>,
   ): <A extends B>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A>
-} = ords => self => ords.reduce ((out, Ord) => sort (Ord) (out), self)
+} = ords => self => [...ords].reduce ((out, Ord) => sort (Ord) (out), self)

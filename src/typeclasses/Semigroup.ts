@@ -14,5 +14,5 @@ export const constant: {
 export const combineAll: {
   <Fixed>(
     Semigroup: Semigroup<Fixed>,
-  ): (start: Fixed) => (as: ReadonlyArray<Fixed>) => Fixed
+  ): (start: Fixed) => (as: Iterable<Fixed>) => Fixed
 } = magma.combineAll

@@ -1,5 +1,6 @@
 import * as readonlyRecord from "../../../src/modules/ReadonlyRecord"
 import * as number from "../../../src/modules/Number"
+import * as string from "../../../src/modules/String"
 import { pipe } from "../../../src/utils/flow"
 
 describe ("getUnion", () => {
@@ -12,5 +13,35 @@ describe ("getUnion", () => {
       c: 5,
       d: 3,
     })
+  })
+})
+
+describe ("sortValues", () => {
+  it ("should sort record by values with provided `Ord` instance", () => {
+    pipe (
+      { b: "c", a: "b", c: "a" },
+      readonlyRecord.sortValues (string.Ord),
+      readonlyRecord.toEntries,
+      expect,
+    ).toEqual ([
+      ["c", "a"],
+      ["a", "b"],
+      ["b", "c"],
+    ])
+  })
+})
+
+describe ("sortKeys", () => {
+  it ("should sort record by keys with provided `Ord` instance", () => {
+    pipe (
+      { b: "c", a: "b", c: "a" },
+      readonlyRecord.sortKeys (string.Ord),
+      readonlyRecord.toEntries,
+      expect,
+    ).toEqual ([
+      ["a", "b"],
+      ["b", "c"],
+      ["c", "a"],
+    ])
   })
 })

@@ -289,7 +289,7 @@ export const sort: {
 
 export const sortBy: {
   <B>(
-    ords: ReadonlyArray<ord.Ord<B>>,
+    ords: Iterable<ord.Ord<B>>,
   ): <A extends B>(self: ReadonlyArray<A>) => ReadonlyArray<A>
 } = nonEmptyReadonlyArray.sortBy
 

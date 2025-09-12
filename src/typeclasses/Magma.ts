@@ -15,7 +15,6 @@ export const constant: {
 })
 
 export const combineAll: {
-  <Fixed>(
-    Magma: Magma<Fixed>,
-  ): (start: Fixed) => (as: ReadonlyArray<Fixed>) => Fixed
-} = Magma => start => as => as.reduce ((out, a) => Magma.combine (a) (out), start)
+  <Fixed>(Magma: Magma<Fixed>): (start: Fixed) => (as: Iterable<Fixed>) => Fixed
+} = Magma => start => as =>
+  [...as].reduce ((out, a) => Magma.combine (a) (out), start)

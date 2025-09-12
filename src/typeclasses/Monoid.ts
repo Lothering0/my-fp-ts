@@ -12,5 +12,5 @@ export const reverse: {
 })
 
 export const combineAll: {
-  <Fixed>(Monoid: Monoid<Fixed>): (as: ReadonlyArray<Fixed>) => Fixed
+  <Fixed>(Monoid: Monoid<Fixed>): (as: Iterable<Fixed>) => Fixed
 } = Monoid => semigroup.combineAll (Monoid) (Monoid.empty)
