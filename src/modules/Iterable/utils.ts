@@ -32,3 +32,12 @@ export const append: {
     yield a
   },
 })
+
+export const concat: {
+  <A>(end: Iterable<A>): (start: Iterable<A>) => Iterable<A>
+} = end => start => ({
+  *[Symbol.iterator]() {
+    yield* start
+    yield* end
+  },
+})
