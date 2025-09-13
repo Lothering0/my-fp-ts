@@ -1,4 +1,4 @@
-import * as readonlyArray from "../ReadonlyArray"
+import * as iterable from "../Iterable"
 import { Tree } from "./tree"
 import { Eq } from "../../typeclasses/Eq"
 import { forest, value } from "./utils"
@@ -8,5 +8,5 @@ export const getEq: {
 } = Eq => ({
   equals: mx => my =>
     Eq.equals (value (mx)) (value (my)) &&
-    readonlyArray.getEq (getEq (Eq)).equals (forest (mx)) (forest (my)),
+    iterable.getEq (getEq (Eq)).equals (forest (mx)) (forest (my)),
 })

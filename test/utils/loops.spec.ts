@@ -1,11 +1,11 @@
 import * as readonlyArray from "../../src/modules/ReadonlyArray"
+import * as option from "../../src/modules/Option"
 import { Sync } from "../../src/modules/Sync"
-import { getDoWhile } from "../../src/utils/loops"
+import { doWhile } from "../../src/utils/loops"
 
 describe ("getDoWhile", () => {
   it ("should correctly run", () => {
     const iterationsCount = 5
-    const doWhile = getDoWhile (readonlyArray.Applicative)
     const xs: number[] = []
 
     const unsafeInsert: {
@@ -14,12 +14,12 @@ describe ("getDoWhile", () => {
     const p = jest.fn (() => readonlyArray.length (xs) < iterationsCount)
     const f: Sync<void> = unsafeInsert (xs, 0)
 
-    const result = doWhile (p) (f)
+    const result = doWhile (f) (p)
 
-    expect (p).toHaveBeenCalledTimes (iterationsCount + 1)
+    expect (p).toHaveBeenCalledTimes (iterationsCount)
     expect (f).toHaveBeenCalledTimes (iterationsCount)
 
     expect (xs).toEqual ([0, 0, 0, 0, 0])
-    expect (result).toEqual (readonlyArray.of (undefined))
+    expect (result).toEqual (option.some (iterationsCount))
   })
 })

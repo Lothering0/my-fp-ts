@@ -2,7 +2,10 @@ import * as option from "../../../src/modules/Option"
 import * as number from "../../../src/modules/Number"
 import { describeFunctorLaws } from "../../_utils/describeFunctorLaws"
 
-describeFunctorLaws (option.Functor, [option.none, option.some (1)])
+describeFunctorLaws (option.Functor, option.getEq (number.Eq), [
+  option.none,
+  option.some (1),
+])
 
 describe ("functor", () => {
   describe ("map", () => {

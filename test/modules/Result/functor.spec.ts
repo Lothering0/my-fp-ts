@@ -1,8 +1,12 @@
 import * as result from "../../../src/modules/Result"
 import * as number from "../../../src/modules/Number"
+import * as string from "../../../src/modules/String"
 import { describeFunctorLaws } from "../../_utils/describeFunctorLaws"
 
-describeFunctorLaws (result.Functor, [result.fail ("e"), result.succeed (1)])
+describeFunctorLaws (result.Functor, result.getEq (string.Eq, number.Eq), [
+  result.fail ("e"),
+  result.succeed (1),
+])
 
 describe ("functor", () => {
   describe ("map", () => {

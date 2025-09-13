@@ -3,19 +3,28 @@ import { Hkt, Kind } from "../../src/typeclasses/Hkt"
 import { Applicative } from "../../src/typeclasses/Applicative"
 import { NonEmptyReadonlyArray } from "../../src/modules/NonEmptyReadonlyArray"
 import { identity } from "../../src/modules/Identity"
+import { Eq } from "../../src/typeclasses/Eq"
+import { pipe } from "../../src/utils/flow"
 
 export const describeApplicativeLaws: {
   <F extends Hkt>(
     Applicative: Applicative<F>,
+    Eq: Eq<Kind<F, number, unknown, unknown>>,
     fas: NonEmptyReadonlyArray<Kind<F, number, unknown, unknown>>,
     fabs: NonEmptyReadonlyArray<Kind<F, (x: number) => number, unknown, never>>,
   ): void
-} = (Applicative, fas, fabs) => {
+} = (Applicative, Eq, fas, fabs) => {
   describe ("applicative", () => {
     describe ("ap", () => {
       it ("should satisfy identity law", () => {
         fas.forEach (fa => {
-          expect (Applicative.ap (fa) (Applicative.of (identity))).toEqual (fa)
+          pipe (
+            identity,
+            Applicative.of,
+            Applicative.ap (fa),
+            Eq.equals (fa),
+            expect,
+          ).toBe (true)
         })
       })
 
@@ -23,18 +32,25 @@ export const describeApplicativeLaws: {
         const ab = number.add (5)
         const x = 1
 
-        expect (Applicative.ap (Applicative.of (x)) (Applicative.of (ab))).toEqual (
-          Applicative.of (ab (x)),
-        )
+        pipe (
+          ab,
+          Applicative.of,
+          Applicative.ap (Applicative.of (x)),
+          Eq.equals (Applicative.of (ab (x))),
+          expect,
+        ).toBe (true)
       })
 
       it ("should satisfy interchange law", () => {
         const x = 1
 
         fabs.forEach (fab => {
-          expect (Applicative.ap (Applicative.of (x)) (fab)).toEqual (
-            Applicative.ap (fab) (Applicative.of (ab => ab (x))),
-          )
+          pipe (
+            fab,
+            Applicative.ap (Applicative.of (x)),
+            Eq.equals (Applicative.ap (fab) (Applicative.of (ab => ab (x)))),
+            expect,
+          ).toBe (true)
         })
       })
     })

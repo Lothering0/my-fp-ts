@@ -47,7 +47,10 @@ describe ("getEq", () => {
         tree.make (2, [tree.make (4)]),
         tree.make (3),
       ]),
-      tree2: tree.make (1, [tree.make (2, [tree.make (4)]), tree.make (3)]),
+      tree2: tree.make (1, [
+        tree.make (2, [tree.make (2), tree.make (4)]),
+        tree.make (3),
+      ]),
       expected: false,
     },
     {

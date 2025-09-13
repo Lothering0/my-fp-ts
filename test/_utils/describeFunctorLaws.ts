@@ -4,18 +4,20 @@ import { Functor } from "../../src/typeclasses/Functor"
 import { NonEmptyReadonlyArray } from "../../src/modules/NonEmptyReadonlyArray"
 import { identity } from "../../src/modules/Identity"
 import { pipe } from "../../src/utils/flow"
+import { Eq } from "../../src/typeclasses/Eq"
 
 export const describeFunctorLaws: {
   <F extends Hkt>(
     Functor: Functor<F>,
+    Eq: Eq<Kind<F, number, unknown, unknown>>,
     fas: NonEmptyReadonlyArray<Kind<F, number, unknown, unknown>>,
   ): void
-} = (Functor, fas) => {
+} = (Functor, Eq, fas) => {
   describe ("functor", () => {
     describe ("map", () => {
       it ("should satisfy identity law", () => {
         fas.forEach (fa => {
-          expect (Functor.map (identity) (fa)).toEqual (fa)
+          pipe (fa, Functor.map (identity), Eq.equals (fa), expect).toBe (true)
         })
       })
 
@@ -27,8 +29,9 @@ export const describeFunctorLaws: {
           pipe (
             fa,
             Functor.map (a => bc (ab (a))),
+            Eq.equals (pipe (fa, Functor.map (ab), Functor.map (bc))),
             expect,
-          ).toEqual (Functor.map (bc) (Functor.map (ab) (fa)))
+          ).toBe (true)
         })
       })
     })

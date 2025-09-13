@@ -1,4 +1,5 @@
 import * as readonlyArray from "../ReadonlyArray"
+import * as iterable from "../Iterable"
 import * as boolean from "../Boolean"
 import { Tree } from "./tree"
 import { Show } from "../../typeclasses/Show"
@@ -16,7 +17,7 @@ export const getShow: {
         boolean.match ({
           onFalse: () => `make (${s})`,
           onTrue: () =>
-            `make (${s}, ${pipe (self, forest, readonlyArray.getShow (getShow (Show)).show)})`,
+            `make (${s}, ${pipe (self, forest, iterable.toReadonlyArray, readonlyArray.getShow (getShow (Show)).show)})`,
         }),
       ),
     ),

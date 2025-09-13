@@ -1,4 +1,4 @@
-import * as readonlyArray from "../ReadonlyArray"
+import * as iterable from "../Iterable"
 import { createExtendable } from "../../typeclasses/Extendable"
 import { Tree, TreeHkt } from "./tree"
 import { Functor } from "./functor"
@@ -7,7 +7,7 @@ import { forest, make } from "./utils"
 export const Extendable = createExtendable<TreeHkt> ({
   ...Functor,
   extend: fab => self =>
-    make (fab (self), readonlyArray.map (extend (fab)) (forest (self))),
+    make (fab (self), iterable.map (extend (fab)) (forest (self))),
 })
 
 export const extend: {

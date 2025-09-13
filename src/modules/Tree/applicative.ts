@@ -1,4 +1,4 @@
-import * as readonlyArray from "../ReadonlyArray"
+import * as iterable from "../Iterable"
 import { Tree, TreeHkt } from "./tree"
 import { createApplicative } from "../../typeclasses/Applicative"
 import { Functor, map } from "./functor"
@@ -10,7 +10,7 @@ export const flat: {
 } = self =>
   make (
     pipe (self, value, value),
-    readonlyArray.concat (pipe (self, forest, readonlyArray.map (flat))) (
+    iterable.concat (pipe (self, forest, iterable.map (flat))) (
       pipe (self, value, forest),
     ),
   )

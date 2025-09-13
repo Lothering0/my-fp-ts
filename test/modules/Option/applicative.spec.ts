@@ -4,6 +4,7 @@ import { describeApplicativeLaws } from "../../_utils/describeApplicativeLaws"
 
 describeApplicativeLaws (
   option.Applicative,
+  option.getEq (number.Eq),
   [option.none, option.some (1)],
   [option.none, option.some (number.add (5))],
 )

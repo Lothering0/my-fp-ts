@@ -4,9 +4,9 @@ export interface TreeHkt extends Hkt {
   readonly type: Tree<this["_in"]>
 }
 
-export interface Tree<A> {
+export interface Tree<A> extends Iterable<A> {
   readonly value: A
   readonly forest: Forest<A>
 }
 
-export type Forest<A> = ReadonlyArray<Tree<A>>
+export type Forest<A> = Iterable<Tree<A>>

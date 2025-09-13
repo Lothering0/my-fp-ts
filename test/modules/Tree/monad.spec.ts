@@ -1,9 +1,11 @@
 import * as tree from "../../../src/modules/Tree"
+import * as number from "../../../src/modules/Number"
 import { pipe } from "../../../src/utils/flow"
 import { describeMonadLaws } from "../../_utils/describeMonadLaws"
 
 describeMonadLaws (
   tree.Monad,
+  tree.getEq (number.Eq),
   [
     tree.make (1),
     tree.make (1, [tree.make (2), tree.make (3)]),
@@ -30,21 +32,24 @@ describeMonadLaws (
 )
 
 describe ("monad", () => {
+  const Eq = tree.getEq (number.Eq)
+
   describe ("flatMap", () => {
     it ("should correctly build a tree", () => {
       const fa = tree.make (1, [tree.make (2, [tree.make (4)]), tree.make (3)])
-      const result = pipe (
+
+      pipe (
         fa,
         tree.flatMap (a => tree.make (a + 10, [tree.make (a + 20)])),
-      )
-
-      expect (result).toEqual<tree.Tree<number>> (
-        tree.make (11, [
-          tree.make (21),
-          tree.make (12, [tree.make (22), tree.make (14, [tree.make (24)])]),
-          tree.make (13, [tree.make (23)]),
-        ]),
-      )
+        Eq.equals (
+          tree.make (11, [
+            tree.make (21),
+            tree.make (12, [tree.make (22), tree.make (14, [tree.make (24)])]),
+            tree.make (13, [tree.make (23)]),
+          ]),
+        ),
+        expect,
+      ).toBe (true)
     })
   })
 })

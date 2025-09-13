@@ -1,4 +1,4 @@
-import * as readonlyArray from "../ReadonlyArray"
+import * as iterable from "../Iterable"
 import * as functor from "../../typeclasses/Functor"
 import { Tree, TreeHkt } from "./tree"
 import { make, value, forest } from "./utils"
@@ -6,7 +6,7 @@ import { pipe } from "../../utils/flow"
 
 export const Functor: functor.Functor<TreeHkt> = {
   map: ab => self =>
-    make (pipe (self, value, ab), pipe (self, forest, readonlyArray.map (map (ab)))),
+    make (pipe (self, value, ab), pipe (self, forest, iterable.map (map (ab)))),
 }
 
 export const map: {
