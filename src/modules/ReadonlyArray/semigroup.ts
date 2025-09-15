@@ -1,5 +1,5 @@
 import * as boolean from "../Boolean"
-import { Eq } from "../../typeclasses/Eq"
+import { Equivalence } from "../../typeclasses/Equivalence"
 import { Semigroup } from "../../typeclasses/Semigroup"
 import { pipe } from "../../utils/flow"
 import { reduce } from "./foldable"
@@ -10,13 +10,13 @@ export const getSemigroup = <A>(): Semigroup<ReadonlyArray<A>> => ({
 })
 
 export const getIntersectionSemigroup = <A>(
-  Eq: Eq<A>,
+  Equivalence: Equivalence<A>,
 ): Semigroup<ReadonlyArray<A>> => ({
   combine: ys =>
     reduce ([] as ReadonlyArray<A>, (out, x) =>
       pipe (
         ys,
-        elem (Eq) (x),
+        elem (Equivalence) (x),
         boolean.match ({
           onFalse: () => out,
           onTrue: () => pipe (out, append (x)),

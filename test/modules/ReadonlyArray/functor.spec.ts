@@ -2,11 +2,11 @@ import * as readonlyArray from "../../../src/modules/ReadonlyArray"
 import * as number from "../../../src/modules/Number"
 import { describeFunctorLaws } from "../../_utils/describeFunctorLaws"
 
-describeFunctorLaws (readonlyArray.Functor, readonlyArray.getEq (number.Eq), [
-  [],
-  [1],
-  [1, 2, 3],
-])
+describeFunctorLaws (
+  readonlyArray.Functor,
+  readonlyArray.getEquivalence (number.Equivalence),
+  [[], [1], [1, 2, 3]],
+)
 
 describe ("functor", () => {
   describe ("map", () => {

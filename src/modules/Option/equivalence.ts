@@ -1,13 +1,13 @@
-import { Eq } from "../../typeclasses/Eq"
+import { Equivalence } from "../../typeclasses/Equivalence"
 import { Option } from "./option"
 import { match } from "./matchers"
 import { isNone } from "./refinements"
 import { constFalse } from "../../utils/constant"
 import { pipe } from "../../utils/flow"
 
-export const getEq: {
-  <A>(Eq: Eq<A>): Eq<Option<A>>
-} = Eq => ({
+export const getEquivalence: {
+  <A>(Equivalence: Equivalence<A>): Equivalence<Option<A>>
+} = Equivalence => ({
   equals: mx => my =>
     pipe (
       mx,
@@ -18,7 +18,7 @@ export const getEq: {
             my,
             match ({
               onNone: constFalse,
-              onSome: Eq.equals (x),
+              onSome: Equivalence.equals (x),
             }),
           ),
       }),

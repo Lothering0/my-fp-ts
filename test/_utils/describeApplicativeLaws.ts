@@ -3,17 +3,17 @@ import { Hkt, Kind } from "../../src/typeclasses/Hkt"
 import { Applicative } from "../../src/typeclasses/Applicative"
 import { NonEmptyReadonlyArray } from "../../src/modules/NonEmptyReadonlyArray"
 import { identity } from "../../src/modules/Identity"
-import { Eq } from "../../src/typeclasses/Eq"
+import { Equivalence } from "../../src/typeclasses/Equivalence"
 import { pipe } from "../../src/utils/flow"
 
 export const describeApplicativeLaws: {
   <F extends Hkt>(
     Applicative: Applicative<F>,
-    Eq: Eq<Kind<F, number, unknown, unknown>>,
+    Equivalence: Equivalence<Kind<F, number, unknown, unknown>>,
     fas: NonEmptyReadonlyArray<Kind<F, number, unknown, unknown>>,
     fabs: NonEmptyReadonlyArray<Kind<F, (x: number) => number, unknown, never>>,
   ): void
-} = (Applicative, Eq, fas, fabs) => {
+} = (Applicative, Equivalence, fas, fabs) => {
   describe ("applicative", () => {
     describe ("ap", () => {
       it ("should satisfy identity law", () => {
@@ -22,7 +22,7 @@ export const describeApplicativeLaws: {
             identity,
             Applicative.of,
             Applicative.ap (fa),
-            Eq.equals (fa),
+            Equivalence.equals (fa),
             expect,
           ).toBe (true)
         })
@@ -36,7 +36,7 @@ export const describeApplicativeLaws: {
           ab,
           Applicative.of,
           Applicative.ap (Applicative.of (x)),
-          Eq.equals (Applicative.of (ab (x))),
+          Equivalence.equals (Applicative.of (ab (x))),
           expect,
         ).toBe (true)
       })
@@ -48,7 +48,9 @@ export const describeApplicativeLaws: {
           pipe (
             fab,
             Applicative.ap (Applicative.of (x)),
-            Eq.equals (Applicative.ap (fab) (Applicative.of (ab => ab (x)))),
+            Equivalence.equals (
+              Applicative.ap (fab) (Applicative.of (ab => ab (x))),
+            ),
             expect,
           ).toBe (true)
         })

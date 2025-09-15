@@ -1,13 +1,15 @@
-import * as eq from "../../typeclasses/Eq"
+import * as equivalence from "../../typeclasses/Equivalence"
 import * as identity from "../Identity"
 import * as option from "../Option"
 import { flow, pipe } from "../../utils/flow"
 import { doUntil } from "../../utils/loops"
 import { constFalse } from "../../utils/constant"
 
-export const getEq: {
-  <A>(Eq: eq.Eq<A>): eq.Eq<Iterable<A>>
-} = Eq => ({
+export const getEquivalence: {
+  <A>(
+    Equivalence: equivalence.Equivalence<A>,
+  ): equivalence.Equivalence<Iterable<A>>
+} = Equivalence => ({
   equals: second => first =>
     pipe (
       identity.Do,
@@ -37,7 +39,7 @@ export const getEq: {
                 // If only one of them is done then `isEquals` should be `false`
                 !someHasFinished &&
                   // Comparing values if both are not done
-                  Eq.equals (second.value) (first.value),
+                  Equivalence.equals (second.value) (first.value),
             })),
           ),
         ) (

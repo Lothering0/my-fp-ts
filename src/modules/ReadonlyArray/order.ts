@@ -1,4 +1,4 @@
-import * as ord from "../../typeclasses/Ord"
+import * as order from "../../typeclasses/Order"
 import * as ordering from "../Ordering"
 import * as option from "../Option"
 import * as number from "../Number"
@@ -7,9 +7,9 @@ import { pipe } from "../../utils/flow"
 import { findMap, length, lookup } from "./utils"
 import { constant } from "../../utils/constant"
 
-export const getOrd: {
-  <A>(Ord: ord.Ord<A>): ord.Ord<ReadonlyArray<A>>
-} = Ord => ({
+export const getOrder: {
+  <A>(Order: order.Order<A>): order.Order<ReadonlyArray<A>>
+} = Order => ({
   compare: ys => xs =>
     pipe (
       xs,
@@ -22,7 +22,7 @@ export const getOrd: {
             onSome: y =>
               pipe (
                 x,
-                Ord.compare (y),
+                Order.compare (y),
                 number.matchZero ({
                   onNonZero: (a: ordering.Ordering) => option.some (a),
                   onZero: option.zero,

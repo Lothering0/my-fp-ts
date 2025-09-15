@@ -8,8 +8,8 @@ interface TestCase {
   readonly expected: boolean
 }
 
-describe ("getEq", () => {
-  const Eq = tree.getEq (number.Eq)
+describe ("getEquivalence", () => {
+  const Equivalence = tree.getEquivalence (number.Equivalence)
 
   const testCases: TestCase[] = [
     {
@@ -70,6 +70,8 @@ describe ("getEq", () => {
   ]
 
   testCases.forEach (({ description, tree1, tree2, expected }) =>
-    it (description, () => expect (Eq.equals (tree1) (tree2)).toBe (expected)),
+    it (description, () =>
+      expect (Equivalence.equals (tree1) (tree2)).toBe (expected),
+    ),
   )
 })

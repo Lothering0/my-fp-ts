@@ -1,5 +1,5 @@
 import { pipe } from "../../utils/flow"
-import { equals } from "./eq"
+import { equals } from "./equivalence"
 import { isEven, lessThan, lessThanOrEquals } from "./utils"
 
 export interface MatchersZero<A, B = A> {

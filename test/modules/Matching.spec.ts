@@ -170,11 +170,13 @@ describe ("Matching", () => {
     })
   })
 
-  describe ("matchEq", () => {
-    it ("should return value of first matching found by provided `Eq`", () => {
+  describe ("matchEquivalence", () => {
+    it ("should return value of first matching found by provided `Equivalence`", () => {
       const result_ = pipe (
         [1, 2, 3],
-        matching.matchEq (readonlyArray.getEq (number.Eq)),
+        matching.matchEquivalence (
+          readonlyArray.getEquivalence (number.Equivalence),
+        ),
         matching.when ([], () => "a"),
         matching.when ([1], () => "b"),
         matching.when ([1, 2, 3, 4], () => "c"),
@@ -187,29 +189,29 @@ describe ("Matching", () => {
   })
 
   describe ("whenEquals", () => {
-    it ("should return value of first matching found by provided `Eq`", () => {
-      const Eq = readonlyArray.getEq (number.Eq)
+    it ("should return value of first matching found by provided `Equivalence`", () => {
+      const Equivalence = readonlyArray.getEquivalence (number.Equivalence)
       const result_ = pipe (
         [1, 2, 3],
         matching.match,
-        matching.whenEquals (Eq, [], () => "a"),
-        matching.whenEquals (Eq, [1], () => "b"),
-        matching.whenEquals (Eq, [1, 2, 3, 4], () => "c"),
+        matching.whenEquals (Equivalence, [], () => "a"),
+        matching.whenEquals (Equivalence, [1], () => "b"),
+        matching.whenEquals (Equivalence, [1, 2, 3, 4], () => "c"),
         matching.when ([1, 2, 3], () => "d"),
-        matching.whenEquals (Eq, [1, 2, 3], () => "e"),
-        matching.whenEquals (Eq, [1, 2, 3], () => "f"),
+        matching.whenEquals (Equivalence, [1, 2, 3], () => "e"),
+        matching.whenEquals (Equivalence, [1, 2, 3], () => "f"),
         matching.getResult,
       )
       expect (result_).toEqual (result.succeed ("e"))
     })
 
     it ("should pass matched value to callback", () => {
-      const Eq = readonlyArray.getEq (number.Eq)
+      const Equivalence = readonlyArray.getEquivalence (number.Equivalence)
       const Show = readonlyArray.getShow (number.Show)
       const result_ = pipe (
         [1, 2, 3],
         matching.match,
-        matching.whenEquals (Eq, [1, 2, 3], Show.show),
+        matching.whenEquals (Equivalence, [1, 2, 3], Show.show),
         matching.getResult,
       )
       expect (result_).toEqual (result.succeed ("[1, 2, 3]"))

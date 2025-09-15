@@ -8,8 +8,8 @@ interface TestCase {
   readonly expected: boolean
 }
 
-describe ("getEq", () => {
-  const Eq = readonlyArray.getEq (number.Eq)
+describe ("getEquivalence", () => {
+  const Equivalence = readonlyArray.getEquivalence (number.Equivalence)
 
   const testCases: ReadonlyArray<TestCase> = [
     {
@@ -39,6 +39,8 @@ describe ("getEq", () => {
   ]
 
   testCases.forEach (({ description, array1, array2, expected }) =>
-    it (description, () => expect (Eq.equals (array1) (array2)).toBe (expected)),
+    it (description, () =>
+      expect (Equivalence.equals (array1) (array2)).toBe (expected),
+    ),
   )
 })

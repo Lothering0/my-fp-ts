@@ -5,7 +5,7 @@ import { pipe } from "../../../src/utils/flow"
 
 describeApplicativeLaws (
   tree.Applicative,
-  tree.getEq (number.Eq),
+  tree.getEquivalence (number.Equivalence),
   [
     tree.make (1),
     tree.make (1, [tree.make (2), tree.make (3)]),
@@ -25,7 +25,7 @@ describeApplicativeLaws (
 )
 
 describe ("applicative", () => {
-  const Eq = tree.getEq (number.Eq)
+  const Equivalence = tree.getEquivalence (number.Equivalence)
 
   describe ("ap", () => {
     it ("should correctly build a tree", () => {
@@ -44,7 +44,7 @@ describe ("applicative", () => {
       pipe (
         fab,
         tree.ap (fa),
-        Eq.equals (
+        Equivalence.equals (
           tree.make (11, [
             tree.make (12, [tree.make (14)]),
             tree.make (13, [tree.make (15)]),

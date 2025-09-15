@@ -50,57 +50,57 @@ export const transform = <F extends Hkt>(M: Monad<F>) => {
   } = flow (option.match, M.map)
 
   const value: {
-    <A, Collectable, Fixed>(
-      self: Kind<F, option.Some<A>, Collectable, Fixed>,
-    ): Kind<F, A, Collectable, Fixed>
+    <In, Collectable, Fixed>(
+      self: Kind<F, option.Some<In>, Collectable, Fixed>,
+    ): Kind<F, In, Collectable, Fixed>
   } = M.map (option.value)
 
   const fromNullable: {
-    <A, Collectable, Fixed>(
-      a: Kind<F, A, Collectable, Fixed>,
-    ): Kind<THkt, NonNullable<A>, Collectable, Fixed>
+    <In, Collectable, Fixed>(
+      a: Kind<F, In, Collectable, Fixed>,
+    ): Kind<THkt, NonNullable<In>, Collectable, Fixed>
   } = M.map (option.fromNullable)
 
   const fromNull: {
-    <A, Collectable, Fixed>(
-      a: Kind<F, A, Collectable, Fixed>,
-    ): Kind<THkt, Exclude<A, null>, Collectable, Fixed>
+    <In, Collectable, Fixed>(
+      a: Kind<F, In, Collectable, Fixed>,
+    ): Kind<THkt, Exclude<In, null>, Collectable, Fixed>
   } = M.map (option.fromNull)
 
   const toNull: {
-    <A, Collectable, Fixed>(
-      self: Kind<THkt, A, Collectable, Fixed>,
-    ): Kind<F, A | null, Collectable, Fixed>
+    <In, Collectable, Fixed>(
+      self: Kind<THkt, In, Collectable, Fixed>,
+    ): Kind<F, In | null, Collectable, Fixed>
   } = M.map (option.toNull)
 
   const fromUndefined: {
-    <A, Collectable, Fixed>(
-      a: Kind<F, A, Collectable, Fixed>,
-    ): Kind<THkt, Exclude<A, undefined>, Collectable, Fixed>
+    <In, Collectable, Fixed>(
+      a: Kind<F, In, Collectable, Fixed>,
+    ): Kind<THkt, Exclude<In, undefined>, Collectable, Fixed>
   } = M.map (option.fromUndefined)
 
   const toUndefined: {
-    <A, Collectable, Fixed>(
-      self: Kind<THkt, A, Collectable, Fixed>,
-    ): Kind<F, A | undefined, Collectable, Fixed>
+    <In, Collectable, Fixed>(
+      self: Kind<THkt, In, Collectable, Fixed>,
+    ): Kind<F, In | undefined, Collectable, Fixed>
   } = M.map (option.toUndefined)
 
   const fromVoid: {
-    <A, Collectable, Fixed>(
-      a: Kind<F, A, Collectable, Fixed>,
-    ): Kind<THkt, Exclude<A, void>, Collectable, Fixed>
+    <In, Collectable, Fixed>(
+      a: Kind<F, In, Collectable, Fixed>,
+    ): Kind<THkt, Exclude<In, void>, Collectable, Fixed>
   } = M.map (option.fromVoid)
 
   const toVoid: {
-    <A, Collectable, Fixed>(
-      self: Kind<THkt, A, Collectable, Fixed>,
-    ): Kind<F, A | void, Collectable, Fixed>
+    <In, Collectable, Fixed>(
+      self: Kind<THkt, In, Collectable, Fixed>,
+    ): Kind<F, In | void, Collectable, Fixed>
   } = M.map (option.toVoid)
 
   const fromResult: {
-    <E, A, Collectable, Fixed>(
-      ma: Kind<F, result.Result<E, A>, Collectable, Fixed>,
-    ): Kind<THkt, A, Collectable, Fixed>
+    <In, Collectable, Fixed>(
+      ma: Kind<F, result.Result<unknown, In>, Collectable, Fixed>,
+    ): Kind<THkt, In, Collectable, Fixed>
   } = M.map (option.fromResult)
 
   const toResult: {

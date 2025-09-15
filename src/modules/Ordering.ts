@@ -1,4 +1,4 @@
-import * as eq from "../typeclasses/Eq"
+import * as equivalence from "../typeclasses/Equivalence"
 import * as semigroup from "../typeclasses/Semigroup"
 import * as monoid from "../typeclasses/Monoid"
 import * as matching from "../modules/Matching"
@@ -42,9 +42,10 @@ export const fromNumber: {
   matching.getOrElse (constant<Ordering> (0)),
 )
 
-export const Eq: eq.Eq<Ordering> = eq.EqStrict
+export const Equivalence: equivalence.Equivalence<Ordering> =
+  equivalence.EquivalenceStrict
 
-export const equals = Eq.equals
+export const { equals } = Equivalence
 
 export const Semigroup: semigroup.Semigroup<Ordering> = {
   combine: y => x => y === 0 ? x : y,

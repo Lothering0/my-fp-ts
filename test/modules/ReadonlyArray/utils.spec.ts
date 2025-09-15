@@ -4,7 +4,7 @@ import * as result from "../../../src/modules/Result"
 import * as number from "../../../src/modules/Number"
 import * as string from "../../../src/modules/String"
 import * as boolean from "../../../src/modules/Boolean"
-import * as ord from "../../../src/typeclasses/Ord"
+import * as order from "../../../src/typeclasses/Order"
 import { flow, pipe } from "../../../src/utils/flow"
 
 describe ("head", () => {
@@ -232,7 +232,7 @@ describe ("findLastIndex", () => {
 
 describe ("elem", () => {
   it ("should return `true` if element is in array", () => {
-    const f = readonlyArray.elem (number.Eq)
+    const f = readonlyArray.elem (number.Equivalence)
 
     pipe ([], f (2), expect).toBe (false)
     pipe ([1], f (2), expect).toBe (false)
@@ -391,17 +391,17 @@ describe ("reverse", () => {
 })
 
 describe ("sort", () => {
-  it ("should sort an array by provided `Ord` instance", () => {
-    pipe ([], readonlyArray.sort (number.Ord), expect).toEqual ([])
-    pipe ([1], readonlyArray.sort (number.Ord), expect).toEqual ([1])
-    pipe ([5, 2, 1, 3, 4], readonlyArray.sort (number.Ord), expect).toEqual ([
+  it ("should sort an array by provided `Order` instance", () => {
+    pipe ([], readonlyArray.sort (number.Order), expect).toEqual ([])
+    pipe ([1], readonlyArray.sort (number.Order), expect).toEqual ([1])
+    pipe ([5, 2, 1, 3, 4], readonlyArray.sort (number.Order), expect).toEqual ([
       1, 2, 3, 4, 5,
     ])
   })
 })
 
 describe ("sortBy", () => {
-  it ("should sort an array by provided `Ord` instances", () => {
+  it ("should sort an array by provided `Order` instances", () => {
     interface User {
       readonly id: number
       readonly name: string
@@ -421,8 +421,8 @@ describe ("sortBy", () => {
       users,
       readonlyArray.sortBy ([
         pipe (
-          string.Ord,
-          ord.contramap (({ name }) => name),
+          string.Order,
+          order.contramap (({ name }) => name),
         ),
       ]),
       expect,
@@ -437,13 +437,13 @@ describe ("sortBy", () => {
       users,
       readonlyArray.sortBy ([
         pipe (
-          string.Ord,
-          ord.contramap (({ name }) => name),
+          string.Order,
+          order.contramap (({ name }) => name),
         ),
         pipe (
-          boolean.Ord,
-          ord.reverse,
-          ord.contramap (({ isActive }) => isActive),
+          boolean.Order,
+          order.reverse,
+          order.contramap (({ isActive }) => isActive),
         ),
       ]),
       expect,

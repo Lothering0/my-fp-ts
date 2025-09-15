@@ -3,8 +3,8 @@ import * as readonlyArray from "../ReadonlyArray"
 import * as iterable from "../Iterable"
 import * as boolean from "../Boolean"
 import * as identity from "../Identity"
-import * as eq from "../../typeclasses/Eq"
-import * as ord from "../../typeclasses/Ord"
+import * as equivalence from "../../typeclasses/Equivalence"
+import * as order from "../../typeclasses/Order"
 import { flow, pipe } from "../../utils/flow"
 import { ReadonlyRecord } from "./readonly-record"
 import { TheseOrAnyString } from "../../types/utils"
@@ -60,15 +60,15 @@ export const copy: {
   <K extends string, A>(self: ReadonlyRecord<K, A>): ReadonlyRecord<K, A>
 } = self => ({ ...self })
 
-/** Is `a` element of a record by `Eq` instance */
+/** Is `a` element of a record by `Equivalence` instance */
 export const elem =
   <A>(
-    Eq: eq.Eq<A>,
+    Equivalence: equivalence.Equivalence<A>,
   ): {
     (a: A): (self: ReadonlyRecord<string, A>) => boolean
   } =>
   a =>
-    flow (values, readonlyArray.elem (Eq) (a))
+    flow (values, readonlyArray.elem (Equivalence) (a))
 
 export const every: {
   <A, B extends A, K extends string>(
@@ -193,17 +193,17 @@ export const removeAt: {
 
 export const sortValues: {
   <B>(
-    Ord: ord.Ord<B>,
+    Order: order.Order<B>,
   ): <A extends B, K extends string>(
     self: ReadonlyRecord<K, A>,
   ) => ReadonlyRecord<K, A>
-} = Ord =>
+} = Order =>
   flow (
     toEntries,
     readonlyArray.sort (
       pipe (
-        Ord,
-        ord.contramap (([, a]) => a),
+        Order,
+        order.contramap (([, a]) => a),
       ),
     ),
     fromEntries,
@@ -211,28 +211,30 @@ export const sortValues: {
 
 export const sortValuesBy: {
   <B>(
-    ords: Iterable<ord.Ord<B>>,
+    orders: Iterable<order.Order<B>>,
   ): <A extends B, K extends string>(
     self: ReadonlyRecord<K, A>,
   ) => ReadonlyRecord<K, A>
-} = ords =>
+} = orders =>
   flow (
     toEntries,
-    readonlyArray.sortBy (pipe (ords, iterable.map (ord.contramap (([, a]) => a)))),
+    readonlyArray.sortBy (
+      pipe (orders, iterable.map (order.contramap (([, a]) => a))),
+    ),
     fromEntries,
   )
 
 export const sortKeys: {
   (
-    Ord: ord.Ord<string>,
+    Order: order.Order<string>,
   ): <A, K extends string>(self: ReadonlyRecord<K, A>) => ReadonlyRecord<K, A>
-} = Ord =>
+} = Order =>
   flow (
     toEntries,
     readonlyArray.sort (
       pipe (
-        Ord,
-        ord.contramap (([k]) => k),
+        Order,
+        order.contramap (([k]) => k),
       ),
     ),
     fromEntries,
@@ -240,11 +242,13 @@ export const sortKeys: {
 
 export const sortKeysBy: {
   (
-    ords: Iterable<ord.Ord<string>>,
+    orders: Iterable<order.Order<string>>,
   ): <A, K extends string>(self: ReadonlyRecord<K, A>) => ReadonlyRecord<K, A>
-} = ords =>
+} = orders =>
   flow (
     toEntries,
-    readonlyArray.sortBy (pipe (ords, iterable.map (ord.contramap (([k]) => k)))),
+    readonlyArray.sortBy (
+      pipe (orders, iterable.map (order.contramap (([k]) => k))),
+    ),
     fromEntries,
   )

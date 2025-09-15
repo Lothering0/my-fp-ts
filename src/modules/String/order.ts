@@ -1,4 +1,4 @@
-import * as ord from "../../typeclasses/Ord"
+import * as order from "../../typeclasses/Order"
 import * as ordering from "../Ordering"
 import * as option from "../Option"
 import * as readonlyArray from "../ReadonlyArray"
@@ -8,7 +8,7 @@ import { pipe } from "../../utils/flow"
 import { length, lookupCharCode, toReadonlyArray } from "./utils"
 import { constant } from "../../utils/constant"
 
-export const Ord: ord.Ord<string> = {
+export const Order: order.Order<string> = {
   compare: ys => xs =>
     pipe (
       xs,
@@ -50,4 +50,4 @@ export const Ord: ord.Ord<string> = {
     ),
 }
 
-export const { compare } = Ord
+export const { compare } = Order

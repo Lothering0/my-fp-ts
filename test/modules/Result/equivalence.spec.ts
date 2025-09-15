@@ -9,8 +9,11 @@ interface TestCase {
   readonly expected: boolean
 }
 
-describe ("getEq", () => {
-  const Eq = result.getEq (string.Eq, number.Eq)
+describe ("getEquivalence", () => {
+  const Equivalence = result.getEquivalence (
+    string.Equivalence,
+    number.Equivalence,
+  )
 
   const testCases: TestCase[] = [
     {
@@ -47,6 +50,8 @@ describe ("getEq", () => {
   ]
 
   testCases.forEach (({ description, result1, result2, expected }) =>
-    it (description, () => expect (Eq.equals (result1) (result2)).toBe (expected)),
+    it (description, () =>
+      expect (Equivalence.equals (result1) (result2)).toBe (expected),
+    ),
   )
 })

@@ -71,28 +71,24 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad<F>) => {
   } = M.map (result.toUnion)
 
   const failure: {
-    <E, Collectable, Fixed>(
-      self: Kind<F, result.Failure<E>, Collectable, Fixed>,
-    ): Kind<F, E, Collectable, Fixed>
+    <Collectable, Fixed>(
+      self: Kind<F, result.Failure<TCollectable>, Collectable, Fixed>,
+    ): Kind<F, TCollectable, Collectable, Fixed>
   } = M.map (result.failure)
 
   const success: {
-    <A, Collectable, Fixed>(
-      self: Kind<F, result.Success<A>, Collectable, Fixed>,
-    ): Kind<F, A, Collectable, Fixed>
+    <In, Collectable, Fixed>(
+      self: Kind<F, result.Success<In>, Collectable, Fixed>,
+    ): Kind<F, In, Collectable, Fixed>
   } = M.map (result.success)
 
   const getOrElse: {
-    <Collectable, Out>(
+    <Out, Collectable>(
       onFailure: (e: Collectable) => Out,
     ): <In, Fixed>(
       self: Kind<THkt, In, Collectable, Fixed>,
-    ) => Kind<F, In | Out, Collectable | TCollectable, Fixed>
-  } = onFailure =>
-    match ({
-      onFailure,
-      onSuccess: identity,
-    })
+    ) => Kind<F, In | Out, TCollectable, Fixed>
+  } = onFailure => M.map (result.getOrElse (onFailure))
 
   const orElse: {
     <In, Collectable1, Fixed>(

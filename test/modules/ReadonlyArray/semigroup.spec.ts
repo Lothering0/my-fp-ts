@@ -3,7 +3,7 @@ import * as number from "../../../src/modules/Number"
 import { pipe } from "../../../src/utils/flow"
 
 describe ("getIntersectionSemigroup", () => {
-  const Semigroup = readonlyArray.getIntersectionSemigroup (number.Eq)
+  const Semigroup = readonlyArray.getIntersectionSemigroup (number.Equivalence)
 
   it ("should return all elements that contained by both arrays", () => {
     pipe ([1, 2, 3], Semigroup.combine ([2, 3]), expect).toEqual ([2, 3])

@@ -3,8 +3,8 @@ import * as option from "../Option"
 import * as result from "../Result"
 import * as boolean from "../Boolean"
 import * as number from "../Number"
-import * as eq from "../../typeclasses/Eq"
-import * as ord from "../../typeclasses/Ord"
+import * as equivalence from "../../typeclasses/Equivalence"
+import * as order from "../../typeclasses/Order"
 import * as identity from "../Identity"
 import { Refinement, RefinementWithIndex } from "../Refinement"
 import { Predicate, PredicateWithIndex } from "../Predicate"
@@ -192,15 +192,15 @@ export const findLastIndex: {
     }),
   )
 
-/** Is `a` element of an array by `Eq` instance */
+/** Is `a` element of an array by `Equivalence` instance */
 export const elem =
   <A>(
-    Eq: eq.Eq<A>,
+    Equivalence: equivalence.Equivalence<A>,
   ): {
     (a: A): (self: ReadonlyArray<A>) => boolean
   } =>
   a =>
-    flow (find (Eq.equals (a)), option.isSome)
+    flow (find (Equivalence.equals (a)), option.isSome)
 
 export const every: {
   <A, B extends A>(
@@ -283,13 +283,13 @@ export const reverse: {
 
 export const sort: {
   <B>(
-    Ord: ord.Ord<B>,
+    Order: order.Order<B>,
   ): <A extends B>(self: ReadonlyArray<A>) => ReadonlyArray<A>
 } = nonEmptyReadonlyArray.sort
 
 export const sortBy: {
   <B>(
-    ords: Iterable<ord.Ord<B>>,
+    orders: Iterable<order.Order<B>>,
   ): <A extends B>(self: ReadonlyArray<A>) => ReadonlyArray<A>
 } = nonEmptyReadonlyArray.sortBy
 

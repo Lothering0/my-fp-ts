@@ -3,7 +3,7 @@ import * as number from "../../../src/modules/Number"
 import { pipe } from "../../../src/utils/flow"
 
 describe ("getDifferenceMagma", () => {
-  const Magma = readonlyArray.getDifferenceMagma (number.Eq)
+  const Magma = readonlyArray.getDifferenceMagma (number.Equivalence)
 
   it ("should return all elements of the first array which is not contained by the second", () => {
     pipe ([1, 2, 3], Magma.combine ([2, 3]), expect).toEqual ([1])

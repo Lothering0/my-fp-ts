@@ -4,7 +4,7 @@ import { describeMonadLaws } from "../../_utils/describeMonadLaws"
 
 describeMonadLaws (
   option.Monad,
-  option.getEq (number.Eq),
+  option.getEquivalence (number.Equivalence),
   [option.none, option.some (1)],
   [option.zero, a => option.some (a + 1)],
   [option.zero, b => option.some (b / 2)],

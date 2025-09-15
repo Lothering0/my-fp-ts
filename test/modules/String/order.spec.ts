@@ -1,7 +1,7 @@
 import * as string from "../../../src/modules/String"
 import { pipe } from "../../../src/utils/flow"
 
-describe ("Ord", () => {
+describe ("Order", () => {
   it ("should correctly compare two strings", () => {
     pipe ("", string.compare (""), expect).toBe (0)
     pipe ("a", string.compare (""), expect).toBe (1)

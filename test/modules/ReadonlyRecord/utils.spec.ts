@@ -17,10 +17,10 @@ describe ("getUnion", () => {
 })
 
 describe ("sortValues", () => {
-  it ("should sort record by values with provided `Ord` instance", () => {
+  it ("should sort record by values with provided `Order` instance", () => {
     pipe (
       { b: "c", a: "b", c: "a" },
-      readonlyRecord.sortValues (string.Ord),
+      readonlyRecord.sortValues (string.Order),
       readonlyRecord.toEntries,
       expect,
     ).toEqual ([
@@ -32,10 +32,10 @@ describe ("sortValues", () => {
 })
 
 describe ("sortKeys", () => {
-  it ("should sort record by keys with provided `Ord` instance", () => {
+  it ("should sort record by keys with provided `Order` instance", () => {
     pipe (
       { b: "c", a: "b", c: "a" },
-      readonlyRecord.sortKeys (string.Ord),
+      readonlyRecord.sortKeys (string.Order),
       readonlyRecord.toEntries,
       expect,
     ).toEqual ([
