@@ -13,12 +13,12 @@ export const forest: {
 
 export const make: {
   <A>(a: A, forest?: Forest<A>): Tree<A>
-} = (value, forest) => ({
+} = (value, forest = []) => ({
   value,
-  forest: forest ?? [],
+  forest,
   *[Symbol.iterator]() {
-    yield this.value
-    for (const tree of this.forest) {
+    yield value
+    for (const tree of forest) {
       yield* tree
     }
   },
