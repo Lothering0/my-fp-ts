@@ -27,7 +27,7 @@ export const transform = <F extends Hkt, TFixed>(F: Monad<F>) => {
     <In, Collectable, Fixed>(
       self: state.State<TFixed, In>,
     ): Kind<THkt, In, Collectable, Fixed>
-  } = self => s => F.of (state.run (s) (self))
+  } = self => s => pipe (self, state.run (s), F.of)
 
   const fromKind: {
     <In, Collectable, Fixed>(
@@ -38,6 +38,26 @@ export const transform = <F extends Hkt, TFixed>(F: Monad<F>) => {
       self,
       F.map (a => [a, s]),
     )
+
+  const gets: {
+    <Out, Collectable, Fixed>(
+      sa: (s: TFixed) => Out,
+    ): Kind<THkt, Out, Collectable, Fixed>
+  } = sa => s => pipe (s, state.gets (sa), F.of)
+
+  const get: {
+    <Collectable, Fixed>(): Kind<THkt, TFixed, Collectable, Fixed>
+  } = () => s => pipe (s, state.get (), F.of)
+
+  const modify: {
+    <Collectable, Fixed>(
+      ss: (s: TFixed) => TFixed,
+    ): Kind<THkt, void, Collectable, Fixed>
+  } = ss => s => pipe (s, state.modify (ss), F.of)
+
+  const put: {
+    <Collectable, Fixed>(s: TFixed): Kind<THkt, void, Collectable, Fixed>
+  } = s1 => s2 => pipe (s2, state.put (s1), F.of)
 
   const run: {
     (
@@ -98,6 +118,10 @@ export const transform = <F extends Hkt, TFixed>(F: Monad<F>) => {
   return {
     fromState,
     fromKind,
+    gets,
+    get,
+    modify,
+    put,
     run,
     evaluate,
     execute,

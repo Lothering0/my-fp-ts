@@ -14,5 +14,5 @@ export const getSemigroup: {
         : my
       : isNone (my)
         ? mx
-        : pipe (Semigroup.combine (value (mx)) (value (my)), some),
+        : pipe (my, value, Semigroup.combine (value (mx)), some),
 })

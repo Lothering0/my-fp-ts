@@ -7,6 +7,8 @@ import { createApplicative } from "../../typeclasses/Applicative"
 import { createMonad, Monad } from "../../typeclasses/Monad"
 import { createTappable } from "../../typeclasses/Tappable"
 import { flow, pipe } from "../../utils/flow"
+import { Alt } from "../../typeclasses/Alt"
+import { createExtendable } from "../../typeclasses/Extendable"
 
 export type ResultT<F extends Hkt, In, Collectable, Fixed, TCollectable> = Kind<
   F,
@@ -68,6 +70,70 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad<F>) => {
     ): Kind<F, In | Collectable, TCollectable, Fixed>
   } = M.map (result.toUnion)
 
+  const failure: {
+    <E, Collectable, Fixed>(
+      self: Kind<F, result.Failure<E>, Collectable, Fixed>,
+    ): Kind<F, E, Collectable, Fixed>
+  } = M.map (result.failure)
+
+  const success: {
+    <A, Collectable, Fixed>(
+      self: Kind<F, result.Success<A>, Collectable, Fixed>,
+    ): Kind<F, A, Collectable, Fixed>
+  } = M.map (result.success)
+
+  const getOrElse: {
+    <Collectable, Out>(
+      onFailure: (e: Collectable) => Out,
+    ): <In, Fixed>(
+      self: Kind<THkt, In, Collectable, Fixed>,
+    ) => Kind<F, In | Out, Collectable | TCollectable, Fixed>
+  } = onFailure =>
+    match ({
+      onFailure,
+      onSuccess: identity,
+    })
+
+  const orElse: {
+    <In, Collectable1, Fixed>(
+      onFailure: Kind<THkt, In, Collectable1, Fixed>,
+    ): <Out, Collectable2>(
+      self: Kind<THkt, Out, Collectable2, Fixed>,
+    ) => Kind<THkt, In | Out, Collectable1 | Collectable2, Fixed>
+  } = onFailure =>
+    M.flatMap (self =>
+      pipe (
+        onFailure,
+        M.map (ma => pipe (self, result.orElse (ma))),
+      ),
+    )
+
+  const catchAll =
+    <Out, Collectable1, Collectable2, Fixed>(
+      onFailure: (e: Collectable1) => Kind<THkt, Out, Collectable2, Fixed>,
+    ) =>
+    <In>(
+      self: Kind<THkt, In, Collectable1, Fixed>,
+    ): Kind<THkt, In | Out, Collectable1 | Collectable2, Fixed> =>
+      pipe (
+        self,
+        M.flatMap<
+          result.Result<Collectable1, In>,
+          result.Result<Collectable1 | Collectable2, In | Out>,
+          TCollectable,
+          Fixed
+        > (
+          result.match ({
+            onSuccess: succeed<In, Collectable1, Fixed>,
+            onFailure,
+          }),
+        ),
+      )
+
+  const Alt: Alt<THkt> = {
+    orElse,
+  }
+
   const Functor: Functor<THkt> = {
     map: flow (result.map, M.map),
   }
@@ -125,6 +191,15 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad<F>) => {
 
   const Tappable = createTappable (Monad)
 
+  const Extendable = createExtendable<THkt> ({
+    ...Functor,
+    extend: fab => self =>
+      pipe (
+        self,
+        Functor.map (() => fab (self)),
+      ),
+  })
+
   return {
     succeed,
     succeedKind,
@@ -133,6 +208,12 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad<F>) => {
     match,
     swap,
     toUnion,
+    failure,
+    success,
+    getOrElse,
+    catchAll,
+    Alt,
+    ...Alt,
     Functor,
     ...Functor,
     Bifunctor,
@@ -143,5 +224,7 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad<F>) => {
     ...Monad,
     Tappable,
     ...Tappable,
+    Extendable,
+    ...Extendable,
   }
 }
