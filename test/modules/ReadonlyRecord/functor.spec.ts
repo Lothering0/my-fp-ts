@@ -1,5 +1,4 @@
-import * as readonlyRecord from "../../../src/modules/ReadonlyRecord"
-import * as number from "../../../src/modules/Number"
+import { number, readonlyRecord } from "../../../src"
 import { describeFunctorLaws } from "../../_utils/describeFunctorLaws"
 
 describeFunctorLaws (

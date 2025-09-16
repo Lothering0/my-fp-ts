@@ -1,7 +1,4 @@
-import * as readonlyRecord from "../../../src/modules/ReadonlyRecord"
-import * as number from "../../../src/modules/Number"
-import * as string from "../../../src/modules/String"
-import { pipe } from "../../../src/utils/flow"
+import { number, pipe, readonlyRecord, string } from "../../../src"
 
 describe ("getUnion", () => {
   const union = readonlyRecord.getUnion (number.GroupSum)

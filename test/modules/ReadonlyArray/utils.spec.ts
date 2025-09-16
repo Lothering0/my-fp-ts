@@ -1,11 +1,14 @@
-import * as readonlyArray from "../../../src/modules/ReadonlyArray"
-import * as option from "../../../src/modules/Option"
-import * as result from "../../../src/modules/Result"
-import * as number from "../../../src/modules/Number"
-import * as string from "../../../src/modules/String"
-import * as boolean from "../../../src/modules/Boolean"
-import * as order from "../../../src/typeclasses/Order"
-import { flow, pipe } from "../../../src/utils/flow"
+import {
+  option,
+  readonlyArray,
+  pipe,
+  flow,
+  number,
+  boolean,
+  order,
+  string,
+  result,
+} from "../../../src"
 
 describe ("head", () => {
   it ("should return `some` of first element of an array", () => {

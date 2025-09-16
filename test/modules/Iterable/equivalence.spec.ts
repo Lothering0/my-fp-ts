@@ -1,6 +1,4 @@
-import * as iterable from "../../../src/modules/Iterable"
-import * as number from "../../../src/modules/Number"
-import { pipe } from "../../../src/utils/flow"
+import { iterable, number, pipe } from "../../../src"
 
 describe ("getEquivalence", () => {
   const Equivalence = iterable.getEquivalence (number.Equivalence)

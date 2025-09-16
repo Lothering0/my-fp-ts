@@ -1,7 +1,4 @@
-import * as state from "../../../src/modules/State"
-import * as string from "../../../src/modules/String"
-import * as number from "../../../src/modules/Number"
-import { flow, pipe } from "../../../src/utils/flow"
+import { flow, number, pipe, state, string } from "../../../src"
 
 describe ("monad", () => {
   describe ("flatMap", () => {

@@ -1,8 +1,4 @@
-import * as syncOption from "../../../src/modules/SyncOption"
-import * as sync from "../../../src/modules/Sync"
-import * as option from "../../../src/modules/Option"
-import { pipe } from "../../../src/utils/flow"
-import { raise } from "../../../src/utils/exceptions"
+import { option, pipe, raise, sync, syncOption } from "../../../src"
 
 describe ("fromSync", () => {
   it ("should return `none` if function threw an error", () => {

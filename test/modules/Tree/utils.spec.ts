@@ -1,4 +1,4 @@
-import * as tree from "../../../src/modules/Tree"
+import { tree } from "../../../src"
 
 describe ("make", () => {
   it ("should create correct iterable tree", () => {

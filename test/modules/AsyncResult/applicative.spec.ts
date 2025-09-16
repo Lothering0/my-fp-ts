@@ -1,8 +1,4 @@
-import * as asyncResult from "../../../src/modules/AsyncResult"
-import * as result from "../../../src/modules/Result"
-import * as number from "../../../src/modules/Number"
-import { identity } from "../../../src/modules/Identity"
-import { pipe } from "../../../src/utils/flow"
+import { asyncResult, identity, number, pipe, result } from "../../../src"
 
 describe ("applicative", () => {
   describe ("ap", () => {
@@ -13,7 +9,7 @@ describe ("applicative", () => {
       )
 
       const result_ = await pipe (
-        identity,
+        identity.identity,
         asyncResult.of,
         asyncResult.ap (fa),
         asyncResult.toPromise,

@@ -1,4 +1,4 @@
-import { flip } from "../../src/utils/flip"
+import { flip } from "../../src"
 
 describe ("flip", () => {
   it ("should correctly flip parameters of a function", () => {

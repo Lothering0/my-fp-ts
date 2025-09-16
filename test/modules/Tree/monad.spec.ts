@@ -1,6 +1,4 @@
-import * as tree from "../../../src/modules/Tree"
-import * as number from "../../../src/modules/Number"
-import { pipe } from "../../../src/utils/flow"
+import { number, pipe, tree } from "../../../src"
 import { describeMonadLaws } from "../../_utils/describeMonadLaws"
 
 describeMonadLaws (

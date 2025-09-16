@@ -1,7 +1,4 @@
-import * as state from "../../../src/modules/State"
-import * as option from "../../../src/modules/Option"
-import * as number from "../../../src/modules/Number"
-import { pipe } from "../../../src/utils/flow"
+import { number, option, pipe, state } from "../../../src"
 
 describe ("transformer", () => {
   const stateOption = state.transform (option.Monad)

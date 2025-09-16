@@ -1,4 +1,4 @@
-import { curry, uncurry } from "../../src/utils/currying"
+import { curry, uncurry } from "../../src"
 
 describe ("currying", () => {
   describe ("curry", () => {

@@ -1,9 +1,11 @@
-import * as matching from "../../src/modules/Matching"
-import * as result from "../../src/modules/Result"
-import * as option from "../../src/modules/Option"
-import * as readonlyArray from "../../src/modules/ReadonlyArray"
-import * as number from "../../src/modules/Number"
-import { pipe } from "../../src/utils/flow"
+import {
+  matching,
+  number,
+  option,
+  pipe,
+  readonlyArray,
+  result,
+} from "../../src"
 
 describe ("Matching", () => {
   describe ("getResult", () => {

@@ -1,8 +1,4 @@
-import * as syncOption from "../../../src/modules/SyncOption"
-import * as option from "../../../src/modules/Option"
-import * as number from "../../../src/modules/Number"
-import { identity } from "../../../src/modules/Identity"
-import { pipe } from "../../../src/utils/flow"
+import { identity, number, option, pipe, syncOption } from "../../../src"
 
 describe ("applicative", () => {
   describe ("ap", () => {
@@ -11,7 +7,7 @@ describe ("applicative", () => {
       const fa: syncOption.SyncOption<typeof a> = jest.fn (syncOption.of (a))
 
       const result = pipe (
-        identity,
+        identity.identity,
         syncOption.of,
         syncOption.ap (fa),
         syncOption.execute,

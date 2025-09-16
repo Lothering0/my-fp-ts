@@ -1,6 +1,4 @@
-import * as readonlyRecord from "../../../src/modules/ReadonlyRecord"
-import * as number from "../../../src/modules/Number"
-import { pipe } from "../../../src/utils/flow"
+import { number, pipe, readonlyRecord } from "../../../src"
 
 describe ("getIntersectionSemigroup", () => {
   const semigroup = readonlyRecord.getIntersectionSemigroup (number.SemigroupSum)

@@ -1,5 +1,4 @@
-import * as tree from "../../../src/modules/Tree"
-import * as number from "../../../src/modules/Number"
+import { number, tree } from "../../../src"
 
 interface TestCase {
   readonly description: string

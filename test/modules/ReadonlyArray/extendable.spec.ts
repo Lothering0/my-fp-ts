@@ -1,4 +1,4 @@
-import * as readonlyArray from "../../../src/modules/ReadonlyArray"
+import { readonlyArray } from "../../../src"
 
 describe ("extend", () => {
   it ("should correctly extend an array", () =>

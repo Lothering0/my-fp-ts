@@ -1,6 +1,4 @@
-import * as readonlyArray from "../../../src/modules/ReadonlyArray"
-import * as number from "../../../src/modules/Number"
-import { pipe } from "../../../src/utils/flow"
+import { number, pipe, readonlyArray } from "../../../src"
 
 describe ("getDifferenceMagma", () => {
   const Magma = readonlyArray.getDifferenceMagma (number.Equivalence)

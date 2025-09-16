@@ -1,6 +1,4 @@
-import * as asyncResult from "../../../src/modules/AsyncResult"
-import * as result from "../../../src/modules/Result"
-import { flow, pipe } from "../../../src/utils/flow"
+import { asyncResult, flow, pipe, result } from "../../../src"
 
 describe ("monad", () => {
   describe ("flatMap", () => {

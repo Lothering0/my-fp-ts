@@ -1,7 +1,4 @@
-import * as state from "../../../src/modules/State"
-import * as number from "../../../src/modules/Number"
-import { identity } from "../../../src/modules/Identity"
-import { pipe } from "../../../src/utils/flow"
+import { identity, number, pipe, state } from "../../../src"
 
 describe ("applicative", () => {
   describe ("ap", () => {
@@ -9,7 +6,12 @@ describe ("applicative", () => {
       const a = 1
       const fa = jest.fn (state.of (a))
 
-      const result = pipe (identity, state.of, state.ap (fa), state.evaluate (""))
+      const result = pipe (
+        identity.identity,
+        state.of,
+        state.ap (fa),
+        state.evaluate (""),
+      )
 
       expect (result).toEqual (a)
       expect (fa).toHaveBeenCalledTimes (1)

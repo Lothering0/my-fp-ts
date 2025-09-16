@@ -1,5 +1,4 @@
-import * as readonlyRecord from "../../../src/modules/ReadonlyRecord"
-import { pipe } from "../../../src/utils/flow"
+import { pipe, readonlyRecord } from "../../../src"
 
 describe ("getDifferenceMagma", () => {
   const Magma = readonlyRecord.getDifferenceMagma ()

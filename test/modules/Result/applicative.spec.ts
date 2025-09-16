@@ -1,6 +1,4 @@
-import * as result from "../../../src/modules/Result"
-import * as number from "../../../src/modules/Number"
-import * as string from "../../../src/modules/String"
+import { number, result, string } from "../../../src"
 import { describeApplicativeLaws } from "../../_utils/describeApplicativeLaws"
 
 describeApplicativeLaws (

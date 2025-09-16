@@ -1,8 +1,4 @@
-import * as syncOption from "../../../src/modules/SyncOption"
-import * as option from "../../../src/modules/Option"
-import * as number from "../../../src/modules/Number"
-import { identity } from "../../../src/modules/Identity"
-import { pipe } from "../../../src/utils/flow"
+import { identity, number, option, pipe, syncOption } from "../../../src"
 
 describe ("functor", () => {
   describe ("map", () => {
@@ -10,7 +6,11 @@ describe ("functor", () => {
       const a = 1
       const fa: syncOption.SyncOption<typeof a> = jest.fn (syncOption.of (a))
 
-      const result = pipe (fa, syncOption.map (identity), syncOption.execute)
+      const result = pipe (
+        fa,
+        syncOption.map (identity.identity),
+        syncOption.execute,
+      )
       expect (result).toEqual<option.Option<typeof a>> (option.some (a))
       expect (fa).toHaveBeenCalledTimes (1)
     })

@@ -1,7 +1,4 @@
-import * as state from "../../../src/modules/State"
-import * as number from "../../../src/modules/Number"
-import { identity } from "../../../src/modules/Identity"
-import { pipe } from "../../../src/utils/flow"
+import { identity, number, pipe, state } from "../../../src"
 
 describe ("functor", () => {
   describe ("map", () => {
@@ -9,7 +6,7 @@ describe ("functor", () => {
       const a = 0
       const fa: state.State<string, typeof a> = jest.fn (s => [a, s])
 
-      const result = pipe (fa, state.map (identity), state.evaluate (""))
+      const result = pipe (fa, state.map (identity.identity), state.evaluate (""))
 
       expect (result).toEqual (a)
       expect (fa).toHaveBeenCalledTimes (1)

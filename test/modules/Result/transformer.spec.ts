@@ -1,6 +1,4 @@
-import * as result from "../../../src/modules/Result"
-import * as readonlyArray from "../../../src/modules/ReadonlyArray"
-import * as number from "../../../src/modules/Number"
+import { number, readonlyArray, result } from "../../../src"
 
 describe ("transformer", () => {
   it ("should correctly transform `ReadonlyArray` monad", () => {

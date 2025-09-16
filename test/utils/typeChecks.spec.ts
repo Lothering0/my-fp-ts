@@ -1,4 +1,18 @@
-import * as typeChecks from "../../src/utils/typeChecks"
+import {
+  isBigint,
+  isBoolean,
+  isDefined,
+  isFunction,
+  isNull,
+  isNullable,
+  isNullableObject,
+  isNumber,
+  isObject,
+  isString,
+  isSymbol,
+  isUndefined,
+  typeOf,
+} from "../../src"
 
 describe ("typeChecks", () => {
   const typeByName = {
@@ -19,7 +33,7 @@ describe ("typeChecks", () => {
     Object.values (typeByName).forEach (x => {
       const expected = typeof x
       it (`should correctly determine \`${expected}\` type`, () =>
-        expect (typeChecks.typeOf (x)).toBe (expected))
+        expect (typeOf (x)).toBe (expected))
     })
   })
 
@@ -31,51 +45,51 @@ describe ("typeChecks", () => {
 
   const testCases: ReadonlyArray<TestCase> = [
     {
-      f: typeChecks.isNumber,
+      f: isNumber,
       values: [typeByName.number],
     },
     {
-      f: typeChecks.isBigint,
+      f: isBigint,
       values: [typeByName.bigint],
     },
     {
-      f: typeChecks.isString,
+      f: isString,
       values: [typeByName.string],
     },
     {
-      f: typeChecks.isBoolean,
+      f: isBoolean,
       values: [typeByName.true, typeByName.false],
     },
     {
-      f: typeChecks.isNullableObject,
+      f: isNullableObject,
       values: [typeByName.object, typeByName.array, typeByName.null],
     },
     {
-      f: typeChecks.isObject,
+      f: isObject,
       values: [typeByName.object, typeByName.array],
     },
     {
-      f: typeChecks.isFunction,
+      f: isFunction,
       values: [typeByName.function],
     },
     {
-      f: typeChecks.isNull,
+      f: isNull,
       values: [typeByName.null],
     },
     {
-      f: typeChecks.isNullable,
+      f: isNullable,
       values: [typeByName.undefined, typeByName.null],
     },
     {
-      f: typeChecks.isUndefined,
+      f: isUndefined,
       values: [typeByName.undefined],
     },
     {
-      f: typeChecks.isSymbol,
+      f: isSymbol,
       values: [typeByName.symbol],
     },
     {
-      f: typeChecks.isDefined,
+      f: isDefined,
       values: Object.values (typeByName).filter (
         x => x !== null && x !== undefined,
       ),

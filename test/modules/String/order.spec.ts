@@ -1,5 +1,4 @@
-import * as string from "../../../src/modules/String"
-import { pipe } from "../../../src/utils/flow"
+import { pipe, string } from "../../../src"
 
 describe ("Order", () => {
   it ("should correctly compare two strings", () => {

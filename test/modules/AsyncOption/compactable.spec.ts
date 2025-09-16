@@ -1,5 +1,4 @@
-import * as asyncOption from "../../../src/modules/AsyncOption"
-import * as option from "../../../src/modules/Option"
+import { asyncOption, option } from "../../../src"
 
 describe ("separate", () => {
   it ("should call `AsyncOption` instance only once", async () => {

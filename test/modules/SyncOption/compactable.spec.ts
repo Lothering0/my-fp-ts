@@ -1,5 +1,4 @@
-import * as syncOption from "../../../src/modules/SyncOption"
-import * as option from "../../../src/modules/Option"
+import { option, syncOption } from "../../../src"
 
 describe ("separate", () => {
   it ("should call `SyncOption` instance only once", () => {

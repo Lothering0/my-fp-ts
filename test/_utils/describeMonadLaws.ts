@@ -1,18 +1,24 @@
-import { Hkt, Kind } from "../../src/typeclasses/Hkt"
-import { Monad } from "../../src/typeclasses/Monad"
-import { NonEmptyReadonlyArray } from "../../src/modules/NonEmptyReadonlyArray"
-import { pipe, flow } from "../../src/utils/flow"
-import { Equivalence } from "../../src/typeclasses/Equivalence"
+import {
+  Hkt,
+  Kind,
+  monad,
+  equivalence,
+  nonEmptyReadonlyArray,
+  pipe,
+  flow,
+} from "../../src"
 
 export const describeMonadLaws: {
   <F extends Hkt>(
-    Monad: Monad<F>,
-    Equivalence: Equivalence<Kind<F, number, unknown, unknown>>,
-    fas: NonEmptyReadonlyArray<Kind<F, number, unknown, unknown>>,
-    afbs: NonEmptyReadonlyArray<
+    Monad: monad.Monad<F>,
+    Equivalence: equivalence.Equivalence<Kind<F, number, unknown, unknown>>,
+    fas: nonEmptyReadonlyArray.NonEmptyReadonlyArray<
+      Kind<F, number, unknown, unknown>
+    >,
+    afbs: nonEmptyReadonlyArray.NonEmptyReadonlyArray<
       (x: number) => Kind<F, number, unknown, unknown>
     >,
-    bfcs: NonEmptyReadonlyArray<
+    bfcs: nonEmptyReadonlyArray.NonEmptyReadonlyArray<
       (x: number) => Kind<F, number, unknown, unknown>
     >,
   ): void

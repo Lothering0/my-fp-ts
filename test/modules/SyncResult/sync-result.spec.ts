@@ -1,8 +1,4 @@
-import * as syncResult from "../../../src/modules/SyncResult"
-import * as sync from "../../../src/modules/Sync"
-import * as result from "../../../src/modules/Result"
-import { pipe } from "../../../src/utils/flow"
-import { raise } from "../../../src/utils/exceptions"
+import { pipe, raise, result, sync, syncResult } from "../../../src"
 
 describe ("fromSync", () => {
   it ("should return `failure` if function threw an error", () => {

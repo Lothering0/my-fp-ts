@@ -1,7 +1,5 @@
-import * as tree from "../../../src/modules/Tree"
-import * as number from "../../../src/modules/Number"
+import { number, pipe, tree } from "../../../src"
 import { describeApplicativeLaws } from "../../_utils/describeApplicativeLaws"
-import { pipe } from "../../../src/utils/flow"
 
 describeApplicativeLaws (
   tree.Applicative,

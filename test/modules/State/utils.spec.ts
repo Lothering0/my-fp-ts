@@ -1,5 +1,4 @@
-import * as state from "../../../src/modules/State"
-import * as number from "../../../src/modules/Number"
+import { number, state } from "../../../src"
 
 describe ("gets", () => {
   it ("should correctly put formatted output to first position", () => {

@@ -1,7 +1,4 @@
-import * as async from "../../../src/modules/Async"
-import * as number from "../../../src/modules/Number"
-import { identity } from "../../../src/modules/Identity"
-import { pipe } from "../../../src/utils/flow"
+import { async, identity, number, pipe } from "../../../src"
 
 describe ("functor", () => {
   describe ("map", () => {
@@ -9,7 +6,11 @@ describe ("functor", () => {
       const a = 1
       const fa: async.Async<typeof a> = jest.fn (async.of (a))
 
-      const result = await pipe (fa, async.map (identity), async.toPromise)
+      const result = await pipe (
+        fa,
+        async.map (identity.identity),
+        async.toPromise,
+      )
       expect (result).toEqual (a)
       expect (fa).toHaveBeenCalledTimes (1)
     })

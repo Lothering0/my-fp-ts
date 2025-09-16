@@ -1,7 +1,4 @@
-import * as asyncOption from "../../../src/modules/AsyncOption"
-import * as async from "../../../src/modules/Async"
-import * as option from "../../../src/modules/Option"
-import { pipe } from "../../../src/utils/flow"
+import { async, asyncOption, option, pipe } from "../../../src"
 
 describe ("fromAsync", () => {
   it ("should return `none` if promise is rejected", async () => {

@@ -1,5 +1,4 @@
-import * as option from "../../../src/modules/Option"
-import * as number from "../../../src/modules/Number"
+import { number, option } from "../../../src"
 import { describeFunctorLaws } from "../../_utils/describeFunctorLaws"
 
 describeFunctorLaws (option.Functor, option.getEquivalence (number.Equivalence), [

@@ -1,5 +1,4 @@
-import * as async from "../../../src/modules/Async"
-import { flow, pipe } from "../../../src/utils/flow"
+import { async, flow, pipe } from "../../../src"
 
 describe ("monad", () => {
   describe ("flatMap", () => {

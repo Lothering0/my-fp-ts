@@ -1,7 +1,4 @@
-import * as readonlyArray from "../../src/modules/ReadonlyArray"
-import * as option from "../../src/modules/Option"
-import { Sync } from "../../src/modules/Sync"
-import { doWhile } from "../../src/utils/loops"
+import { doWhile, option, readonlyArray, sync } from "../../src"
 
 describe ("getDoWhile", () => {
   it ("should correctly run", () => {
@@ -9,10 +6,10 @@ describe ("getDoWhile", () => {
     const xs: number[] = []
 
     const unsafeInsert: {
-      <A>(xs: A[], x: A): Sync<void>
+      <A>(xs: A[], x: A): sync.Sync<void>
     } = (xs, x) => jest.fn (() => xs.push (x))
     const p = jest.fn (() => readonlyArray.length (xs) < iterationsCount)
-    const f: Sync<void> = unsafeInsert (xs, 0)
+    const f: sync.Sync<void> = unsafeInsert (xs, 0)
 
     const result = doWhile (f) (p)
 

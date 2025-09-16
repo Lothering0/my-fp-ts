@@ -1,5 +1,4 @@
-import * as sync from "../../../src/modules/Sync"
-import { flow, pipe } from "../../../src/utils/flow"
+import { flow, pipe, sync } from "../../../src"
 
 describe ("monad", () => {
   describe ("flatMap", () => {

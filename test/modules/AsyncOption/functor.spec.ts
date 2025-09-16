@@ -1,8 +1,4 @@
-import * as asyncOption from "../../../src/modules/AsyncOption"
-import * as option from "../../../src/modules/Option"
-import * as number from "../../../src/modules/Number"
-import { identity } from "../../../src/modules/Identity"
-import { pipe } from "../../../src/utils/flow"
+import { asyncOption, identity, number, option, pipe } from "../../../src"
 
 describe ("functor", () => {
   describe ("map", () => {
@@ -12,7 +8,7 @@ describe ("functor", () => {
 
       const result = await pipe (
         fa,
-        asyncOption.map (identity),
+        asyncOption.map (identity.identity),
         asyncOption.toPromise,
       )
       expect (result).toEqual<option.Option<typeof a>> (option.some (a))

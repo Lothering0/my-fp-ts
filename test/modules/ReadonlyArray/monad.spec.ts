@@ -1,5 +1,4 @@
-import * as readonlyArray from "../../../src/modules/ReadonlyArray"
-import * as number from "../../../src/modules/Number"
+import { number, readonlyArray } from "../../../src"
 import { describeMonadLaws } from "../../_utils/describeMonadLaws"
 
 describeMonadLaws (

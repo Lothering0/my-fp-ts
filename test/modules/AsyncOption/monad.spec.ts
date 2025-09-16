@@ -1,6 +1,4 @@
-import * as asyncOption from "../../../src/modules/AsyncOption"
-import * as option from "../../../src/modules/Option"
-import { flow, pipe } from "../../../src/utils/flow"
+import { asyncOption, flow, option, pipe } from "../../../src"
 
 describe ("monad", () => {
   describe ("flatMap", () => {

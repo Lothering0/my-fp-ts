@@ -1,4 +1,4 @@
-import * as equivalence from "../../src/typeclasses/Equivalence"
+import { equivalence } from "../../src"
 
 const permutations = [
   { a: 0, b: 0, c: 0 },

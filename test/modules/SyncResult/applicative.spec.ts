@@ -1,8 +1,4 @@
-import * as syncResult from "../../../src/modules/SyncResult"
-import * as result from "../../../src/modules/Result"
-import * as number from "../../../src/modules/Number"
-import { identity } from "../../../src/modules/Identity"
-import { pipe } from "../../../src/utils/flow"
+import { identity, number, pipe, result, syncResult } from "../../../src"
 
 describe ("applicative", () => {
   describe ("ap", () => {
@@ -13,7 +9,7 @@ describe ("applicative", () => {
       )
 
       const result_ = pipe (
-        identity,
+        identity.identity,
         syncResult.of,
         syncResult.ap (fa),
         syncResult.execute,

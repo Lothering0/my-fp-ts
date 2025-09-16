@@ -1,7 +1,5 @@
-import * as tree from "../../../src/modules/Tree"
-import * as number from "../../../src/modules/Number"
+import { number, pipe, tree } from "../../../src"
 import { describeFunctorLaws } from "../../_utils/describeFunctorLaws"
-import { pipe } from "../../../src/utils/flow"
 
 describeFunctorLaws (tree.Functor, tree.getEquivalence (number.Equivalence), [
   tree.make (1),

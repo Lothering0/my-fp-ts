@@ -1,8 +1,4 @@
-import * as syncResult from "../../../src/modules/SyncResult"
-import * as result from "../../../src/modules/Result"
-import * as number from "../../../src/modules/Number"
-import { identity } from "../../../src/modules/Identity"
-import { pipe } from "../../../src/utils/flow"
+import { identity, number, pipe, result, syncResult } from "../../../src"
 
 describe ("functor", () => {
   describe ("map", () => {
@@ -10,7 +6,11 @@ describe ("functor", () => {
       const a = 1
       const fa: syncResult.SyncResult<never, number> = jest.fn (syncResult.of (a))
 
-      const result_ = pipe (fa, syncResult.map (identity), syncResult.execute)
+      const result_ = pipe (
+        fa,
+        syncResult.map (identity.identity),
+        syncResult.execute,
+      )
       expect (result_).toEqual (result.succeed (a))
       expect (fa).toHaveBeenCalledTimes (1)
     })

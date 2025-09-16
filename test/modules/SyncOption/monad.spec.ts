@@ -1,6 +1,4 @@
-import * as syncOption from "../../../src/modules/SyncOption"
-import * as option from "../../../src/modules/Option"
-import { flow, pipe } from "../../../src/utils/flow"
+import { flow, option, pipe, syncOption } from "../../../src"
 
 describe ("monad", () => {
   describe ("flatMap", () => {

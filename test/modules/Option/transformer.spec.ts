@@ -1,5 +1,4 @@
-import * as option from "../../../src/modules/Option"
-import * as readonlyArray from "../../../src/modules/ReadonlyArray"
+import { option, readonlyArray } from "../../../src"
 
 describe ("transformer", () => {
   it ("should correctly transform `ReadonlyArray` monad", () => {

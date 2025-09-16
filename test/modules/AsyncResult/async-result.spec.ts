@@ -1,7 +1,4 @@
-import * as asyncResult from "../../../src/modules/AsyncResult"
-import * as async from "../../../src/modules/Async"
-import * as result from "../../../src/modules/Result"
-import { pipe } from "../../../src/utils/flow"
+import { async, asyncResult, pipe, result } from "../../../src"
 
 describe ("fromAsync", () => {
   it ("should return `failure` if promise is rejected", async () => {

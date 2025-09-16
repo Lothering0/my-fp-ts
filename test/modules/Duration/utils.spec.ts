@@ -1,4 +1,4 @@
-import * as duration from "../../../src/modules/Duration"
+import { duration } from "../../../src"
 
 describe ("isTemplateValid", () => {
   it ("should determine invalid templates", () => {
