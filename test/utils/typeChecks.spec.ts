@@ -1,5 +1,5 @@
 import {
-  isBigint,
+  isBigInt,
   isBoolean,
   isDefined,
   isFunction,
@@ -49,7 +49,7 @@ describe ("typeChecks", () => {
       values: [typeByName.number],
     },
     {
-      f: isBigint,
+      f: isBigInt,
       values: [typeByName.bigint],
     },
     {

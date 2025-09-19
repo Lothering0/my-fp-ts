@@ -24,6 +24,7 @@ export * as list from "./modules/List"
 export * as matching from "./modules/Matching"
 export * as ordering from "./modules/Ordering"
 export * as refinement from "./modules/Refinement"
+export * as schema from "./modules/Schema"
 
 // typeclasses
 export * as alt from "./typeclasses/Alt"

@@ -49,7 +49,7 @@ export const isUndefined = (x: unknown): x is undefined =>
 
 export const isSymbol = (x: unknown): x is symbol => typeOf (x) === "symbol"
 
-export const isBigint = (x: unknown): x is bigint => typeOf (x) === "bigint"
+export const isBigInt = (x: unknown): x is bigint => typeOf (x) === "bigint"
 
 export const isNull = (x: unknown): x is null => x === null
 
@@ -60,3 +60,6 @@ export const isDefined = (x: unknown): boolean => x != null
 
 export const isObject = (x: unknown): x is object =>
   typeOf (x) === "object" && isDefined (x)
+
+export const isRecord = (x: unknown): x is Readonly<Record<string, unknown>> =>
+  isObject (x) && !Array.isArray (x)

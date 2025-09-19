@@ -98,6 +98,27 @@ export const exists: {
 /** Alias for `exists` */
 export const some = exists
 
+export const find: {
+  <A, K extends string>(
+    p: PredicateWithIndex<A, K>,
+  ): (self: ReadonlyRecord<K, A>) => option.Option<A>
+} = p =>
+  flow (
+    toEntries,
+    readonlyArray.find (([k, a]) => p (a, k)),
+    option.map (([, a]) => a),
+  )
+
+export const findMap: {
+  <A, B, K extends string>(
+    p: (a: A, k: K) => option.Option<B>,
+  ): (self: ReadonlyRecord<K, A>) => option.Option<B>
+} = p =>
+  flow (
+    toEntries,
+    readonlyArray.findMap (([k, a]) => p (a, k)),
+  )
+
 export const prepend: {
   <A, K extends string>(
     k: K,

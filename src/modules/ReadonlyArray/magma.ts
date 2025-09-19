@@ -5,6 +5,7 @@ import { pipe } from "../../utils/flow"
 import { elem } from "./utils"
 import { filter } from "./filterable"
 
+/** Returns a `Magma` where `combine` operation returns elements of first array which is not contained by second */
 export const getDifferenceMagma = <A>(
   Equivalence: Equivalence<A>,
 ): Magma<ReadonlyArray<A>> => ({
