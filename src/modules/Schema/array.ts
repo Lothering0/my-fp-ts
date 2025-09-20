@@ -4,6 +4,8 @@ import { hole } from "../../utils/hole"
 import { Schema } from "./schema"
 import { constValid, invalid, ValidationResult } from "./validation"
 import { pipe } from "../../utils/flow"
+import { NonEmptyReadonlyArray } from "../NonEmptyReadonlyArray"
+import { minLength } from "./utils"
 
 export const array: {
   <A>(schema: Schema<A>): Schema<ReadonlyArray<A>>
@@ -37,3 +39,8 @@ export const array: {
     return pipe (invalidElement, option.getOrElse (constValid))
   },
 })
+
+export const nonEmptyArray = <A>(
+  schema: Schema<A>,
+): Schema<NonEmptyReadonlyArray<A>> =>
+  pipe (schema, array, minLength (1)) as Schema<NonEmptyReadonlyArray<A>>

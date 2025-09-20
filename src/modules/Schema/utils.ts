@@ -99,3 +99,45 @@ export const intersection: {
     },
   }
 }
+
+export const minLength: {
+  (
+    min: number,
+  ): <A extends ReadonlyArray<unknown> | string>(self: Schema<A>) => Schema<A>
+} = min => self => ({
+  Type: hole (),
+  validate: x => {
+    const { isValid, messages } = self.validate (x)
+    if (!isValid) {
+      return invalid (messages)
+    }
+    const { length } = x as { length: number }
+    if (length < min) {
+      return invalid ([
+        `value length should not be less than ${min}, got ${length}`,
+      ])
+    }
+    return valid
+  },
+})
+
+export const maxLength: {
+  (
+    max: number,
+  ): <A extends ReadonlyArray<unknown> | string>(self: Schema<A>) => Schema<A>
+} = max => self => ({
+  Type: hole (),
+  validate: x => {
+    const { isValid, messages } = self.validate (x)
+    if (!isValid) {
+      return invalid (messages)
+    }
+    const { length } = x as { length: number }
+    if (length > max) {
+      return invalid ([
+        `value length should not be greater than ${max}, got ${length}`,
+      ])
+    }
+    return valid
+  },
+})

@@ -31,9 +31,16 @@ export const tuple = <A extends ReadonlyArray<Schema<unknown>>>(
       return invalid ([`value ${xs} is not a tuple`])
     }
 
-    if (xs.length !== schemas.length) {
+    const tupleMinLength = pipe (
+      schemas,
+      readonlyArray.dropRightWhile (({ isOptional }) => Boolean (isOptional)),
+      readonlyArray.length,
+    )
+    const tupleMaxLength = schemas.length
+
+    if (xs.length < tupleMinLength || xs.length > tupleMaxLength) {
       return invalid ([
-        `tuple length must be ${schemas.length}, got ${xs.length}`,
+        `tuple length must be from ${tupleMinLength} to ${tupleMaxLength}, got ${xs.length}`,
       ])
     }
 
