@@ -1,6 +1,8 @@
 import * as result from "../Result"
+import * as option from "../Option"
 import { constant } from "../../utils/constant"
 import { Schema } from "./schema"
+import { flow, pipe } from "../../utils/flow"
 
 export interface ValidationResult {
   readonly isValid: boolean
@@ -21,7 +23,7 @@ export const invalid: {
   messages,
 })
 
-export const validate: {
+export const check: {
   <A>(self: Schema<A>): (a: A) => result.Result<ReadonlyArray<string>, A>
 } = self => a => {
   const { isValid, messages } = self.validate (a)
@@ -31,12 +33,23 @@ export const validate: {
   return result.fail (messages)
 }
 
-export const validateUnknown =
+export const checkOption: {
+  <A>(self: Schema<A>): (a: A) => option.Option<A>
+} = self => flow (check (self), option.fromResult)
+
+export const validate: {
+  <A>(self: Schema<A>): (a: A) => boolean
+} = self => flow (check (self), result.isSuccess)
+
+export const checkUnknown =
   <A>(self: Schema<A>) =>
-  (a: unknown): result.Result<ReadonlyArray<string>, A> => {
-    const { isValid, messages } = self.validate (a)
-    if (isValid) {
-      return result.succeed (a as A)
-    }
-    return result.fail (messages)
-  }
+  (a: unknown): result.Result<ReadonlyArray<string>, A> =>
+    pipe (a as A, check (self))
+
+export const checkUnknownOption: {
+  <A>(self: Schema<A>): (a: unknown) => option.Option<A>
+} = checkOption
+
+export const validateUnknown: {
+  <A>(self: Schema<A>): (a: unknown) => boolean
+} = validate

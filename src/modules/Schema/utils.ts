@@ -1,9 +1,9 @@
-import * as boolean from "../../modules/Boolean"
+import * as boolean from "../Boolean"
 import { pipe } from "../../utils/flow"
 import { hole } from "../../utils/hole"
-import { isUndefined } from "../../utils/typeChecks"
+import { isObject, isUndefined } from "../../utils/typeChecks"
 import { Schema, SchemaOptional } from "./schema"
-import { constValid, invalid } from "./validation"
+import { constValid, invalid, valid } from "./validation"
 
 export const exact: {
   <const A>(a: A): Schema<A>
@@ -24,9 +24,10 @@ export const optional: {
 } = schema => ({
   Type: hole (),
   isOptional: true,
+  schemasByKey: schema.schemasByKey,
   validate: x => {
     if (isUndefined (x)) {
-      return constValid ()
+      return valid
     }
 
     return schema.validate (x)
@@ -65,15 +66,36 @@ export const union: {
 
 export const intersection: {
   <A>(that: Schema<A>): <B>(self: Schema<B>) => Schema<A & B>
-} = that => self => ({
-  Type: hole (),
-  validate: x => {
-    const selfResult = self.validate (x)
-    const thatResult = that.validate (x)
-
+} = that => self => {
+  if (!isObject (that.schemasByKey) || !isObject (self.schemasByKey)) {
     return {
-      isValid: selfResult.isValid && thatResult.isValid,
-      messages: [...selfResult.messages, ...thatResult.messages],
+      Type: hole (),
+      validate: x => {
+        const selfResult = self.validate (x)
+        const thatResult = that.validate (x)
+
+        return {
+          isValid: selfResult.isValid && thatResult.isValid,
+          messages: [...selfResult.messages, ...thatResult.messages],
+        }
+      },
     }
-  },
-})
+  }
+
+  return {
+    Type: hole (),
+    schemasByKey: {
+      ...self.schemasByKey,
+      ...that.schemasByKey,
+    },
+    validate: x => {
+      const selfResult = self.validate (x)
+      const thatResult = that.validate (x)
+
+      return {
+        isValid: selfResult.isValid && thatResult.isValid,
+        messages: [...selfResult.messages, ...thatResult.messages],
+      }
+    },
+  }
+}

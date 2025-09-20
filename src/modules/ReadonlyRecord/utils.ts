@@ -2,7 +2,6 @@ import * as option from "../Option"
 import * as readonlyArray from "../ReadonlyArray"
 import * as iterable from "../Iterable"
 import * as boolean from "../Boolean"
-import * as identity from "../Identity"
 import * as equivalence from "../../typeclasses/Equivalence"
 import * as order from "../../typeclasses/Order"
 import { flow, pipe } from "../../utils/flow"
@@ -155,7 +154,8 @@ export const getUnion: {
     concat (self),
     map ((a, k) =>
       pipe (
-        has (k) (as),
+        as,
+        has (k),
         boolean.and (has (k) (self)),
         boolean.match ({
           onFalse: () => a,
@@ -167,6 +167,36 @@ export const getUnion: {
       ),
     ),
   )
+
+export const omit: {
+  <A extends ReadonlyRecord<string, unknown>, K extends keyof A>(
+    ...keys: ReadonlyArray<K>
+  ): (self: A) => Omit<A, (typeof keys)[number]>
+} =
+  (...keys) =>
+  self => {
+    const copied = { ...self }
+    keys.forEach (key => {
+      delete copied[key as keyof typeof copied]
+    })
+    return copied
+  }
+
+export const pick: {
+  <A extends ReadonlyRecord<string, unknown>, K extends keyof A>(
+    ...keys: ReadonlyArray<K>
+  ): (self: A) => Pick<A, (typeof keys)[number]>
+} =
+  (...keys) =>
+  self => {
+    const copied = { ...self }
+    for (const key in copied) {
+      if (!keys.includes (key as unknown as (typeof keys)[number])) {
+        delete copied[key as keyof typeof copied]
+      }
+    }
+    return copied
+  }
 
 export const upsertAt: {
   <A, K extends string>(
@@ -195,22 +225,10 @@ export const updateAt: {
 } = (k, a) => modifyAt (k, constant (a))
 
 export const removeAt: {
-  <K1 extends string, K2 extends TheseOrAnyString<K1>, A>(
-    k: K2,
-  ): (
-    self: ReadonlyRecord<K1, A>,
-  ) => ReadonlyRecord<K1 extends typeof k ? Exclude<K1, K2> : K1, A>
-} = k => self =>
-  pipe (
-    identity.Do,
-    identity.apS ("copy", copy (self)),
-    identity.tapSync (
-      ({ copy }) =>
-        () =>
-          delete copy[k as string as keyof typeof copy],
-    ),
-    identity.map (({ copy }) => copy),
-  )
+  <A extends ReadonlyRecord<string, unknown>, K extends keyof A>(
+    key: K,
+  ): (self: A) => Omit<A, typeof key>
+} = k => omit (k)
 
 export const sortValues: {
   <B>(

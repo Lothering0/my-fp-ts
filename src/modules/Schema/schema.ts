@@ -8,6 +8,8 @@ export interface SchemaHkt extends Hkt {
 export interface Schema<A> {
   readonly Type: A
   readonly validate: (x: unknown) => ValidationResult
+  readonly schemasByKey?: {}
+  readonly isOptional?: boolean
 }
 
 export interface SchemaOptional<A> extends Schema<A> {
