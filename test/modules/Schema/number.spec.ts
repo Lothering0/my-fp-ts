@@ -4,10 +4,10 @@ describe ("number", () => {
   it ("should correctly check is value a number", () => {
     pipe (1, schema.check (schema.number), expect).toEqual (result.succeed (1))
     pipe (true, schema.checkUnknown (schema.number), expect).toEqual (
-      result.fail (["value true is not a number"]),
+      result.fail (["value `true` is not a number"]),
     )
     pipe (undefined, schema.checkUnknown (schema.number), expect).toEqual (
-      result.fail (["value undefined is not a number"]),
+      result.fail (["value `undefined` is not a number"]),
     )
   })
 })

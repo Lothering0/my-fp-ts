@@ -10,7 +10,7 @@ export const option: {
   Type: hole (),
   validate: x => {
     if (!option_.isOption (x)) {
-      return invalid ([`value ${x} is not an option`])
+      return invalid ([`value \`${x}\` is not an option`])
     }
 
     return pipe (

@@ -1,23 +1,28 @@
 import * as boolean from "../Boolean"
+import * as equivalence from "../../typeclasses/Equivalence"
 import { pipe } from "../../utils/flow"
 import { hole } from "../../utils/hole"
 import { isObject, isUndefined } from "../../utils/typeChecks"
 import { Schema, SchemaOptional } from "./schema"
 import { constValid, invalid, valid } from "./validation"
 
-export const exact: {
-  <const A>(a: A): Schema<A>
-} = a => ({
+export const equals: {
+  <A>(Equivalence: equivalence.Equivalence<A>): (a: A) => Schema<A>
+} = Equivalence => a => ({
   Type: hole (),
   validate: x =>
     pipe (
-      a === x,
+      x,
+      Equivalence.equals (a),
       boolean.match ({
         onTrue: constValid,
-        onFalse: () => invalid ([`value ${x} is not equal to ${a}`]),
+        onFalse: () => invalid ([`value \`${x}\` is not equal to \`${a}\``]),
       }),
     ),
 })
+
+export const exact = <const A>(a: A): Schema<A> =>
+  pipe (a, equals<A> (equivalence.EquivalenceStrict))
 
 export const optional: {
   <A>(schema: Schema<A>): SchemaOptional<A | undefined>
@@ -44,7 +49,9 @@ export const instanceOf: {
       boolean.match ({
         onTrue: constValid,
         onFalse: () =>
-          invalid ([`value ${x} is not instance of ${constructor.name}`]),
+          invalid ([
+            `value \`${x}\` is not instance of \`${constructor.name}\``,
+          ]),
       }),
     ),
 })
@@ -56,10 +63,11 @@ export const union: {
   validate: x => {
     const selfResult = self.validate (x)
     const thatResult = that.validate (x)
+    const isValid = selfResult.isValid || thatResult.isValid
 
     return {
-      isValid: selfResult.isValid || thatResult.isValid,
-      messages: thatResult.isValid ? selfResult.messages : thatResult.messages,
+      isValid,
+      messages: isValid ? [] : [...selfResult.messages, ...thatResult.messages],
     }
   },
 })

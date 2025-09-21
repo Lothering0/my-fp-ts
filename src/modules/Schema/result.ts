@@ -16,7 +16,7 @@ export const result: {
   Type: hole (),
   validate: x => {
     if (!result_.isResult (x)) {
-      return invalid ([`value ${x} is not a result`])
+      return invalid ([`value \`${x}\` is not a result`])
     }
 
     return pipe (

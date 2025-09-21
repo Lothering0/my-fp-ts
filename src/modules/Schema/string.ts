@@ -13,7 +13,7 @@ export const string: Schema<string> = {
       isString,
       boolean.match ({
         onTrue: constValid,
-        onFalse: () => invalid ([`value ${x} is not a number`]),
+        onFalse: () => invalid ([`value \`${x}\` is not a string`]),
       }),
     ),
 }

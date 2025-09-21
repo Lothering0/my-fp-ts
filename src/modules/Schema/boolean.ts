@@ -13,7 +13,7 @@ export const boolean: Schema<boolean> = {
       isBoolean,
       boolean_.match ({
         onTrue: constValid,
-        onFalse: () => invalid ([`value ${x} is not a boolean`]),
+        onFalse: () => invalid ([`value \`${x}\` is not a boolean`]),
       }),
     ),
 }

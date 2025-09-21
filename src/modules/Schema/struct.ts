@@ -34,7 +34,7 @@ export const struct: {
   schemasByKey,
   validate: x => {
     if (!isRecord (x)) {
-      return invalid ([`value ${x} is not a struct`])
+      return invalid ([`value \`${x}\` is not a struct`])
     }
 
     const DifferenceMagma = readonlyArray.getDifferenceMagma (string.Equivalence)
@@ -47,7 +47,7 @@ export const struct: {
     if (readonlyArray.isNonEmpty (excessiveKeys)) {
       return pipe (
         excessiveKeys,
-        readonlyArray.map (key => `key ${key} should not exist`),
+        readonlyArray.map (key => `key \`${key}\` should not exist`),
         invalid,
       )
     }
@@ -62,7 +62,7 @@ export const struct: {
     if (readonlyArray.isNonEmpty (missingKeys)) {
       return pipe (
         missingKeys,
-        readonlyArray.map (key => `key ${key} is required`),
+        readonlyArray.map (key => `key \`${key}\` is required`),
         invalid,
       )
     }
@@ -78,7 +78,7 @@ export const struct: {
 
         return pipe (
           validationResult.messages,
-          readonlyArray.map (message => `on property ${k}: ${message}`),
+          readonlyArray.map (message => `on property \`${k}\`: ${message}`),
           option.some,
         )
       }),
@@ -107,7 +107,7 @@ export const keyof: {
       }
 
       return invalid ([
-        `got ${x}, expected one of the following values: ${keys.join (", ")}`,
+        `got \`${x}\`, expected one of the following values: ${keys.map (key => `\`${key}\``).join (", ")}`,
       ])
     },
   }

@@ -28,7 +28,7 @@ export const tuple = <A extends ReadonlyArray<Schema<unknown>>>(
     const isArray = Array.isArray (xs)
 
     if (!isArray) {
-      return invalid ([`value ${xs} is not a tuple`])
+      return invalid ([`value \`${xs}\` is not a tuple`])
     }
 
     const tupleMinLength = pipe (

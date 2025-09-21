@@ -13,7 +13,7 @@ export const number: Schema<number> = {
       isNumber,
       boolean.match ({
         onTrue: constValid,
-        onFalse: () => invalid ([`value ${x} is not a number`]),
+        onFalse: () => invalid ([`value \`${x}\` is not a number`]),
       }),
     ),
 }
@@ -26,7 +26,7 @@ export const integer: Schema<number> = {
       Number.isInteger,
       boolean.match ({
         onTrue: constValid,
-        onFalse: () => invalid ([`value ${x} is not an integer`]),
+        onFalse: () => invalid ([`value \`${x}\` is not an integer`]),
       }),
     ),
 }
@@ -39,7 +39,7 @@ export const bigInt: Schema<bigint> = {
       isBigInt,
       boolean.match ({
         onTrue: constValid,
-        onFalse: () => invalid ([`value ${x} is not a BigInt`]),
+        onFalse: () => invalid ([`value \`${x}\` is not a BigInt`]),
       }),
     ),
 }

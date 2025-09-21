@@ -13,7 +13,7 @@ export const symbol: Schema<symbol> = {
       isSymbol,
       boolean.match ({
         onTrue: constValid,
-        onFalse: () => invalid ([`value ${x} is not a symbol`]),
+        onFalse: () => invalid ([`value \`${x}\` is not a symbol`]),
       }),
     ),
 }

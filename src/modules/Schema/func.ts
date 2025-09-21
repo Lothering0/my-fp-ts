@@ -13,7 +13,7 @@ export const func: Schema<(...xs: readonly unknown[]) => unknown> = {
       isFunction,
       boolean.match ({
         onTrue: constValid,
-        onFalse: () => invalid ([`value ${x} is not a function`]),
+        onFalse: () => invalid ([`value \`${x}\` is not a function`]),
       }),
     ),
 }

@@ -17,7 +17,7 @@ export const isNull: Schema<null> = {
       isNull_,
       boolean.match ({
         onTrue: constValid,
-        onFalse: () => invalid ([`value ${x} is not a null`]),
+        onFalse: () => invalid ([`value \`${x}\` is not a null`]),
       }),
     ),
 }
@@ -30,7 +30,7 @@ export const isUndefined: Schema<undefined> = {
       isUndefined_,
       boolean.match ({
         onTrue: constValid,
-        onFalse: () => invalid ([`value ${x} is not undefined`]),
+        onFalse: () => invalid ([`value \`${x}\` is not undefined`]),
       }),
     ),
 }
