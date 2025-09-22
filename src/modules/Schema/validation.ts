@@ -1,8 +1,11 @@
 import * as result from "../Result"
 import * as option from "../Option"
+import * as readonlyArray from "../ReadonlyArray"
+import * as string from "../String"
 import { constant } from "../../utils/constant"
 import { Schema } from "./schema"
 import { flow, pipe } from "../../utils/flow"
+import { isString } from "../../utils/typeChecks"
 
 export interface ValidationResult {
   readonly isValid: boolean
@@ -22,6 +25,30 @@ export const invalid: {
   isValid: false,
   messages,
 })
+
+export const message: {
+  (parts: TemplateStringsArray, ...values: ReadonlyArray<unknown>): string
+} = (parts, ...values) =>
+  pipe (
+    parts,
+    readonlyArray.reduce ("", (out, part, i) => {
+      const value = pipe (
+        values,
+        readonlyArray.lookup (i),
+        option.match ({
+          onNone: constant (""),
+          onSome: a => {
+            if (isString (a)) {
+              return JSON.stringify (a)
+            }
+            return `\`${a}\``
+          },
+        }),
+      )
+
+      return pipe (out, string.concat (part), string.concat (value))
+    }),
+  )
 
 export const check: {
   <A>(self: Schema<A>): (a: A) => result.Result<ReadonlyArray<string>, A>

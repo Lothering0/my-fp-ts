@@ -1,4 +1,4 @@
-import { any } from "./any"
+import { Any } from "./any"
 import { Schema } from "./schema"
 
-export const unknown: Schema<unknown> = any
+export const Unknown: Schema<unknown> = Any

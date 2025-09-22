@@ -1,36 +1,34 @@
 import * as readonlyArray from "../ReadonlyArray"
 import * as readonlyRecord from "../ReadonlyRecord"
-import { Schema, Type } from "./schema"
+import { create, Schema, Type } from "./schema"
 import { pipe } from "../../utils/flow"
-import { hole } from "../../utils/hole"
 import { isRecord } from "../../utils/typeChecks"
-import { invalid, valid } from "./validation"
+import { invalid, message, valid } from "./validation"
 
-export const record: {
-  <K extends Schema<string>, A extends Schema<unknown>>(
-    keySchema: K,
-    valueSchema: A,
-  ): Schema<Partial<readonlyRecord.ReadonlyRecord<Type<K>, Type<A>>>>
-} = (keySchema, valueSchema) => ({
-  Type: hole (),
-  validate: x => {
+export const Record: {
+  <K extends Schema<string>, A extends Schema<unknown>>(schemas: {
+    readonly key: K
+    readonly value: A
+  }): Schema<Partial<readonlyRecord.ReadonlyRecord<Type<K>, Type<A>>>>
+} = schemas =>
+  create (x => {
     if (!isRecord (x)) {
-      return invalid ([`value \`${x}\` is not a record`])
+      return invalid ([message`value ${x} is not a record`])
     }
 
     const messages = pipe (
       x,
       readonlyRecord.map ((a, k) => {
-        const keyValidationResult = keySchema.validate (k)
+        const keyValidationResult = schemas.key.validate (k)
 
         if (!keyValidationResult.isValid) {
           return pipe (
             keyValidationResult.messages,
-            readonlyArray.map (message => `property \`${k}\`: ${message}`),
+            readonlyArray.map (msg => `${message`property ${k}`}: ${msg}`),
           )
         }
 
-        const valueValidationResult = valueSchema.validate (a)
+        const valueValidationResult = schemas.value.validate (a)
 
         if (valueValidationResult.isValid) {
           return []
@@ -38,17 +36,16 @@ export const record: {
 
         return pipe (
           valueValidationResult.messages,
-          readonlyArray.map (message => `on property \`${k}\`: ${message}`),
+          readonlyArray.map (msg => `${message`on property ${k}`}: ${msg}`),
         )
       }),
       readonlyRecord.values,
       readonlyArray.flat,
     )
 
-    if (messages.length === 0) {
-      return valid
+    if (messages.length !== 0) {
+      return invalid (messages)
     }
 
-    return invalid (messages)
-  },
-})
+    return valid
+  })

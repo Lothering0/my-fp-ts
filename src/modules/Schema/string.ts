@@ -1,19 +1,16 @@
 import * as boolean from "../../modules/Boolean"
 import { pipe } from "../../utils/flow"
-import { hole } from "../../utils/hole"
 import { isString } from "../../utils/typeChecks"
-import { Schema } from "./schema"
-import { constValid, invalid } from "./validation"
+import { create, Schema } from "./schema"
+import { constValid, invalid, message } from "./validation"
 
-export const string: Schema<string> = {
-  Type: hole (),
-  validate: x =>
-    pipe (
-      x,
-      isString,
-      boolean.match ({
-        onTrue: constValid,
-        onFalse: () => invalid ([`value \`${x}\` is not a string`]),
-      }),
-    ),
-}
+export const String: Schema<string> = create (x =>
+  pipe (
+    x,
+    isString,
+    boolean.match ({
+      onTrue: constValid,
+      onFalse: () => invalid ([message`value ${x} is not a string`]),
+    }),
+  ),
+)

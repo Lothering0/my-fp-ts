@@ -1,9 +1,8 @@
 import * as option from "../../modules/Option"
 import * as readonlyArray from "../ReadonlyArray"
 import { pipe } from "../../utils/flow"
-import { hole } from "../../utils/hole"
-import { Schema, SchemaOptional, Type } from "./schema"
-import { constValid, invalid } from "./validation"
+import { create, Schema, SchemaOptional, Type } from "./schema"
+import { constValid, invalid, message } from "./validation"
 
 type ExtractTupleTypes<A extends ReadonlyArray<Schema<unknown>>> = A extends [
   infer X,
@@ -20,15 +19,14 @@ type ExtractTupleTypes<A extends ReadonlyArray<Schema<unknown>>> = A extends [
       : []
   : []
 
-export const tuple = <A extends ReadonlyArray<Schema<unknown>>>(
+export const Tuple = <A extends ReadonlyArray<Schema<unknown>>>(
   ...schemas: A
-): Schema<ExtractTupleTypes<A>> => ({
-  Type: hole (),
-  validate: xs => {
+): Schema<ExtractTupleTypes<A>> =>
+  create (xs => {
     const isArray = Array.isArray (xs)
 
     if (!isArray) {
-      return invalid ([`value \`${xs}\` is not a tuple`])
+      return invalid ([message`value ${xs} is not a tuple`])
     }
 
     const tupleMinLength = pipe (
@@ -40,7 +38,7 @@ export const tuple = <A extends ReadonlyArray<Schema<unknown>>>(
 
     if (xs.length < tupleMinLength || xs.length > tupleMaxLength) {
       return invalid ([
-        `tuple length must be from ${tupleMinLength} to ${tupleMaxLength}, got ${xs.length}`,
+        message`tuple length must be from ${tupleMinLength} to ${tupleMaxLength}, got ${xs.length}`,
       ])
     }
 
@@ -55,7 +53,7 @@ export const tuple = <A extends ReadonlyArray<Schema<unknown>>>(
 
         return pipe (
           validationResult.messages,
-          readonlyArray.map (message => `on index ${i}: ${message}`),
+          readonlyArray.map (msg => message`on index ${i}: ${msg}`),
           invalid,
           option.some,
         )
@@ -63,5 +61,4 @@ export const tuple = <A extends ReadonlyArray<Schema<unknown>>>(
     )
 
     return pipe (invalidElement, option.getOrElse (constValid))
-  },
-})
+  })

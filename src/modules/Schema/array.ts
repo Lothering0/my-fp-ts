@@ -1,21 +1,19 @@
 import * as option from "../../modules/Option"
 import * as readonlyArray from "../ReadonlyArray"
-import { hole } from "../../utils/hole"
-import { Schema } from "./schema"
-import { constValid, invalid, ValidationResult } from "./validation"
+import { create, Schema } from "./schema"
+import { constValid, invalid, message, ValidationResult } from "./validation"
 import { pipe } from "../../utils/flow"
 import { NonEmptyReadonlyArray } from "../NonEmptyReadonlyArray"
 import { minLength } from "./utils"
 
-export const array: {
+const array: {
   <A>(schema: Schema<A>): Schema<ReadonlyArray<A>>
-} = schema => ({
-  Type: hole (),
-  validate: xs => {
+} = schema =>
+  create (xs => {
     const isArray = Array.isArray (xs)
 
     if (!isArray) {
-      return invalid ([`value \`${xs}\` is not an array`])
+      return invalid ([message`value ${xs} is not an array`])
     }
 
     const invalidElement: option.Option<ValidationResult> = pipe (
@@ -29,7 +27,7 @@ export const array: {
 
         return pipe (
           validationResult.messages,
-          readonlyArray.map (message => `on index ${i}: ${message}`),
+          readonlyArray.map (msg => message`on index ${i}: ${msg}`),
           invalid,
           option.some,
         )
@@ -37,10 +35,11 @@ export const array: {
     )
 
     return pipe (invalidElement, option.getOrElse (constValid))
-  },
-})
+  })
 
-export const nonEmptyArray = <A>(
+export { array as Array }
+
+export const NonEmptyArray = <A>(
   schema: Schema<A>,
 ): Schema<NonEmptyReadonlyArray<A>> =>
   pipe (schema, array, minLength (1)) as Schema<NonEmptyReadonlyArray<A>>

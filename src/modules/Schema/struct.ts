@@ -2,39 +2,43 @@ import * as option from "../../modules/Option"
 import * as string from "../../modules/String"
 import * as readonlyArray from "../ReadonlyArray"
 import * as readonlyRecord from "../ReadonlyRecord"
-import { Schema, SchemaOptional, Type } from "./schema"
+import { create, Schema, SchemaOptional, Type } from "./schema"
 import { pipe } from "../../utils/flow"
 import { hole } from "../../utils/hole"
 import { isRecord, isUndefined } from "../../utils/typeChecks"
-import { constValid, invalid, valid } from "./validation"
+import { constValid, invalid, message, valid } from "./validation"
 import { optional } from "./utils"
+import { Prettify } from "../../types/utils"
 
 export interface StructSchema<
   A extends readonlyRecord.ReadonlyRecord<string, Schema<unknown>>,
 > extends Schema<
-    {
-      [K in keyof A as A[K] extends SchemaOptional<unknown> ? never : K]: Type<
-        A[K]
-      >
-    } & {
-      [K in keyof A as A[K] extends SchemaOptional<unknown> ? K : never]?: Type<
-        A[K]
-      >
-    }
+    Prettify<
+      {
+        [K in keyof A as A[K] extends SchemaOptional<unknown>
+          ? never
+          : K]: Type<A[K]>
+      } & {
+        [K in keyof A as A[K] extends SchemaOptional<unknown>
+          ? K
+          : never]?: Type<A[K]>
+      }
+    >
   > {
   readonly schemasByKey: A
 }
 
-export const struct: {
+export const Struct: {
   <A extends readonlyRecord.ReadonlyRecord<string, Schema<unknown>>>(
     schemasByKey: A,
   ): StructSchema<A>
 } = schemasByKey => ({
   Type: hole (),
+  isOptional: false,
   schemasByKey,
   validate: x => {
     if (!isRecord (x)) {
-      return invalid ([`value \`${x}\` is not a struct`])
+      return invalid ([message`value ${x} is not a struct`])
     }
 
     const DifferenceMagma = readonlyArray.getDifferenceMagma (string.Equivalence)
@@ -47,7 +51,7 @@ export const struct: {
     if (readonlyArray.isNonEmpty (excessiveKeys)) {
       return pipe (
         excessiveKeys,
-        readonlyArray.map (key => `key \`${key}\` should not exist`),
+        readonlyArray.map (key => message`property ${key} should not exist`),
         invalid,
       )
     }
@@ -62,7 +66,7 @@ export const struct: {
     if (readonlyArray.isNonEmpty (missingKeys)) {
       return pipe (
         missingKeys,
-        readonlyArray.map (key => `key \`${key}\` is required`),
+        readonlyArray.map (key => message`property ${key} is required`),
         invalid,
       )
     }
@@ -78,7 +82,7 @@ export const struct: {
 
         return pipe (
           validationResult.messages,
-          readonlyArray.map (message => `on property \`${k}\`: ${message}`),
+          readonlyArray.map (msg => `${message`on property ${k}`}: ${msg}`),
           option.some,
         )
       }),
@@ -95,22 +99,21 @@ export const struct: {
 })
 
 export const keyof: {
-  <A>(self: Schema<A>): Schema<keyof A>
+  <A extends readonlyRecord.ReadonlyRecord<string, Schema<unknown>>>(
+    self: StructSchema<A>,
+  ): Schema<keyof A>
 } = self => {
-  const keys = Object.keys (self)
+  const keys = Object.keys (self.schemasByKey)
 
-  return {
-    Type: hole (),
-    validate: (x: string) => {
-      if (keys.includes (x)) {
-        return valid
-      }
+  return create ((x: string) => {
+    if (keys.includes (x)) {
+      return valid
+    }
 
-      return invalid ([
-        `got \`${x}\`, expected one of the following values: ${keys.map (key => `\`${key}\``).join (", ")}`,
-      ])
-    },
-  }
+    return invalid ([
+      `${message`got ${x}, expected one of the following values`}: ${keys.map (key => `"${key}"`).join (", ")}`,
+    ])
+  })
 }
 
 export const omit: {
@@ -123,7 +126,7 @@ export const omit: {
 } =
   (...keys) =>
   self =>
-    pipe (self.schemasByKey, readonlyRecord.omit (...keys), struct)
+    pipe (self.schemasByKey, readonlyRecord.omit (...keys), Struct)
 
 export const pick: {
   <
@@ -135,14 +138,14 @@ export const pick: {
 } =
   (...keys) =>
   self =>
-    pipe (self.schemasByKey, readonlyRecord.pick (...keys), struct)
+    pipe (self.schemasByKey, readonlyRecord.pick (...keys), Struct)
 
 export const partial: {
   <A extends readonlyRecord.ReadonlyRecord<string, Schema<unknown>>>(
     self: StructSchema<A>,
-  ): StructSchema<{ [K in keyof A]: SchemaOptional<A[K]> }>
+  ): StructSchema<{ [K in keyof A]: SchemaOptional<Type<A[K]>> }>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-} = self => pipe (self.schemasByKey, readonlyRecord.map (optional), struct) as any
+} = self => pipe (self.schemasByKey, readonlyRecord.map (optional), Struct) as any
 
 export const required: {
   <A extends readonlyRecord.ReadonlyRecord<string, Schema<unknown>>>(
@@ -158,13 +161,13 @@ export const required: {
         schemasByKey: schema.schemasByKey,
         validate: x => {
           if (isUndefined (x)) {
-            return invalid ([`value is undefined`])
+            return invalid ([message`value is undefined`])
           }
 
           return valid
         },
       }),
     ),
-    struct,
+    Struct,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ) as any

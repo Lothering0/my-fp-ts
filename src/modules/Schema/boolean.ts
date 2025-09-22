@@ -1,19 +1,16 @@
 import * as boolean_ from "../../modules/Boolean"
 import { pipe } from "../../utils/flow"
-import { hole } from "../../utils/hole"
 import { isBoolean } from "../../utils/typeChecks"
-import { Schema } from "./schema"
-import { constValid, invalid } from "./validation"
+import { create, Schema } from "./schema"
+import { constValid, invalid, message } from "./validation"
 
-export const boolean: Schema<boolean> = {
-  Type: hole (),
-  validate: x =>
-    pipe (
-      x,
-      isBoolean,
-      boolean_.match ({
-        onTrue: constValid,
-        onFalse: () => invalid ([`value \`${x}\` is not a boolean`]),
-      }),
-    ),
-}
+export const Boolean: Schema<boolean> = create (x =>
+  pipe (
+    x,
+    isBoolean,
+    boolean_.match ({
+      onTrue: constValid,
+      onFalse: () => invalid ([message`value ${x} is not a boolean`]),
+    }),
+  ),
+)
