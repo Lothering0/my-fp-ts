@@ -3,7 +3,7 @@ import { pipe, result, schema } from "../../../src"
 describe ("exact", () => {
   it ("should check values by strict equivalence", () => {
     const Null = schema.exact (null)
-    pipe (schema.validate (Null) (null), expect).toBe (true)
+    pipe (schema.proceed (Null) (null), expect).toEqual (result.succeed (null))
     pipe (schema.validateUnknown (Null) (undefined), expect).toBe (false)
   })
 })
@@ -23,22 +23,30 @@ describe ("lazy", () => {
   })
 
   it ("should check value recursively", () => {
-    pipe (schema.validate (Recursive) ({ id: 1 }), expect).toBe (true)
-    pipe (schema.validateUnknown (Recursive) ({ id: "a" }), expect).toBe (false)
-    pipe (schema.validate (Recursive) ({ id: 2, parent: { id: 1 } }), expect).toBe (
-      true,
+    pipe (schema.proceed (Recursive) ({ id: 1 }), expect).toEqual (
+      result.succeed ({ id: 1 }),
     )
+    pipe (schema.validateUnknown (Recursive) ({ id: "a" }), expect).toBe (false)
+    pipe (
+      schema.proceed (Recursive) ({ id: 2, parent: { id: 1 } }),
+      expect,
+    ).toEqual (result.succeed ({ id: 2, parent: { id: 1 } }))
     pipe (
       schema.validateUnknown (Recursive) ({ id: 2, parent: { id: "a" } }),
       expect,
     ).toBe (false)
     pipe (
-      schema.validate (Recursive) ({
+      schema.proceed (Recursive) ({
         id: 3,
         parent: { id: 2, parent: { id: 1 } },
       }),
       expect,
-    ).toBe (true)
+    ).toEqual (
+      result.succeed ({
+        id: 3,
+        parent: { id: 2, parent: { id: 1 } },
+      }),
+    )
     pipe (
       schema.validateUnknown (Recursive) ({
         id: "a",
@@ -78,8 +86,10 @@ describe ("union", () => {
   it ("should union two schemas", () => {
     const NumberOrString = pipe (schema.Number, schema.union (schema.String))
     pipe (schema.validateUnknown (NumberOrString) (undefined), expect).toBe (false)
-    pipe (schema.validate (NumberOrString) ("a"), expect).toBe (true)
-    pipe (schema.validate (NumberOrString) (1), expect).toBe (true)
+    pipe (schema.proceed (NumberOrString) ("a"), expect).toEqual (
+      result.succeed ("a"),
+    )
+    pipe (schema.proceed (NumberOrString) (1), expect).toEqual (result.succeed (1))
     pipe (schema.validateUnknown (NumberOrString) (true), expect).toBe (false)
   })
 })
@@ -97,8 +107,12 @@ describe ("minLength", () => {
     pipe (schema.proceed (StringSchema) ("a"), expect).toEqual (
       result.fail (["value length should not be less than 2, got 1"]),
     )
-    pipe (schema.validate (StringSchema) ("ab"), expect).toBe (true)
-    pipe (schema.validate (StringSchema) ("abc"), expect).toBe (true)
+    pipe (schema.proceed (StringSchema) ("ab"), expect).toEqual (
+      result.succeed ("ab"),
+    )
+    pipe (schema.proceed (StringSchema) ("abc"), expect).toEqual (
+      result.succeed ("abc"),
+    )
   })
 
   it ("should correctly validate length of an array", () => {
@@ -109,17 +123,23 @@ describe ("minLength", () => {
     pipe (schema.proceed (ArraySchema) ([1]), expect).toEqual (
       result.fail (["value length should not be less than 2, got 1"]),
     )
-    pipe (schema.validate (ArraySchema) ([1, 2]), expect).toBe (true)
-    pipe (schema.validate (ArraySchema) ([1, 2, 3]), expect).toBe (true)
+    pipe (schema.proceed (ArraySchema) ([1, 2]), expect).toEqual (
+      result.succeed ([1, 2]),
+    )
+    pipe (schema.proceed (ArraySchema) ([1, 2, 3]), expect).toEqual (
+      result.succeed ([1, 2, 3]),
+    )
   })
 })
 
 describe ("maxLength", () => {
   it ("should correctly validate length of a string", () => {
     const StringSchema = pipe (schema.String, schema.maxLength (2))
-    pipe (schema.validate (StringSchema) (""), expect).toBe (true)
-    pipe (schema.validate (StringSchema) ("a"), expect).toBe (true)
-    pipe (schema.validate (StringSchema) ("ab"), expect).toBe (true)
+    pipe (schema.proceed (StringSchema) (""), expect).toEqual (result.succeed (""))
+    pipe (schema.proceed (StringSchema) ("a"), expect).toEqual (result.succeed ("a"))
+    pipe (schema.proceed (StringSchema) ("ab"), expect).toEqual (
+      result.succeed ("ab"),
+    )
     pipe (schema.proceed (StringSchema) ("abc"), expect).toEqual (
       result.fail (["value length should not be greater than 2, got 3"]),
     )
@@ -127,9 +147,11 @@ describe ("maxLength", () => {
 
   it ("should correctly validate length of an array", () => {
     const ArraySchema = pipe (schema.Number, schema.Array, schema.maxLength (2))
-    pipe (schema.validate (ArraySchema) ([]), expect).toBe (true)
-    pipe (schema.validate (ArraySchema) ([1]), expect).toBe (true)
-    pipe (schema.validate (ArraySchema) ([1, 2]), expect).toBe (true)
+    pipe (schema.proceed (ArraySchema) ([]), expect).toEqual (result.succeed ([]))
+    pipe (schema.proceed (ArraySchema) ([1]), expect).toEqual (result.succeed ([1]))
+    pipe (schema.proceed (ArraySchema) ([1, 2]), expect).toEqual (
+      result.succeed ([1, 2]),
+    )
     pipe (schema.proceed (ArraySchema) ([1, 2, 3]), expect).toEqual (
       result.fail (["value length should not be greater than 2, got 3"]),
     )

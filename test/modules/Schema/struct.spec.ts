@@ -70,7 +70,7 @@ describe ("keyof", () => {
     )
     pipe (schema.validateUnknown (Keys) (""), expect).toBe (false)
     pipe (schema.validateUnknown (Keys) ("a"), expect).toBe (false)
-    pipe (schema.validate (Keys) ("id"), expect).toBe (true)
+    pipe (schema.proceed (Keys) ("id"), expect).toEqual (result.succeed ("id"))
   })
 })
 
@@ -82,9 +82,9 @@ const testUserWithoutId = (
 ) => {
   pipe (schema.validateUnknown (UserWithoutId) (undefined), expect).toBe (false)
   pipe (
-    schema.validate (UserWithoutId) ({ name: "John", isActive: true }),
+    schema.proceed (UserWithoutId) ({ name: "John", isActive: true }),
     expect,
-  ).toBe (true)
+  ).toEqual (result.succeed ({ name: "John", isActive: true }))
   pipe (
     schema.proceedUnknown (UserWithoutId) ({
       id: 1,
@@ -112,16 +112,20 @@ describe ("pick", () => {
 describe ("partial", () => {
   it ("should return struct without required properties", () => {
     const PartialUser = pipe (User, schema.partial)
-    pipe (schema.validate (PartialUser) ({}), expect).toBe (true)
+    pipe (schema.proceed (PartialUser) ({}), expect).toEqual (result.succeed ({}))
     pipe (
-      schema.validate (PartialUser) ({ name: "John", isActive: false }),
+      schema.proceed (PartialUser) ({ name: "John", isActive: false }),
       expect,
-    ).toBe (true)
-    pipe (schema.validate (PartialUser) ({ isActive: false }), expect).toBe (true)
+    ).toEqual (result.succeed ({ name: "John", isActive: false }))
+    pipe (schema.proceed (PartialUser) ({ isActive: false }), expect).toEqual (
+      result.succeed ({
+        isActive: false,
+      }),
+    )
     pipe (
-      schema.validate (PartialUser) ({ id: 1, name: "John", isActive: false }),
+      schema.proceed (PartialUser) ({ id: 1, name: "John", isActive: false }),
       expect,
-    ).toBe (true)
+    ).toEqual (result.succeed ({ id: 1, name: "John", isActive: false }))
   })
 })
 
@@ -140,8 +144,8 @@ describe ("required", () => {
       result.fail (['property "id" is required', 'property "name" is required']),
     )
     pipe (
-      schema.validate (PartialUser) ({ id: 1, name: "John", isActive: false }),
+      schema.proceed (PartialUser) ({ id: 1, name: "John", isActive: false }),
       expect,
-    ).toBe (true)
+    ).toEqual (result.succeed ({ id: 1, name: "John", isActive: false }))
   })
 })
