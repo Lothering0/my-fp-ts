@@ -150,7 +150,7 @@ export const partial: {
 export const required: {
   <A extends readonlyRecord.ReadonlyRecord<string, Schema<unknown>>>(
     self: StructSchema<A>,
-  ): StructSchema<{ [K in keyof A]: Schema<A[K]> }>
+  ): StructSchema<{ [K in keyof A]: Schema<Type<A[K]>> }>
 } = self =>
   pipe (
     self.schemasByKey,
