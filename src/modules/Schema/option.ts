@@ -2,7 +2,7 @@ import * as option from "../Option"
 import * as result from "../Result"
 import { flow, pipe } from "../../utils/flow"
 import { create, Schema } from "./schema"
-import { message } from "./validation"
+import { message } from "./process"
 
 export const Option = <A>(schema: Schema<A>): Schema<option.Option<A>> =>
   create (x => {
@@ -13,7 +13,7 @@ export const Option = <A>(schema: Schema<A>): Schema<option.Option<A>> =>
     return pipe (
       x,
       option.match ({
-        onSome: flow (schema.validate, result.map (option.some)),
+        onSome: flow (schema.proceed, result.map (option.some)),
         onNone: () => result.succeed (option.none),
       }),
     )

@@ -4,7 +4,7 @@ import * as readonlyRecord from "../ReadonlyRecord"
 import { create, Schema, Type } from "./schema"
 import { pipe } from "../../utils/flow"
 import { isRecord } from "../../utils/typeChecks"
-import { message } from "./validation"
+import { message } from "./process"
 
 export const Record = <
   K extends Schema<string>,
@@ -21,11 +21,11 @@ export const Record = <
     const out: Partial<readonlyRecord.ReadonlyRecord<Type<K>, Type<A>>> = {}
     let messages: string[] = []
     for (const k in x) {
-      const keyValidationResult = schemas.key.validate (k)
+      const keyProcessResult = schemas.key.proceed (k)
 
-      if (result.isFailure (keyValidationResult)) {
+      if (result.isFailure (keyProcessResult)) {
         const keyMessages = pipe (
-          keyValidationResult,
+          keyProcessResult,
           result.mapLeft (
             readonlyArray.map (msg => `${message`property ${k}`}: ${msg}`),
           ),
@@ -35,11 +35,11 @@ export const Record = <
         continue
       }
 
-      const valueValidationResult = schemas.value.validate (x[k])
+      const valueProcessResult = schemas.value.proceed (x[k])
 
-      if (result.isFailure (valueValidationResult)) {
+      if (result.isFailure (valueProcessResult)) {
         const valueMessages = pipe (
-          valueValidationResult,
+          valueProcessResult,
           result.mapLeft (
             readonlyArray.map (msg => `${message`on property ${k}`}: ${msg}`),
           ),
@@ -49,8 +49,8 @@ export const Record = <
         continue
       }
 
-      const key: Type<K> = result.success (keyValidationResult)
-      const value = result.success (valueValidationResult)
+      const key: Type<K> = result.success (keyProcessResult)
+      const value = result.success (valueProcessResult)
       out[key] = value
     }
 

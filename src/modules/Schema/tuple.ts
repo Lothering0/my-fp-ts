@@ -2,7 +2,7 @@ import * as result from "../Result"
 import * as readonlyArray from "../ReadonlyArray"
 import { pipe } from "../../utils/flow"
 import { create, Schema, SchemaOptional, Type } from "./schema"
-import { message } from "./validation"
+import { message } from "./process"
 
 type ExtractTupleTypes<A extends ReadonlyArray<Schema<unknown>>> = A extends [
   infer X,
@@ -47,18 +47,18 @@ export const Tuple = <A extends ReadonlyArray<Schema<unknown>>>(
 
     for (const i in schemas) {
       const schema = schemas[i]!
-      const validationResult = schema.validate (xs[i])
+      const processResult = schema.proceed (xs[i])
 
-      if (result.isFailure (validationResult)) {
+      if (result.isFailure (processResult)) {
         return pipe (
-          validationResult,
+          processResult,
           result.mapLeft (
             readonlyArray.map (msg => `${message`on index ${i}`}: ${msg}`),
           ),
         )
       }
 
-      out.push (result.success (validationResult))
+      out.push (result.success (processResult))
     }
 
     return result.succeed (out)

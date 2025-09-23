@@ -6,7 +6,7 @@ import { create, Schema, SchemaOptional, Type } from "./schema"
 import { pipe } from "../../utils/flow"
 import { hole } from "../../utils/hole"
 import { isRecord, isUndefined } from "../../utils/typeChecks"
-import { message } from "./validation"
+import { message } from "./process"
 import { optional } from "./utils"
 import { Prettify } from "../../types/utils"
 
@@ -36,7 +36,7 @@ export const Struct = <
   Type: hole (),
   isOptional: false,
   schemasByKey,
-  validate: x => {
+  proceed: x => {
     if (!isRecord (x)) {
       return result.fail ([message`value ${x} is not a struct`])
     }
@@ -75,11 +75,11 @@ export const Struct = <
     let messages: string[] = []
 
     for (const k in x) {
-      const validationResult = schemasByKey[k]!.validate (x[k])
+      const processResult = schemasByKey[k]!.proceed (x[k])
 
-      if (result.isFailure (validationResult)) {
+      if (result.isFailure (processResult)) {
         const msgs = pipe (
-          validationResult,
+          processResult,
           result.failure,
           readonlyArray.map (msg => `${message`on property ${k}`}: ${msg}`),
         )
@@ -87,7 +87,7 @@ export const Struct = <
         continue
       }
 
-      out[k] = result.success (validationResult)
+      out[k] = result.success (processResult)
     }
 
     if (readonlyArray.isNonEmpty (messages)) {
@@ -159,7 +159,7 @@ export const required: {
         Type: hole (),
         isOptional: false,
         schemasByKey: schema.schemasByKey,
-        validate: x => {
+        proceed: x => {
           if (isUndefined (x)) {
             return result.fail ([message`value is undefined`])
           }

@@ -91,10 +91,10 @@ describe ("intersection", () => {
 describe ("minLength", () => {
   it ("should correctly validate length of a string", () => {
     const StringSchema = pipe (schema.String, schema.minLength (2))
-    pipe (schema.check (StringSchema) (""), expect).toEqual (
+    pipe (schema.proceed (StringSchema) (""), expect).toEqual (
       result.fail (["value length should not be less than 2, got 0"]),
     )
-    pipe (schema.check (StringSchema) ("a"), expect).toEqual (
+    pipe (schema.proceed (StringSchema) ("a"), expect).toEqual (
       result.fail (["value length should not be less than 2, got 1"]),
     )
     pipe (schema.validate (StringSchema) ("ab"), expect).toBe (true)
@@ -103,10 +103,10 @@ describe ("minLength", () => {
 
   it ("should correctly validate length of an array", () => {
     const ArraySchema = pipe (schema.Number, schema.Array, schema.minLength (2))
-    pipe (schema.check (ArraySchema) ([]), expect).toEqual (
+    pipe (schema.proceed (ArraySchema) ([]), expect).toEqual (
       result.fail (["value length should not be less than 2, got 0"]),
     )
-    pipe (schema.check (ArraySchema) ([1]), expect).toEqual (
+    pipe (schema.proceed (ArraySchema) ([1]), expect).toEqual (
       result.fail (["value length should not be less than 2, got 1"]),
     )
     pipe (schema.validate (ArraySchema) ([1, 2]), expect).toBe (true)
@@ -120,7 +120,7 @@ describe ("maxLength", () => {
     pipe (schema.validate (StringSchema) (""), expect).toBe (true)
     pipe (schema.validate (StringSchema) ("a"), expect).toBe (true)
     pipe (schema.validate (StringSchema) ("ab"), expect).toBe (true)
-    pipe (schema.check (StringSchema) ("abc"), expect).toEqual (
+    pipe (schema.proceed (StringSchema) ("abc"), expect).toEqual (
       result.fail (["value length should not be greater than 2, got 3"]),
     )
   })
@@ -130,7 +130,7 @@ describe ("maxLength", () => {
     pipe (schema.validate (ArraySchema) ([]), expect).toBe (true)
     pipe (schema.validate (ArraySchema) ([1]), expect).toBe (true)
     pipe (schema.validate (ArraySchema) ([1, 2]), expect).toBe (true)
-    pipe (schema.check (ArraySchema) ([1, 2, 3]), expect).toEqual (
+    pipe (schema.proceed (ArraySchema) ([1, 2, 3]), expect).toEqual (
       result.fail (["value length should not be greater than 2, got 3"]),
     )
   })

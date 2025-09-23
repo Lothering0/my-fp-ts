@@ -1,10 +1,10 @@
 import { hole } from "../../utils/hole"
 import { isFunction } from "../../utils/typeChecks"
-import { ValidationResult } from "./validation"
+import { ProcessResult } from "./process"
 
 export interface Schema<A> {
   readonly Type: A
-  readonly validate: (x: unknown) => ValidationResult<A>
+  readonly proceed: (x: unknown) => ProcessResult<A>
   readonly isOptional: boolean
   readonly schemasByKey?: {}
 }
@@ -16,24 +16,24 @@ export interface SchemaOptional<A> extends Schema<A> {
 export type Type<A extends Schema<unknown>> = A["Type"]
 
 export const create: {
-  <A>(validate: (x: unknown) => ValidationResult<A>): Schema<A>
+  <A>(proceed: (x: unknown) => ProcessResult<A>): Schema<A>
   <A>(
     partialSchema: Partial<Omit<Schema<A>, "Type">> &
-      Pick<Schema<A>, "validate">,
+      Pick<Schema<A>, "proceed">,
   ): Schema<A>
-} = partialSchemaOrValidate => {
-  if (isFunction (partialSchemaOrValidate)) {
-    const validate = partialSchemaOrValidate
+} = partialSchemaOrProceed => {
+  if (isFunction (partialSchemaOrProceed)) {
+    const proceed = partialSchemaOrProceed
     return {
       Type: hole (),
       isOptional: false,
-      validate,
+      proceed,
     }
   }
 
   return {
     Type: hole (),
     isOptional: false,
-    ...partialSchemaOrValidate,
+    ...partialSchemaOrProceed,
   }
 }

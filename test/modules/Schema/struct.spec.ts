@@ -15,7 +15,7 @@ describe ("Struct", () => {
       isActive: false,
     }
 
-    pipe (schema.check (User) (user), expect).toEqual (
+    pipe (schema.proceed (User) (user), expect).toEqual (
       result.succeed ({
         id: 1,
         name: "John",
@@ -25,10 +25,10 @@ describe ("Struct", () => {
   })
 
   it ("should not pass invalid values", () => {
-    pipe (schema.checkUnknown (User) (undefined), expect).toEqual (
+    pipe (schema.proceedUnknown (User) (undefined), expect).toEqual (
       result.fail (["value `undefined` is not a struct"]),
     )
-    pipe (schema.checkUnknown (User) ({}), expect).toEqual (
+    pipe (schema.proceedUnknown (User) ({}), expect).toEqual (
       result.fail ([
         'property "id" is required',
         'property "name" is required',
@@ -36,7 +36,7 @@ describe ("Struct", () => {
       ]),
     )
     pipe (
-      schema.checkUnknown (User) ({
+      schema.proceedUnknown (User) ({
         id: 1,
         name: "John",
         isActive: false,
@@ -45,7 +45,7 @@ describe ("Struct", () => {
       expect,
     ).toEqual (result.fail (['property "createdAt" should not exist']))
     pipe (
-      schema.checkUnknown (User) ({
+      schema.proceedUnknown (User) ({
         id: "1",
         name: 2,
         isActive: false,
@@ -63,7 +63,7 @@ describe ("Struct", () => {
 describe ("keyof", () => {
   it ("should correctly extract keys of struct schema", () => {
     const Keys = schema.keyof (User)
-    pipe (schema.checkUnknown (Keys) (undefined), expect).toEqual (
+    pipe (schema.proceedUnknown (Keys) (undefined), expect).toEqual (
       result.fail ([
         'got `undefined`, expected one of the following values: "id", "name", "isActive"',
       ]),
@@ -86,7 +86,11 @@ const testUserWithoutId = (
     expect,
   ).toBe (true)
   pipe (
-    schema.checkUnknown (UserWithoutId) ({ id: 1, name: "John", isActive: true }),
+    schema.proceedUnknown (UserWithoutId) ({
+      id: 1,
+      name: "John",
+      isActive: true,
+    }),
     expect,
   ).toEqual (result.fail (['property "id" should not exist']))
 }
@@ -126,10 +130,13 @@ describe ("required", () => {
     const PartialUser = pipe (User, schema.partial, schema.required)
     pipe (schema.validateUnknown (PartialUser) ({}), expect).toBe (false)
     pipe (
-      schema.checkUnknown (PartialUser) ({ name: "John", isActive: false }),
+      schema.proceedUnknown (PartialUser) ({ name: "John", isActive: false }),
       expect,
     ).toEqual (result.fail (['property "id" is required']))
-    pipe (schema.checkUnknown (PartialUser) ({ isActive: false }), expect).toEqual (
+    pipe (
+      schema.proceedUnknown (PartialUser) ({ isActive: false }),
+      expect,
+    ).toEqual (
       result.fail (['property "id" is required', 'property "name" is required']),
     )
     pipe (

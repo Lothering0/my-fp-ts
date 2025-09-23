@@ -7,7 +7,7 @@ import { Schema } from "./schema"
 import { flow, pipe } from "../../utils/flow"
 import { isString } from "../../utils/typeChecks"
 
-export type ValidationResult<Out> = result.Result<ReadonlyArray<string>, Out>
+export type ProcessResult<Out> = result.Result<ReadonlyArray<string>, Out>
 
 export const message: {
   (parts: TemplateStringsArray, ...values: ReadonlyArray<unknown>): string
@@ -33,26 +33,26 @@ export const message: {
     }),
   )
 
-export const check: {
-  <A>(self: Schema<A>): (a: A) => ValidationResult<A>
-} = self => a => self.validate (a)
+export const proceed: {
+  <A>(self: Schema<A>): (a: A) => ProcessResult<A>
+} = self => a => self.proceed (a)
 
-export const checkOption: {
+export const proceedOption: {
   <A>(self: Schema<A>): (a: A) => option.Option<A>
-} = self => flow (check (self), option.fromResult)
+} = self => flow (proceed (self), option.fromResult)
 
 export const validate: {
   <A>(self: Schema<A>): (a: A) => boolean
-} = self => flow (check (self), result.isSuccess)
+} = self => flow (proceed (self), result.isSuccess)
 
-export const checkUnknown =
+export const proceedUnknown =
   <A>(self: Schema<A>) =>
   (a: unknown): result.Result<ReadonlyArray<string>, A> =>
-    pipe (a as A, check (self))
+    pipe (a as A, proceed (self))
 
-export const checkUnknownOption: {
+export const proceedUnknownOption: {
   <A>(self: Schema<A>): (a: unknown) => option.Option<A>
-} = checkOption
+} = proceedOption
 
 export const validateUnknown: {
   <A>(self: Schema<A>): (a: unknown) => boolean

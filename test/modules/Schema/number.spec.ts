@@ -2,11 +2,11 @@ import { pipe, result, schema } from "../../../src"
 
 describe ("Number", () => {
   it ("should correctly check is value a number", () => {
-    pipe (schema.checkUnknown (schema.Number) (undefined), expect).toEqual (
+    pipe (schema.proceedUnknown (schema.Number) (undefined), expect).toEqual (
       result.fail (["value `undefined` is not a number"]),
     )
-    pipe (schema.check (schema.Number) (1), expect).toEqual (result.succeed (1))
-    pipe (schema.checkUnknown (schema.Number) (true), expect).toEqual (
+    pipe (schema.proceed (schema.Number) (1), expect).toEqual (result.succeed (1))
+    pipe (schema.proceedUnknown (schema.Number) (true), expect).toEqual (
       result.fail (["value `true` is not a number"]),
     )
   })

@@ -1,6 +1,6 @@
 import * as result from "../Result"
 import { create, Schema } from "./schema"
-import { message } from "./validation"
+import { message } from "./process"
 import { pipe } from "../../utils/flow"
 import { NonEmptyReadonlyArray } from "../NonEmptyReadonlyArray"
 import { minLength } from "./utils"
@@ -17,14 +17,14 @@ const array = <A>(schema: Schema<A>): Schema<ReadonlyArray<A>> =>
     const out: A[] = []
 
     for (const i in xs) {
-      const validationResult = schema.validate (xs[i])
+      const processResult = schema.proceed (xs[i])
 
-      if (result.isFailure (validationResult)) {
-        const msg = result.failure (validationResult)
+      if (result.isFailure (processResult)) {
+        const msg = result.failure (processResult)
         return result.fail ([`${message`on index ${i}`}: ${msg}`])
       }
 
-      out.push (result.success (validationResult))
+      out.push (result.success (processResult))
     }
 
     return result.succeed (out)

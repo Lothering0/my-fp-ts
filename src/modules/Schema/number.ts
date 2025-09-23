@@ -2,7 +2,7 @@ import * as result from "../Result"
 import { pipe } from "../../utils/flow"
 import { isBigInt, isNumber } from "../../utils/typeChecks"
 import { Schema, create } from "./schema"
-import { message } from "./validation"
+import { message } from "./process"
 
 const number: Schema<number> = create (x => {
   if (!isNumber (x)) {
@@ -31,9 +31,9 @@ export const min =
   (min: number) =>
   <A extends number>(self: Schema<A>): Schema<A> =>
     create (x => {
-      const validationResult = self.validate (x)
-      if (result.isFailure (validationResult)) {
-        return validationResult
+      const processResult = self.proceed (x)
+      if (result.isFailure (processResult)) {
+        return processResult
       }
       const n = Number (x) as A
       if (n < min) {
@@ -48,9 +48,9 @@ export const max =
   (max: number) =>
   <A extends number>(self: Schema<A>): Schema<A> =>
     create (x => {
-      const validationResult = self.validate (x)
-      if (result.isFailure (validationResult)) {
-        return validationResult
+      const processResult = self.proceed (x)
+      if (result.isFailure (processResult)) {
+        return processResult
       }
       const n = Number (x) as A
       if (n > max) {

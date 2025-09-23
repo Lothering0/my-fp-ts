@@ -4,7 +4,7 @@ import * as equivalence from "../../typeclasses/Equivalence"
 import { pipe } from "../../utils/flow"
 import { isObject, isUndefined } from "../../utils/typeChecks"
 import { create, Schema, SchemaOptional } from "./schema"
-import { message, ValidationResult } from "./validation"
+import { message, ProcessResult } from "./process"
 import { LazyArg } from "../../types/utils"
 import { hole } from "../../utils/hole"
 
@@ -34,7 +34,7 @@ export const lazy = <A>(schema: LazyArg<Schema<A>>): Schema<A> => {
     } = finalSchema
     writableSchema.isOptional = currentSchema.isOptional
     writableSchema.schemasByKey = currentSchema.schemasByKey
-    return currentSchema.validate (x)
+    return currentSchema.proceed (x)
   })
 
   return finalSchema
@@ -46,12 +46,12 @@ export const optional: {
   Type: hole (),
   isOptional: true,
   schemasByKey: schema.schemasByKey,
-  validate: x => {
+  proceed: x => {
     if (isUndefined (x)) {
       return result.succeed (x)
     }
 
-    return schema.validate (x)
+    return schema.proceed (x)
   },
 })
 
@@ -72,8 +72,8 @@ export const union: {
   <A>(that: Schema<A>): <B>(self: Schema<B>) => Schema<A | B>
 } = that => self =>
   create (x => {
-    const selfResult = self.validate (x)
-    const thatResult = that.validate (x)
+    const selfResult = self.proceed (x)
+    const thatResult = that.proceed (x)
     const isValid = result.isSuccess (selfResult) || result.isSuccess (thatResult)
 
     if (!isValid) {
@@ -86,12 +86,12 @@ export const union: {
     return pipe (thatResult, result.orElse (selfResult))
   })
 
-const intersectionValidate =
+const intersectionProceed =
   <A>(that: Schema<A>) =>
   <B>(self: Schema<B>) =>
-  (x: unknown): ValidationResult<A & B> => {
-    const selfResult = self.validate (x)
-    const thatResult = that.validate (x)
+  (x: unknown): ProcessResult<A & B> => {
+    const selfResult = self.proceed (x)
+    const thatResult = that.proceed (x)
     let messages: ReadonlyArray<string> = []
 
     if (result.isFailure (selfResult)) {
@@ -106,14 +106,14 @@ const intersectionValidate =
       return result.fail (messages)
     }
 
-    return thatResult as ValidationResult<A & B>
+    return thatResult as ProcessResult<A & B>
   }
 
 export const intersection: {
   <A>(that: Schema<A>): <B>(self: Schema<B>) => Schema<A & B>
 } = that => self => {
   if (!isObject (that.schemasByKey) || !isObject (self.schemasByKey)) {
-    return create (intersectionValidate (that) (self))
+    return create (intersectionProceed (that) (self))
   }
 
   return create ({
@@ -121,7 +121,7 @@ export const intersection: {
       ...self.schemasByKey,
       ...that.schemasByKey,
     },
-    validate: intersectionValidate (that) (self),
+    proceed: intersectionProceed (that) (self),
   })
 }
 
@@ -129,10 +129,10 @@ export const minLength =
   (min: number) =>
   <A extends ReadonlyArray<unknown> | string>(self: Schema<A>): Schema<A> =>
     create (x => {
-      const validationResult = self.validate (x)
+      const processResult = self.proceed (x)
 
-      if (result.isFailure (validationResult)) {
-        return validationResult
+      if (result.isFailure (processResult)) {
+        return processResult
       }
 
       const { length } = x as { length: number }
@@ -148,10 +148,10 @@ export const maxLength =
   (max: number) =>
   <A extends ReadonlyArray<unknown> | string>(self: Schema<A>): Schema<A> =>
     create (x => {
-      const validationResult = self.validate (x)
+      const processResult = self.proceed (x)
 
-      if (result.isFailure (validationResult)) {
-        return validationResult
+      if (result.isFailure (processResult)) {
+        return processResult
       }
 
       const { length } = x as { length: number }

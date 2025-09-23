@@ -1,7 +1,7 @@
 import * as result from "../Result"
 import { isFunction } from "../../utils/typeChecks"
 import { create, Schema } from "./schema"
-import { message } from "./validation"
+import { message } from "./process"
 
 export const Function: Schema<(...xs: readonly unknown[]) => unknown> = create (
   x => {

@@ -3,10 +3,10 @@ import { flow } from "../../utils/flow"
 import { isNull, isUndefined } from "../../utils/typeChecks"
 import { create, Schema } from "./schema"
 import { union } from "./utils"
-import { message } from "./validation"
+import { message } from "./process"
 
 export const Null: Schema<null> = create ({
-  validate: x => {
+  proceed: x => {
     if (!isNull (x)) {
       return result.fail ([message`value ${x} is not a null`])
     }

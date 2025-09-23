@@ -1,7 +1,7 @@
 import * as result from "../Result"
 import { isSymbol } from "../../utils/typeChecks"
 import { create, Schema } from "./schema"
-import { message } from "./validation"
+import { message } from "./process"
 
 export const Symbol: Schema<symbol> = create (x => {
   if (!isSymbol (x)) {
