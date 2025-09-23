@@ -1,12 +1,12 @@
-import * as option from "../../modules/Option"
-import * as string from "../../modules/String"
+import * as result from "../Result"
+import * as string from "../String"
 import * as readonlyArray from "../ReadonlyArray"
 import * as readonlyRecord from "../ReadonlyRecord"
 import { create, Schema, SchemaOptional, Type } from "./schema"
 import { pipe } from "../../utils/flow"
 import { hole } from "../../utils/hole"
 import { isRecord, isUndefined } from "../../utils/typeChecks"
-import { constValid, invalid, message, valid } from "./validation"
+import { message } from "./validation"
 import { optional } from "./utils"
 import { Prettify } from "../../types/utils"
 
@@ -28,17 +28,17 @@ export interface StructSchema<
   readonly schemasByKey: A
 }
 
-export const Struct: {
-  <A extends readonlyRecord.ReadonlyRecord<string, Schema<unknown>>>(
-    schemasByKey: A,
-  ): StructSchema<A>
-} = schemasByKey => ({
+export const Struct = <
+  A extends readonlyRecord.ReadonlyRecord<string, Schema<unknown>>,
+>(
+  schemasByKey: A,
+): StructSchema<A> => ({
   Type: hole (),
   isOptional: false,
   schemasByKey,
   validate: x => {
     if (!isRecord (x)) {
-      return invalid ([message`value ${x} is not a struct`])
+      return result.fail ([message`value ${x} is not a struct`])
     }
 
     const DifferenceMagma = readonlyArray.getDifferenceMagma (string.Equivalence)
@@ -52,7 +52,7 @@ export const Struct: {
       return pipe (
         excessiveKeys,
         readonlyArray.map (key => message`property ${key} should not exist`),
-        invalid,
+        result.fail,
       )
     }
 
@@ -67,34 +67,34 @@ export const Struct: {
       return pipe (
         missingKeys,
         readonlyArray.map (key => message`property ${key} is required`),
-        invalid,
+        result.fail,
       )
     }
 
-    const invalidValueMessages = pipe (
-      x,
-      readonlyRecord.filterMap ((a, k) => {
-        const validationResult = schemasByKey[k]!.validate (a)
+    const out: Partial<Record<string, unknown>> = {}
+    let messages: string[] = []
 
-        if (validationResult.isValid) {
-          return option.none
-        }
+    for (const k in x) {
+      const validationResult = schemasByKey[k]!.validate (x[k])
 
-        return pipe (
-          validationResult.messages,
+      if (result.isFailure (validationResult)) {
+        const msgs = pipe (
+          validationResult,
+          result.failure,
           readonlyArray.map (msg => `${message`on property ${k}`}: ${msg}`),
-          option.some,
         )
-      }),
-      readonlyRecord.values,
-      readonlyArray.flat,
-    )
+        messages = [...messages, ...msgs]
+        continue
+      }
 
-    if (readonlyArray.isNonEmpty (invalidValueMessages)) {
-      return invalid (invalidValueMessages)
+      out[k] = result.success (validationResult)
     }
 
-    return constValid ()
+    if (readonlyArray.isNonEmpty (messages)) {
+      return result.fail (messages)
+    }
+
+    return result.succeed (out as Type<StructSchema<A>>)
   },
 })
 
@@ -107,10 +107,10 @@ export const keyof: {
 
   return create ((x: string) => {
     if (keys.includes (x)) {
-      return valid
+      return result.succeed (x)
     }
 
-    return invalid ([
+    return result.fail ([
       `${message`got ${x}, expected one of the following values`}: ${keys.map (key => `"${key}"`).join (", ")}`,
     ])
   })
@@ -161,10 +161,10 @@ export const required: {
         schemasByKey: schema.schemasByKey,
         validate: x => {
           if (isUndefined (x)) {
-            return invalid ([message`value is undefined`])
+            return result.fail ([message`value is undefined`])
           }
 
-          return valid
+          return result.succeed (x)
         },
       }),
     ),

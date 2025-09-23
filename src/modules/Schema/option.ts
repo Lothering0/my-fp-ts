@@ -1,21 +1,20 @@
-import * as option from "../../modules/Option"
-import { pipe } from "../../utils/flow"
+import * as option from "../Option"
+import * as result from "../Result"
+import { flow, pipe } from "../../utils/flow"
 import { create, Schema } from "./schema"
-import { constValid, invalid, message } from "./validation"
+import { message } from "./validation"
 
-export const Option: {
-  <A>(schema: Schema<A>): Schema<option.Option<A>>
-} = schema =>
+export const Option = <A>(schema: Schema<A>): Schema<option.Option<A>> =>
   create (x => {
     if (!option.isOption (x)) {
-      return invalid ([message`value ${x} is not an option`])
+      return result.fail ([message`value ${x} is not an option`])
     }
 
     return pipe (
       x,
       option.match ({
-        onSome: schema.validate,
-        onNone: constValid,
+        onSome: flow (schema.validate, result.map (option.some)),
+        onNone: () => result.succeed (option.none),
       }),
     )
   })

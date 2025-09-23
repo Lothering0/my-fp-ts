@@ -7,24 +7,7 @@ import { Schema } from "./schema"
 import { flow, pipe } from "../../utils/flow"
 import { isString } from "../../utils/typeChecks"
 
-export interface ValidationResult {
-  readonly isValid: boolean
-  readonly messages: ReadonlyArray<string>
-}
-
-export const valid: ValidationResult = {
-  isValid: true,
-  messages: [],
-}
-
-export const constValid = constant (valid)
-
-export const invalid: {
-  (messages: ReadonlyArray<string>): ValidationResult
-} = messages => ({
-  isValid: false,
-  messages,
-})
+export type ValidationResult<Out> = result.Result<ReadonlyArray<string>, Out>
 
 export const message: {
   (parts: TemplateStringsArray, ...values: ReadonlyArray<unknown>): string
@@ -51,14 +34,8 @@ export const message: {
   )
 
 export const check: {
-  <A>(self: Schema<A>): (a: A) => result.Result<ReadonlyArray<string>, A>
-} = self => a => {
-  const { isValid, messages } = self.validate (a)
-  if (isValid) {
-    return result.succeed (a)
-  }
-  return result.fail (messages)
-}
+  <A>(self: Schema<A>): (a: A) => ValidationResult<A>
+} = self => a => self.validate (a)
 
 export const checkOption: {
   <A>(self: Schema<A>): (a: A) => option.Option<A>

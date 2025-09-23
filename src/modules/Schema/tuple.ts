@@ -1,8 +1,8 @@
-import * as option from "../../modules/Option"
+import * as result from "../Result"
 import * as readonlyArray from "../ReadonlyArray"
 import { pipe } from "../../utils/flow"
 import { create, Schema, SchemaOptional, Type } from "./schema"
-import { constValid, invalid, message } from "./validation"
+import { message } from "./validation"
 
 type ExtractTupleTypes<A extends ReadonlyArray<Schema<unknown>>> = A extends [
   infer X,
@@ -26,7 +26,7 @@ export const Tuple = <A extends ReadonlyArray<Schema<unknown>>>(
     const isArray = Array.isArray (xs)
 
     if (!isArray) {
-      return invalid ([message`value ${xs} is not a tuple`])
+      return result.fail ([message`value ${xs} is not a tuple`])
     }
 
     const tupleMinLength = pipe (
@@ -37,28 +37,29 @@ export const Tuple = <A extends ReadonlyArray<Schema<unknown>>>(
     const tupleMaxLength = schemas.length
 
     if (xs.length < tupleMinLength || xs.length > tupleMaxLength) {
-      return invalid ([
+      return result.fail ([
         message`tuple length must be from ${tupleMinLength} to ${tupleMaxLength}, got ${xs.length}`,
       ])
     }
 
-    const invalidElement = pipe (
-      schemas,
-      readonlyArray.findMap ((schema, i) => {
-        const validationResult = schema.validate (xs[i])
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const out: any = []
 
-        if (validationResult.isValid) {
-          return option.none
-        }
+    for (const i in schemas) {
+      const schema = schemas[i]!
+      const validationResult = schema.validate (xs[i])
 
+      if (result.isFailure (validationResult)) {
         return pipe (
-          validationResult.messages,
-          readonlyArray.map (msg => message`on index ${i}: ${msg}`),
-          invalid,
-          option.some,
+          validationResult,
+          result.mapLeft (
+            readonlyArray.map (msg => `${message`on index ${i}`}: ${msg}`),
+          ),
         )
-      }),
-    )
+      }
 
-    return pipe (invalidElement, option.getOrElse (constValid))
+      out.push (result.success (validationResult))
+    }
+
+    return result.succeed (out)
   })

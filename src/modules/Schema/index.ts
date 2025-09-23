@@ -1,7 +1,6 @@
 export * from "./any"
 export * from "./array"
 export * from "./boolean"
-export * from "./contravariant"
 export * from "./function"
 export * from "./never"
 export * from "./nullable"
