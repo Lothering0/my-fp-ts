@@ -29,7 +29,7 @@ export const Record = <
           result.mapLeft (
             readonlyArray.map (msg => `${message`property ${k}`}: ${msg}`),
           ),
-          result.failure,
+          result.failureOf,
         )
         messages = [...messages, ...keyMessages]
         continue
@@ -43,14 +43,14 @@ export const Record = <
           result.mapLeft (
             readonlyArray.map (msg => `${message`on property ${k}`}: ${msg}`),
           ),
-          result.failure,
+          result.failureOf,
         )
         messages = [...messages, ...valueMessages]
         continue
       }
 
-      const key: Type<K> = result.success (keyProcessResult)
-      const value = result.success (valueProcessResult)
+      const key: Type<K> = result.successOf (keyProcessResult)
+      const value = result.successOf (valueProcessResult)
       out[key] = value
     }
 

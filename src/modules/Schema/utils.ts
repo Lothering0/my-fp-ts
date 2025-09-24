@@ -1,7 +1,7 @@
 import * as result from "../Result"
 import * as boolean from "../Boolean"
 import * as equivalence from "../../typeclasses/Equivalence"
-import { pipe } from "../../utils/flow"
+import { flow, pipe } from "../../utils/flow"
 import { isUndefined } from "../../utils/typeChecks"
 import { create, Schema, SchemaOptional } from "./schema"
 import { message } from "./process"
@@ -41,8 +41,9 @@ export const lazy = <A>(schema: LazyArg<Schema<A>>): Schema<A> => {
 }
 
 export const optional: {
-  <A>(schema: Schema<A>): SchemaOptional<A | undefined>
+  <Out, In = Out>(schema: Schema<Out, In>): SchemaOptional<Out | undefined, In>
 } = schema => ({
+  _In: hole (),
   Type: hole (),
   isOptional: true,
   schemasByKey: schema.schemasByKey,
@@ -78,8 +79,8 @@ export const union: {
 
     if (!isValid) {
       return result.fail ([
-        ...result.failure (selfResult),
-        ...result.failure (thatResult),
+        ...result.failureOf (selfResult),
+        ...result.failureOf (thatResult),
       ])
     }
 
@@ -123,3 +124,9 @@ export const maxLength =
       }
       return result.succeed (x as A)
     })
+
+export const transform: {
+  <Out1, In, Out2>(
+    f: (a: Out1) => Out2,
+  ): (Schema: Schema<Out1, In>) => Schema<Out2, In>
+} = f => Schema => create (flow (Schema.proceed, result.map (f)))

@@ -58,7 +58,7 @@ export const Tuple = <A extends ReadonlyArray<Schema<unknown>>>(
         )
       }
 
-      out.push (result.success (processResult))
+      out.push (result.successOf (processResult))
     }
 
     return result.succeed (out)

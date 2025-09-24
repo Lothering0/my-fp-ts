@@ -2,11 +2,11 @@ import { identity } from "../Identity"
 import { match } from "./matchers"
 import { Result, fail, Failure, succeed, Success } from "./result"
 
-export const failure: {
+export const failureOf: {
   <E>(self: Failure<E>): E
 } = self => self.failure
 
-export const success: {
+export const successOf: {
   <A>(self: Success<A>): A
 } = self => self.success
 

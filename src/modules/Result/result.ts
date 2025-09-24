@@ -7,11 +7,13 @@ export interface ResultHkt extends Hkt {
 export type Result<E, A> = Failure<E> | Success<A>
 
 export interface Failure<E> {
+  readonly _id: "Result"
   readonly _tag: "Failure"
   readonly failure: E
 }
 
 export interface Success<A> {
+  readonly _id: "Result"
   readonly _tag: "Success"
   readonly success: A
 }
@@ -19,6 +21,7 @@ export interface Success<A> {
 export const fail: {
   <E>(e: E): Result<E, never>
 } = value => ({
+  _id: "Result",
   _tag: "Failure",
   failure: value,
 })
@@ -26,6 +29,7 @@ export const fail: {
 export const succeed: {
   <A>(a: A): Result<never, A>
 } = value => ({
+  _id: "Result",
   _tag: "Success",
   success: value,
 })

@@ -70,17 +70,17 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad<F>) => {
     ): Kind<F, In | Collectable, TCollectable, Fixed>
   } = M.map (result.toUnion)
 
-  const failure: {
+  const failureOf: {
     <Collectable, Fixed>(
       self: Kind<F, result.Failure<TCollectable>, Collectable, Fixed>,
     ): Kind<F, TCollectable, Collectable, Fixed>
-  } = M.map (result.failure)
+  } = M.map (result.failureOf)
 
-  const success: {
+  const successOf: {
     <In, Collectable, Fixed>(
       self: Kind<F, result.Success<In>, Collectable, Fixed>,
     ): Kind<F, In, Collectable, Fixed>
-  } = M.map (result.success)
+  } = M.map (result.successOf)
 
   const getOrElse: {
     <Out, Collectable>(
@@ -204,8 +204,8 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad<F>) => {
     match,
     swap,
     toUnion,
-    failure,
-    success,
+    failureOf,
+    successOf,
     getOrElse,
     catchAll,
     Alt,

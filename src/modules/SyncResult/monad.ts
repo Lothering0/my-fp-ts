@@ -9,7 +9,7 @@ export const Monad = createMonad<SyncResultHkt> ({
   ...Applicative,
   flat: self => () =>
     pipe (self, execute, ma =>
-      result.isFailure (ma) ? ma : pipe (ma, result.success, execute),
+      result.isFailure (ma) ? ma : pipe (ma, result.successOf, execute),
     ),
 })
 

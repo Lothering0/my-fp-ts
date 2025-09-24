@@ -13,9 +13,9 @@ export const getOrElse: {
   })
 
 export const orElse: {
-  <E1, A>(
-    onFailure: Result<E1, A>,
-  ): <E2, B>(self: Result<E2, B>) => Result<E1 | E2, A | B>
+  <E, A>(
+    onFailure: Result<E, A>,
+  ): <B>(self: Result<unknown, B>) => Result<E, A | B>
 } = onFailure =>
   match ({
     onFailure: constant (onFailure),

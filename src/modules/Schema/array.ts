@@ -20,11 +20,11 @@ const array = <A>(schema: Schema<A>): Schema<ReadonlyArray<A>> =>
       const processResult = schema.proceed (xs[i])
 
       if (result.isFailure (processResult)) {
-        const msg = result.failure (processResult)
+        const msg = result.failureOf (processResult)
         return result.fail ([`${message`on index ${i}`}: ${msg}`])
       }
 
-      out.push (result.success (processResult))
+      out.push (result.successOf (processResult))
     }
 
     return result.succeed (out)

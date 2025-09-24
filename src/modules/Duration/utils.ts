@@ -158,6 +158,21 @@ export const prettify: {
     readonlyRecord.filter (value => value !== 0),
   )
 
+export const toTemplate: {
+  (self: Duration): string
+} = flow (
+  prettify,
+  readonlyRecord.toEntries,
+  readonlyArray.filter (([unit]) =>
+    pipe (durationUnits, readonlyArray.includes (unit)),
+  ),
+  readonlyArray.map (([unit, value]) =>
+    value === 1 ? [pipe (unit, string.slice (0, -1)), value] : [unit, value],
+  ),
+  readonlyArray.map (([unit, value]) => `${value} ${unit}`),
+  readonlyArray.join (" "),
+)
+
 const millisecondsFromSeconds: {
   (seconds: number): number
 } = seconds => seconds * 1000

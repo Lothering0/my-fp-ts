@@ -8,6 +8,7 @@ describe ("transformer", () => {
       ReadonlyArray<result.Result<string, number>>
     > ([
       {
+        _id: "Result",
         _tag: "Success",
         success: 1,
       },
@@ -17,6 +18,7 @@ describe ("transformer", () => {
       ReadonlyArray<result.Result<string, number>>
     > ([
       {
+        _id: "Result",
         _tag: "Failure",
         failure: "a",
       },
@@ -25,7 +27,7 @@ describe ("transformer", () => {
     expect (
       readonlyArrayResult.map (number.show) (readonlyArrayResult.of (1)),
     ).toEqual<ReadonlyArray<result.Result<never, string>>> ([
-      { _tag: "Success", success: "1" },
+      { _id: "Result", _tag: "Success", success: "1" },
     ])
   })
 
@@ -39,11 +41,9 @@ describe ("transformer", () => {
       ReadonlyArray<result.Result<never, result.Result<never, number>>>
     > ([
       {
+        _id: "Result",
         _tag: "Success",
-        success: {
-          _tag: "Success",
-          success: 1,
-        },
+        success: { _id: "Result", _tag: "Success", success: 1 },
       },
     ])
 
@@ -53,8 +53,10 @@ describe ("transformer", () => {
       ReadonlyArray<result.Result<never, result.Result<never, string>>>
     > ([
       {
+        _id: "Result",
         _tag: "Success",
         success: {
+          _id: "Result",
           _tag: "Success",
           success: "1",
         },

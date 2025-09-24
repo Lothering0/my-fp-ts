@@ -11,21 +11,21 @@ import { optional } from "./utils"
 import { Prettify } from "../../types/utils"
 
 export interface StructSchema<
-  A extends readonlyRecord.ReadonlyRecord<string, Schema<unknown>>,
+  Out extends readonlyRecord.ReadonlyRecord<string, Schema<unknown>>,
 > extends Schema<
     Prettify<
       {
-        [K in keyof A as A[K] extends SchemaOptional<unknown>
+        [K in keyof Out as Out[K] extends SchemaOptional<unknown>
           ? never
-          : K]: Type<A[K]>
+          : K]: Type<Out[K]>
       } & {
-        [K in keyof A as A[K] extends SchemaOptional<unknown>
+        [K in keyof Out as Out[K] extends SchemaOptional<unknown>
           ? K
-          : never]?: Type<A[K]>
+          : never]?: Type<Out[K]>
       }
     >
   > {
-  readonly schemasByKey: A
+  readonly schemasByKey: Out
 }
 
 export const Struct = <
@@ -33,6 +33,7 @@ export const Struct = <
 >(
   schemasByKey: A,
 ): StructSchema<A> => ({
+  _In: hole (),
   Type: hole (),
   isOptional: false,
   schemasByKey,
@@ -80,14 +81,14 @@ export const Struct = <
       if (result.isFailure (processResult)) {
         const msgs = pipe (
           processResult,
-          result.failure,
+          result.failureOf,
           readonlyArray.map (msg => `${message`on property ${k}`}: ${msg}`),
         )
         messages = [...messages, ...msgs]
         continue
       }
 
-      out[k] = result.success (processResult)
+      out[k] = result.successOf (processResult)
     }
 
     if (readonlyArray.isNonEmpty (messages)) {
@@ -156,6 +157,7 @@ export const required: {
     self.schemasByKey,
     readonlyRecord.map (
       (schema): Schema<unknown> => ({
+        _In: hole (),
         Type: hole (),
         isOptional: false,
         schemasByKey: schema.schemasByKey,
@@ -178,9 +180,8 @@ export const intersection: {
   ): <B extends readonlyRecord.ReadonlyRecord<string, Schema<unknown>>>(
     self: StructSchema<B>,
   ) => StructSchema<A & B>
-} = that => self => {
-  return Struct ({
+} = that => self =>
+  Struct ({
     ...self.schemasByKey,
     ...that.schemasByKey,
   })
-}

@@ -153,3 +153,19 @@ describe ("maxLength", () => {
     )
   })
 })
+
+describe ("transform", () => {
+  it ("should transform value before it will be processed", () => {
+    const StringifiedNumber = pipe (
+      schema.Number,
+      schema.union (schema.String),
+      schema.transform (Number),
+    )
+    pipe (schema.proceed (StringifiedNumber) (1), expect).toEqual (
+      result.succeed (1),
+    )
+    pipe (schema.proceed (StringifiedNumber) ("1"), expect).toEqual (
+      result.succeed (1),
+    )
+  })
+})

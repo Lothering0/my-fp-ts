@@ -8,6 +8,7 @@ describe ("transformer", () => {
       ReadonlyArray<option.Option<number>>
     > ([
       {
+        _id: "Option",
         _tag: "Some",
         value: 1,
       },
@@ -15,7 +16,7 @@ describe ("transformer", () => {
 
     expect (readonlyArrayOption.map (String) (readonlyArrayOption.of (1))).toEqual<
       ReadonlyArray<option.Option<string>>
-    > ([{ _tag: "Some", value: "1" }])
+    > ([{ _id: "Option", _tag: "Some", value: "1" }])
   })
 
   it ("should correctly compose multiple monads", () => {
@@ -28,8 +29,10 @@ describe ("transformer", () => {
       ReadonlyArray<option.Option<option.Option<number>>>
     > ([
       {
+        _id: "Option",
         _tag: "Some",
         value: {
+          _id: "Option",
           _tag: "Some",
           value: 1,
         },
@@ -40,8 +43,10 @@ describe ("transformer", () => {
       readonlyArrayOptionOption.map (String) (readonlyArrayOptionOption.of (1)),
     ).toEqual<ReadonlyArray<option.Option<option.Option<string>>>> ([
       {
+        _id: "Option",
         _tag: "Some",
         value: {
+          _id: "Option",
           _tag: "Some",
           value: "1",
         },

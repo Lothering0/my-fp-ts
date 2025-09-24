@@ -34,26 +34,26 @@ export const message: {
   )
 
 export const proceed: {
-  <A>(self: Schema<A>): (a: A) => ProcessResult<A>
+  <Out, In = Out>(self: Schema<Out, In>): (a: In) => ProcessResult<Out>
 } = self => a => self.proceed (a)
 
 export const proceedOption: {
-  <A>(self: Schema<A>): (a: A) => option.Option<A>
+  <Out, In = Out>(self: Schema<Out, In>): (a: In) => option.Option<Out>
 } = self => flow (proceed (self), option.fromResult)
 
 export const validate: {
-  <A>(self: Schema<A>): (a: A) => boolean
+  <Out, In = Out>(self: Schema<Out, In>): (a: In) => boolean
 } = self => flow (proceed (self), result.isSuccess)
 
 export const proceedUnknown =
-  <A>(self: Schema<A>) =>
-  (a: unknown): result.Result<ReadonlyArray<string>, A> =>
-    pipe (a as A, proceed (self))
+  <Out>(self: Schema<Out, unknown>) =>
+  (a: unknown): result.Result<ReadonlyArray<string>, Out> =>
+    pipe (a as Out, proceed (self))
 
 export const proceedUnknownOption: {
-  <A>(self: Schema<A>): (a: unknown) => option.Option<A>
+  <Out>(self: Schema<Out, unknown>): (a: unknown) => option.Option<Out>
 } = proceedOption
 
 export const validateUnknown: {
-  <A>(self: Schema<A>): (a: unknown) => boolean
+  <Out>(self: Schema<Out, unknown>): (a: unknown) => boolean
 } = validate
