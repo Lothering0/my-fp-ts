@@ -3,7 +3,7 @@ import * as async from "../Async"
 import * as syncResult from "../SyncResult"
 import * as sync from "../Sync"
 import * as tappableBoth from "../../typeclasses/TappableBoth"
-import { createTappable } from "../../typeclasses/Tappable"
+import { create } from "../../typeclasses/Tappable"
 import { map } from "./functor"
 import {
   AsyncResult,
@@ -14,7 +14,7 @@ import {
 import { pipe } from "../../utils/flow"
 import { Monad, Do, apS } from "./monad"
 
-export const Tappable = createTappable (Monad)
+export const Tappable = create (Monad)
 
 export const TappableBoth: tappableBoth.TappableBoth<AsyncResultHkt> = {
   ...Tappable,

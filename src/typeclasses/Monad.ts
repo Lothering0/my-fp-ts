@@ -59,10 +59,12 @@ export interface Monad<F extends Hkt> extends Applicative<F> {
   ) => Kind<F, DoObject<N, In, Out>, Collectable1 | Collectable2, Fixed>
 }
 
-export const createMonad = <F extends Hkt>(
-  Monad: Applicative<F> & Pick<Monad<F>, "flat">,
+export const create = <F extends Hkt>(
+  Applicative: Applicative<F>,
+  Monad: Pick<Monad<F>, "flat">,
 ): Monad<F> => {
-  const { of, map, flat } = Monad
+  const { of, map } = Applicative
+  const { flat } = Monad
   const Do: Monad<F>["Do"] = of ({})
 
   const apS: Monad<F>["apS"] = (name, fb) =>
@@ -108,6 +110,7 @@ export const createMonad = <F extends Hkt>(
     )
 
   return {
+    ...Applicative,
     ...Monad,
     Do,
     flatMap,

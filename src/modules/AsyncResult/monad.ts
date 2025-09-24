@@ -2,15 +2,14 @@
 import * as result from "../Result"
 import * as async from "../Async"
 import { identity } from "../Identity"
-import { createMonad } from "../../typeclasses/Monad"
+import { create } from "../../typeclasses/Monad"
 import { Applicative } from "./applicative"
 import { AsyncResultHkt, AsyncResult, toPromise, fail } from "./async-result"
 import { pipe } from "../../utils/flow"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
 import { match } from "./matchers"
 
-export const Monad = createMonad<AsyncResultHkt> ({
-  ...Applicative,
+export const Monad = create<AsyncResultHkt> (Applicative, {
   flat: self => () =>
     pipe (
       self,

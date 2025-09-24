@@ -53,11 +53,12 @@ export interface MonadWithIndex<F extends Hkt, Index>
   ) => Kind<F, DoObject<N, In, Out>, Collectable1 | Collectable2, Fixed>
 }
 
-export const createMonadWithIndex = <F extends Hkt, Index>(
-  Monad: Monad<F> & ApplicativeWithIndex<F, Index>,
+export const create = <F extends Hkt, Index>(
+  ApplicativeWithIndex: ApplicativeWithIndex<F, Index>,
+  Monad: Monad<F>,
 ): MonadWithIndex<F, Index> => {
   const flatMapWithIndex: MonadWithIndex<F, Index>["flatMapWithIndex"] = aimb =>
-    flow (Monad.mapWithIndex (aimb), Monad.flat)
+    flow (ApplicativeWithIndex.mapWithIndex (aimb), Monad.flat)
 
   const composeWithIndex: MonadWithIndex<F, Index>["composeWithIndex"] = (
     bmc,
@@ -81,7 +82,7 @@ export const createMonadWithIndex = <F extends Hkt, Index>(
         Monad.Do,
         Monad.apS ("a", self),
         Monad.apS ("aib", faib),
-        Monad.mapWithIndex (
+        ApplicativeWithIndex.mapWithIndex (
           ({ a, aib }, i) => ({ [name]: aib (a, i), ...a }) as any,
         ),
       )
@@ -103,6 +104,7 @@ export const createMonadWithIndex = <F extends Hkt, Index>(
     )
 
   return {
+    ...ApplicativeWithIndex,
     ...Monad,
     flatMapWithIndex,
     composeWithIndex,

@@ -1,11 +1,10 @@
 import * as option from "../Option"
-import { createApplicative } from "../../typeclasses/Applicative"
+import { create } from "../../typeclasses/Applicative"
 import { SyncOptionHkt, some, execute, SyncOption } from "./sync-option"
 import { Functor } from "./functor"
 import { pipe } from "../../utils/flow"
 
-export const Applicative = createApplicative<SyncOptionHkt> ({
-  ...Functor,
+export const Applicative = create<SyncOptionHkt> (Functor, {
   of: some,
   ap: fma => self => () =>
     pipe (

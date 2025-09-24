@@ -1,13 +1,13 @@
 import * as option from "../Option"
 import * as result from "../Result"
-import { createCompactable } from "../../typeclasses/Compactable"
+import { create } from "../../typeclasses/Compactable"
 import { ReadonlyArrayHkt } from "./readonly-array"
 import { of } from "./applicative"
 import { flatMap } from "./monad"
 import { constEmptyArray } from "../../utils/constant"
 import { Functor } from "./functor"
 
-export const Compactable = createCompactable<ReadonlyArrayHkt> (Functor, {
+export const Compactable = create<ReadonlyArrayHkt> (Functor, {
   compact: flatMap (
     option.match ({
       onNone: constEmptyArray,

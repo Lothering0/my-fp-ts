@@ -1,13 +1,13 @@
 import * as option from "../Option"
 import * as result from "../Result"
 import * as readonlyArray from "../ReadonlyArray"
-import { createCompactable } from "../../typeclasses/Compactable"
+import { create } from "../../typeclasses/Compactable"
 import { flow, pipe } from "../../utils/flow"
 import { ReadonlyRecord, ReadonlyRecordHkt } from "./readonly-record"
 import { fromEntries, toEntries } from "./utils"
 import { Functor } from "./functor"
 
-export const Compactable = createCompactable<ReadonlyRecordHkt> (Functor, {
+export const Compactable = create<ReadonlyRecordHkt> (Functor, {
   compact: flow (
     toEntries,
     readonlyArray.filterMap (([k, ma]) =>

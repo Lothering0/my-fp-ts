@@ -1,12 +1,11 @@
 import * as option from "../Option"
-import { createMonad } from "../../typeclasses/Monad"
+import { create } from "../../typeclasses/Monad"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
 import { Applicative } from "./applicative"
 import { pipe } from "../../utils/flow"
 import { SyncOptionHkt, execute, SyncOption } from "./sync-option"
 
-export const Monad = createMonad<SyncOptionHkt> ({
-  ...Applicative,
+export const Monad = create<SyncOptionHkt> (Applicative, {
   flat: self => () =>
     pipe (self, execute, ma =>
       option.isNone (ma) ? ma : pipe (ma, option.value, execute),

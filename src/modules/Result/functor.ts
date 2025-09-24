@@ -1,6 +1,6 @@
 import * as functor from "../../typeclasses/Functor"
 import { Result, ResultHkt, fail, succeed } from "./result"
-import { createBifunctor } from "../../typeclasses/Bifunctor"
+import { create } from "../../typeclasses/Bifunctor"
 import { match } from "./matchers"
 import { flow } from "../../utils/flow"
 
@@ -12,8 +12,7 @@ export const Functor: functor.Functor<ResultHkt> = {
     }),
 }
 
-export const Bifunctor = createBifunctor<ResultHkt> ({
-  ...Functor,
+export const Bifunctor = create<ResultHkt> (Functor, {
   mapLeft: ed =>
     match ({
       onFailure: flow (ed, fail),

@@ -1,12 +1,12 @@
 import * as option from "../Option"
 import * as result from "../Result"
-import { createCompactable } from "../../typeclasses/Compactable"
+import { create } from "../../typeclasses/Compactable"
 import { SyncOption, SyncOptionHkt, execute, none, some } from "./sync-option"
 import { pipe } from "../../utils/flow"
 import { Functor } from "./functor"
 import { zero } from "./alternative"
 
-export const Compactable = createCompactable<SyncOptionHkt> (Functor, {
+export const Compactable = create<SyncOptionHkt> (Functor, {
   compact: self => () => pipe (self, execute, option.compact),
   separate: self =>
     pipe (

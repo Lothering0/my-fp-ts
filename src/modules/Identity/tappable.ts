@@ -1,9 +1,9 @@
 import { Identity } from "./identity"
 import { Sync } from "../Sync"
 import { Monad } from "./monad"
-import { createTappable } from "../../typeclasses/Tappable"
+import { create } from "../../typeclasses/Tappable"
 
-export const Tappable = createTappable (Monad)
+export const Tappable = create (Monad)
 
 export const tap: {
   <A>(f: (a: A) => Identity<unknown>): (self: Identity<A>) => Identity<A>

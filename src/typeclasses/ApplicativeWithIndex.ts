@@ -22,18 +22,20 @@ export interface ApplicativeWithIndex<F extends Hkt, Index>
   readonly flipApplyWithIndex: ApplicativeWithIndex<F, Index>["flapWithIndex"]
 }
 
-export const createApplicativeWithIndex = <F extends Hkt, Index>(
-  Applicative: Applicative<F> &
-    FunctorWithIndex<F, Index> &
-    Pick<ApplicativeWithIndex<F, Index>, "apWithIndex">,
+export const create = <F extends Hkt, Index>(
+  FunctorWithIndex: FunctorWithIndex<F, Index>,
+  Applicative: Applicative<F>,
+  ApplicativeWithIndex: Pick<ApplicativeWithIndex<F, Index>, "apWithIndex">,
 ): ApplicativeWithIndex<F, Index> => {
   const flapWithIndex: ApplicativeWithIndex<F, Index>["flapWithIndex"] = flip (
-    Applicative.apWithIndex,
+    ApplicativeWithIndex.apWithIndex,
   ) as typeof flapWithIndex
 
   return {
+    ...FunctorWithIndex,
     ...Applicative,
-    applyWithIndex: Applicative.apWithIndex,
+    ...ApplicativeWithIndex,
+    applyWithIndex: ApplicativeWithIndex.apWithIndex,
     flapWithIndex,
     flipApplyWithIndex: flapWithIndex,
   }

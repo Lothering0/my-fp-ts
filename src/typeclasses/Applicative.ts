@@ -20,12 +20,14 @@ export interface Applicative<F extends Hkt> extends Functor<F> {
   readonly flipApply: Applicative<F>["flap"]
 }
 
-export const createApplicative = <F extends Hkt>(
-  Applicative: Functor<F> & Pick<Applicative<F>, "of" | "ap">,
+export const create = <F extends Hkt>(
+  Functor: Functor<F>,
+  Applicative: Pick<Applicative<F>, "of" | "ap">,
 ): Applicative<F> => {
   const flap: Applicative<F>["flap"] = flip (Applicative.ap) as typeof flap
 
   return {
+    ...Functor,
     ...Applicative,
     apply: Applicative.ap,
     flap,

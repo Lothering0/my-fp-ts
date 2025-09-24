@@ -1,10 +1,9 @@
 import { flow, pipe } from "../../utils/flow"
-import { createApplicative } from "../../typeclasses/Applicative"
+import { create } from "../../typeclasses/Applicative"
 import { Functor } from "./functor"
 import { State, StateHkt } from "./state"
 
-export const Applicative = createApplicative<StateHkt> ({
-  ...Functor,
+export const Applicative = create<StateHkt> (Functor, {
   of: a => s => [a, s],
   ap: fab => self =>
     flow (fab, ([a1, s1]) => pipe (s1, self, ([a2, s2]) => [a2 (a1), s2])),

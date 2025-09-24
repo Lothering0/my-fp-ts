@@ -1,9 +1,9 @@
-import { createTappable } from "../../typeclasses/Tappable"
+import { create } from "../../typeclasses/Tappable"
 import { Sync } from "../Sync"
 import { Monad } from "./monad"
 import { State } from "./state"
 
-export const Tappable = createTappable (Monad)
+export const Tappable = create (Monad)
 
 export const tap: {
   <S, A>(f: (a: A) => State<S, unknown>): (self: State<S, A>) => State<S, A>

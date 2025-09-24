@@ -1,17 +1,17 @@
 import * as option from "../Option"
 import * as result from "../Result"
+import * as applicative from "../../typeclasses/Applicative"
+import * as monad from "../../typeclasses/Monad"
+import * as compactable from "../../typeclasses/Compactable"
+import * as extendable from "../../typeclasses/Extendable"
+import * as tappable from "../../typeclasses/Tappable"
 import { Hkt, Kind } from "../../typeclasses/Hkt"
 import { Functor } from "../../typeclasses/Functor"
-import { createApplicative } from "../../typeclasses/Applicative"
-import { createMonad, Monad } from "../../typeclasses/Monad"
-import { createTappable } from "../../typeclasses/Tappable"
 import { flow, pipe } from "../../utils/flow"
 import { identity } from "../Identity"
 import { LazyArg } from "../../types/utils"
 import { Alt } from "../../typeclasses/Alt"
 import { Alternative } from "../../typeclasses/Alternative"
-import { createCompactable } from "../../typeclasses/Compactable"
-import { createExtendable } from "../../typeclasses/Extendable"
 
 export type OptionT<F extends Hkt, In, Collectable, Fixed> = Kind<
   F,
@@ -24,7 +24,7 @@ export interface OptionTHkt<F extends Hkt> extends Hkt {
   readonly type: OptionT<F, this["_in"], this["_collectable"], this["_fixed"]>
 }
 
-export const transform = <F extends Hkt>(M: Monad<F>) => {
+export const transform = <F extends Hkt>(M: monad.Monad<F>) => {
   type THkt = OptionTHkt<F>
 
   const some: {
@@ -160,8 +160,7 @@ export const transform = <F extends Hkt>(M: Monad<F>) => {
     map: flow (option.map, M.map),
   }
 
-  const Applicative = createApplicative<THkt> ({
-    ...Functor,
+  const Applicative = applicative.create<THkt> (Functor, {
     of: some,
     ap:
       <In, Collectable1, Fixed>(fma: Kind<THkt, In, Collectable1, Fixed>) =>
@@ -175,24 +174,22 @@ export const transform = <F extends Hkt>(M: Monad<F>) => {
         ),
   })
 
-  const Monad = createMonad<THkt> ({
-    ...Applicative,
+  const Monad = monad.create<THkt> (Applicative, {
     flat: M.flatMap (
       option.match ({
         onNone: () => M.of (option.none),
         onSome: identity,
       }),
-    ) as Monad<THkt>["flat"],
+    ) as monad.Monad<THkt>["flat"],
   })
 
-  const Tappable = createTappable (Monad)
+  const Tappable = tappable.create (Monad)
 
-  const Compactable = createCompactable<THkt> (Functor, {
+  const Compactable = compactable.create<THkt> (Functor, {
     compact: flow (M.map (option.flat)),
   })
 
-  const Extendable = createExtendable<THkt> ({
-    ...Functor,
+  const Extendable = extendable.create<THkt> (Functor, {
     extend: fab => self => Functor.map (() => fab (self)) (self),
   })
 

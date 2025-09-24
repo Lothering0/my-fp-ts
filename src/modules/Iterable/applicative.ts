@@ -1,9 +1,9 @@
-import { createApplicative } from "../../typeclasses/Applicative"
-import { createApplicativeWithIndex } from "../../typeclasses/ApplicativeWithIndex"
+import * as applicative from "../../typeclasses/Applicative"
+import * as applicativeWithIndex from "../../typeclasses/ApplicativeWithIndex"
 import { Functor, FunctorWithIndex } from "./functor"
 import { IterableHkt } from "./iterable"
 
-export const Applicative = createApplicative<IterableHkt> ({
+export const Applicative = applicative.create<IterableHkt> (Functor, {
   ...Functor,
   of: a => ({
     *[Symbol.iterator]() {
@@ -21,12 +21,10 @@ export const Applicative = createApplicative<IterableHkt> ({
   }),
 })
 
-export const ApplicativeWithIndex = createApplicativeWithIndex<
+export const ApplicativeWithIndex = applicativeWithIndex.create<
   IterableHkt,
   number
-> ({
-  ...FunctorWithIndex,
-  ...Applicative,
+> (FunctorWithIndex, Applicative, {
   apWithIndex: fa => self => ({
     *[Symbol.iterator]() {
       let i = -1

@@ -50,10 +50,12 @@ export interface FilterableWithIndex<F extends Hkt, Index>
   }
 }
 
-export const createFilterableWithIndex = <F extends Hkt, Index>(
-  Filterable: FunctorWithIndex<F, Index> & Filterable<F>,
+export const create = <F extends Hkt, Index>(
+  FunctorWithIndex: FunctorWithIndex<F, Index>,
+  Filterable: Filterable<F>,
 ): FilterableWithIndex<F, Index> => {
-  const { compact, separate, mapWithIndex } = Filterable
+  const { mapWithIndex } = FunctorWithIndex
+  const { compact, separate } = Filterable
 
   const filterMapWithIndex: FilterableWithIndex<
     F,
@@ -78,6 +80,7 @@ export const createFilterableWithIndex = <F extends Hkt, Index>(
     partitionMapWithIndex ((a, i) => p (a, i) ? succeed (a) : fail (a))
 
   return {
+    ...FunctorWithIndex,
     ...Filterable,
     partitionMapWithIndex,
     partitionWithIndex,

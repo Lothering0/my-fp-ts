@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as option from "../Option"
-import { createMonad } from "../../typeclasses/Monad"
+import { create } from "../../typeclasses/Monad"
 import { AsyncOptionHkt, AsyncOption, toPromise } from "./async-option"
 import { Applicative } from "./applicative"
 import { pipe } from "../../utils/flow"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
 
-export const Monad = createMonad<AsyncOptionHkt> ({
-  ...Applicative,
+export const Monad = create<AsyncOptionHkt> (Applicative, {
   flat: self => () =>
     toPromise (self).then (ma =>
       option.isNone (ma) ? ma : pipe (ma, option.value, toPromise),

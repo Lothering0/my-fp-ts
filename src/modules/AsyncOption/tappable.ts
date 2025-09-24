@@ -4,14 +4,14 @@ import * as result from "../Result"
 import * as syncOption from "../SyncOption"
 import * as syncResult from "../SyncResult"
 import * as option from "../Option"
-import { createTappable } from "../../typeclasses/Tappable"
+import { create } from "../../typeclasses/Tappable"
 import { Do, Monad, apS } from "./monad"
 import { AsyncOption, fromAsync } from "./async-option"
 import { Sync } from "../Sync"
 import { map } from "./functor"
 import { pipe } from "../../utils/flow"
 
-export const Tappable = createTappable (Monad)
+export const Tappable = create (Monad)
 
 export const tap: {
   <A>(

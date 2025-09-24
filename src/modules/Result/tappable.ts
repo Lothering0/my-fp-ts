@@ -1,12 +1,12 @@
 import * as tappableBoth from "../../typeclasses/TappableBoth"
 import * as sync from "../Sync"
-import { createTappable } from "../../typeclasses/Tappable"
+import { create } from "../../typeclasses/Tappable"
 import { Monad } from "./monad"
 import { fail, Result, ResultHkt, succeed } from "./result"
 import { pipe } from "../../utils/flow"
 import { match } from "./matchers"
 
-export const Tappable = createTappable (Monad)
+export const Tappable = create (Monad)
 
 export const TappableBoth: tappableBoth.TappableBoth<ResultHkt> = {
   ...Tappable,

@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as async from "./async"
-import { createMonad } from "../../typeclasses/Monad"
+import { create } from "../../typeclasses/Monad"
 import { Applicative } from "./applicative"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
 
-export const Monad = createMonad<async.AsyncHkt> ({
-  ...Applicative,
+export const Monad = create<async.AsyncHkt> (Applicative, {
   flat: self => () => async.toPromise (self).then (async.toPromise),
 })
 

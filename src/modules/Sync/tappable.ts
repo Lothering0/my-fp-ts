@@ -1,8 +1,8 @@
 import { Sync } from "./sync"
 import { Monad } from "./monad"
-import { createTappable } from "../../typeclasses/Tappable"
+import { create } from "../../typeclasses/Tappable"
 
-export const Tappable = createTappable (Monad)
+export const Tappable = create (Monad)
 
 export const tap: {
   <A>(f: (a: A) => Sync<unknown>): (self: Sync<A>) => Sync<A>

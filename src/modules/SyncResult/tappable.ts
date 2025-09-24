@@ -4,9 +4,9 @@ import { Sync } from "../Sync"
 import { Monad } from "./monad"
 import { execute, fromSync, SyncResult, SyncResultHkt } from "./sync-result"
 import { pipe } from "../../utils/flow"
-import { createTappable } from "../../typeclasses/Tappable"
+import { create } from "../../typeclasses/Tappable"
 
-export const Tappable = createTappable (Monad)
+export const Tappable = create (Monad)
 
 export const TappableBoth: tappableBoth.TappableBoth<SyncResultHkt> = {
   ...Tappable,

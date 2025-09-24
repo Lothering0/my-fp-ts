@@ -17,13 +17,11 @@ export interface Bifunctor<F extends Hkt> extends Functor<F> {
   ) => Kind<F, Out, CollectableOut, Fixed>
 }
 
-export const createBifunctor = <F extends Hkt>(
-  Bifunctor: Functor<F> & Pick<Bifunctor<F>, "mapLeft">,
-): Bifunctor<F> => {
-  const { map, mapLeft } = Bifunctor
-
-  return {
-    ...Bifunctor,
-    bimap: (ed, ab) => flow (map (ab), mapLeft (ed)),
-  }
-}
+export const create = <F extends Hkt>(
+  Functor: Functor<F>,
+  Bifunctor: Pick<Bifunctor<F>, "mapLeft">,
+): Bifunctor<F> => ({
+  ...Functor,
+  ...Bifunctor,
+  bimap: (ed, ab) => flow (Functor.map (ab), Bifunctor.mapLeft (ed)),
+})

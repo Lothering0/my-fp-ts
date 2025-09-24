@@ -1,10 +1,10 @@
 import * as option from "../Option"
 import * as result from "../Result"
-import { createCompactable } from "../../typeclasses/Compactable"
+import { create } from "../../typeclasses/Compactable"
 import { IterableHkt } from "./iterable"
 import { Functor } from "./functor"
 
-export const Compactable = createCompactable<IterableHkt> (Functor, {
+export const Compactable = create<IterableHkt> (Functor, {
   compact: self => ({
     *[Symbol.iterator]() {
       for (const a of self) {

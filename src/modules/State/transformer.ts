@@ -1,9 +1,9 @@
 import * as state from "../State"
+import * as applicative from "../../typeclasses/Applicative"
+import * as monad from "../../typeclasses/Monad"
+import * as tappable from "../../typeclasses/Tappable"
 import { Hkt, Kind } from "../../typeclasses/Hkt"
 import { Functor } from "../../typeclasses/Functor"
-import { createApplicative } from "../../typeclasses/Applicative"
-import { createMonad, Monad } from "../../typeclasses/Monad"
-import { createTappable } from "../../typeclasses/Tappable"
 import { flow, pipe } from "../../utils/flow"
 
 export interface StateT<F extends Hkt, In, Collectable, Fixed, TFixed> {
@@ -20,7 +20,7 @@ export interface StateTHkt<F extends Hkt, TFixed> extends Hkt {
   >
 }
 
-export const transform = <F extends Hkt, TFixed>(F: Monad<F>) => {
+export const transform = <F extends Hkt, TFixed>(F: monad.Monad<F>) => {
   type THkt = StateTHkt<F, TFixed>
 
   const fromState: {
@@ -91,8 +91,7 @@ export const transform = <F extends Hkt, TFixed>(F: Monad<F>) => {
       ),
   }
 
-  const Applicative = createApplicative<THkt> ({
-    ...Functor,
+  const Applicative = applicative.create<THkt> (Functor, {
     of: a => s => F.of ([a, s]),
     ap: fa => self => s =>
       pipe (
@@ -103,8 +102,7 @@ export const transform = <F extends Hkt, TFixed>(F: Monad<F>) => {
       ),
   })
 
-  const Monad = createMonad<THkt> ({
-    ...Applicative,
+  const Monad = monad.create<THkt> (Applicative, {
     flat: self => s =>
       pipe (
         self,
@@ -113,7 +111,7 @@ export const transform = <F extends Hkt, TFixed>(F: Monad<F>) => {
       ),
   })
 
-  const Tappable = createTappable (Monad)
+  const Tappable = tappable.create (Monad)
 
   return {
     fromState,

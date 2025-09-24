@@ -1,11 +1,10 @@
 import * as iterable from "../Iterable"
-import { createExtendable } from "../../typeclasses/Extendable"
+import { create } from "../../typeclasses/Extendable"
 import { Tree, TreeHkt } from "./tree"
 import { Functor } from "./functor"
 import { forest, make } from "./utils"
 
-export const Extendable = createExtendable<TreeHkt> ({
-  ...Functor,
+export const Extendable = create<TreeHkt> (Functor, {
   extend: fab => self =>
     make (fab (self), iterable.map (extend (fab)) (forest (self))),
 })

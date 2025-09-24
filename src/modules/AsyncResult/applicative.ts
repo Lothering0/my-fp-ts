@@ -1,11 +1,10 @@
 import * as result from "../Result"
-import { createApplicative } from "../../typeclasses/Applicative"
+import { create } from "../../typeclasses/Applicative"
 import { AsyncResultHkt, succeed, toPromise, AsyncResult } from "./async-result"
 import { pipe } from "../../utils/flow"
 import { Functor } from "./functor"
 
-export const Applicative = createApplicative<AsyncResultHkt> ({
-  ...Functor,
+export const Applicative = create<AsyncResultHkt> (Functor, {
   of: succeed,
   ap: fma => self => () =>
     Promise.all ([toPromise (self), toPromise (fma)]).then (([mab, ma]) =>

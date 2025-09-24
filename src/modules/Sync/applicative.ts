@@ -1,10 +1,9 @@
 import { Functor, map } from "./functor"
 import { SyncHkt, sync, execute, Sync } from "./sync"
-import { createApplicative } from "../../typeclasses/Applicative"
+import { create } from "../../typeclasses/Applicative"
 import { pipe } from "../../utils/flow"
 
-export const Applicative = createApplicative<SyncHkt> ({
-  ...Functor,
+export const Applicative = create<SyncHkt> (Functor, {
   of: sync,
   ap: fa => self => pipe (fa, map (execute (self))),
 })

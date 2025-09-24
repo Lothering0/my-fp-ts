@@ -1,11 +1,10 @@
 import * as result from "../Result"
-import { createApplicative } from "../../typeclasses/Applicative"
+import { create } from "../../typeclasses/Applicative"
 import { succeed, execute, SyncResult, SyncResultHkt } from "./sync-result"
 import { pipe } from "../../utils/flow"
 import { Functor } from "./functor"
 
-export const Applicative = createApplicative<SyncResultHkt> ({
-  ...Functor,
+export const Applicative = create<SyncResultHkt> (Functor, {
   of: succeed,
   ap: fa => self => () =>
     pipe (

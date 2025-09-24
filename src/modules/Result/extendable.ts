@@ -1,9 +1,8 @@
-import { createExtendable } from "../../typeclasses/Extendable"
+import { create } from "../../typeclasses/Extendable"
 import { Result, ResultHkt } from "./result"
 import { Functor, map } from "./functor"
 
-export const Extendable = createExtendable<ResultHkt> ({
-  ...Functor,
+export const Extendable = create<ResultHkt> (Functor, {
   extend: fab => self => map (() => fab (self)) (self),
 })
 

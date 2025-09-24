@@ -48,10 +48,12 @@ export interface Filterable<F extends Hkt> extends Functor<F>, Compactable<F> {
   }
 }
 
-export const createFilterable = <F extends Hkt>(
-  Filterable: Functor<F> & Compactable<F>,
+export const create = <F extends Hkt>(
+  Functor: Functor<F>,
+  Filterable: Compactable<F>,
 ): Filterable<F> => {
-  const { compact, separate, map } = Filterable
+  const { map } = Functor
+  const { compact, separate } = Filterable
 
   const filterMap: Filterable<F>["filterMap"] = p => flow (map (p), compact)
 
@@ -65,6 +67,7 @@ export const createFilterable = <F extends Hkt>(
     partitionMap (a => p (a) ? succeed (a) : fail (a))
 
   return {
+    ...Functor,
     ...Filterable,
     partitionMap,
     partition,

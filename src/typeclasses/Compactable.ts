@@ -20,7 +20,7 @@ export interface Compactable<F extends Hkt> extends TypeClass<F> {
   ]
 }
 
-export const createCompactable: {
+export const create: {
   <F extends Hkt>(
     Functor: Functor<F>,
     Compactable: Pick<Compactable<F>, "compact"> & Partial<Compactable<F>>,

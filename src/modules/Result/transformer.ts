@@ -1,14 +1,14 @@
 import * as result from "../Result"
+import * as bifunctor from "../../typeclasses/Bifunctor"
+import * as applicative from "../../typeclasses/Applicative"
+import * as monad from "../../typeclasses/Monad"
+import * as extendable from "../../typeclasses/Extendable"
+import * as tappable from "../../typeclasses/Tappable"
 import { identity } from "../Identity"
 import { Hkt, Kind } from "../../typeclasses/Hkt"
 import { Functor } from "../../typeclasses/Functor"
-import { createBifunctor } from "../../typeclasses/Bifunctor"
-import { createApplicative } from "../../typeclasses/Applicative"
-import { createMonad, Monad } from "../../typeclasses/Monad"
-import { createTappable } from "../../typeclasses/Tappable"
 import { flow, pipe } from "../../utils/flow"
 import { Alt } from "../../typeclasses/Alt"
-import { createExtendable } from "../../typeclasses/Extendable"
 
 export type ResultT<F extends Hkt, In, Collectable, Fixed, TCollectable> = Kind<
   F,
@@ -27,7 +27,7 @@ export interface ResultTHkt<F extends Hkt, TCollectable> extends Hkt {
   >
 }
 
-export const transform = <F extends Hkt, TCollectable>(M: Monad<F>) => {
+export const transform = <F extends Hkt, TCollectable>(M: monad.Monad<F>) => {
   type THkt = ResultTHkt<F, TCollectable>
 
   const succeed: {
@@ -134,13 +134,11 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad<F>) => {
     map: flow (result.map, M.map),
   }
 
-  const Bifunctor = createBifunctor<THkt> ({
-    ...Functor,
+  const Bifunctor = bifunctor.create<THkt> (Functor, {
     mapLeft: ed => flow (M.map (result.mapLeft (ed))),
   })
 
-  const Applicative = createApplicative<THkt> ({
-    ...Functor,
+  const Applicative = applicative.create<THkt> (Functor, {
     of: succeed,
     ap:
       <In, Collectable1, Fixed>(fma: Kind<THkt, In, Collectable1, Fixed>) =>
@@ -156,8 +154,7 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad<F>) => {
         ),
   })
 
-  const Monad = createMonad<THkt> ({
-    ...Applicative,
+  const Monad = monad.create<THkt> (Applicative, {
     flat: <In, Collectable1, Collectable2, Fixed>(
       self: Kind<
         THkt,
@@ -185,10 +182,9 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad<F>) => {
       ),
   })
 
-  const Tappable = createTappable (Monad)
+  const Tappable = tappable.create (Monad)
 
-  const Extendable = createExtendable<THkt> ({
-    ...Functor,
+  const Extendable = extendable.create<THkt> (Functor, {
     extend: fab => self =>
       pipe (
         self,

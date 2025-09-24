@@ -1,10 +1,9 @@
-import { createMonad } from "../../typeclasses/Monad"
+import { create } from "../../typeclasses/Monad"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
 import { Applicative } from "./applicative"
 import { Identity, IdentityHkt, identity } from "./identity"
 
-export const Monad = createMonad<IdentityHkt> ({
-  ...Applicative,
+export const Monad = create<IdentityHkt> (Applicative, {
   flat: identity,
 })
 

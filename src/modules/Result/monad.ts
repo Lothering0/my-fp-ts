@@ -1,12 +1,11 @@
 import { Applicative } from "./applicative"
 import { fail, Result, ResultHkt } from "./result"
 import { match } from "./matchers"
-import { createMonad } from "../../typeclasses/Monad"
+import { create } from "../../typeclasses/Monad"
 import { DoObject, DoObjectKey } from "../../types/DoObject"
 import { identity } from "../Identity"
 
-export const Monad = createMonad<ResultHkt> ({
-  ...Applicative,
+export const Monad = create<ResultHkt> (Applicative, {
   flat: match ({
     onFailure: fail,
     onSuccess: identity,

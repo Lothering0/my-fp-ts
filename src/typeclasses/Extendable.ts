@@ -13,11 +13,13 @@ export interface Extendable<F extends Hkt> extends Functor<F> {
   ) => Kind<F, Kind<F, In, Collectable, Fixed>, Collectable, Fixed>
 }
 
-export const createExtendable: {
+export const create: {
   <F extends Hkt>(
-    Extendable: Functor<F> & Pick<Extendable<F>, "extend">,
+    Functor: Functor<F>,
+    Extendable: Pick<Extendable<F>, "extend">,
   ): Extendable<F>
-} = Extendable => ({
+} = (Functor, Extendable) => ({
+  ...Functor,
   ...Extendable,
   duplicate: Extendable.extend (identity),
 })

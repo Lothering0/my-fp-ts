@@ -18,7 +18,7 @@ export interface Tappable<F extends Hkt> extends TypeClass<F> {
   ) => Kind<F, In, Collectable, Fixed>
 }
 
-export const createTappable: {
+export const create: {
   <F extends Hkt>(Monad: Monad<F>): Tappable<F>
 } = Monad => ({
   tap: f => self =>

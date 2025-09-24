@@ -1,25 +1,22 @@
+import * as filterable from "../../typeclasses/Filterable"
+import * as filterableWithIndex from "../../typeclasses/FilterableWithIndex"
 import { Option } from "../Option"
 import { PredicateWithIndex } from "../Predicate"
 import { Result } from "../Result"
 import { ReadonlyArrayHkt } from "./readonly-array"
-import { createFilterableWithIndex } from "../../typeclasses/FilterableWithIndex"
-import { createFilterable } from "../../typeclasses/Filterable"
 import { Compactable } from "./compactable"
 import { Functor, FunctorWithIndex } from "./functor"
 import { RefinementWithIndex } from "../Refinement"
 
-export const Filterable = createFilterable<ReadonlyArrayHkt> ({
-  ...Compactable,
-  ...Functor,
-})
+export const Filterable = filterable.create<ReadonlyArrayHkt> (
+  Functor,
+  Compactable,
+)
 
-export const FilterableWithIndex = createFilterableWithIndex<
+export const FilterableWithIndex = filterableWithIndex.create<
   ReadonlyArrayHkt,
   number
-> ({
-  ...Filterable,
-  ...FunctorWithIndex,
-})
+> (FunctorWithIndex, Filterable)
 
 export const filterMap: {
   <A, B>(

@@ -1,6 +1,6 @@
 import * as iterable from "../Iterable"
 import { Tree, TreeHkt } from "./tree"
-import { createApplicative } from "../../typeclasses/Applicative"
+import { create } from "../../typeclasses/Applicative"
 import { Functor, map } from "./functor"
 import { make, value, forest } from "./utils"
 import { pipe, flow } from "../../utils/flow"
@@ -15,8 +15,7 @@ export const flat: {
     ),
   )
 
-export const Applicative = createApplicative<TreeHkt> ({
-  ...Functor,
+export const Applicative = create<TreeHkt> (Functor, {
   of: make,
   ap: fa =>
     flow (
