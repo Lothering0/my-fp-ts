@@ -1,4 +1,3 @@
-import * as identity from "../Identity"
 import * as readonlyArray from "../ReadonlyArray"
 import * as readonlyRecord from "../ReadonlyRecord"
 import * as option from "../Option"
@@ -57,17 +56,11 @@ export const isTemplateValid: {
 } = template =>
   pipe (
     durationUnitsFull,
-    readonlyArray.reduce ("", (acc, unit, i) =>
-      pipe (
-        identity.Do,
-        identity.apS ("shortUnit", durationUnitsShort[i]),
-        identity.mapTo (
-          "part",
-          ({ shortUnit }) => `(\\d+ (${unit}|${shortUnit}))|(1 ${unit}?)`,
-        ),
-        identity.map (({ part }) => acc ? `(${part})? ?(${acc})?` : part),
-      ),
-    ),
+    readonlyArray.reduce ("", (acc, unit, i) => {
+      const shortUnit = durationUnitsShort[i]
+      const part = `(\\d+ (${unit}|${shortUnit}))|(1 ${unit}?)`
+      return acc ? `(${part})? ?(${acc})?` : part
+    }),
     string.prepend ("^"),
     string.append ("$"),
     pattern => new RegExp (pattern),
@@ -137,30 +130,22 @@ export const make: {
 
 export const prettify: {
   (self: Duration): Duration
-} = self =>
-  pipe (
-    identity.Do,
-    identity.apS ("ms", toMilliseconds (self)),
-    identity.mapTo ("milliseconds", ({ ms }) => ms % 1000),
-    identity.mapTo ("seconds", ({ ms }) => Math.floor (toSeconds (ms)) % 60),
-    identity.mapTo ("minutes", ({ ms }) => Math.floor (toMinutes (ms)) % 60),
-    identity.mapTo ("hours", ({ ms }) => Math.floor (toHours (ms)) % 24),
-    identity.mapTo ("days", ({ ms }) => Math.floor (toDays (ms)) % 30),
-    identity.mapTo ("months", ({ ms }) => Math.floor (toMonths (ms)) % 12),
-    identity.mapTo ("years", ({ ms }) => Math.floor (toYears (ms))),
-    identity.map (
-      ({ years, months, days, hours, minutes, seconds, milliseconds }) => ({
-        years,
-        months,
-        days,
-        hours,
-        minutes,
-        seconds,
-        milliseconds,
-      }),
-    ),
+} = self => {
+  const ms = toMilliseconds (self)
+  const out = {
+    years: Math.floor (toYears (ms)),
+    months: Math.floor (toMonths (ms)) % 12,
+    days: Math.floor (toDays (ms)) % 30,
+    hours: Math.floor (toHours (ms)) % 24,
+    minutes: Math.floor (toMinutes (ms)) % 60,
+    seconds: Math.floor (toSeconds (ms)) % 60,
+    milliseconds: ms % 1000,
+  }
+  return pipe (
+    out,
     readonlyRecord.filter (value => value !== 0),
   )
+}
 
 export const toTemplate: {
   (self: Duration): string
@@ -203,46 +188,26 @@ const millisecondsFromYears: {
 
 export const toMilliseconds: {
   (input: DurationInput): number
-} = input =>
-  pipe (
-    identity.Do,
-    identity.apS ("duration", make (input)),
-    identity.mapTo (
-      "years",
-      ({ duration }) => duration.years ?? duration.y ?? 0,
-    ),
-    identity.mapTo (
-      "months",
-      ({ duration }) => duration.months ?? duration.mn ?? 0,
-    ),
-    identity.mapTo ("days", ({ duration }) => duration.days ?? duration.d ?? 0),
-    identity.mapTo (
-      "hours",
-      ({ duration }) => duration.hours ?? duration.h ?? 0,
-    ),
-    identity.mapTo (
-      "minutes",
-      ({ duration }) => duration.minutes ?? duration.m ?? 0,
-    ),
-    identity.mapTo (
-      "seconds",
-      ({ duration }) => duration.seconds ?? duration.s ?? 0,
-    ),
-    identity.mapTo (
-      "milliseconds",
-      ({ duration }) => duration.milliseconds ?? duration.ms ?? 0,
-    ),
-    identity.map (
-      ({ milliseconds, seconds, minutes, hours, days, months, years }) =>
-        milliseconds +
-        millisecondsFromSeconds (seconds) +
-        millisecondsFromMinutes (minutes) +
-        millisecondsFromHours (hours) +
-        millisecondsFromDays (days) +
-        millisecondsFromMonths (months) +
-        millisecondsFromYears (years),
-    ),
+} = input => {
+  const duration = make (input)
+  const years = duration.years ?? duration.y ?? 0
+  const months = duration.months ?? duration.mn ?? 0
+  const days = duration.days ?? duration.d ?? 0
+  const hours = duration.hours ?? duration.h ?? 0
+  const minutes = duration.minutes ?? duration.m ?? 0
+  const seconds = duration.seconds ?? duration.s ?? 0
+  const milliseconds = duration.milliseconds ?? duration.ms ?? 0
+
+  return (
+    milliseconds +
+    millisecondsFromSeconds (seconds) +
+    millisecondsFromMinutes (minutes) +
+    millisecondsFromHours (hours) +
+    millisecondsFromDays (days) +
+    millisecondsFromMonths (months) +
+    millisecondsFromYears (years)
   )
+}
 
 export const toSeconds: {
   (duration: DurationInput): number
