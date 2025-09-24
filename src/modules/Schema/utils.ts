@@ -125,7 +125,13 @@ export const maxLength =
       return result.succeed (x as A)
     })
 
-export const transform: {
+export const transformIn: {
+  <In, In1 = unknown, Out = In1>(
+    f: (a: unknown) => Out,
+  ): (Schema: Schema<In, Out>) => Schema<In1, Out>
+} = f => Schema => create (flow (f, Schema.proceed))
+
+export const transformOut: {
   <Out1, In, Out2>(
     f: (a: Out1) => Out2,
   ): (Schema: Schema<In, Out1>) => Schema<In, Out2>

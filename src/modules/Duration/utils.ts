@@ -1,4 +1,3 @@
-import * as matching from "../Matching"
 import * as identity from "../Identity"
 import * as readonlyArray from "../ReadonlyArray"
 import * as readonlyRecord from "../ReadonlyRecord"
@@ -123,13 +122,18 @@ export const fromTemplateOrZero: {
 
 export const make: {
   (input: DurationInput): Duration
-} = flow (
-  matching.match,
-  matching.on (isObject, identity.identity<Duration>),
-  matching.on (isString, fromTemplateOrZero),
-  matching.on (isNumber, fromMilliseconds),
-  matching.getOrElse (constant (empty)),
-)
+} = input => {
+  if (isObject (input)) {
+    return input
+  }
+  if (isString (input)) {
+    return fromTemplateOrZero (input)
+  }
+  if (isNumber (input)) {
+    return fromMilliseconds (input)
+  }
+  return empty
+}
 
 export const prettify: {
   (self: Duration): Duration

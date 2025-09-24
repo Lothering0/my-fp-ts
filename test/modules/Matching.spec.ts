@@ -5,6 +5,7 @@ import {
   pipe,
   readonlyArray,
   result,
+  schema,
 } from "../../src"
 
 describe ("Matching", () => {
@@ -231,6 +232,21 @@ describe ("Matching", () => {
         matching.getResult,
       )
       expect (result_).toEqual (result.succeed (2))
+    })
+  })
+
+  describe ("whenSchema", () => {
+    it ("should return value of first matching which processable by schema", () => {
+      const result_ = pipe (
+        1.5,
+        matching.match,
+        matching.whenSchema (schema.Integer, () => "a"),
+        matching.whenSchema (schema.Never, () => "b"),
+        matching.whenSchema (schema.Number, () => "c"),
+        matching.whenSchema (schema.Any, () => "d"),
+        matching.getResult,
+      )
+      expect (result_).toEqual (result.succeed ("c"))
     })
   })
 })

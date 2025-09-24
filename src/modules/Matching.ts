@@ -4,6 +4,7 @@ import * as result from "./Result"
 import * as boolean from "./Boolean"
 import * as equivalence from "../typeclasses/Equivalence"
 import * as predicate from "./Predicate"
+import * as schema from "./Schema"
 import { flow, pipe } from "../utils/flow"
 import { Refinement } from "./Refinement"
 
@@ -109,6 +110,20 @@ export const whenNotInstance: {
   ): <B>(self: Matching<E, B>) => Matching<E, A | B>
 } = (constructor, ea) =>
   on (e => pipe (e instanceof constructor, boolean.not), ea)
+
+export const whenSchema: {
+  <E, D extends E, A>(
+    Schema: schema.Schema<D>,
+    ea: (e: D) => A,
+  ): <B>(self: Matching<E, B>) => Matching<E, A | B>
+} = (Schema, ea) => on (schema.validate (Schema), ea)
+
+export const whenNotSchema: {
+  <E, D extends E, A>(
+    Schema: schema.Schema<D>,
+    ea: (e: D) => A,
+  ): <B>(self: Matching<E, B>) => Matching<E, A | B>
+} = (Schema, ea) => onNot (schema.validate (Schema), ea)
 
 export const getResult: {
   <E, A>(self: Matching<E, A>): result.Result<E, A>
