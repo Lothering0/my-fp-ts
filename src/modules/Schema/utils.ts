@@ -2,9 +2,9 @@ import * as result from "../Result"
 import * as boolean from "../Boolean"
 import * as equivalence from "../../typeclasses/Equivalence"
 import { pipe } from "../../utils/flow"
-import { isObject, isUndefined } from "../../utils/typeChecks"
+import { isUndefined } from "../../utils/typeChecks"
 import { create, Schema, SchemaOptional } from "./schema"
-import { message, ProcessResult } from "./process"
+import { message } from "./process"
 import { LazyArg } from "../../types/utils"
 import { hole } from "../../utils/hole"
 
@@ -85,45 +85,6 @@ export const union: {
 
     return pipe (thatResult, result.orElse (selfResult))
   })
-
-const intersectionProceed =
-  <A>(that: Schema<A>) =>
-  <B>(self: Schema<B>) =>
-  (x: unknown): ProcessResult<A & B> => {
-    const selfResult = self.proceed (x)
-    const thatResult = that.proceed (x)
-    let messages: ReadonlyArray<string> = []
-
-    if (result.isFailure (selfResult)) {
-      messages = [...result.failure (selfResult)]
-    }
-
-    if (result.isFailure (thatResult)) {
-      messages = [...messages, ...result.failure (thatResult)]
-    }
-
-    if (result.isFailure (selfResult) || result.isFailure (thatResult)) {
-      return result.fail (messages)
-    }
-
-    return thatResult as ProcessResult<A & B>
-  }
-
-export const intersection: {
-  <A>(that: Schema<A>): <B>(self: Schema<B>) => Schema<A & B>
-} = that => self => {
-  if (!isObject (that.schemasByKey) || !isObject (self.schemasByKey)) {
-    return create (intersectionProceed (that) (self))
-  }
-
-  return create ({
-    schemasByKey: {
-      ...self.schemasByKey,
-      ...that.schemasByKey,
-    },
-    proceed: intersectionProceed (that) (self),
-  })
-}
 
 export const minLength =
   (min: number) =>

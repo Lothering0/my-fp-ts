@@ -149,3 +149,47 @@ describe ("required", () => {
     ).toEqual (result.succeed ({ id: 1, name: "John", isActive: false }))
   })
 })
+
+describe ("intersection", () => {
+  it ("should return intersection of two schemas", () => {
+    const User = schema.Struct ({
+      id: schema.Number,
+      name: schema.String,
+    })
+    const Status = schema.Struct ({
+      enabled: schema.Boolean,
+    })
+    const UserWithStatus = pipe (User, schema.intersection (Status))
+    pipe (schema.validateUnknown (UserWithStatus) (undefined), expect).toBe (false)
+    pipe (
+      schema.proceed (UserWithStatus) ({ id: 1, name: "John", enabled: true }),
+      expect,
+    ).toEqual (result.succeed ({ id: 1, name: "John", enabled: true }))
+    pipe (
+      schema.proceedUnknown (UserWithStatus) ({ id: 1, name: "John" }),
+      expect,
+    ).toEqual (result.fail (['property "enabled" is required']))
+  })
+})
+
+describe ("intersection", () => {
+  it ("should return intersection of two schemas", () => {
+    const User = schema.Struct ({
+      id: schema.Number,
+      name: schema.String,
+    })
+    const Status = schema.Struct ({
+      enabled: schema.Boolean,
+    })
+    const UserWithStatus = pipe (User, schema.intersection (Status))
+    pipe (schema.validateUnknown (UserWithStatus) (undefined), expect).toBe (false)
+    pipe (
+      schema.proceed (UserWithStatus) ({ id: 1, name: "John", enabled: true }),
+      expect,
+    ).toEqual (result.succeed ({ id: 1, name: "John", enabled: true }))
+    pipe (
+      schema.proceedUnknown (UserWithStatus) ({ id: 1, name: "John" }),
+      expect,
+    ).toEqual (result.fail (['property "enabled" is required']))
+  })
+})

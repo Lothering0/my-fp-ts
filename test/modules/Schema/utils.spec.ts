@@ -94,10 +94,6 @@ describe ("union", () => {
   })
 })
 
-describe ("intersection", () => {
-  it.todo ("should return intersection of two types")
-})
-
 describe ("minLength", () => {
   it ("should correctly validate length of a string", () => {
     const StringSchema = pipe (schema.String, schema.minLength (2))

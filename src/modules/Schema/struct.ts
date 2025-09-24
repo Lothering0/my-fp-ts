@@ -171,3 +171,16 @@ export const required: {
     Struct,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ) as any
+
+export const intersection: {
+  <A extends readonlyRecord.ReadonlyRecord<string, Schema<unknown>>>(
+    that: StructSchema<A>,
+  ): <B extends readonlyRecord.ReadonlyRecord<string, Schema<unknown>>>(
+    self: StructSchema<B>,
+  ) => StructSchema<A & B>
+} = that => self => {
+  return Struct ({
+    ...self.schemasByKey,
+    ...that.schemasByKey,
+  })
+}
