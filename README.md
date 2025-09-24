@@ -16,8 +16,10 @@
 | `let`                         | `setTo`                         |
 | `flatten`                     | `flat`                          |
 | `Semigroup.concat`            | `Semigroup.combine`             |
+| `Eq`                          | `Equivalence`                   |
+| `Ord`                         | `Order`                         |
 
 - My implementation has neither `Array` nor `NonEmptyArray` monads. Instead there are only `ReadonlyArray` and `NonEmptyReadonlyArray`. Those modules don't contain `unsafe` operations.
 - There are modules and type classes which I have not implemented yet... or will never do.
 
-Would thank to [Encoding HKTs in TypeScript](https://dev.to/effect/encoding-of-hkts-in-typescript-5c3) article by [Mike Arnaldi](https://github.com/mikearnaldi) for inspiration.
+Would thank to [Mike Arnaldi](https://github.com/mikearnaldi) for [Encoding HKTs in TypeScript](https://dev.to/effect/encoding-of-hkts-in-typescript-5c3) article.
