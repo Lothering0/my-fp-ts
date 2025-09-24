@@ -7,7 +7,7 @@ import { message } from "./process"
 import { isDateValid } from "../../utils/time"
 import { pipe } from "../../utils/flow"
 
-export const DateLike: Schema<Date, Date | duration.DurationInput> = create (
+export const DateLike: Schema<Date | duration.DurationInput, Date> = create (
   x => {
     if (!isDate (x) && isRecord (x)) {
       return pipe (x, duration.make, duration.toDate, result.succeed)

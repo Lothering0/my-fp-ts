@@ -2,7 +2,7 @@ import { hole } from "../../utils/hole"
 import { isFunction } from "../../utils/typeChecks"
 import { ProcessResult } from "./process"
 
-export interface Schema<Out, In = Out> {
+export interface Schema<In, Out = In> {
   readonly _In: In
   readonly Type: Out
   readonly proceed: (x: unknown) => ProcessResult<Out>
@@ -10,18 +10,18 @@ export interface Schema<Out, In = Out> {
   readonly schemasByKey?: {}
 }
 
-export interface SchemaOptional<Out, In = Out> extends Schema<Out, In> {
+export interface SchemaOptional<In, Out = In> extends Schema<In, Out> {
   readonly isOptional: true
 }
 
 export type Type<A extends Schema<unknown>> = A["Type"]
 
 export const create: {
-  <Out, In = Out>(proceed: (x: unknown) => ProcessResult<Out>): Schema<Out, In>
+  <In, Out = In>(proceed: (x: unknown) => ProcessResult<Out>): Schema<In, Out>
   <Out, In = Out>(
-    partialSchema: Partial<Omit<Schema<Out, In>, "Type" | "_In">> &
-      Pick<Schema<Out, In>, "proceed">,
-  ): Schema<Out, In>
+    partialSchema: Partial<Omit<Schema<In, Out>, "Type" | "_In">> &
+      Pick<Schema<In, Out>, "proceed">,
+  ): Schema<In, Out>
 } = partialSchemaOrProceed => {
   if (isFunction (partialSchemaOrProceed)) {
     const proceed = partialSchemaOrProceed

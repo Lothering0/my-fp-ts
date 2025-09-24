@@ -6,7 +6,7 @@ import { create, Schema } from "./schema"
 import { message } from "./process"
 import { pipe } from "../../utils/flow"
 
-export const Duration: Schema<duration.Duration, duration.DurationInput> =
+export const Duration: Schema<duration.DurationInput, duration.Duration> =
   create (x => {
     if (isString (x)) {
       return pipe (

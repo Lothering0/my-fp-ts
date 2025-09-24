@@ -41,7 +41,7 @@ export const lazy = <A>(schema: LazyArg<Schema<A>>): Schema<A> => {
 }
 
 export const optional: {
-  <Out, In = Out>(schema: Schema<Out, In>): SchemaOptional<Out | undefined, In>
+  <In, Out = In>(schema: Schema<In, Out>): SchemaOptional<In, Out | undefined>
 } = schema => ({
   _In: hole (),
   Type: hole (),
@@ -128,5 +128,5 @@ export const maxLength =
 export const transform: {
   <Out1, In, Out2>(
     f: (a: Out1) => Out2,
-  ): (Schema: Schema<Out1, In>) => Schema<Out2, In>
+  ): (Schema: Schema<In, Out1>) => Schema<In, Out2>
 } = f => Schema => create (flow (Schema.proceed, result.map (f)))
