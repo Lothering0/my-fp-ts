@@ -1,7 +1,7 @@
-import { number, pipe, readonlyRecord } from "../../../src"
+import { number, pipe, record } from "../../../src"
 
 describe ("getIntersectionSemigroup", () => {
-  const semigroup = readonlyRecord.getIntersectionSemigroup (number.SemigroupSum)
+  const semigroup = record.getIntersectionSemigroup (number.SemigroupSum)
 
   it ("should return intersection of first and second record combined by provided semigroup", () => {
     pipe ({}, semigroup.combine ({ a: 1, b: 2, c: 3 }), expect).toEqual ({})

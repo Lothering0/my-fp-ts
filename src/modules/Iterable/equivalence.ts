@@ -13,13 +13,13 @@ export const getEquivalence: {
       const x = firstIterator.next ()
       const y = secondIterator.next ()
       const areBothDone = Boolean (x.done) && Boolean (y.done)
-      const someHasFinished = Boolean (x.done) || Boolean (y.done)
+      const someHasDone = Boolean (x.done) || Boolean (y.done)
 
       if (areBothDone) {
         return true
       }
 
-      if (someHasFinished) {
+      if (someHasDone) {
         return false
       }
 

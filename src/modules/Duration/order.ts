@@ -1,6 +1,6 @@
 import * as order from "../../typeclasses/Order"
-import { flow } from "../../utils/flow"
 import * as number from "../Number"
+import { flow } from "../../utils/flow"
 import { Duration } from "./duration"
 import { toMilliseconds } from "./utils"
 

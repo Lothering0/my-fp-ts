@@ -1,7 +1,7 @@
 import * as result from "../Result"
 import * as string from "../String"
-import * as readonlyArray from "../ReadonlyArray"
-import * as readonlyRecord from "../ReadonlyRecord"
+import * as array from "../ReadonlyArray"
+import * as record from "../ReadonlyRecord"
 import { create, Schema, SchemaOptional, Type } from "./schema"
 import { pipe } from "../../utils/flow"
 import { hole } from "../../utils/hole"
@@ -11,7 +11,7 @@ import { optional } from "./utils"
 import { Prettify } from "../../types/utils"
 
 export interface StructSchema<
-  Out extends readonlyRecord.ReadonlyRecord<string, Schema<unknown>>,
+  Out extends record.ReadonlyRecord<string, Schema<unknown>>,
 > extends Schema<
     Prettify<
       {
@@ -29,7 +29,7 @@ export interface StructSchema<
 }
 
 export const Struct = <
-  A extends readonlyRecord.ReadonlyRecord<string, Schema<unknown>>,
+  A extends record.ReadonlyRecord<string, Schema<unknown>>,
 >(
   schemasByKey: A,
 ): StructSchema<A> => ({
@@ -42,32 +42,32 @@ export const Struct = <
       return result.fail ([message`value ${x} is not a struct`])
     }
 
-    const DifferenceMagma = readonlyArray.getDifferenceMagma (string.Equivalence)
+    const DifferenceMagma = array.getDifferenceMagma (string.Equivalence)
     const excessiveKeys = pipe (
       x,
-      readonlyRecord.keys,
-      DifferenceMagma.combine (pipe (schemasByKey, readonlyRecord.keys)),
+      record.keys,
+      DifferenceMagma.combine (pipe (schemasByKey, record.keys)),
     )
 
-    if (readonlyArray.isNonEmpty (excessiveKeys)) {
+    if (array.isNonEmpty (excessiveKeys)) {
       return pipe (
         excessiveKeys,
-        readonlyArray.map (key => message`property ${key} should not exist`),
+        array.map (key => message`property ${key} should not exist`),
         result.fail,
       )
     }
 
     const missingKeys = pipe (
       schemasByKey,
-      readonlyRecord.keys,
-      readonlyArray.filter (k => !schemasByKey[k]?.isOptional),
-      DifferenceMagma.combine (pipe (x, readonlyRecord.keys)),
+      record.keys,
+      array.filter (k => !schemasByKey[k]?.isOptional),
+      DifferenceMagma.combine (pipe (x, record.keys)),
     )
 
-    if (readonlyArray.isNonEmpty (missingKeys)) {
+    if (array.isNonEmpty (missingKeys)) {
       return pipe (
         missingKeys,
-        readonlyArray.map (key => message`property ${key} is required`),
+        array.map (key => message`property ${key} is required`),
         result.fail,
       )
     }
@@ -82,7 +82,7 @@ export const Struct = <
         const msgs = pipe (
           processResult,
           result.failureOf,
-          readonlyArray.map (msg => `${message`on property ${k}`}: ${msg}`),
+          array.map (msg => `${message`on property ${k}`}: ${msg}`),
         )
         messages = [...messages, ...msgs]
         continue
@@ -91,7 +91,7 @@ export const Struct = <
       out[k] = result.successOf (processResult)
     }
 
-    if (readonlyArray.isNonEmpty (messages)) {
+    if (array.isNonEmpty (messages)) {
       return result.fail (messages)
     }
 
@@ -100,7 +100,7 @@ export const Struct = <
 })
 
 export const keyof: {
-  <A extends readonlyRecord.ReadonlyRecord<string, Schema<unknown>>>(
+  <A extends record.ReadonlyRecord<string, Schema<unknown>>>(
     self: StructSchema<A>,
   ): Schema<keyof A>
 } = self => {
@@ -119,7 +119,7 @@ export const keyof: {
 
 export const omit: {
   <
-    A extends readonlyRecord.ReadonlyRecord<string, Schema<unknown>>,
+    A extends record.ReadonlyRecord<string, Schema<unknown>>,
     K extends ReadonlyArray<keyof A>,
   >(
     ...keys: K
@@ -127,11 +127,11 @@ export const omit: {
 } =
   (...keys) =>
   self =>
-    pipe (self.schemasByKey, readonlyRecord.omit (...keys), Struct)
+    pipe (self.schemasByKey, record.omit (...keys), Struct)
 
 export const pick: {
   <
-    A extends readonlyRecord.ReadonlyRecord<string, Schema<unknown>>,
+    A extends record.ReadonlyRecord<string, Schema<unknown>>,
     K extends ReadonlyArray<keyof A>,
   >(
     ...keys: K
@@ -139,23 +139,23 @@ export const pick: {
 } =
   (...keys) =>
   self =>
-    pipe (self.schemasByKey, readonlyRecord.pick (...keys), Struct)
+    pipe (self.schemasByKey, record.pick (...keys), Struct)
 
 export const partial: {
-  <A extends readonlyRecord.ReadonlyRecord<string, Schema<unknown>>>(
+  <A extends record.ReadonlyRecord<string, Schema<unknown>>>(
     self: StructSchema<A>,
   ): StructSchema<{ [K in keyof A]: SchemaOptional<Type<A[K]>> }>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-} = self => pipe (self.schemasByKey, readonlyRecord.map (optional), Struct) as any
+} = self => pipe (self.schemasByKey, record.map (optional), Struct) as any
 
 export const required: {
-  <A extends readonlyRecord.ReadonlyRecord<string, Schema<unknown>>>(
+  <A extends record.ReadonlyRecord<string, Schema<unknown>>>(
     self: StructSchema<A>,
   ): StructSchema<{ [K in keyof A]: Schema<Type<A[K]>> }>
 } = self =>
   pipe (
     self.schemasByKey,
-    readonlyRecord.map (
+    record.map (
       (schema): Schema<unknown> => ({
         _In: hole (),
         Type: hole (),
@@ -175,9 +175,9 @@ export const required: {
   ) as any
 
 export const intersection: {
-  <A extends readonlyRecord.ReadonlyRecord<string, Schema<unknown>>>(
+  <A extends record.ReadonlyRecord<string, Schema<unknown>>>(
     that: StructSchema<A>,
-  ): <B extends readonlyRecord.ReadonlyRecord<string, Schema<unknown>>>(
+  ): <B extends record.ReadonlyRecord<string, Schema<unknown>>>(
     self: StructSchema<B>,
   ) => StructSchema<A & B>
 } = that => self =>

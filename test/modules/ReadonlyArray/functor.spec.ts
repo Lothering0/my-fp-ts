@@ -1,11 +1,11 @@
-import { number, readonlyArray } from "../../../src"
+import { number, array } from "../../../src"
 import { describeFunctorLaws } from "../../_utils/describeFunctorLaws"
 
-describeFunctorLaws (
-  readonlyArray.Functor,
-  readonlyArray.getEquivalence (number.Equivalence),
-  [[], [1], [1, 2, 3]],
-)
+describeFunctorLaws (array.Functor, array.getEquivalence (number.Equivalence), [
+  [],
+  [1],
+  [1, 2, 3],
+])
 
 describe ("functor", () => {
   describe ("map", () => {
@@ -15,9 +15,9 @@ describe ("functor", () => {
       const z = 3
       const n = 1
 
-      expect (readonlyArray.map (number.add (n)) ([])).toEqual ([])
-      expect (readonlyArray.map (number.add (n)) ([x])).toEqual ([number.add (x) (n)])
-      expect (readonlyArray.map (number.add (n)) ([x, y, z])).toEqual ([
+      expect (array.map (number.add (n)) ([])).toEqual ([])
+      expect (array.map (number.add (n)) ([x])).toEqual ([number.add (x) (n)])
+      expect (array.map (number.add (n)) ([x, y, z])).toEqual ([
         number.add (x) (n),
         number.add (y) (n),
         number.add (z) (n),

@@ -1,4 +1,4 @@
-import * as readonlyArray from "../ReadonlyArray"
+import * as array from "../ReadonlyArray"
 import * as applicative from "../../typeclasses/Applicative"
 import * as applicativeWithIndex from "../../typeclasses/ApplicativeWithIndex"
 import {
@@ -7,11 +7,11 @@ import {
 } from "./non-empty-readonly-array"
 
 export const Applicative = {
-  ...readonlyArray.Applicative,
+  ...array.Applicative,
 } as applicative.Applicative<NonEmptyReadonlyArrayHkt>
 
 export const ApplicativeWithIndex = {
-  ...readonlyArray.ApplicativeWithIndex,
+  ...array.ApplicativeWithIndex,
 } as applicativeWithIndex.ApplicativeWithIndex<NonEmptyReadonlyArrayHkt, number>
 
 export const of: {

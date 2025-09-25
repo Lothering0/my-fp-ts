@@ -1,14 +1,13 @@
 import * as foldable from "../../typeclasses/Foldable"
 import * as foldableWithIndex from "../../typeclasses/FoldableWithIndex"
-import * as readonlyArray from "../ReadonlyArray"
+import * as array from "../ReadonlyArray"
 import { flow } from "../../utils/flow"
 import { ReadonlyRecord, ReadonlyRecordHkt } from "./readonly-record"
 import { toEntries, values } from "./utils"
 
 export const Foldable: foldable.Foldable<ReadonlyRecordHkt> = {
-  reduce: (b, bab) => flow (values, readonlyArray.Foldable.reduce (b, bab)),
-  reduceRight: (b, abb) =>
-    flow (values, readonlyArray.Foldable.reduceRight (b, abb)),
+  reduce: (b, bab) => flow (values, array.Foldable.reduce (b, bab)),
+  reduceRight: (b, abb) => flow (values, array.Foldable.reduceRight (b, abb)),
 }
 
 export const FoldableWithIndex: foldableWithIndex.FoldableWithIndex<
@@ -19,12 +18,12 @@ export const FoldableWithIndex: foldableWithIndex.FoldableWithIndex<
   reduceWithIndex: (b, baib) =>
     flow (
       toEntries,
-      readonlyArray.reduce (b, (out, [k, a]) => baib (out, a, k)),
+      array.reduce (b, (out, [k, a]) => baib (out, a, k)),
     ),
   reduceRightWithIndex: (b, abib) =>
     flow (
       toEntries,
-      readonlyArray.reduceRight (b, ([k, a], out) => abib (a, out, k)),
+      array.reduceRight (b, ([k, a], out) => abib (a, out, k)),
     ),
 }
 

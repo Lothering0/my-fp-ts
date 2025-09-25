@@ -1,4 +1,4 @@
-import * as nonEmptyReadonlyArray from "../NonEmptyReadonlyArray"
+import * as nonEmptyArray from "../NonEmptyReadonlyArray"
 import { length } from "./utils"
 
 export const isEmpty = <A>(self: ReadonlyArray<A>): self is readonly [] =>
@@ -6,4 +6,4 @@ export const isEmpty = <A>(self: ReadonlyArray<A>): self is readonly [] =>
 
 export const isNonEmpty = <A>(
   self: ReadonlyArray<A>,
-): self is nonEmptyReadonlyArray.NonEmptyReadonlyArray<A> => !isEmpty (self)
+): self is nonEmptyArray.NonEmptyReadonlyArray<A> => !isEmpty (self)

@@ -3,7 +3,7 @@ import {
   number,
   option,
   pipe,
-  readonlyArray,
+  array,
   result,
   schema,
 } from "../../src"
@@ -177,9 +177,7 @@ describe ("Matching", () => {
     it ("should return value of first matching found by provided `Equivalence`", () => {
       const result_ = pipe (
         [1, 2, 3],
-        matching.matchEquivalence (
-          readonlyArray.getEquivalence (number.Equivalence),
-        ),
+        matching.matchEquivalence (array.getEquivalence (number.Equivalence)),
         matching.when ([], () => "a"),
         matching.when ([1], () => "b"),
         matching.when ([1, 2, 3, 4], () => "c"),
@@ -193,7 +191,7 @@ describe ("Matching", () => {
 
   describe ("whenEquals", () => {
     it ("should return value of first matching found by provided `Equivalence`", () => {
-      const Equivalence = readonlyArray.getEquivalence (number.Equivalence)
+      const Equivalence = array.getEquivalence (number.Equivalence)
       const result_ = pipe (
         [1, 2, 3],
         matching.match,
@@ -209,8 +207,8 @@ describe ("Matching", () => {
     })
 
     it ("should pass matched value to callback", () => {
-      const Equivalence = readonlyArray.getEquivalence (number.Equivalence)
-      const Show = readonlyArray.getShow (number.Show)
+      const Equivalence = array.getEquivalence (number.Equivalence)
+      const Show = array.getShow (number.Show)
       const result_ = pipe (
         [1, 2, 3],
         matching.match,

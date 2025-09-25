@@ -3,7 +3,7 @@ import {
   Kind,
   functor,
   equivalence,
-  nonEmptyReadonlyArray,
+  nonEmptyArray,
   pipe,
   identity,
   number,
@@ -13,9 +13,7 @@ export const describeFunctorLaws: {
   <F extends Hkt>(
     Functor: functor.Functor<F>,
     Equivalence: equivalence.Equivalence<Kind<F, number, unknown, unknown>>,
-    fas: nonEmptyReadonlyArray.NonEmptyReadonlyArray<
-      Kind<F, number, unknown, unknown>
-    >,
+    fas: nonEmptyArray.NonEmptyReadonlyArray<Kind<F, number, unknown, unknown>>,
   ): void
 } = (Functor, Equivalence, fas) => {
   describe ("functor", () => {

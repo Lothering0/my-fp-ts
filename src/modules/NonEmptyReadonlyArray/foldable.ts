@@ -1,4 +1,4 @@
-import * as readonlyArray from "../ReadonlyArray"
+import * as array from "../ReadonlyArray"
 import * as foldable from "../../typeclasses/Foldable"
 import * as foldableWithIndex from "../../typeclasses/FoldableWithIndex"
 import {
@@ -7,11 +7,11 @@ import {
 } from "./non-empty-readonly-array"
 
 export const Foldable = {
-  ...readonlyArray.Foldable,
+  ...array.Foldable,
 } as foldable.Foldable<NonEmptyReadonlyArrayHkt>
 
 export const FoldableWithIndex = {
-  ...readonlyArray.FoldableWithIndex,
+  ...array.FoldableWithIndex,
 } as foldableWithIndex.FoldableWithIndex<NonEmptyReadonlyArrayHkt, number>
 
 export const reduce: {

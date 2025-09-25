@@ -1,4 +1,4 @@
-import * as readonlyArray from "../modules/ReadonlyArray"
+import * as array from "../modules/ReadonlyArray"
 import * as sync from "../modules/Sync"
 import { NonEmptyReadonlyArray } from "../modules/NonEmptyReadonlyArray"
 import { pipe, flow } from "./flow"
@@ -26,6 +26,6 @@ export const randomElem: {
   <A>(as: NonEmptyReadonlyArray<A>): sync.Sync<A>
 } = as =>
   pipe (
-    randomInt (0, readonlyArray.length (as) - 1),
+    randomInt (0, array.length (as) - 1),
     sync.map (n => as.at (n)!),
   )

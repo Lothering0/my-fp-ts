@@ -1,6 +1,6 @@
 import * as result from "../Result"
 import * as option from "../Option"
-import * as readonlyArray from "../ReadonlyArray"
+import * as array from "../ReadonlyArray"
 import * as string from "../String"
 import { constant } from "../../utils/constant"
 import { Schema } from "./schema"
@@ -14,10 +14,10 @@ export const message: {
 } = (parts, ...values) =>
   pipe (
     parts,
-    readonlyArray.reduce ("", (out, part, i) => {
+    array.reduce ("", (out, part, i) => {
       const value = pipe (
         values,
-        readonlyArray.lookup (i),
+        array.lookup (i),
         option.match ({
           onNone: constant (""),
           onSome: a => {

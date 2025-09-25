@@ -1,5 +1,5 @@
 import * as option from "../Option"
-import * as readonlyArray from "../ReadonlyArray"
+import * as array from "../ReadonlyArray"
 import * as iterable from "../Iterable"
 import * as boolean from "../Boolean"
 import * as equivalence from "../../typeclasses/Equivalence"
@@ -34,8 +34,7 @@ export const fromEntries: {
 
 export const isEmpty = (
   self: ReadonlyRecord<string, unknown>,
-): self is ReadonlyRecord<never, never> =>
-  pipe (self, keys, readonlyArray.isEmpty)
+): self is ReadonlyRecord<never, never> => pipe (self, keys, array.isEmpty)
 
 export const has: {
   (k: string): (self: ReadonlyRecord<string, unknown>) => boolean
@@ -67,7 +66,7 @@ export const elem =
     (a: A): (self: ReadonlyRecord<string, A>) => boolean
   } =>
   a =>
-    flow (values, readonlyArray.elem (Equivalence) (a))
+    flow (values, array.elem (Equivalence) (a))
 
 export const every: {
   <A, B extends A, K extends string>(
@@ -81,7 +80,7 @@ export const every: {
 ): Predicate<ReadonlyRecord<K, A>> =>
   flow (
     toEntries,
-    readonlyArray.every (([k, a]) => p (a, k)),
+    array.every (([k, a]) => p (a, k)),
   )) as typeof every
 
 export const exists: {
@@ -91,7 +90,7 @@ export const exists: {
 } = p =>
   flow (
     toEntries,
-    readonlyArray.exists (([k, a]) => p (a, k)),
+    array.exists (([k, a]) => p (a, k)),
   )
 
 /** Alias for `exists` */
@@ -104,7 +103,7 @@ export const find: {
 } = p =>
   flow (
     toEntries,
-    readonlyArray.find (([k, a]) => p (a, k)),
+    array.find (([k, a]) => p (a, k)),
     option.map (([, a]) => a),
   )
 
@@ -115,7 +114,7 @@ export const findMap: {
 } = p =>
   flow (
     toEntries,
-    readonlyArray.findMap (([k, a]) => p (a, k)),
+    array.findMap (([k, a]) => p (a, k)),
   )
 
 export const prepend: {
@@ -239,7 +238,7 @@ export const sortValues: {
 } = Order =>
   flow (
     toEntries,
-    readonlyArray.sort (
+    array.sort (
       pipe (
         Order,
         order.contramap (([, a]) => a),
@@ -257,9 +256,7 @@ export const sortValuesBy: {
 } = orders =>
   flow (
     toEntries,
-    readonlyArray.sortBy (
-      pipe (orders, iterable.map (order.contramap (([, a]) => a))),
-    ),
+    array.sortBy (pipe (orders, iterable.map (order.contramap (([, a]) => a)))),
     fromEntries,
   )
 
@@ -270,7 +267,7 @@ export const sortKeys: {
 } = Order =>
   flow (
     toEntries,
-    readonlyArray.sort (
+    array.sort (
       pipe (
         Order,
         order.contramap (([k]) => k),
@@ -286,8 +283,6 @@ export const sortKeysBy: {
 } = orders =>
   flow (
     toEntries,
-    readonlyArray.sortBy (
-      pipe (orders, iterable.map (order.contramap (([k]) => k))),
-    ),
+    array.sortBy (pipe (orders, iterable.map (order.contramap (([k]) => k)))),
     fromEntries,
   )

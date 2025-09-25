@@ -1,4 +1,4 @@
-import * as readonlyArray from "./ReadonlyArray"
+import * as array from "./ReadonlyArray"
 import * as option from "./Option"
 import * as result from "./Result"
 import * as boolean from "./Boolean"
@@ -43,10 +43,7 @@ export const on: {
   <E, A>(p: predicate.Predicate<E>, ea: (e: E) => A) =>
   <B>(self: Matching<E, B>): Matching<E, A | B> => ({
     ...self,
-    patterns: pipe (
-      self.patterns,
-      readonlyArray.append ([p, ea as (e: E) => A | B]),
-    ),
+    patterns: pipe (self.patterns, array.append ([p, ea as (e: E) => A | B])),
   })
 
 export const onNot: {
@@ -130,7 +127,7 @@ export const getResult: {
 } = self =>
   pipe (
     self.patterns,
-    readonlyArray.find (([p]) => p (self.value)),
+    array.find (([p]) => p (self.value)),
     option.match ({
       onNone: () => result.fail (self.value),
       onSome: ([, f]) => pipe (self.value, f, result.succeed),
@@ -150,7 +147,7 @@ export const getResults: {
 } = self =>
   pipe (
     self.patterns,
-    readonlyArray.map (([p, f]) =>
+    array.map (([p, f]) =>
       pipe (
         self.value,
         p,
@@ -164,19 +161,18 @@ export const getResults: {
 
 export const getFailures: {
   <E, A>(self: Matching<E, A>): ReadonlyArray<E>
-} = flow (getResults, readonlyArray.failures)
+} = flow (getResults, array.failures)
 
 export const getSuccesses: {
   <E, A>(self: Matching<E, A>): ReadonlyArray<A>
-} = flow (getResults, readonlyArray.successes)
+} = flow (getResults, array.successes)
 
 export const getOptions: {
   <E, A>(self: Matching<E, A>): ReadonlyArray<option.Option<A>>
-} = flow (getResults, readonlyArray.map (option.fromResult))
+} = flow (getResults, array.map (option.fromResult))
 
 export const getOrElseAll: {
   <E, A>(
     onDefault: (e: E) => A,
   ): <B>(self: Matching<E, B>) => ReadonlyArray<A | B>
-} = onDefault =>
-  flow (getResults, readonlyArray.map (result.getOrElse (onDefault)))
+} = onDefault => flow (getResults, array.map (result.getOrElse (onDefault)))

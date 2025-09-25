@@ -1,5 +1,5 @@
-import * as readonlyArray from "../ReadonlyArray"
-import * as readonlyRecord from "../ReadonlyRecord"
+import * as array from "../ReadonlyArray"
+import * as record from "../ReadonlyRecord"
 import * as option from "../Option"
 import * as result from "../Result"
 import * as number from "../Number"
@@ -49,14 +49,14 @@ export const fromYears: {
   (years: number): Duration
 } = years => ({ years })
 
-const arrayOption = option.transform (readonlyArray.Monad)
+const arrayOption = option.transform (array.Monad)
 
 export const isTemplateValid: {
   (template: string): boolean
 } = template =>
   pipe (
     durationUnitsFull,
-    readonlyArray.reduce ("", (acc, unit, i) => {
+    array.reduce ("", (acc, unit, i) => {
       const shortUnit = durationUnitsShort[i]
       const part = `(\\d+ (${unit}|${shortUnit}))|(1 ${unit}?)`
       return acc ? `(${part})? ?(${acc})?` : part
@@ -97,13 +97,11 @@ export const fromTemplate: {
         pipe (
           template.matchAll (/(-?\d+) +(\w+)/g),
           Array.from<ReadonlyArray<string>>,
-          readonlyArray.map (readonlyArray.tail),
+          array.map (array.tail),
           arrayOption.map (([value, unit]) => [unit!, Number (value)] as const),
-          readonlyArray.compact,
-          readonlyArray.filter (([key]) =>
-            pipe (durationUnits, readonlyArray.includes (key)),
-          ),
-          readonlyRecord.fromEntries,
+          array.compact,
+          array.filter (([key]) => pipe (durationUnits, array.includes (key))),
+          record.fromEntries,
           result.succeed,
         ),
     }),
@@ -143,7 +141,7 @@ export const prettify: {
   }
   return pipe (
     out,
-    readonlyRecord.filter (value => value !== 0),
+    record.filter (value => value !== 0),
   )
 }
 
@@ -151,15 +149,13 @@ export const toTemplate: {
   (self: Duration): string
 } = flow (
   prettify,
-  readonlyRecord.toEntries,
-  readonlyArray.filter (([unit]) =>
-    pipe (durationUnits, readonlyArray.includes (unit)),
-  ),
-  readonlyArray.map (([unit, value]) =>
+  record.toEntries,
+  array.filter (([unit]) => pipe (durationUnits, array.includes (unit))),
+  array.map (([unit, value]) =>
     value === 1 ? [pipe (unit, string.slice (0, -1)), value] : [unit, value],
   ),
-  readonlyArray.map (([unit, value]) => `${value} ${unit}`),
-  readonlyArray.join (" "),
+  array.map (([unit, value]) => `${value} ${unit}`),
+  array.join (" "),
 )
 
 const millisecondsFromSeconds: {

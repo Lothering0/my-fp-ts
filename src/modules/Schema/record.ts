@@ -1,6 +1,6 @@
 import * as result from "../Result"
-import * as readonlyArray from "../ReadonlyArray"
-import * as readonlyRecord from "../ReadonlyRecord"
+import * as array from "../ReadonlyArray"
+import * as record from "../ReadonlyRecord"
 import { create, Schema, Type } from "./schema"
 import { pipe } from "../../utils/flow"
 import { isRecord } from "../../utils/typeChecks"
@@ -12,13 +12,13 @@ export const Record = <
 >(schemas: {
   readonly key: K
   readonly value: A
-}): Schema<Partial<readonlyRecord.ReadonlyRecord<Type<K>, Type<A>>>> =>
+}): Schema<Partial<record.ReadonlyRecord<Type<K>, Type<A>>>> =>
   create (x => {
     if (!isRecord (x)) {
       return result.fail ([message`value ${x} is not a record`])
     }
 
-    const out: Partial<readonlyRecord.ReadonlyRecord<Type<K>, Type<A>>> = {}
+    const out: Partial<record.ReadonlyRecord<Type<K>, Type<A>>> = {}
     let messages: string[] = []
     for (const k in x) {
       const keyProcessResult = schemas.key.proceed (k)
@@ -26,9 +26,7 @@ export const Record = <
       if (result.isFailure (keyProcessResult)) {
         const keyMessages = pipe (
           keyProcessResult,
-          result.mapLeft (
-            readonlyArray.map (msg => `${message`property ${k}`}: ${msg}`),
-          ),
+          result.mapLeft (array.map (msg => `${message`property ${k}`}: ${msg}`)),
           result.failureOf,
         )
         messages = [...messages, ...keyMessages]
@@ -41,7 +39,7 @@ export const Record = <
         const valueMessages = pipe (
           valueProcessResult,
           result.mapLeft (
-            readonlyArray.map (msg => `${message`on property ${k}`}: ${msg}`),
+            array.map (msg => `${message`on property ${k}`}: ${msg}`),
           ),
           result.failureOf,
         )

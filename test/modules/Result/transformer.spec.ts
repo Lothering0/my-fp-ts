@@ -1,10 +1,10 @@
-import { number, readonlyArray, result } from "../../../src"
+import { number, array, result } from "../../../src"
 
 describe ("transformer", () => {
   it ("should correctly transform `ReadonlyArray` monad", () => {
-    const readonlyArrayResult = result.transform (readonlyArray.Monad)
+    const arrayResult = result.transform (array.Monad)
 
-    expect (readonlyArrayResult.succeed (1)).toEqual<
+    expect (arrayResult.succeed (1)).toEqual<
       ReadonlyArray<result.Result<string, number>>
     > ([
       {
@@ -14,7 +14,7 @@ describe ("transformer", () => {
       },
     ])
 
-    expect (readonlyArrayResult.fail ("a")).toEqual<
+    expect (arrayResult.fail ("a")).toEqual<
       ReadonlyArray<result.Result<string, number>>
     > ([
       {
@@ -24,20 +24,16 @@ describe ("transformer", () => {
       },
     ])
 
-    expect (
-      readonlyArrayResult.map (number.show) (readonlyArrayResult.of (1)),
-    ).toEqual<ReadonlyArray<result.Result<never, string>>> ([
-      { _id: "Result", _tag: "Success", success: "1" },
-    ])
+    expect (arrayResult.map (number.show) (arrayResult.of (1))).toEqual<
+      ReadonlyArray<result.Result<never, string>>
+    > ([{ _id: "Result", _tag: "Success", success: "1" }])
   })
 
   it ("should correctly compose multiple monads", () => {
-    const readonlyArrayResult = result.transform (readonlyArray.Monad)
-    const readonlyArrayResultResult = result.transform (
-      readonlyArrayResult.Monad,
-    )
+    const arrayResult = result.transform (array.Monad)
+    const arrayResultResult = result.transform (arrayResult.Monad)
 
-    expect (readonlyArrayResultResult.of (1)).toEqual<
+    expect (arrayResultResult.of (1)).toEqual<
       ReadonlyArray<result.Result<never, result.Result<never, number>>>
     > ([
       {
@@ -47,9 +43,7 @@ describe ("transformer", () => {
       },
     ])
 
-    expect (
-      readonlyArrayResultResult.map (String) (readonlyArrayResultResult.of (1)),
-    ).toEqual<
+    expect (arrayResultResult.map (String) (arrayResultResult.of (1))).toEqual<
       ReadonlyArray<result.Result<never, result.Result<never, string>>>
     > ([
       {

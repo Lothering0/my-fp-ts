@@ -1,6 +1,6 @@
 import * as option from "../Option"
 import * as boolean from "../Boolean"
-import * as readonlyArray from "../ReadonlyArray"
+import * as array from "../ReadonlyArray"
 import { flow, pipe } from "../../utils/flow"
 
 export const length: {
@@ -127,4 +127,4 @@ export const charCodeAt: {
 
 export const reverse: {
   (self: string): string
-} = flow (toReadonlyArray, readonlyArray.reverse, readonlyArray.join (""))
+} = flow (toReadonlyArray, array.reverse, array.join (""))

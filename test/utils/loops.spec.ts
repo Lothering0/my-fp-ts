@@ -1,4 +1,4 @@
-import { doWhile, option, readonlyArray, sync } from "../../src"
+import { doWhile, option, array, sync } from "../../src"
 
 describe ("getDoWhile", () => {
   it ("should correctly run", () => {
@@ -8,7 +8,7 @@ describe ("getDoWhile", () => {
     const unsafeInsert: {
       <A>(xs: A[], x: A): sync.Sync<void>
     } = (xs, x) => jest.fn (() => xs.push (x))
-    const p = jest.fn (() => readonlyArray.length (xs) < iterationsCount)
+    const p = jest.fn (() => array.length (xs) < iterationsCount)
     const f: sync.Sync<void> = unsafeInsert (xs, 0)
 
     const result = doWhile (f) (p)

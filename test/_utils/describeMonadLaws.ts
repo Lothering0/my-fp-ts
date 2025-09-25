@@ -3,7 +3,7 @@ import {
   Kind,
   monad,
   equivalence,
-  nonEmptyReadonlyArray,
+  nonEmptyArray,
   pipe,
   flow,
 } from "../../src"
@@ -12,13 +12,11 @@ export const describeMonadLaws: {
   <F extends Hkt>(
     Monad: monad.Monad<F>,
     Equivalence: equivalence.Equivalence<Kind<F, number, unknown, unknown>>,
-    fas: nonEmptyReadonlyArray.NonEmptyReadonlyArray<
-      Kind<F, number, unknown, unknown>
-    >,
-    afbs: nonEmptyReadonlyArray.NonEmptyReadonlyArray<
+    fas: nonEmptyArray.NonEmptyReadonlyArray<Kind<F, number, unknown, unknown>>,
+    afbs: nonEmptyArray.NonEmptyReadonlyArray<
       (x: number) => Kind<F, number, unknown, unknown>
     >,
-    bfcs: nonEmptyReadonlyArray.NonEmptyReadonlyArray<
+    bfcs: nonEmptyArray.NonEmptyReadonlyArray<
       (x: number) => Kind<F, number, unknown, unknown>
     >,
   ): void

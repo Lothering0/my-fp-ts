@@ -1,7 +1,7 @@
-import { number, pipe, readonlyArray } from "../../../src"
+import { number, pipe, array } from "../../../src"
 
 describe ("getOrder", () => {
-  const Order = readonlyArray.getOrder (number.Order)
+  const Order = array.getOrder (number.Order)
 
   it ("should correctly compare two arrays", () => {
     pipe ([], Order.compare ([]), expect).toBe (0)

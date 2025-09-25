@@ -1,4 +1,4 @@
-import * as nonEmptyReadonlyArray from "../NonEmptyReadonlyArray"
+import * as nonEmptyArray from "../NonEmptyReadonlyArray"
 import * as option from "../Option"
 import * as result from "../Result"
 import * as boolean from "../Boolean"
@@ -18,7 +18,7 @@ import { of } from "./applicative"
 import { Endomorphism } from "../../typeclasses/Endomorphism"
 
 export const fromNonEmpty: {
-  <A>(as: nonEmptyReadonlyArray.NonEmptyReadonlyArray<A>): ReadonlyArray<A>
+  <A>(as: nonEmptyArray.NonEmptyReadonlyArray<A>): ReadonlyArray<A>
 } = identity.identity
 
 export const toArray = <A>(self: ReadonlyArray<A>): A[] => self as A[]
@@ -35,28 +35,28 @@ export const head: {
   <A>(self: ReadonlyArray<A>): option.Option<A>
 } = match ({
   onEmpty: option.zero,
-  onNonEmpty: flow (nonEmptyReadonlyArray.head, option.some),
+  onNonEmpty: flow (nonEmptyArray.head, option.some),
 })
 
 export const init: {
   <A>(self: ReadonlyArray<A>): option.Option<ReadonlyArray<A>>
 } = match ({
   onEmpty: option.zero,
-  onNonEmpty: flow (nonEmptyReadonlyArray.init, option.some),
+  onNonEmpty: flow (nonEmptyArray.init, option.some),
 })
 
 export const last: {
   <A>(self: ReadonlyArray<A>): option.Option<A>
 } = match ({
   onEmpty: option.zero,
-  onNonEmpty: flow (nonEmptyReadonlyArray.last, option.some),
+  onNonEmpty: flow (nonEmptyArray.last, option.some),
 })
 
 export const tail: {
   <A>(self: ReadonlyArray<A>): option.Option<ReadonlyArray<A>>
 } = match ({
   onEmpty: option.zero,
-  onNonEmpty: flow (nonEmptyReadonlyArray.tail, option.some),
+  onNonEmpty: flow (nonEmptyArray.tail, option.some),
 })
 
 export const has: {
@@ -91,10 +91,10 @@ export const findMap: {
 } = aimb => self => {
   for (let i = 0; i < self.length; i++) {
     const a = self[i]!
-    const b = aimb (a, i)
+    const mb = aimb (a, i)
 
-    if (option.isSome (b)) {
-      return b
+    if (option.isSome (mb)) {
+      return mb
     }
   }
 
@@ -136,10 +136,10 @@ export const findLastMap: {
 } = aimb => self => {
   for (let i = lastIndex (self); i > 0; i--) {
     const a = self[i]!
-    const b = aimb (a, i)
+    const mb = aimb (a, i)
 
-    if (option.isSome (b)) {
-      return b
+    if (option.isSome (mb)) {
+      return mb
     }
   }
 
@@ -199,9 +199,7 @@ export const every: {
 
 export const exists =
   <A>(p: PredicateWithIndex<A, number>) =>
-  (
-    self: ReadonlyArray<A>,
-  ): self is nonEmptyReadonlyArray.NonEmptyReadonlyArray<A> =>
+  (self: ReadonlyArray<A>): self is nonEmptyArray.NonEmptyReadonlyArray<A> =>
     self.some ((a, i) => p (a, i))
 
 /** Alias for `exists` */
@@ -221,13 +219,11 @@ export const successes: {
 
 export const concat: {
   <A>(end: ReadonlyArray<A>): (start: ReadonlyArray<A>) => ReadonlyArray<A>
-} = nonEmptyReadonlyArray.concat
+} = nonEmptyArray.concat
 
 export const prepend: {
-  <A>(
-    a: A,
-  ): (self: ReadonlyArray<A>) => nonEmptyReadonlyArray.NonEmptyReadonlyArray<A>
-} = a => self => nonEmptyReadonlyArray.concat (self) ([a])
+  <A>(a: A): (self: ReadonlyArray<A>) => nonEmptyArray.NonEmptyReadonlyArray<A>
+} = a => self => nonEmptyArray.concat (self) ([a])
 
 export const prependAllWith: {
   <A>(f: (a: A, i: number) => A): (self: ReadonlyArray<A>) => ReadonlyArray<A>
@@ -238,10 +234,8 @@ export const prependAll: {
 } = flow (constant, prependAllWith)
 
 export const append: {
-  <A>(
-    a: A,
-  ): (self: ReadonlyArray<A>) => nonEmptyReadonlyArray.NonEmptyReadonlyArray<A>
-} = a => nonEmptyReadonlyArray.concat ([a])
+  <A>(a: A): (self: ReadonlyArray<A>) => nonEmptyArray.NonEmptyReadonlyArray<A>
+} = a => nonEmptyArray.concat ([a])
 
 export const appendAllWith: {
   <A>(f: (a: A, i: number) => A): (self: ReadonlyArray<A>) => ReadonlyArray<A>
@@ -252,9 +246,7 @@ export const appendAll: {
 } = flow (constant, appendAllWith)
 
 export const range: {
-  (
-    to: number,
-  ): (from: number) => nonEmptyReadonlyArray.NonEmptyReadonlyArray<number>
+  (to: number): (from: number) => nonEmptyArray.NonEmptyReadonlyArray<number>
 } = to => from => {
   const out: [number, ...number[]] = [from]
 
@@ -275,19 +267,19 @@ export const range: {
 
 export const reverse: {
   <A>(self: ReadonlyArray<A>): ReadonlyArray<A>
-} = nonEmptyReadonlyArray.reverse
+} = nonEmptyArray.reverse
 
 export const sort: {
   <B>(
     Order: order.Order<B>,
   ): <A extends B>(self: ReadonlyArray<A>) => ReadonlyArray<A>
-} = nonEmptyReadonlyArray.sort
+} = nonEmptyArray.sort
 
 export const sortBy: {
   <B>(
     orders: Iterable<order.Order<B>>,
   ): <A extends B>(self: ReadonlyArray<A>) => ReadonlyArray<A>
-} = nonEmptyReadonlyArray.sortBy
+} = nonEmptyArray.sortBy
 
 export const join: {
   (separator: string): (self: ReadonlyArray<string>) => string
@@ -437,19 +429,19 @@ export const chunksOf =
   (n: number) =>
   <A>(
     self: ReadonlyArray<A>,
-  ): ReadonlyArray<nonEmptyReadonlyArray.NonEmptyReadonlyArray<A>> => {
+  ): ReadonlyArray<nonEmptyArray.NonEmptyReadonlyArray<A>> => {
     if (n <= 0 || isEmpty (self)) {
       return []
     }
 
     if (self.length <= n) {
-      return [self] as [nonEmptyReadonlyArray.NonEmptyReadonlyArray<A>]
+      return [self] as [nonEmptyArray.NonEmptyReadonlyArray<A>]
     }
 
     const out: [A[], ...A[][]] = [[]]
 
     for (const a of self) {
-      let lastChunk = nonEmptyReadonlyArray.last (out)
+      let lastChunk = nonEmptyArray.last (out)
 
       if (lastChunk.length === n) {
         lastChunk = []
@@ -469,7 +461,7 @@ export const insertAt: {
     a: A,
   ): (
     self: ReadonlyArray<A>,
-  ) => option.Option<nonEmptyReadonlyArray.NonEmptyReadonlyArray<A>>
+  ) => option.Option<nonEmptyArray.NonEmptyReadonlyArray<A>>
 } = (i, a) => self =>
   pipe (
     option.Do,
@@ -483,7 +475,7 @@ export const insertAt: {
     option.apS ("start", pipe (self, slice (0, i), option.some)),
     option.apS ("end", pipe (self, slice (i), option.some)),
     option.map (({ start, end }) =>
-      pipe (start, append (a), nonEmptyReadonlyArray.concat (end)),
+      pipe (start, append (a), nonEmptyArray.concat (end)),
     ),
   )
 
@@ -560,9 +552,9 @@ export function comprehension(
     isNonEmpty (input)
       ? pipe (
           input,
-          nonEmptyReadonlyArray.head,
+          nonEmptyArray.head,
           flatMap (x =>
-            pipe (input, nonEmptyReadonlyArray.tail, getArgs (append (x) (args))),
+            pipe (input, nonEmptyArray.tail, getArgs (append (x) (args))),
           ),
         )
       : [args]

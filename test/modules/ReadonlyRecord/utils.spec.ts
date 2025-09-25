@@ -1,7 +1,7 @@
-import { number, pipe, readonlyRecord, string } from "../../../src"
+import { number, pipe, record, string } from "../../../src"
 
 describe ("getUnion", () => {
-  const union = readonlyRecord.getUnion (number.GroupSum)
+  const union = record.getUnion (number.GroupSum)
 
   it ("should return union of first and second record combined by provided magma", () => {
     pipe ({ a: 1, b: 2, c: 3 }, union ({ b: 1, c: 2, d: 3 }), expect).toEqual ({
@@ -17,8 +17,8 @@ describe ("sortValues", () => {
   it ("should sort record by values with provided `Order` instance", () => {
     pipe (
       { b: "c", a: "b", c: "a" },
-      readonlyRecord.sortValues (string.Order),
-      readonlyRecord.toEntries,
+      record.sortValues (string.Order),
+      record.toEntries,
       expect,
     ).toEqual ([
       ["c", "a"],
@@ -32,8 +32,8 @@ describe ("sortKeys", () => {
   it ("should sort record by keys with provided `Order` instance", () => {
     pipe (
       { b: "c", a: "b", c: "a" },
-      readonlyRecord.sortKeys (string.Order),
-      readonlyRecord.toEntries,
+      record.sortKeys (string.Order),
+      record.toEntries,
       expect,
     ).toEqual ([
       ["a", "b"],

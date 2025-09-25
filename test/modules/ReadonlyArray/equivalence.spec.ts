@@ -1,4 +1,4 @@
-import { number, readonlyArray } from "../../../src"
+import { number, array } from "../../../src"
 
 interface TestCase {
   readonly description: string
@@ -8,7 +8,7 @@ interface TestCase {
 }
 
 describe ("getEquivalence", () => {
-  const Equivalence = readonlyArray.getEquivalence (number.Equivalence)
+  const Equivalence = array.getEquivalence (number.Equivalence)
 
   const testCases: ReadonlyArray<TestCase> = [
     {

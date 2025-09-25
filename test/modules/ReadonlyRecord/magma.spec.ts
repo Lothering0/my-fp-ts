@@ -1,7 +1,7 @@
-import { pipe, readonlyRecord } from "../../../src"
+import { pipe, record } from "../../../src"
 
 describe ("getDifferenceMagma", () => {
-  const Magma = readonlyRecord.getDifferenceMagma ()
+  const Magma = record.getDifferenceMagma ()
 
   it ("should return record containing all keys with its values which not included in first or second record", () => {
     pipe ({}, Magma.combine ({ b: 2, c: 3 }), expect).toEqual ({ b: 2, c: 3 })

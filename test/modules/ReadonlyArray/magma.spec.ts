@@ -1,7 +1,7 @@
-import { number, pipe, readonlyArray } from "../../../src"
+import { number, pipe, array } from "../../../src"
 
 describe ("getDifferenceMagma", () => {
-  const Magma = readonlyArray.getDifferenceMagma (number.Equivalence)
+  const Magma = array.getDifferenceMagma (number.Equivalence)
 
   it ("should return all elements of the first array which is not contained by the second", () => {
     pipe ([1, 2, 3], Magma.combine ([2, 3]), expect).toEqual ([1])

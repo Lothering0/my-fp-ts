@@ -1,4 +1,4 @@
-import * as readonlyArray from "../ReadonlyArray"
+import * as array from "../ReadonlyArray"
 import * as extendable from "../../typeclasses/Extendable"
 import {
   NonEmptyReadonlyArray,
@@ -6,7 +6,7 @@ import {
 } from "./non-empty-readonly-array"
 
 export const Extendable = {
-  ...readonlyArray.Extendable,
+  ...array.Extendable,
 } as extendable.Extendable<NonEmptyReadonlyArrayHkt>
 
 export const extend: {

@@ -1,5 +1,5 @@
 import * as result from "../Result"
-import * as readonlyArray from "../ReadonlyArray"
+import * as array from "../ReadonlyArray"
 import { pipe } from "../../utils/flow"
 import { create, Schema, SchemaOptional, Type } from "./schema"
 import { message } from "./process"
@@ -31,8 +31,8 @@ export const Tuple = <A extends ReadonlyArray<Schema<unknown>>>(
 
     const tupleMinLength = pipe (
       schemas,
-      readonlyArray.dropRightWhile (({ isOptional }) => Boolean (isOptional)),
-      readonlyArray.length,
+      array.dropRightWhile (({ isOptional }) => Boolean (isOptional)),
+      array.length,
     )
     const tupleMaxLength = schemas.length
 
@@ -52,9 +52,7 @@ export const Tuple = <A extends ReadonlyArray<Schema<unknown>>>(
       if (result.isFailure (processResult)) {
         return pipe (
           processResult,
-          result.mapLeft (
-            readonlyArray.map (msg => `${message`on index ${i}`}: ${msg}`),
-          ),
+          result.mapLeft (array.map (msg => `${message`on index ${i}`}: ${msg}`)),
         )
       }
 
