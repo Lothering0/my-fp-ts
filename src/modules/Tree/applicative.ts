@@ -2,16 +2,16 @@ import * as iterable from "../Iterable"
 import { Tree, TreeHkt } from "./tree"
 import { create } from "../../typeclasses/Applicative"
 import { Functor, map } from "./functor"
-import { make, value, forest } from "./utils"
+import { make, valueOf, forestOf } from "./utils"
 import { pipe, flow } from "../../utils/flow"
 
 export const flat: {
   <A>(self: Tree<Tree<A>>): Tree<A>
 } = self =>
   make (
-    pipe (self, value, value),
-    iterable.concat (pipe (self, forest, iterable.map (flat))) (
-      pipe (self, value, forest),
+    pipe (self, valueOf, valueOf),
+    iterable.concat (pipe (self, forestOf, iterable.map (flat))) (
+      pipe (self, valueOf, forestOf),
     ),
   )
 

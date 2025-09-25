@@ -12,10 +12,9 @@ import { flatMap } from "./monad"
 import { filterMap } from "./filterable"
 import { constant, constEmptyArray } from "../../utils/constant"
 import { flow, pipe } from "../../utils/flow"
-import { match, matchLeft, matchRight } from "./matchers"
+import { match } from "./matchers"
 import { isEmpty, isNonEmpty } from "./refinements"
 import { of } from "./applicative"
-import { map } from "./functor"
 import { Endomorphism } from "../../typeclasses/Endomorphism"
 
 export const fromNonEmpty: {
@@ -87,26 +86,19 @@ export const lastIndex: {
 
 export const findMap: {
   <A, B>(
-    iamb: (a: A, i: number) => option.Option<B>,
+    aimb: (a: A, i: number) => option.Option<B>,
   ): (self: ReadonlyArray<A>) => option.Option<B>
-} = iamb => {
-  const f: {
-    (index: number): typeof findMap
-  } = i => iamb =>
-    matchLeft ({
-      onEmpty: option.zero,
-      onNonEmpty: (head, tail) =>
-        pipe (
-          head,
-          a => iamb (a, i),
-          option.match ({
-            onNone: () => f (i + 1) (iamb) (tail),
-            onSome: option.some,
-          }),
-        ),
-    })
+} = aimb => self => {
+  for (let i = 0; i < self.length; i++) {
+    const a = self[i]!
+    const b = aimb (a, i)
 
-  return f (0) (iamb)
+    if (option.isSome (b)) {
+      return b
+    }
+  }
+
+  return option.none
 }
 
 export const find: {
@@ -139,26 +131,19 @@ export const findIndex: {
 
 export const findLastMap: {
   <A, B>(
-    iamb: (a: A, i: number) => option.Option<B>,
+    aimb: (a: A, i: number) => option.Option<B>,
   ): (self: ReadonlyArray<A>) => option.Option<B>
-} = iamb => self => {
-  const f: {
-    (index: number): typeof findLastMap
-  } = i => iamb =>
-    matchRight ({
-      onEmpty: option.zero,
-      onNonEmpty: (init, last) =>
-        pipe (
-          last,
-          a => iamb (a, i),
-          option.match ({
-            onNone: () => f (i - 1) (iamb) (init),
-            onSome: option.some,
-          }),
-        ),
-    })
+} = aimb => self => {
+  for (let i = lastIndex (self); i > 0; i--) {
+    const a = self[i]!
+    const b = aimb (a, i)
 
-  return f (lastIndex (self)) (iamb) (self)
+    if (option.isSome (b)) {
+      return b
+    }
+  }
+
+  return option.none
 }
 
 export const findLast: {
@@ -270,12 +255,23 @@ export const range: {
   (
     to: number,
   ): (from: number) => nonEmptyReadonlyArray.NonEmptyReadonlyArray<number>
-} = to => from =>
-  from === to
-    ? [from]
-    : from < to
-      ? pipe (from + 1, range (to), prepend (from))
-      : pipe (from - 1, range (to), prepend (from))
+} = to => from => {
+  const out: [number, ...number[]] = [from]
+
+  if (from < to) {
+    for (let i = from + 1; i <= to; i++) {
+      out.push (i)
+    }
+  }
+
+  if (from > to) {
+    for (let i = from - 1; i >= to; i--) {
+      out.push (i)
+    }
+  }
+
+  return out
+}
 
 export const reverse: {
   <A>(self: ReadonlyArray<A>): ReadonlyArray<A>
@@ -306,22 +302,18 @@ export const zipWith: {
     bs: ReadonlyArray<B>,
     abic: (a: A, b: B, i: number) => C,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<C>
-} = (bs, abc) => self =>
-  pipe (
-    length (bs) > length (self),
-    boolean.match ({
-      onFalse: () =>
-        pipe (
-          bs,
-          map ((b, i) => abc (self.at (i)!, b, i)),
-        ),
-      onTrue: () =>
-        pipe (
-          self,
-          map ((a, i) => abc (a, bs.at (i)!, i)),
-        ),
-    }),
-  )
+} = (bs, abic) => self => {
+  const minLength = Math.min (self.length, bs.length)
+  const out = []
+
+  for (let i = 0; i < minLength; i++) {
+    const a = self[i]!
+    const b = bs[i]!
+    out.push (abic (a, b, i))
+  }
+
+  return out
+}
 
 export const zip: {
   <B>(
@@ -441,32 +433,35 @@ export const dropBoth: {
     onPositive: n => slice (0, -n) (self),
   }) (n)
 
-export const chunksOf: {
-  (
-    n: number,
-  ): <A>(
+export const chunksOf =
+  (n: number) =>
+  <A>(
     self: ReadonlyArray<A>,
-  ) => ReadonlyArray<nonEmptyReadonlyArray.NonEmptyReadonlyArray<A>>
-} = n => self =>
-  pipe (
-    n,
-    number.lessThanOrEquals (0),
-    boolean.or (isEmpty (self)),
-    boolean.match ({
-      onFalse: () =>
-        pipe (
-          self,
-          length,
-          number.moreThan (n),
-          boolean.match ({
-            onFalse: constant ([self]),
-            onTrue: () => [slice (0, n) (self), ...chunksOf (n) (slice (n) (self))],
-          }),
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ) as ReadonlyArray<any>,
-      onTrue: constant ([]),
-    }),
-  )
+  ): ReadonlyArray<nonEmptyReadonlyArray.NonEmptyReadonlyArray<A>> => {
+    if (n <= 0 || isEmpty (self)) {
+      return []
+    }
+
+    if (self.length <= n) {
+      return [self] as [nonEmptyReadonlyArray.NonEmptyReadonlyArray<A>]
+    }
+
+    const out: [A[], ...A[][]] = [[]]
+
+    for (const a of self) {
+      let lastChunk = nonEmptyReadonlyArray.last (out)
+
+      if (lastChunk.length === n) {
+        lastChunk = []
+        out.push (lastChunk)
+      }
+
+      lastChunk.push (a)
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return out as any
+  }
 
 export const insertAt: {
   <A>(
