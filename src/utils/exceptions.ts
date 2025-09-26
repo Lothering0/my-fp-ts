@@ -2,13 +2,13 @@ import * as result from "../modules/Result"
 import { LazyArg } from "../types/utils"
 
 export const raise: {
-  <A>(a: A): never
+  <In>(a: In): never
 } = a => {
   throw a
 }
 
 export const tryDo: {
-  <E, A>(a: LazyArg<A>): result.Result<E, A>
+  <Collectable, Out>(a: LazyArg<Out>): result.Result<Collectable, Out>
 } = a => {
   try {
     return result.succeed (a ())

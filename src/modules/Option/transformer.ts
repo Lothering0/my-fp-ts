@@ -21,7 +21,7 @@ export type OptionT<F extends Hkt, In, Collectable, Fixed> = Kind<
 >
 
 export interface OptionTHkt<F extends Hkt> extends Hkt {
-  readonly type: OptionT<F, this["_in"], this["_collectable"], this["_fixed"]>
+  readonly Type: OptionT<F, this["In"], this["Collectable"], this["Fixed"]>
 }
 
 export const transform = <F extends Hkt>(M: monad.Monad<F>) => {

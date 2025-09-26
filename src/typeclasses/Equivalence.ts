@@ -9,7 +9,7 @@ export interface Equivalence<In> {
 }
 
 export interface EquivalenceHkt extends Hkt {
-  readonly type: Equivalence<this["_in"]>
+  readonly Type: Equivalence<this["In"]>
 }
 
 export const EquivalenceStrict: Equivalence<unknown> = {

@@ -18,20 +18,22 @@ export const Applicative = create<AsyncOptionHkt> (Functor, {
 })
 
 export const of: {
-  <A>(a: A): AsyncOption<A>
+  <Out>(a: Out): AsyncOption<Out>
 } = Applicative.of
 
 export const ap: {
-  <A>(fa: AsyncOption<A>): <B>(self: AsyncOption<(a: A) => B>) => AsyncOption<B>
+  <In>(
+    fa: AsyncOption<In>,
+  ): <Out>(self: AsyncOption<(a: In) => Out>) => AsyncOption<Out>
 } = Applicative.ap
 
 /** Alias for `ap` */
 export const apply = ap
 
 export const flap: {
-  <A, B>(
-    fab: AsyncOption<(a: A) => B>,
-  ): (self: AsyncOption<A>) => AsyncOption<B>
+  <In, Out>(
+    fab: AsyncOption<(a: In) => Out>,
+  ): (self: AsyncOption<In>) => AsyncOption<Out>
 } = Applicative.flap
 
 /** Alias for `flap` */

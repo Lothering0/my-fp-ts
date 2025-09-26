@@ -1,5 +1,6 @@
 export * from "./async-result"
 export * from "./functor"
+export * from "./bifunctor"
 export * from "./applicative"
 export * from "./monad"
 export * from "./tappable"

@@ -11,11 +11,11 @@ export interface StateT<F extends Hkt, In, Collectable, Fixed, TFixed> {
 }
 
 export interface StateTHkt<F extends Hkt, TFixed> extends Hkt {
-  readonly type: StateT<
+  readonly Type: StateT<
     F,
-    this["_in"],
-    this["_collectable"],
-    this["_fixed"],
+    this["In"],
+    this["Collectable"],
+    this["Fixed"],
     TFixed
   >
 }

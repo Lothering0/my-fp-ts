@@ -7,7 +7,7 @@ export interface Show<In> {
 }
 
 export interface ShowHkt extends Hkt {
-  readonly type: Show<this["_in"]>
+  readonly Type: Show<this["In"]>
 }
 
 export const Contravariant: contravariant.Contravariant<ShowHkt> = {

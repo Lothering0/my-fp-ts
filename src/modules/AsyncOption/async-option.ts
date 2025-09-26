@@ -8,7 +8,7 @@ import { constant } from "../../utils/constant"
 import { flow } from "../../utils/flow"
 
 export interface AsyncOptionHkt extends Hkt {
-  readonly type: AsyncOption<this["_in"]>
+  readonly Type: AsyncOption<this["In"]>
 }
 
 export interface AsyncOption<A> extends async.Async<option.Option<A>> {}
@@ -16,19 +16,21 @@ export interface AsyncOption<A> extends async.Async<option.Option<A>> {}
 export const none: AsyncOption<never> = async.of (option.none)
 
 export const some: {
-  <A>(a: A): AsyncOption<A>
+  <Out>(a: Out): AsyncOption<Out>
 } = flow (option.some, async.of)
 
 export const toPromise: {
-  <A>(ma: AsyncOption<A>): Promise<option.Option<A>>
+  <Out>(ma: AsyncOption<Out>): Promise<option.Option<Out>>
 } = mma => mma ().then (identity, constant (option.none))
 
 export const fromAsync: {
-  <A>(ma: async.Async<A>): AsyncOption<A>
+  <Out>(ma: async.Async<Out>): AsyncOption<Out>
 } = ma => () => ma ().then (option.some, () => option.none)
 
 export const fromAsyncResult: {
-  <E, A>(ma: asyncResult.AsyncResult<E, A>): AsyncOption<A>
+  <Collectable, Out>(
+    ma: asyncResult.AsyncResult<Collectable, Out>,
+  ): AsyncOption<Out>
 } = ma => () =>
   ma ().then (
     result.match ({

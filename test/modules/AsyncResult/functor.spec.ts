@@ -10,7 +10,7 @@ describe ("functor", () => {
 
       const result_ = await pipe (
         fa,
-        asyncResult.map (identity.identity),
+        asyncResult.map (identity),
         asyncResult.toPromise,
       )
       expect (result_).toEqual (result.succeed (a))

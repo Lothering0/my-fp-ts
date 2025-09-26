@@ -1,7 +1,7 @@
 import { Hkt } from "../../typeclasses/Hkt"
 
 export interface ResultHkt extends Hkt {
-  readonly type: Result<this["_collectable"], this["_in"]>
+  readonly Type: Result<this["Collectable"], this["In"]>
 }
 
 export type Result<E, A> = Failure<E> | Success<A>
@@ -19,7 +19,7 @@ export interface Success<A> {
 }
 
 export const fail: {
-  <E>(e: E): Result<E, never>
+  <Failure>(e: Failure): Result<Failure, never>
 } = value => ({
   _id: "Result",
   _tag: "Failure",
@@ -27,7 +27,7 @@ export const fail: {
 })
 
 export const succeed: {
-  <A>(a: A): Result<never, A>
+  <Success>(a: Success): Result<never, Success>
 } = value => ({
   _id: "Result",
   _tag: "Success",

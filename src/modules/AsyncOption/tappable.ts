@@ -14,19 +14,19 @@ import { pipe } from "../../utils/flow"
 export const Tappable = create (Monad)
 
 export const tap: {
-  <A>(
-    f: (a: A) => AsyncOption<unknown>,
-  ): (self: AsyncOption<A>) => AsyncOption<A>
+  <In>(
+    f: (a: In) => AsyncOption<unknown>,
+  ): (self: AsyncOption<In>) => AsyncOption<In>
 } = Tappable.tap
 
 export const tapSync: {
-  <A>(f: (a: A) => Sync<unknown>): (self: AsyncOption<A>) => AsyncOption<A>
+  <In>(f: (a: In) => Sync<unknown>): (self: AsyncOption<In>) => AsyncOption<In>
 } = Tappable.tapSync
 
 export const tapOption: {
-  <A>(
-    f: (a: A) => option.Option<unknown>,
-  ): (self: AsyncOption<A>) => AsyncOption<A>
+  <In>(
+    f: (a: In) => option.Option<unknown>,
+  ): (self: AsyncOption<In>) => AsyncOption<In>
 } = f => self =>
   pipe (
     Do,
@@ -36,9 +36,9 @@ export const tapOption: {
   )
 
 export const tapResult: {
-  <E, A>(
-    f: (a: A) => result.Result<E, unknown>,
-  ): (self: AsyncOption<A>) => AsyncOption<A>
+  <Collectable, In>(
+    f: (a: In) => result.Result<Collectable, unknown>,
+  ): (self: AsyncOption<In>) => AsyncOption<In>
 } = f => self =>
   pipe (
     Do,
@@ -48,9 +48,9 @@ export const tapResult: {
   )
 
 export const tapAsync: {
-  <A>(
-    f: (a: A) => async.Async<unknown>,
-  ): (self: AsyncOption<A>) => AsyncOption<A>
+  <In>(
+    f: (a: In) => async.Async<unknown>,
+  ): (self: AsyncOption<In>) => AsyncOption<In>
 } = f => self =>
   pipe (
     Do,
@@ -60,9 +60,9 @@ export const tapAsync: {
   )
 
 export const tapAsyncResult: {
-  <E, A>(
-    f: (a: A) => asyncResult.AsyncResult<E, unknown>,
-  ): (self: AsyncOption<A>) => AsyncOption<A>
+  <Collectable, In>(
+    f: (a: In) => asyncResult.AsyncResult<Collectable, unknown>,
+  ): (self: AsyncOption<In>) => AsyncOption<In>
 } = f => self =>
   pipe (
     Do,
@@ -81,9 +81,9 @@ export const tapAsyncResult: {
   )
 
 export const tapSyncOption: {
-  <A>(
-    f: (a: A) => syncOption.SyncOption<unknown>,
-  ): (self: AsyncOption<A>) => AsyncOption<A>
+  <In>(
+    f: (a: In) => syncOption.SyncOption<unknown>,
+  ): (self: AsyncOption<In>) => AsyncOption<In>
 } = f => self =>
   pipe (
     Do,
@@ -93,9 +93,9 @@ export const tapSyncOption: {
   )
 
 export const tapSyncResult: {
-  <E, A>(
-    f: (a: A) => syncResult.SyncResult<E, unknown>,
-  ): (self: AsyncOption<A>) => AsyncOption<A>
+  <Collectable, In>(
+    f: (a: In) => syncResult.SyncResult<Collectable, unknown>,
+  ): (self: AsyncOption<In>) => AsyncOption<In>
 } = f => self =>
   pipe (
     Do,

@@ -7,7 +7,7 @@ describe ("applicative", () => {
       const fa: async.Async<typeof a> = jest.fn (async.of (a))
 
       const result = await pipe (
-        identity.identity,
+        identity,
         async.of,
         async.ap (fa),
         async.toPromise,

@@ -5,7 +5,9 @@ import { match } from "./matchers"
 import { constant } from "../../utils/constant"
 
 export const getOrElse: {
-  <E, B>(onFailure: (e: E) => B): <A>(self: Result<E, A>) => A | B
+  <Failure, Out>(
+    onFailure: (failure: Failure) => Out,
+  ): <In>(self: Result<Failure, In>) => In | Out
 } = onFailure =>
   match ({
     onFailure,
@@ -13,9 +15,9 @@ export const getOrElse: {
   })
 
 export const orElse: {
-  <E, A>(
-    onFailure: Result<E, A>,
-  ): <B>(self: Result<unknown, B>) => Result<E, A | B>
+  <Failure, Out>(
+    onFailure: Result<Failure, Out>,
+  ): <In>(self: Result<unknown, In>) => Result<Failure, In | Out>
 } = onFailure =>
   match ({
     onFailure: constant (onFailure),
@@ -23,9 +25,9 @@ export const orElse: {
   })
 
 export const catchAll: {
-  <E1, E2, B>(
-    onFailure: (e: E1) => Result<E2, B>,
-  ): <A>(self: Result<E1, A>) => Result<E2, A | B>
+  <Failure1, Failure2, Out>(
+    onFailure: (failure: Failure1) => Result<Failure2, Out>,
+  ): <In>(self: Result<Failure1, In>) => Result<Failure2, In | Out>
 } = onFailure =>
   match ({
     onFailure,

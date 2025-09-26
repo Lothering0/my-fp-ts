@@ -6,12 +6,7 @@ describe ("applicative", () => {
       const a = 1
       const fa = jest.fn (state.of (a))
 
-      const result = pipe (
-        identity.identity,
-        state.of,
-        state.ap (fa),
-        state.evaluate (""),
-      )
+      const result = pipe (identity, state.of, state.ap (fa), state.evaluate (""))
 
       expect (result).toEqual (a)
       expect (fa).toHaveBeenCalledTimes (1)

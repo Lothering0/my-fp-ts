@@ -1,21 +1,21 @@
 import { Sync } from "../modules/Sync"
 
 export const log: {
-  <A>(a: A): Sync<void>
-} = a => () => console.log (a)
+  <In>(message: In): Sync<void>
+} = message => () => console.log (message)
 
 export const info: {
-  <A>(a: A): Sync<void>
-} = a => () => console.info (a)
+  <In>(message: In): Sync<void>
+} = message => () => console.info (message)
 
 export const warn: {
-  <A>(a: A): Sync<void>
-} = a => () => console.warn (a)
+  <In>(message: In): Sync<void>
+} = message => () => console.warn (message)
 
 export const error: {
-  <A>(a: A): Sync<void>
-} = a => () => console.error (a)
+  <In>(message: In): Sync<void>
+} = message => () => console.error (message)
 
 export const writeToStdout: {
-  (s: string): Sync<void>
+  (string: string): Sync<void>
 } = string => () => process.stdout.write (string)

@@ -10,51 +10,53 @@ export const Monad = monad.create<ReaderHkt> (Applicative, {
 export const Do = Monad.Do
 
 export const flat: {
-  <R, A>(self: Reader<R, Reader<R, A>>): Reader<R, A>
+  <Fixed, In>(self: Reader<Fixed, Reader<Fixed, In>>): Reader<Fixed, In>
 } = Monad.flat
 
 export const flatMap: {
-  <R, A, B>(amb: (a: A) => Reader<R, B>): (self: Reader<R, A>) => Reader<R, B>
+  <Fixed, In, Out>(
+    amb: (a: In) => Reader<Fixed, Out>,
+  ): (self: Reader<Fixed, In>) => Reader<Fixed, Out>
 } = Monad.flatMap
 
 export const compose: {
-  <R, A, B, C>(
-    bmc: (b: B) => Reader<R, C>,
-    amb: (a: A) => Reader<R, B>,
-  ): (a: A) => Reader<R, C>
+  <Fixed, In, Out1, Out2>(
+    bmc: (b: Out1) => Reader<Fixed, Out2>,
+    amb: (a: In) => Reader<Fixed, Out1>,
+  ): (a: In) => Reader<Fixed, Out2>
 } = Monad.compose
 
 export const setTo: {
-  <N extends DoObjectKey, A, B>(
-    name: Exclude<N, keyof A>,
-    b: B,
-  ): <R>(self: Reader<R, A>) => Reader<R, DoObject<N, A, B>>
+  <N extends DoObjectKey, In, Out>(
+    name: Exclude<N, keyof In>,
+    b: Out,
+  ): <R>(self: Reader<R, In>) => Reader<R, DoObject<N, In, Out>>
 } = Monad.setTo
 
 export const mapTo: {
-  <N extends DoObjectKey, A, B>(
-    name: Exclude<N, keyof A>,
-    ab: (a: A) => B,
-  ): <R>(self: Reader<R, A>) => Reader<R, DoObject<N, A, B>>
+  <N extends DoObjectKey, In, Out>(
+    name: Exclude<N, keyof In>,
+    ab: (a: In) => Out,
+  ): <R>(self: Reader<R, In>) => Reader<R, DoObject<N, In, Out>>
 } = Monad.mapTo
 
 export const flapTo: {
-  <N extends DoObjectKey, R, A, B>(
-    name: Exclude<N, keyof A>,
-    fab: Reader<R, (a: A) => B>,
-  ): (self: Reader<R, A>) => Reader<R, DoObject<N, A, B>>
+  <N extends DoObjectKey, Fixed, In, Out>(
+    name: Exclude<N, keyof In>,
+    fab: Reader<Fixed, (a: In) => Out>,
+  ): (self: Reader<Fixed, In>) => Reader<Fixed, DoObject<N, In, Out>>
 } = Monad.flapTo
 
 export const apS: {
-  <N extends DoObjectKey, R, A, B>(
-    name: Exclude<N, keyof A>,
-    fb: Reader<R, B>,
-  ): (self: Reader<R, A>) => Reader<R, DoObject<N, A, B>>
+  <N extends DoObjectKey, Fixed, In, Out>(
+    name: Exclude<N, keyof In>,
+    fb: Reader<Fixed, Out>,
+  ): (self: Reader<Fixed, In>) => Reader<Fixed, DoObject<N, In, Out>>
 } = Monad.apS
 
 export const flatMapTo: {
-  <N extends DoObjectKey, R, A, B>(
-    name: Exclude<N, keyof A>,
-    amb: (a: A) => Reader<R, B>,
-  ): (self: Reader<R, A>) => Reader<R, DoObject<N, A, B>>
+  <N extends DoObjectKey, Fixed, In, Out>(
+    name: Exclude<N, keyof In>,
+    amb: (a: In) => Reader<Fixed, Out>,
+  ): (self: Reader<Fixed, In>) => Reader<Fixed, DoObject<N, In, Out>>
 } = Monad.flatMapTo

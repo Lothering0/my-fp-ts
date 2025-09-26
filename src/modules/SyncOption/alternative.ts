@@ -4,7 +4,7 @@ import { constant } from "../../utils/constant"
 import { Alt } from "./alt"
 
 export const zero: {
-  <A = never>(): SyncOption<A>
+  <Out = never>(): SyncOption<Out>
 } = constant (none)
 
 export const Alternative: alternative.Alternative<SyncOptionHkt> = {

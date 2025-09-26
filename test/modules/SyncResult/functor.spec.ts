@@ -6,11 +6,7 @@ describe ("functor", () => {
       const a = 1
       const fa: syncResult.SyncResult<never, number> = jest.fn (syncResult.of (a))
 
-      const result_ = pipe (
-        fa,
-        syncResult.map (identity.identity),
-        syncResult.execute,
-      )
+      const result_ = pipe (fa, syncResult.map (identity), syncResult.execute)
       expect (result_).toEqual (result.succeed (a))
       expect (fa).toHaveBeenCalledTimes (1)
     })

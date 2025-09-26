@@ -9,18 +9,18 @@ export const Applicative = create<AsyncHkt> (Functor, {
 })
 
 export const of: {
-  <A>(a: A): Async<A>
+  <Out>(a: Out): Async<Out>
 } = Applicative.of
 
 export const ap: {
-  <A>(fa: Async<A>): <B>(self: Async<(a: A) => B>) => Async<B>
+  <In>(fa: Async<In>): <Out>(self: Async<(a: In) => Out>) => Async<Out>
 } = Applicative.ap
 
 /** Alias for `ap` */
 export const apply = ap
 
 export const flap: {
-  <A, B>(fab: Async<(a: A) => B>): (self: Async<A>) => Async<B>
+  <In, Out>(fab: Async<(a: In) => Out>): (self: Async<In>) => Async<Out>
 } = Applicative.flap
 
 /** Alias for `flap` */

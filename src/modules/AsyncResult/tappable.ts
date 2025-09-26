@@ -47,21 +47,25 @@ export const TappableBoth: tappableBoth.TappableBoth<AsyncResultHkt> = {
 }
 
 export const tap: {
-  <E1, A>(
-    f: (a: A) => AsyncResult<E1, unknown>,
-  ): <E2>(self: AsyncResult<E2, A>) => AsyncResult<E1 | E2, A>
+  <Failure1, In>(
+    f: (a: In) => AsyncResult<Failure1, unknown>,
+  ): <Failure2>(
+    self: AsyncResult<Failure2, In>,
+  ) => AsyncResult<Failure1 | Failure2, In>
 } = Tappable.tap
 
 export const tapSync: {
-  <A>(
-    f: (a: A) => sync.Sync<unknown>,
-  ): <E>(self: AsyncResult<E, A>) => AsyncResult<E, A>
+  <In>(
+    f: (a: In) => sync.Sync<unknown>,
+  ): <Failure>(self: AsyncResult<Failure, In>) => AsyncResult<Failure, In>
 } = Tappable.tapSync
 
 export const tapResult: {
-  <E1, A>(
-    f: (a: A) => result.Result<E1, unknown>,
-  ): <E2>(self: AsyncResult<E2, A>) => AsyncResult<E1 | E2, A>
+  <Failure1, In>(
+    f: (a: In) => result.Result<Failure1, unknown>,
+  ): <Failure2>(
+    self: AsyncResult<Failure2, In>,
+  ) => AsyncResult<Failure1 | Failure2, In>
 } = f => self =>
   pipe (
     Do,
@@ -71,9 +75,11 @@ export const tapResult: {
   )
 
 export const tapSyncResult: {
-  <E1, A>(
-    f: (a: A) => syncResult.SyncResult<E1, unknown>,
-  ): <E2>(self: AsyncResult<E2, A>) => AsyncResult<E1 | E2, A>
+  <Failure1, In>(
+    f: (a: In) => syncResult.SyncResult<Failure1, unknown>,
+  ): <Failure2>(
+    self: AsyncResult<Failure2, In>,
+  ) => AsyncResult<Failure1 | Failure2, In>
 } = f => self =>
   pipe (
     Do,
@@ -83,9 +89,9 @@ export const tapSyncResult: {
   )
 
 export const tapAsync: {
-  <A>(
-    f: (a: A) => async.Async<unknown>,
-  ): <E>(self: AsyncResult<E, A>) => AsyncResult<E, A>
+  <In>(
+    f: (a: In) => async.Async<unknown>,
+  ): <Failure>(self: AsyncResult<Failure, In>) => AsyncResult<Failure, In>
 } = f => self =>
   pipe (
     Do,
@@ -95,21 +101,25 @@ export const tapAsync: {
   )
 
 export const tapLeft: {
-  <E1, E2>(
-    f: (e: E1) => AsyncResult<E2, unknown>,
-  ): <A>(self: AsyncResult<E1, A>) => AsyncResult<E1 | E2, A>
+  <Failure1, Failure2>(
+    f: (e: Failure1) => AsyncResult<Failure2, unknown>,
+  ): <In>(
+    self: AsyncResult<Failure1, In>,
+  ) => AsyncResult<Failure1 | Failure2, In>
 } = TappableBoth.tapLeft
 
 export const tapLeftSync: {
-  <E>(
-    f: (e: E) => sync.Sync<unknown>,
-  ): <A>(self: AsyncResult<E, A>) => AsyncResult<E, A>
+  <Failure>(
+    f: (e: Failure) => sync.Sync<unknown>,
+  ): <In>(self: AsyncResult<Failure, In>) => AsyncResult<Failure, In>
 } = TappableBoth.tapLeftSync
 
 export const tapLeftResult: {
-  <E1, E2>(
-    f: (e: E1) => result.Result<E2, unknown>,
-  ): <A>(self: AsyncResult<E1, A>) => AsyncResult<E1 | E2, A>
+  <Failure1, Failure2>(
+    f: (e: Failure1) => result.Result<Failure2, unknown>,
+  ): <In>(
+    self: AsyncResult<Failure1, In>,
+  ) => AsyncResult<Failure1 | Failure2, In>
 } = f => self => () =>
   pipe (self, toPromise, promise =>
     promise.then (
@@ -129,9 +139,11 @@ export const tapLeftResult: {
   )
 
 export const tapLeftSyncResult: {
-  <E1, E2>(
-    f: (e: E1) => syncResult.SyncResult<E2, unknown>,
-  ): <A>(self: AsyncResult<E1, A>) => AsyncResult<E1 | E2, A>
+  <Failure1, Failure2>(
+    f: (e: Failure1) => syncResult.SyncResult<Failure2, unknown>,
+  ): <In>(
+    self: AsyncResult<Failure1, In>,
+  ) => AsyncResult<Failure1 | Failure2, In>
 } = f => self => () =>
   pipe (self, toPromise, promise =>
     promise.then (
@@ -152,9 +164,9 @@ export const tapLeftSyncResult: {
   )
 
 export const tapLeftAsync: {
-  <E>(
-    f: (e: E) => async.Async<unknown>,
-  ): <A>(self: AsyncResult<E, A>) => AsyncResult<E, A>
+  <Failure>(
+    f: (e: Failure) => async.Async<unknown>,
+  ): <In>(self: AsyncResult<Failure, In>) => AsyncResult<Failure, In>
 } = f => self => () =>
   pipe (self, toPromise, promise =>
     promise.then (

@@ -5,7 +5,7 @@ import { pipe } from "../../utils/flow"
 import { tryDo } from "../../utils/exceptions"
 
 export interface SyncResultHkt extends Hkt {
-  readonly type: SyncResult<this["_collectable"], this["_in"]>
+  readonly Type: SyncResult<this["Collectable"], this["In"]>
 }
 
 export interface SyncResult<E, A> extends sync.Sync<result.Result<E, A>> {}

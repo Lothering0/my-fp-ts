@@ -9,8 +9,8 @@ export const Profunctor: profunctor.Profunctor<ReaderCollectableHkt> = {
 }
 
 export const promap: {
-  <R1, R2, A, B>(
-    de: (r1: R2) => R1,
-    ab: (a: A) => B,
-  ): (self: Reader<R1, A>) => Reader<R2, B>
+  <Collectable1, Collectable2, In, Out>(
+    de: (r1: Collectable2) => Collectable1,
+    ab: (a: In) => Out,
+  ): (self: Reader<Collectable1, In>) => Reader<Collectable2, Out>
 } = Profunctor.promap

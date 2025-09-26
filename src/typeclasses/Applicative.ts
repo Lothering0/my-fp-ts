@@ -3,7 +3,7 @@ import { Functor } from "./Functor"
 import { flip } from "../utils/flip"
 
 export interface Applicative<F extends Hkt> extends Functor<F> {
-  readonly of: <In>(a: In) => Kind<F, In>
+  readonly of: <Out>(a: Out) => Kind<F, Out>
   readonly ap: <In, Collectable1, Fixed>(
     fa: Kind<F, In, Collectable1, Fixed>,
   ) => <Out, Collectable2>(

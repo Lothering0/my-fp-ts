@@ -6,11 +6,7 @@ describe ("functor", () => {
       const a = 1
       const fa: syncOption.SyncOption<typeof a> = jest.fn (syncOption.of (a))
 
-      const result = pipe (
-        fa,
-        syncOption.map (identity.identity),
-        syncOption.execute,
-      )
+      const result = pipe (fa, syncOption.map (identity), syncOption.execute)
       expect (result).toEqual<option.Option<typeof a>> (option.some (a))
       expect (fa).toHaveBeenCalledTimes (1)
     })

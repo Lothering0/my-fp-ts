@@ -1,10 +1,19 @@
+import * as option from "./modules/Option"
+import * as array from "./modules/ReadonlyArray"
+import * as nonEmptyArray from "./modules/NonEmptyReadonlyArray"
+import * as iterable from "./modules/Iterable"
+import * as result from "./modules/Result"
+import * as state from "./modules/State"
+import * as reader from "./modules/Reader"
+import * as tree from "./modules/Tree"
+
 // modules
 export * as async from "./modules/Async"
 export * as asyncOption from "./modules/AsyncOption"
 export * as asyncResult from "./modules/AsyncResult"
 export * as boolean from "./modules/Boolean"
 export * as duration from "./modules/Duration"
-export * as identity from "./modules/Identity"
+export { identity } from "./modules/Identity"
 export * as iterable from "./modules/Iterable"
 export * as nonEmptyArray from "./modules/NonEmptyReadonlyArray"
 export * as number from "./modules/Number"
@@ -26,6 +35,34 @@ export * as list from "./modules/List"
 export * as matching from "./modules/Matching"
 export * as ordering from "./modules/Ordering"
 export * as refinement from "./modules/Refinement"
+
+// transformers
+export const optionOption = option.transform (option.Monad)
+export const arrayOfOptions = option.transform (array.Monad)
+export const nonEmptyArrayOfOptions = option.transform (nonEmptyArray.Monad)
+export const iterableOfOptions = option.transform (iterable.Monad)
+export const resultOption = option.transform (result.Monad)
+export const stateOption = option.transform (state.Monad)
+export const readerOption = option.transform (reader.Monad)
+export const treeOfOptions = option.transform (tree.Monad)
+
+export const optionResult = result.transform (option.Monad)
+export const arrayOfResults = result.transform (array.Monad)
+export const nonEmptyArrayOfResults = result.transform (nonEmptyArray.Monad)
+export const iterableOfResults = result.transform (iterable.Monad)
+export const resultResult = result.transform (result.Monad)
+export const stateResult = result.transform (state.Monad)
+export const readerResult = result.transform (reader.Monad)
+export const treeOfResults = result.transform (tree.Monad)
+
+export const optionState = state.transform (option.Monad)
+export const arrayOfStates = state.transform (array.Monad)
+export const nonEmptyArrayOfStates = state.transform (nonEmptyArray.Monad)
+export const iterableOfStates = state.transform (iterable.Monad)
+export const resultState = state.transform (result.Monad)
+export const stateState = state.transform (state.Monad)
+export const readerState = state.transform (reader.Monad)
+export const treeOfStates = state.transform (tree.Monad)
 
 // typeclasses
 export * as alt from "./typeclasses/Alt"

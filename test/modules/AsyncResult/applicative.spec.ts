@@ -9,7 +9,7 @@ describe ("applicative", () => {
       )
 
       const result_ = await pipe (
-        identity.identity,
+        identity,
         asyncResult.of,
         asyncResult.ap (fa),
         asyncResult.toPromise,

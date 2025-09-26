@@ -2,15 +2,15 @@ import * as sync from "../Sync"
 import { Hkt } from "../../typeclasses/Hkt"
 
 export interface AsyncHkt extends Hkt {
-  readonly type: Async<this["_in"]>
+  readonly Type: Async<this["In"]>
 }
 
-export interface Async<A> extends sync.Sync<Promise<A>> {}
+export interface Async<In> extends sync.Sync<Promise<In>> {}
 
 export const async: {
-  <A>(a: A): Async<A>
+  <In>(a: In): Async<In>
 } = a => () => Promise.resolve (a)
 
 export const toPromise: {
-  <A>(ma: Async<A>): Promise<A>
+  <In>(ma: Async<In>): Promise<In>
 } = ma => ma ()

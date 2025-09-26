@@ -7,9 +7,13 @@ export const Extendable = create<ResultHkt> (Functor, {
 })
 
 export const extend: {
-  <E, A, B>(fab: (fa: Result<E, A>) => B): (self: Result<E, A>) => Result<E, B>
+  <Failure, In, Out>(
+    fab: (fa: Result<Failure, In>) => Out,
+  ): (self: Result<Failure, In>) => Result<Failure, Out>
 } = Extendable.extend
 
 export const duplicate: {
-  <E, A>(self: Result<E, A>): Result<E, Result<E, A>>
+  <Failure, Out>(
+    self: Result<Failure, Out>,
+  ): Result<Failure, Result<Failure, Out>>
 } = Extendable.duplicate

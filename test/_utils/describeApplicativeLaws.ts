@@ -24,7 +24,7 @@ export const describeApplicativeLaws: {
       it ("should satisfy identity law", () => {
         fas.forEach (fa => {
           pipe (
-            identity.identity,
+            identity,
             Applicative.of,
             Applicative.ap (fa),
             Equivalence.equals (fa),

@@ -20,12 +20,9 @@ export const describeFunctorLaws: {
     describe ("map", () => {
       it ("should satisfy identity law", () => {
         fas.forEach (fa => {
-          pipe (
-            fa,
-            Functor.map (identity.identity),
-            Equivalence.equals (fa),
-            expect,
-          ).toBe (true)
+          pipe (fa, Functor.map (identity), Equivalence.equals (fa), expect).toBe (
+            true,
+          )
         })
       })
 

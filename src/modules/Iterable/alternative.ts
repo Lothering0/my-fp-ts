@@ -3,7 +3,7 @@ import { Alt } from "./alt"
 import { IterableHkt } from "./iterable"
 
 export const zero: {
-  <A>(): Iterable<A>
+  <Out>(): Iterable<Out>
 } = () => ({
   *[Symbol.iterator]() {},
 })

@@ -18,11 +18,11 @@ export type ResultT<F extends Hkt, In, Collectable, Fixed, TCollectable> = Kind<
 >
 
 export interface ResultTHkt<F extends Hkt, TCollectable> extends Hkt {
-  readonly type: ResultT<
+  readonly Type: ResultT<
     F,
-    this["_in"],
-    this["_collectable"],
-    this["_fixed"],
+    this["In"],
+    this["Collectable"],
+    this["Fixed"],
     TCollectable
   >
 }

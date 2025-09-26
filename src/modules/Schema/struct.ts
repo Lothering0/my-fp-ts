@@ -33,7 +33,7 @@ export const Struct = <
 >(
   schemasByKey: A,
 ): StructSchema<A> => ({
-  _In: hole (),
+  In: hole (),
   Type: hole (),
   isOptional: false,
   schemasByKey,
@@ -157,7 +157,7 @@ export const required: {
     self.schemasByKey,
     record.map (
       (schema): Schema<unknown> => ({
-        _In: hole (),
+        In: hole (),
         Type: hole (),
         isOptional: false,
         schemasByKey: schema.schemasByKey,

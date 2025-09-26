@@ -6,7 +6,7 @@ describe ("functor", () => {
       const a = 0
       const fa: state.State<string, typeof a> = jest.fn (s => [a, s])
 
-      const result = pipe (fa, state.map (identity.identity), state.evaluate (""))
+      const result = pipe (fa, state.map (identity), state.evaluate (""))
 
       expect (result).toEqual (a)
       expect (fa).toHaveBeenCalledTimes (1)

@@ -1,5 +1,10 @@
 import { Monoid } from "../../typeclasses/Monoid"
-import { SemigroupProduct, SemigroupSum } from "./semigroup"
+import {
+  SemigroupMin,
+  SemigroupMax,
+  SemigroupProduct,
+  SemigroupSum,
+} from "./semigroup"
 
 export const MonoidSum: Monoid<number> = {
   ...SemigroupSum,
@@ -9,4 +14,14 @@ export const MonoidSum: Monoid<number> = {
 export const MonoidProduct: Monoid<number> = {
   ...SemigroupProduct,
   empty: 1,
+}
+
+export const MonoidMin: Monoid<number> = {
+  ...SemigroupMin,
+  empty: Infinity,
+}
+
+export const MonoidMax: Monoid<number> = {
+  ...SemigroupMax,
+  empty: -Infinity,
 }

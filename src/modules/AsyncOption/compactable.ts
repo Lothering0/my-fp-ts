@@ -22,15 +22,15 @@ export const Compactable = create<AsyncOptionHkt> (Functor, {
 })
 
 export const compact: {
-  <A>(self: AsyncOption<option.Option<A>>): AsyncOption<A>
+  <Out>(self: AsyncOption<option.Option<Out>>): AsyncOption<Out>
 } = Compactable.compact
 
 export const compactResults: {
-  <A>(self: AsyncOption<result.Result<unknown, A>>): AsyncOption<A>
+  <Out>(self: AsyncOption<result.Result<unknown, Out>>): AsyncOption<Out>
 } = Compactable.compactResults
 
 export const separate: {
-  <E, A>(
-    self: AsyncOption<result.Result<E, A>>,
-  ): readonly [AsyncOption<E>, AsyncOption<A>]
+  <Collectable, Out>(
+    self: AsyncOption<result.Result<Collectable, Out>>,
+  ): readonly [AsyncOption<Collectable>, AsyncOption<Out>]
 } = Compactable.separate

@@ -14,10 +14,17 @@ export interface MonadWithIndex<F extends Hkt, Index>
     self: Kind<F, In, Collectable2, Fixed>,
   ) => Kind<F, Out, Collectable1 | Collectable2, Fixed>
 
-  readonly composeWithIndex: <In1, In2, Out, Collectable1, Collectable2, Fixed>(
-    bimc: (b: In2, i: Index) => Kind<F, Out, Collectable2, Fixed>,
-    aimb: (a: In1) => Kind<F, In2, Collectable1, Fixed>,
-  ) => (a: In1) => Kind<F, Out, Collectable1 | Collectable2, Fixed>
+  readonly composeWithIndex: <
+    In,
+    Out1,
+    Out2,
+    Collectable1,
+    Collectable2,
+    Fixed,
+  >(
+    bimc: (b: Out1, i: Index) => Kind<F, Out2, Collectable2, Fixed>,
+    amb: (a: In) => Kind<F, Out1, Collectable1, Fixed>,
+  ) => (a: In) => Kind<F, Out2, Collectable1 | Collectable2, Fixed>
 
   readonly mapToWithIndex: <N extends DoObjectKey, In, Out>(
     name: Exclude<N, keyof In>,

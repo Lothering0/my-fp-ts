@@ -2,7 +2,7 @@ import { LazyArg } from "../types/utils"
 import { _ } from "./underscore"
 
 export const constant: {
-  <A>(a: A): LazyArg<A>
+  <Out>(a: Out): LazyArg<Out>
 } = a => () => a
 
 export const constFalse: LazyArg<false> = constant (false)

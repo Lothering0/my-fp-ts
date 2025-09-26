@@ -6,7 +6,7 @@ import { _ } from "../../utils/underscore"
 export const empty: Async<never> = () => new Promise (() => _)
 
 export const getRaceMonoid: {
-  <A>(): Monoid<Async<A>>
+  <Fixed>(): Monoid<Async<Fixed>>
 } = () => ({
   ...getRaceSemigroup (),
   empty,

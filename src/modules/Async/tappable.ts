@@ -6,11 +6,11 @@ import { Monad } from "./monad"
 export const Tappable = create (Monad)
 
 export const tap: {
-  <A>(
-    f: (a: A) => async.Async<unknown>,
-  ): (self: async.Async<A>) => async.Async<A>
+  <In>(
+    f: (a: In) => async.Async<unknown>,
+  ): (self: async.Async<In>) => async.Async<In>
 } = Tappable.tap
 
 export const tapSync: {
-  <A>(f: (a: A) => Sync<unknown>): (self: async.Async<A>) => async.Async<A>
+  <In>(f: (a: In) => Sync<unknown>): (self: async.Async<In>) => async.Async<In>
 } = Tappable.tapSync

@@ -1,8 +1,8 @@
 export interface Hkt {
-  readonly _in?: unknown
-  readonly _collectable?: unknown
-  readonly _fixed?: unknown
-  readonly type?: unknown
+  readonly In?: unknown
+  readonly Collectable?: unknown
+  readonly Fixed?: unknown
+  readonly Type?: unknown
 }
 
 export type Kind<
@@ -11,16 +11,16 @@ export type Kind<
   Collectable = never,
   Fixed = never,
 > = F extends {
-  readonly type: unknown
+  readonly Type: unknown
 }
   ? (F & {
-      readonly _in: In
-      readonly _collectable: Collectable
-      readonly _fixed: Fixed
-    })["type"]
+      readonly In: In
+      readonly Collectable: Collectable
+      readonly Fixed: Fixed
+    })["Type"]
   : {
       readonly _F: F
-      readonly _in: () => In
-      readonly _collectable: () => Collectable
-      readonly _fixed: () => Fixed
+      readonly In: () => In
+      readonly Collectable: () => Collectable
+      readonly Fixed: () => Fixed
     }

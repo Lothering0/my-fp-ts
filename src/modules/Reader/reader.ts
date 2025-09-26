@@ -1,13 +1,13 @@
 import { Hkt } from "../../typeclasses/Hkt"
 
 export interface ReaderHkt extends Hkt {
-  readonly type: Reader<this["_fixed"], this["_in"]>
+  readonly Type: Reader<this["Fixed"], this["In"]>
 }
 
 export interface ReaderCollectableHkt extends Hkt {
-  readonly type: Reader<this["_collectable"], this["_in"]>
+  readonly Type: Reader<this["Collectable"], this["In"]>
 }
 
-export interface Reader<R, A> {
-  (r: R): A
+export interface Reader<Fixed, Out> {
+  (r: Fixed): Out
 }

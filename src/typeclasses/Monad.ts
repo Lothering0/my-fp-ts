@@ -18,10 +18,10 @@ export interface Monad<F extends Hkt> extends Applicative<F> {
     self: Kind<F, In, Collectable2, Fixed>,
   ) => Kind<F, Out, Collectable1 | Collectable2, Fixed>
 
-  readonly compose: <In1, In2, Out2, Collectable1, Collectable2, Fixed>(
-    bmc: (b: In2) => Kind<F, Out2, Collectable2, Fixed>,
-    amb: (a: In1) => Kind<F, In2, Collectable1, Fixed>,
-  ) => (a: In1) => Kind<F, Out2, Collectable1 | Collectable2, Fixed>
+  readonly compose: <In, Out1, Out2, Collectable1, Collectable2, Fixed>(
+    bmc: (b: Out1) => Kind<F, Out2, Collectable2, Fixed>,
+    amb: (a: In) => Kind<F, Out1, Collectable1, Fixed>,
+  ) => (a: In) => Kind<F, Out2, Collectable1 | Collectable2, Fixed>
 
   readonly setTo: <N extends DoObjectKey, In, Out>(
     name: Exclude<N, keyof In>,

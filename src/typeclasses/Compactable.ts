@@ -6,17 +6,17 @@ import { Functor } from "./Functor"
 import { flow, pipe } from "../utils/flow"
 
 export interface Compactable<F extends Hkt> extends TypeClass<F> {
-  readonly compact: <In, Collectable, Fixed>(
-    self: Kind<F, Option<In>, Collectable, Fixed>,
-  ) => Kind<F, In, Collectable, Fixed>
-  readonly compactResults: <In, Collectable, Fixed>(
-    self: Kind<F, Result<unknown, In>, Collectable, Fixed>,
-  ) => Kind<F, In, Collectable, Fixed>
-  readonly separate: <In1, In2, Collectable, Fixed>(
-    self: Kind<F, Result<In1, In2>, Collectable, Fixed>,
+  readonly compact: <Out, Collectable, Fixed>(
+    self: Kind<F, Option<Out>, Collectable, Fixed>,
+  ) => Kind<F, Out, Collectable, Fixed>
+  readonly compactResults: <Out, Collectable, Fixed>(
+    self: Kind<F, Result<unknown, Out>, Collectable, Fixed>,
+  ) => Kind<F, Out, Collectable, Fixed>
+  readonly separate: <Out1, Out2, Collectable, Fixed>(
+    self: Kind<F, Result<Out1, Out2>, Collectable, Fixed>,
   ) => readonly [
-    Kind<F, In1, Collectable, Fixed>,
-    Kind<F, In2, Collectable, Fixed>,
+    Kind<F, Out1, Collectable, Fixed>,
+    Kind<F, Out2, Collectable, Fixed>,
   ]
 }
 

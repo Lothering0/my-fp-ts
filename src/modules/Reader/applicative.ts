@@ -6,22 +6,26 @@ import { Reader, ReaderHkt } from "./reader"
 
 export const Applicative = applicative.create<ReaderHkt> (Functor, {
   of: constant,
-  ap: fa => self => reader => pipe (reader, fa, self (reader)),
+  ap: fa => self => r => pipe (r, fa, self (r)),
 })
 
 export const of: {
-  <R, A>(a: A): Reader<R, A>
+  <Fixed, In>(a: In): Reader<Fixed, In>
 } = Applicative.of
 
 export const ap: {
-  <R, A>(fa: Reader<R, A>): <B>(self: Reader<R, (a: A) => B>) => Reader<R, B>
+  <Fixed, In>(
+    fa: Reader<Fixed, In>,
+  ): <Out>(self: Reader<Fixed, (a: In) => Out>) => Reader<Fixed, Out>
 } = Applicative.ap
 
 /** Alias for `ap` */
 export const apply = ap
 
 export const flap: {
-  <R, A, B>(fab: Reader<R, (a: A) => B>): (self: Reader<R, A>) => Reader<R, B>
+  <Fixed, In, Out>(
+    fab: Reader<Fixed, (a: In) => Out>,
+  ): (self: Reader<Fixed, In>) => Reader<Fixed, Out>
 } = Applicative.flap
 
 /** Alias for `flap` */

@@ -1,5 +1,5 @@
 import { raise } from "./exceptions"
 
 export const absurd: {
-  <A>(_: never): A
+  <Out>(_: never): Out
 } = () => raise ("Absurd called")

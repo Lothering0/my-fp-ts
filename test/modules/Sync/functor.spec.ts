@@ -6,7 +6,7 @@ describe ("functor", () => {
       const a = 1
       const fa: sync.Sync<typeof a> = jest.fn (sync.of (a))
 
-      const result = sync.execute (sync.map (identity.identity) (fa))
+      const result = sync.execute (sync.map (identity) (fa))
       expect (result).toEqual (a)
       expect (fa).toHaveBeenCalledTimes (1)
     })

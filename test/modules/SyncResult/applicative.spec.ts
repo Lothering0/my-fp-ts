@@ -9,7 +9,7 @@ describe ("applicative", () => {
       )
 
       const result_ = pipe (
-        identity.identity,
+        identity,
         syncResult.of,
         syncResult.ap (fa),
         syncResult.execute,

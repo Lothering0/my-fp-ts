@@ -43,7 +43,7 @@ export const lazy = <A>(schema: LazyArg<Schema<A>>): Schema<A> => {
 export const optional: {
   <In, Out = In>(schema: Schema<In, Out>): SchemaOptional<In, Out | undefined>
 } = schema => ({
-  _In: hole (),
+  In: hole (),
   Type: hole (),
   isOptional: true,
   schemasByKey: schema.schemasByKey,

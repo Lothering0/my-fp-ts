@@ -6,7 +6,7 @@ describe ("applicative", () => {
       const a = 1
       const fa: sync.Sync<typeof a> = jest.fn (sync.of (a))
 
-      const result = pipe (identity.identity, sync.of, sync.ap (fa), sync.execute)
+      const result = pipe (identity, sync.of, sync.ap (fa), sync.execute)
 
       expect (result).toEqual (a)
       expect (fa).toHaveBeenCalledTimes (1)

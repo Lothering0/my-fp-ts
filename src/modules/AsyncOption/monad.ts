@@ -16,61 +16,61 @@ export const Monad = create<AsyncOptionHkt> (Applicative, {
 export const Do = Monad.Do
 
 export const flat: {
-  <A>(self: AsyncOption<AsyncOption<A>>): AsyncOption<A>
+  <Out>(self: AsyncOption<AsyncOption<Out>>): AsyncOption<Out>
 } = Monad.flat
 
 export const flatMap: {
-  <A, B>(
-    amb: (a: A) => AsyncOption<B>,
-  ): (self: AsyncOption<A>) => AsyncOption<B>
+  <In, Out>(
+    amb: (a: In) => AsyncOption<Out>,
+  ): (self: AsyncOption<In>) => AsyncOption<Out>
 } = Monad.flatMap
 
 export const compose: {
-  <A, B, C>(
-    bmc: (b: B) => AsyncOption<C>,
-    amb: (a: A) => AsyncOption<B>,
-  ): (a: A) => AsyncOption<C>
+  <In, Out1, Out2>(
+    bmc: (b: Out1) => AsyncOption<Out2>,
+    amb: (a: In) => AsyncOption<Out1>,
+  ): (a: In) => AsyncOption<Out2>
 } = Monad.compose
 
 export const setTo: {
-  <N extends DoObjectKey, A, B>(
-    name: Exclude<N, keyof A>,
-    b: B,
-  ): (self: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
+  <N extends DoObjectKey, In, Out>(
+    name: Exclude<N, keyof In>,
+    b: Out,
+  ): (self: AsyncOption<In>) => AsyncOption<DoObject<N, In, Out>>
 } = Monad.setTo
 
 export const mapTo: {
-  <N extends DoObjectKey, A, B>(
-    name: Exclude<N, keyof A>,
-    ab: (a: A) => B,
-  ): (self: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
+  <N extends DoObjectKey, In, Out>(
+    name: Exclude<N, keyof In>,
+    ab: (a: In) => Out,
+  ): (self: AsyncOption<In>) => AsyncOption<DoObject<N, In, Out>>
 } = Monad.mapTo
 
 export const flapTo: {
-  <N extends DoObjectKey, A, B>(
-    name: Exclude<N, keyof A>,
-    fab: AsyncOption<(a: A) => B>,
-  ): (self: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
+  <N extends DoObjectKey, In, Out>(
+    name: Exclude<N, keyof In>,
+    fab: AsyncOption<(a: In) => Out>,
+  ): (self: AsyncOption<In>) => AsyncOption<DoObject<N, In, Out>>
 } = Monad.flapTo
 
 export const apS: {
-  <N extends DoObjectKey, A, B>(
-    name: Exclude<N, keyof A>,
-    fb: AsyncOption<B>,
-  ): (self: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
+  <N extends DoObjectKey, In, Out>(
+    name: Exclude<N, keyof In>,
+    fb: AsyncOption<Out>,
+  ): (self: AsyncOption<In>) => AsyncOption<DoObject<N, In, Out>>
 } = Monad.apS
 
 export const flatMapTo: {
-  <N extends DoObjectKey, A, B>(
-    name: Exclude<N, keyof A>,
-    amb: (a: A) => AsyncOption<B>,
-  ): (self: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
+  <N extends DoObjectKey, In, Out>(
+    name: Exclude<N, keyof In>,
+    amb: (a: In) => AsyncOption<Out>,
+  ): (self: AsyncOption<In>) => AsyncOption<DoObject<N, In, Out>>
 } = Monad.flatMapTo
 
 export const parallel: {
-  <N extends DoObjectKey, B>(
-    fb: AsyncOption<B>,
-  ): <A>(fa: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
+  <N extends DoObjectKey, Out>(
+    fb: AsyncOption<Out>,
+  ): <In>(fa: AsyncOption<In>) => AsyncOption<DoObject<N, In, Out>>
 } = fb => fa => () =>
   Promise.all ([toPromise (fa), toPromise (fb)]).then (([ma, mb]) =>
     pipe (
@@ -80,10 +80,10 @@ export const parallel: {
   )
 
 export const parallelTo: {
-  <N extends DoObjectKey, A, B>(
-    name: Exclude<N, keyof A>,
-    fb: AsyncOption<B>,
-  ): (fa: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
+  <N extends DoObjectKey, In, Out>(
+    name: Exclude<N, keyof In>,
+    fb: AsyncOption<Out>,
+  ): (fa: AsyncOption<In>) => AsyncOption<DoObject<N, In, Out>>
 } = (name, fb) => fa => () =>
   Promise.all ([toPromise (fa), toPromise (fb)]).then (([ma, mb]) =>
     option.apS (name, mb) (ma),

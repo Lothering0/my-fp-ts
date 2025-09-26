@@ -11,7 +11,7 @@ import { identity } from "../modules/Identity"
 import { Monoid } from "./Monoid"
 
 export interface OrderHkt extends Hkt {
-  readonly type: Order<this["_in"]>
+  readonly Type: Order<this["In"]>
 }
 
 export interface Order<A> {

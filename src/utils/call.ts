@@ -2,13 +2,13 @@ import { LazyArg } from "../types/utils"
 import { flip } from "./flip"
 
 export const call0: {
-  <A>(f: LazyArg<A>): A
+  <Out>(f: LazyArg<Out>): Out
 } = f => f ()
 
 export const call: {
-  <A, B>(ab: (a: A) => B): (a: A) => B
+  <In, Out>(ab: (a: In) => Out): (a: In) => Out
 } = ab => a => ab (a)
 
 export const callWith: {
-  <A, B>(a: A): (ab: (a: A) => B) => B
+  <In, Out>(a: In): (ab: (a: In) => Out) => Out
 } = flip (call)

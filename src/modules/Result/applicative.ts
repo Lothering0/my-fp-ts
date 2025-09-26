@@ -10,22 +10,24 @@ export const Applicative = create<ResultHkt> (Functor, {
 })
 
 export const of: {
-  <A>(a: A): Result<never, A>
+  <Success>(success: Success): Result<never, Success>
 } = Applicative.of
 
 export const ap: {
-  <E1, A>(
-    fa: Result<E1, A>,
-  ): <E2, B>(self: Result<E2, (a: A) => B>) => Result<E1 | E2, B>
+  <Failure1, In>(
+    fa: Result<Failure1, In>,
+  ): <Failure2, Out>(
+    self: Result<Failure2, (a: In) => Out>,
+  ) => Result<Failure1 | Failure2, Out>
 } = Applicative.ap
 
 /** Alias for `ap` */
 export const apply = ap
 
 export const flap: {
-  <E1, A, B>(
-    fab: Result<E1, (a: A) => B>,
-  ): <E2>(self: Result<E2, A>) => Result<E1 | E2, B>
+  <Failure1, In, Out>(
+    fab: Result<Failure1, (a: In) => Out>,
+  ): <Failure2>(self: Result<Failure2, In>) => Result<Failure1 | Failure2, Out>
 } = Applicative.flap
 
 /** Alias for `flap` */

@@ -15,27 +15,29 @@ export const Monad = create<ResultHkt> (Applicative, {
 export const Do = Monad.Do
 
 export const flat: {
-  <E1, E2, A>(self: Result<E1, Result<E2, A>>): Result<E1 | E2, A>
+  <Failure1, Failure2, Out>(
+    self: Result<Failure1, Result<Failure2, Out>>,
+  ): Result<Failure1 | Failure2, Out>
 } = Monad.flat
 
 export const flatMap: {
-  <E1, A, B>(
-    amb: (a: A) => Result<E1, B>,
-  ): <E2>(self: Result<E2, A>) => Result<E1 | E2, B>
+  <Failure1, In, Out>(
+    amb: (a: In) => Result<Failure1, Out>,
+  ): <Failure2>(self: Result<Failure2, In>) => Result<Failure1 | Failure2, Out>
 } = Monad.flatMap
 
 export const compose: {
-  <E1, E2, A, B, C>(
-    bmc: (b: B) => Result<E2, C>,
-    amb: (a: A) => Result<E1, B>,
-  ): (a: A) => Result<E1 | E2, C>
+  <Failure1, Failure2, In, Out1, Out2>(
+    bmc: (b: Out1) => Result<Failure2, Out2>,
+    amb: (a: In) => Result<Failure1, Out1>,
+  ): (a: In) => Result<Failure1 | Failure2, Out2>
 } = Monad.compose
 
 export const setTo: {
-  <N extends DoObjectKey, A, B>(
-    name: Exclude<N, keyof A>,
-    b: B,
-  ): <E>(self: Result<E, A>) => Result<E, DoObject<N, A, B>>
+  <N extends DoObjectKey, In, Out>(
+    name: Exclude<N, keyof In>,
+    b: Out,
+  ): <E>(self: Result<E, In>) => Result<E, DoObject<N, In, Out>>
 } = Monad.setTo
 
 export const mapTo: {

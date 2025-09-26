@@ -6,11 +6,7 @@ describe ("functor", () => {
       const a = 1
       const fa: async.Async<typeof a> = jest.fn (async.of (a))
 
-      const result = await pipe (
-        fa,
-        async.map (identity.identity),
-        async.toPromise,
-      )
+      const result = await pipe (fa, async.map (identity), async.toPromise)
       expect (result).toEqual (a)
       expect (fa).toHaveBeenCalledTimes (1)
     })

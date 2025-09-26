@@ -3,9 +3,9 @@ import { concat } from "./utils"
 import { IterableHkt } from "./iterable"
 
 export const orElse =
-  <B>(that: Iterable<B>) =>
-  <A>(self: Iterable<A>): Iterable<A | B> =>
-    concat<A | B> (that) (self)
+  <Out>(that: Iterable<Out>) =>
+  <In>(self: Iterable<In>): Iterable<In | Out> =>
+    concat<In | Out> (that) (self)
 
 export const Alt: alt.Alt<IterableHkt> = {
   orElse,

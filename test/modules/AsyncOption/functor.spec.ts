@@ -8,7 +8,7 @@ describe ("functor", () => {
 
       const result = await pipe (
         fa,
-        asyncOption.map (identity.identity),
+        asyncOption.map (identity),
         asyncOption.toPromise,
       )
       expect (result).toEqual<option.Option<typeof a>> (option.some (a))

@@ -1,7 +1,7 @@
 import { Hkt } from "../../typeclasses/Hkt"
 
 export interface OptionHkt extends Hkt {
-  readonly type: Option<this["_in"]>
+  readonly Type: Option<this["In"]>
 }
 
 export type Option<A> = None | Some<A>

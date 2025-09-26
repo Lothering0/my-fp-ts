@@ -5,7 +5,7 @@ import * as boolean from "../Boolean"
 import * as number from "../Number"
 import * as equivalence from "../../typeclasses/Equivalence"
 import * as order from "../../typeclasses/Order"
-import * as identity from "../Identity"
+import { identity } from "../Identity"
 import { Refinement, RefinementWithIndex } from "../Refinement"
 import { Predicate, PredicateWithIndex } from "../Predicate"
 import { flatMap } from "./monad"
@@ -19,7 +19,7 @@ import { Endomorphism } from "../../typeclasses/Endomorphism"
 
 export const fromNonEmpty: {
   <A>(as: nonEmptyArray.NonEmptyReadonlyArray<A>): ReadonlyArray<A>
-} = identity.identity
+} = identity
 
 export const toArray = <A>(self: ReadonlyArray<A>): A[] => self as A[]
 

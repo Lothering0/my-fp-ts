@@ -7,47 +7,53 @@ import { flow, pipe } from "../../utils/flow"
 import { Hkt } from "../../typeclasses/Hkt"
 
 export interface AsyncResultHkt extends Hkt {
-  readonly type: AsyncResult<this["_collectable"], this["_in"]>
+  readonly Type: AsyncResult<this["Collectable"], this["In"]>
 }
 
 export interface AsyncResult<E, A> extends async.Async<result.Result<E, A>> {}
 
 export const fail: {
-  <E>(e: E): AsyncResult<E, never>
+  <Failure>(e: Failure): AsyncResult<Failure, never>
 } = flow (result.fail, async.of)
 
 export const failSync: {
-  <E>(me: sync.Sync<E>): AsyncResult<E, never>
+  <Failure>(me: sync.Sync<Failure>): AsyncResult<Failure, never>
 } = flow (sync.execute, fail)
 
 export const failAsync: {
-  <E>(me: async.Async<E>): AsyncResult<E, never>
+  <Failure>(me: async.Async<Failure>): AsyncResult<Failure, never>
 } = async.map (result.fail)
 
 export const succeed: {
-  <A>(a: A): AsyncResult<never, A>
+  <Success>(a: Success): AsyncResult<never, Success>
 } = flow (result.succeed, async.of)
 
 export const succeedSync: {
-  <A>(ma: sync.Sync<A>): AsyncResult<never, A>
+  <Success>(ma: sync.Sync<Success>): AsyncResult<never, Success>
 } = flow (sync.execute, succeed)
 
 export const succeedAsync: {
-  <A>(me: async.Async<A>): AsyncResult<never, A>
+  <Success>(me: async.Async<Success>): AsyncResult<never, Success>
 } = async.map (result.succeed)
 
 export const fromAsync: {
-  <E, A>(ma: async.Async<A>): AsyncResult<E, A>
+  <Failure, Success>(ma: async.Async<Success>): AsyncResult<Failure, Success>
 } = ma => () => ma ().then (result.succeed, result.fail)
 
 export const fromResult: {
-  <E, A>(ma: result.Result<E, A>): AsyncResult<E, A>
+  <Failure, Success>(
+    ma: result.Result<Failure, Success>,
+  ): AsyncResult<Failure, Success>
 } = async.of
 
 export const fromSyncResult: {
-  <E, A>(mma: syncResult.SyncResult<E, A>): AsyncResult<E, A>
+  <Failure, Success>(
+    mma: syncResult.SyncResult<Failure, Success>,
+  ): AsyncResult<Failure, Success>
 } = mma => () => pipe (mma, syncResult.execute, ma => Promise.resolve (ma))
 
 export const toPromise: {
-  <E, A>(ma: AsyncResult<E, A>): Promise<result.Result<E, A>>
+  <Failure, Success>(
+    ma: AsyncResult<Failure, Success>,
+  ): Promise<result.Result<Failure, Success>>
 } = mma => mma ().then (identity, result.fail)

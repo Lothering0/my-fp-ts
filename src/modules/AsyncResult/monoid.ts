@@ -8,7 +8,7 @@ export const empty: AsyncResult<never, never> = () =>
   new Promise (() => succeed (_))
 
 export const getRaceMonoid: {
-  <E, A>(): Monoid<AsyncResult<E, A>>
+  <Failure, Out>(): Monoid<AsyncResult<Failure, Out>>
 } = () => ({
   ...getRaceSemigroup (),
   empty,

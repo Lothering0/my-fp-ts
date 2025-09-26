@@ -3,13 +3,13 @@ import { Async } from "../Async"
 import { LazyArg } from "../../types/utils"
 import { toPromise, AsyncOption } from "./async-option"
 
-export interface Matchers<A, B, C = B> {
-  readonly onNone: LazyArg<B>
-  readonly onSome: (a: A) => C
+export interface Matchers<In, Out1, Out2 = Out1> {
+  readonly onNone: LazyArg<Out1>
+  readonly onSome: (a: In) => Out2
 }
 
 export const match: {
-  <A, B, C = B>(
-    matchers: Matchers<A, B, C>,
-  ): (self: AsyncOption<A>) => Async<B | C>
+  <In, Out1, Out2 = Out1>(
+    matchers: Matchers<In, Out1, Out2>,
+  ): (self: AsyncOption<In>) => Async<Out1 | Out2>
 } = matchers => self => () => toPromise (self).then (option.match (matchers))
