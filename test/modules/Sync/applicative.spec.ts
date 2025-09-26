@@ -1,45 +1,45 @@
-import { identity, number, pipe, sync } from "../../../src"
+import { identity, number, pipe, sync } from '../../../src'
 
-describe ("applicative", () => {
-  describe ("ap", () => {
-    it ("should satisfy identity law", () => {
+describe('applicative', () => {
+  describe('ap', () => {
+    it('should satisfy identity law', () => {
       const a = 1
-      const fa: sync.Sync<typeof a> = jest.fn (sync.of (a))
+      const fa: sync.Sync<typeof a> = jest.fn(sync.of(a))
 
-      const result = pipe (identity, sync.of, sync.ap (fa), sync.execute)
+      const result = pipe(identity, sync.of, sync.ap(fa), sync.execute)
 
-      expect (result).toEqual (a)
-      expect (fa).toHaveBeenCalledTimes (1)
+      expect(result).toEqual(a)
+      expect(fa).toHaveBeenCalledTimes(1)
     })
 
-    it ("should satisfy homomorphism law", () => {
+    it('should satisfy homomorphism law', () => {
       const a = 1
-      const ab = number.add (5)
+      const ab = number.add(5)
 
-      const fa: sync.Sync<typeof a> = jest.fn (sync.of (a))
-      const fab: sync.Sync<typeof ab> = jest.fn (sync.of (ab))
+      const fa: sync.Sync<typeof a> = jest.fn(sync.of(a))
+      const fab: sync.Sync<typeof ab> = jest.fn(sync.of(ab))
 
-      const result1 = pipe (fab, sync.ap (fa), sync.execute)
-      const result2 = pipe (a, ab, sync.of, sync.execute)
+      const result1 = pipe(fab, sync.ap(fa), sync.execute)
+      const result2 = pipe(a, ab, sync.of, sync.execute)
 
-      expect (result1).toEqual (result2)
-      expect (fa).toHaveBeenCalledTimes (1)
-      expect (fab).toHaveBeenCalledTimes (1)
+      expect(result1).toEqual(result2)
+      expect(fa).toHaveBeenCalledTimes(1)
+      expect(fab).toHaveBeenCalledTimes(1)
     })
 
-    it ("should satisfy interchange law", () => {
+    it('should satisfy interchange law', () => {
       const a = 1
-      const ab = number.add (5)
+      const ab = number.add(5)
 
-      const fa: sync.Sync<typeof a> = jest.fn (sync.of (a))
-      const fab: sync.Sync<typeof ab> = jest.fn (sync.of (ab))
+      const fa: sync.Sync<typeof a> = jest.fn(sync.of(a))
+      const fab: sync.Sync<typeof ab> = jest.fn(sync.of(ab))
 
-      const result1 = pipe (fab, sync.ap (fa), sync.execute)
-      const result2 = pipe (sync.ap (fab) (sync.of (ab => ab (a))), sync.execute)
+      const result1 = pipe(fab, sync.ap(fa), sync.execute)
+      const result2 = pipe(sync.ap(fab)(sync.of(ab => ab(a))), sync.execute)
 
-      expect (result1).toEqual (result2)
-      expect (fa).toHaveBeenCalledTimes (1)
-      expect (fab).toHaveBeenCalledTimes (2)
+      expect(result1).toEqual(result2)
+      expect(fa).toHaveBeenCalledTimes(1)
+      expect(fab).toHaveBeenCalledTimes(2)
     })
   })
 })

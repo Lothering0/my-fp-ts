@@ -1,10 +1,10 @@
-import * as monad from "../../typeclasses/Monad"
-import { DoObject, DoObjectKey } from "../../types/DoObject"
-import { Applicative } from "./applicative"
-import { Reader, ReaderHkt } from "./reader"
+import * as monad from '../../typeclasses/Monad'
+import { DoObject, DoObjectKey } from '../../types/DoObject'
+import { Applicative } from './applicative'
+import { Reader, ReaderHkt } from './reader'
 
-export const Monad = monad.create<ReaderHkt> (Applicative, {
-  flat: self => reader => self (reader) (reader),
+export const Monad = monad.create<ReaderHkt>(Applicative, {
+  flat: self => reader => self(reader)(reader),
 })
 
 export const Do = Monad.Do

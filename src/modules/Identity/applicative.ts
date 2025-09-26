@@ -1,11 +1,11 @@
-import { create } from "../../typeclasses/Applicative"
-import { Functor } from "./functor"
-import { Identity, IdentityHkt, identity } from "./identity"
+import { create } from '../../typeclasses/Applicative'
+import { Functor } from './functor'
+import { Identity, IdentityHkt, identity } from './identity'
 
-export const Applicative = create<IdentityHkt> (Functor, {
+export const Applicative = create<IdentityHkt>(Functor, {
   ...Functor,
   of: identity,
-  ap: a => ab => ab (a),
+  ap: a => ab => ab(a),
 })
 
 export const of: {

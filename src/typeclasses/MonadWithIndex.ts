@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { DoObject, DoObjectKey } from "../types/DoObject"
-import { Hkt, Kind } from "./Hkt"
-import { flow, pipe } from "../utils/flow"
-import { ApplicativeWithIndex } from "./ApplicativeWithIndex"
-import { Monad } from "./Monad"
+import { DoObject, DoObjectKey } from '../types/DoObject'
+import { Hkt, Kind } from './Hkt'
+import { flow, pipe } from '../utils/flow'
+import { ApplicativeWithIndex } from './ApplicativeWithIndex'
+import { Monad } from './Monad'
 
 export interface MonadWithIndex<F extends Hkt, Index>
   extends ApplicativeWithIndex<F, Index>,
@@ -64,45 +64,45 @@ export const create = <F extends Hkt, Index>(
   ApplicativeWithIndex: ApplicativeWithIndex<F, Index>,
   Monad: Monad<F>,
 ): MonadWithIndex<F, Index> => {
-  const flatMapWithIndex: MonadWithIndex<F, Index>["flatMapWithIndex"] = aimb =>
-    flow (ApplicativeWithIndex.mapWithIndex (aimb), Monad.flat)
+  const flatMapWithIndex: MonadWithIndex<F, Index>['flatMapWithIndex'] = aimb =>
+    flow(ApplicativeWithIndex.mapWithIndex(aimb), Monad.flat)
 
-  const composeWithIndex: MonadWithIndex<F, Index>["composeWithIndex"] = (
+  const composeWithIndex: MonadWithIndex<F, Index>['composeWithIndex'] = (
     bmc,
     amb,
-  ) => flow (amb, flatMapWithIndex (bmc))
+  ) => flow(amb, flatMapWithIndex(bmc))
 
-  const mapToWithIndex: MonadWithIndex<F, Index>["mapToWithIndex"] = (
+  const mapToWithIndex: MonadWithIndex<F, Index>['mapToWithIndex'] = (
     name,
     aib,
   ) =>
-    flatMapWithIndex ((a, i) =>
-      Monad.of ({
-        [name]: aib (a, i),
+    flatMapWithIndex((a, i) =>
+      Monad.of({
+        [name]: aib(a, i),
         ...a,
       } as any),
     )
 
-  const flapToWithIndex: MonadWithIndex<F, Index>["flapToWithIndex"] =
+  const flapToWithIndex: MonadWithIndex<F, Index>['flapToWithIndex'] =
     (name, faib) => self =>
-      pipe (
+      pipe(
         Monad.Do,
-        Monad.apS ("a", self),
-        Monad.apS ("aib", faib),
-        ApplicativeWithIndex.mapWithIndex (
-          ({ a, aib }, i) => ({ [name]: aib (a, i), ...a }) as any,
+        Monad.apS('a', self),
+        Monad.apS('aib', faib),
+        ApplicativeWithIndex.mapWithIndex(
+          ({ a, aib }, i) => ({ [name]: aib(a, i), ...a }) as any,
         ),
       )
 
-  const flatMapToWithIndex: MonadWithIndex<F, Index>["flatMapToWithIndex"] = (
+  const flatMapToWithIndex: MonadWithIndex<F, Index>['flatMapToWithIndex'] = (
     name,
     amib,
   ) =>
-    flatMapWithIndex ((a, i) =>
-      pipe (
-        amib (a, i),
-        Monad.flatMap (b =>
-          Monad.of ({
+    flatMapWithIndex((a, i) =>
+      pipe(
+        amib(a, i),
+        Monad.flatMap(b =>
+          Monad.of({
             [name]: b,
             ...a,
           } as any),

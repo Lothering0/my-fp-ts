@@ -1,9 +1,9 @@
-import { Sync } from "../Sync"
-import { NonEmptyReadonlyArray } from "./non-empty-readonly-array"
-import { Monad } from "./monad"
-import { create } from "../../typeclasses/Tappable"
+import { Sync } from '../Sync'
+import { NonEmptyReadonlyArray } from './non-empty-readonly-array'
+import { Monad } from './monad'
+import { create } from '../../typeclasses/Tappable'
 
-export const Tappable = create (Monad)
+export const Tappable = create(Monad)
 
 export const tap: {
   <A>(

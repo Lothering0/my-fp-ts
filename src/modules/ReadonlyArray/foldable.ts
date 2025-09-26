@@ -1,10 +1,10 @@
-import * as foldable from "../../typeclasses/Foldable"
-import * as foldableWithIndex from "../../typeclasses/FoldableWithIndex"
-import { ReadonlyArrayHkt } from "./readonly-array"
+import * as foldable from '../../typeclasses/Foldable'
+import * as foldableWithIndex from '../../typeclasses/FoldableWithIndex'
+import { ReadonlyArrayHkt } from './readonly-array'
 
 export const Foldable: foldable.Foldable<ReadonlyArrayHkt> = {
-  reduce: (b, bab) => self => self.reduce ((b, a) => bab (b, a), b),
-  reduceRight: (b, abb) => self => self.reduceRight ((b, a) => abb (a, b), b),
+  reduce: (b, bab) => self => self.reduce((b, a) => bab(b, a), b),
+  reduceRight: (b, abb) => self => self.reduceRight((b, a) => abb(a, b), b),
 }
 
 export const FoldableWithIndex: foldableWithIndex.FoldableWithIndex<
@@ -13,9 +13,9 @@ export const FoldableWithIndex: foldableWithIndex.FoldableWithIndex<
 > = {
   ...Foldable,
   reduceWithIndex: (b, baib) => self =>
-    self.reduce ((b, a, i) => baib (b, a, i), b),
+    self.reduce((b, a, i) => baib(b, a, i), b),
   reduceRightWithIndex: (b, abib) => self =>
-    self.reduceRight ((b, a, i) => abib (a, b, i), b),
+    self.reduceRight((b, a, i) => abib(a, b, i), b),
 }
 
 export const reduce: {

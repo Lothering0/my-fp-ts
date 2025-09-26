@@ -1,14 +1,14 @@
-import * as alt from "../../typeclasses/Alt"
-import { some, Option, OptionHkt } from "./option"
-import { identity } from "../Identity"
-import { LazyArg } from "../../types/utils"
-import { match } from "./matchers"
-import { constant } from "../../utils/constant"
+import * as alt from '../../typeclasses/Alt'
+import { some, Option, OptionHkt } from './option'
+import { identity } from '../Identity'
+import { LazyArg } from '../../types/utils'
+import { match } from './matchers'
+import { constant } from '../../utils/constant'
 
 export const getOrElse: {
   <Out>(onNone: LazyArg<Out>): <In>(self: Option<In>) => In | Out
 } = onNone =>
-  match ({
+  match({
     onNone,
     onSome: identity,
   })
@@ -16,8 +16,8 @@ export const getOrElse: {
 export const orElse: {
   <Out>(that: Option<Out>): <In>(self: Option<In>) => Option<In | Out>
 } = that =>
-  match ({
-    onNone: constant (that),
+  match({
+    onNone: constant(that),
     onSome: some,
   })
 
@@ -25,7 +25,7 @@ export const orElse: {
 export const catchAll: {
   <Out>(that: LazyArg<Option<Out>>): <In>(self: Option<In>) => Option<In | Out>
 } = that =>
-  match ({
+  match({
     onNone: that,
     onSome: some,
   })

@@ -1,43 +1,21 @@
-import globals from "globals"
-import tseslint from "typescript-eslint"
-import stylistic from "@stylistic/eslint-plugin"
+import tseslint from 'typescript-eslint'
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
-  { ignores: ["dist/*"] },
-  { languageOptions: { globals: globals.browser } },
+  { ignores: ['dist/*'] },
   ...tseslint.configs.recommended,
   {
-    plugins: {
-      "@stylistic/js": stylistic,
-    },
-    /* @type {import('@stylistic/eslint-plugin').RuleOptions} */
     rules: {
-      "prettier/prettier": "off",
-      // "@typescript-eslint/no-unused-vars": "warn",
-      "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": [
-        "warn",
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
         {
-          argsIgnorePattern: "^_\\d*$",
-          varsIgnorePattern: "^_\\d*$",
-          caughtErrorsIgnorePattern: "^_\\d*$",
+          argsIgnorePattern: '^_\\d*$',
+          varsIgnorePattern: '^_\\d*$',
+          caughtErrorsIgnorePattern: '^_\\d*$',
         },
       ],
-      "@typescript-eslint/no-empty-object-type": "off",
-      "@stylistic/js/function-call-spacing": ["error", "always"],
-      "@stylistic/js/no-extra-parens": ["warn", "all"],
-      "@stylistic/js/no-multi-spaces": [
-        "error",
-        {
-          exceptions: {
-            ImportDeclaration: true,
-            ImportAttribute: true,
-            Property: true,
-            VariableDeclarator: true,
-          },
-        },
-      ],
+      '@typescript-eslint/no-empty-object-type': 'off',
     },
   },
 ]

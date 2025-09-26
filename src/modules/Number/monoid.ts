@@ -1,10 +1,10 @@
-import { Monoid } from "../../typeclasses/Monoid"
+import { Monoid } from '../../typeclasses/Monoid'
 import {
   SemigroupMin,
   SemigroupMax,
   SemigroupProduct,
   SemigroupSum,
-} from "./semigroup"
+} from './semigroup'
 
 export const MonoidSum: Monoid<number> = {
   ...SemigroupSum,

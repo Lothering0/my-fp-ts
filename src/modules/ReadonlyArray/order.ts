@@ -1,17 +1,17 @@
-import * as order from "../../typeclasses/Order"
-import * as number from "../Number"
-import { pipe } from "../../utils/flow"
+import * as order from '../../typeclasses/Order'
+import * as number from '../Number'
+import { pipe } from '../../utils/flow'
 
 export const getOrder: {
   <A>(Order: order.Order<A>): order.Order<ReadonlyArray<A>>
 } = Order => ({
   compare: ys => xs => {
-    const minLength = Math.min (xs.length, ys.length)
+    const minLength = Math.min(xs.length, ys.length)
 
     for (let i = 0; i < minLength; i++) {
       const x = xs[i]!
       const y = ys[i]!
-      const ordering = Order.compare (y) (x)
+      const ordering = Order.compare(y)(x)
 
       if (ordering === 0) {
         continue
@@ -20,6 +20,6 @@ export const getOrder: {
       return ordering
     }
 
-    return pipe (xs.length, number.compare (ys.length))
+    return pipe(xs.length, number.compare(ys.length))
   },
 })

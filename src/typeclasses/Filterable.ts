@@ -1,11 +1,11 @@
-import { Option, some, none } from "../modules/Option"
-import { Result, fail, succeed } from "../modules/Result"
-import { Compactable } from "./Compactable"
-import { Functor } from "./Functor"
-import { Hkt, Kind } from "./Hkt"
-import { Predicate } from "../modules/Predicate"
-import { flow } from "../utils/flow"
-import { Refinement } from "../modules/Refinement"
+import { Option, some, none } from '../modules/Option'
+import { Result, fail, succeed } from '../modules/Result'
+import { Compactable } from './Compactable'
+import { Functor } from './Functor'
+import { Hkt, Kind } from './Hkt'
+import { Predicate } from '../modules/Predicate'
+import { flow } from '../utils/flow'
+import { Refinement } from '../modules/Refinement'
 
 export interface Filterable<F extends Hkt> extends Functor<F>, Compactable<F> {
   /** Partitions and maps elements to new values */
@@ -55,16 +55,16 @@ export const create = <F extends Hkt>(
   const { map } = Functor
   const { compact, separate } = Filterable
 
-  const filterMap: Filterable<F>["filterMap"] = p => flow (map (p), compact)
+  const filterMap: Filterable<F>['filterMap'] = p => flow(map(p), compact)
 
-  const filter: Filterable<F>["filter"] = <In>(p: Predicate<In>) =>
-    filterMap<In, In> (a => p (a) ? some (a) : none)
+  const filter: Filterable<F>['filter'] = <In>(p: Predicate<In>) =>
+    filterMap<In, In>(a => (p(a) ? some(a) : none))
 
-  const partitionMap: Filterable<F>["partitionMap"] = p =>
-    flow (map (p), separate)
+  const partitionMap: Filterable<F>['partitionMap'] = p =>
+    flow(map(p), separate)
 
-  const partition: Filterable<F>["partition"] = p =>
-    partitionMap (a => p (a) ? succeed (a) : fail (a))
+  const partition: Filterable<F>['partition'] = p =>
+    partitionMap(a => (p(a) ? succeed(a) : fail(a)))
 
   return {
     ...Functor,

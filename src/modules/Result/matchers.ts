@@ -1,6 +1,6 @@
-import { pipe } from "../../utils/flow"
-import { isFailure } from "./refinements"
-import { Result } from "./result"
+import { pipe } from '../../utils/flow'
+import { isFailure } from './refinements'
+import { Result } from './result'
 
 export interface Matchers<Failure, In, Out1, Out2 = Out1> {
   readonly onFailure: (failure: Failure) => Out1
@@ -12,6 +12,6 @@ export const match: {
     matchers: Matchers<Failure, In, Out1, Out2>,
   ): (self: Result<Failure, In>) => Out1 | Out2
 } = matchers => self =>
-  isFailure (self)
-    ? pipe (self.failure, matchers.onFailure)
-    : pipe (self.success, matchers.onSuccess)
+  isFailure(self)
+    ? pipe(self.failure, matchers.onFailure)
+    : pipe(self.success, matchers.onSuccess)

@@ -1,9 +1,9 @@
-import { Result, match } from "../modules/Result"
-import { Option, fromResult, zero, some } from "../modules/Option"
-import { Hkt, Kind } from "./Hkt"
-import { TypeClass } from "./TypeClass"
-import { Functor } from "./Functor"
-import { flow, pipe } from "../utils/flow"
+import { Result, match } from '../modules/Result'
+import { Option, fromResult, zero, some } from '../modules/Option'
+import { Hkt, Kind } from './Hkt'
+import { TypeClass } from './TypeClass'
+import { Functor } from './Functor'
+import { flow, pipe } from '../utils/flow'
 
 export interface Compactable<F extends Hkt> extends TypeClass<F> {
   readonly compact: <Out, Collectable, Fixed>(
@@ -23,19 +23,19 @@ export interface Compactable<F extends Hkt> extends TypeClass<F> {
 export const create: {
   <F extends Hkt>(
     Functor: Functor<F>,
-    Compactable: Pick<Compactable<F>, "compact"> & Partial<Compactable<F>>,
+    Compactable: Pick<Compactable<F>, 'compact'> & Partial<Compactable<F>>,
   ): Compactable<F>
 } = (Functor, Compactable) => ({
-  compactResults: flow (Functor.map (fromResult), Compactable.compact),
+  compactResults: flow(Functor.map(fromResult), Compactable.compact),
   separate: self => [
-    pipe (
+    pipe(
       self,
-      Functor.map (match ({ onFailure: some, onSuccess: zero })),
+      Functor.map(match({ onFailure: some, onSuccess: zero })),
       Compactable.compact,
     ),
-    pipe (
+    pipe(
       self,
-      Functor.map (match ({ onFailure: zero, onSuccess: some })),
+      Functor.map(match({ onFailure: zero, onSuccess: some })),
       Compactable.compact,
     ),
   ],

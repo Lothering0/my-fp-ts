@@ -1,17 +1,17 @@
-import * as alt from "../../typeclasses/Alt"
-import * as result from "../Result"
-import { Sync } from "../Sync"
-import { identity } from "../Identity"
-import { SyncResult, SyncResultHkt, execute, succeed } from "./sync-result"
-import { match } from "./matchers"
-import { constant } from "../../utils/constant"
-import { flow } from "../../utils/flow"
+import * as alt from '../../typeclasses/Alt'
+import * as result from '../Result'
+import { Sync } from '../Sync'
+import { identity } from '../Identity'
+import { SyncResult, SyncResultHkt, execute, succeed } from './sync-result'
+import { match } from './matchers'
+import { constant } from '../../utils/constant'
+import { flow } from '../../utils/flow'
 
 export const getOrElse: {
   <Collectable, Out>(
     onFailure: (e: Collectable) => Out,
   ): <In>(self: SyncResult<Collectable, In>) => Sync<In | Out>
-} = onFailure => match ({ onFailure, onSuccess: identity })
+} = onFailure => match({ onFailure, onSuccess: identity })
 
 export const orElse: {
   <Collectable1, Out>(
@@ -20,10 +20,10 @@ export const orElse: {
     self: SyncResult<Collectable2, In>,
   ) => SyncResult<Collectable1 | Collectable2, In | Out>
 } = onFailure =>
-  flow (
+  flow(
     execute,
-    result.match ({
-      onFailure: constant (onFailure),
+    result.match({
+      onFailure: constant(onFailure),
       onSuccess: succeed,
     }),
   )
@@ -35,9 +35,9 @@ export const catchAll: {
     self: SyncResult<Collectable1, In>,
   ) => SyncResult<Collectable2, In | Out>
 } = onFailure =>
-  flow (
+  flow(
     execute,
-    result.match ({
+    result.match({
       onFailure,
       onSuccess: succeed,
     }),

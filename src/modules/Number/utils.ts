@@ -1,10 +1,10 @@
-import * as option from "../Option"
-import * as boolean from "../Boolean"
-import { Predicate } from "../Predicate"
-import { flow } from "../../utils/flow"
-import { constant } from "../../utils/constant"
-import { matchNegative } from "./matchers"
-import { identity } from "../Identity"
+import * as option from '../Option'
+import * as boolean from '../Boolean'
+import { Predicate } from '../Predicate'
+import { flow } from '../../utils/flow'
+import { constant } from '../../utils/constant'
+import { matchNegative } from './matchers'
+import { identity } from '../Identity'
 
 export const add: {
   (y: number): (x: number) => number
@@ -24,7 +24,7 @@ export const divide: {
 
 export const divideSafe: {
   (y: number): (x: number) => option.Option<number>
-} = y => x => y === 0 ? option.none : option.some (x / y)
+} = y => x => (y === 0 ? option.none : option.some(x / y))
 
 export const lessThan: {
   (y: number): (x: number) => boolean
@@ -44,19 +44,19 @@ export const moreThanOrEquals: {
 
 export const isEven: Predicate<number> = x => x % 2 === 0
 
-export const isOdd: Predicate<number> = flow (isEven, boolean.not)
+export const isOdd: Predicate<number> = flow(isEven, boolean.not)
 
 export const toNonNegative: {
   (self: number): number
-} = matchNegative ({
-  onNegative: constant (0),
+} = matchNegative({
+  onNegative: constant(0),
   onNonNegative: identity,
 })
 
 export const toFixedString: {
   (fractionDigits: number): (self: number) => string
-} = fractionDigits => self => self.toFixed (fractionDigits)
+} = fractionDigits => self => self.toFixed(fractionDigits)
 
 export const toFixed: {
   (fractionDigits: number): (self: number) => number
-} = fractionDigits => flow (toFixedString (fractionDigits), Number)
+} = fractionDigits => flow(toFixedString(fractionDigits), Number)

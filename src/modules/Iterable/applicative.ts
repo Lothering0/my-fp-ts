@@ -1,9 +1,9 @@
-import * as applicative from "../../typeclasses/Applicative"
-import * as applicativeWithIndex from "../../typeclasses/ApplicativeWithIndex"
-import { Functor, FunctorWithIndex } from "./functor"
-import { IterableHkt } from "./iterable"
+import * as applicative from '../../typeclasses/Applicative'
+import * as applicativeWithIndex from '../../typeclasses/ApplicativeWithIndex'
+import { Functor, FunctorWithIndex } from './functor'
+import { IterableHkt } from './iterable'
 
-export const Applicative = applicative.create<IterableHkt> (Functor, {
+export const Applicative = applicative.create<IterableHkt>(Functor, {
   ...Functor,
   of: a => ({
     *[Symbol.iterator]() {
@@ -14,7 +14,7 @@ export const Applicative = applicative.create<IterableHkt> (Functor, {
     *[Symbol.iterator]() {
       for (const a of fa) {
         for (const ab of self) {
-          yield ab (a)
+          yield ab(a)
         }
       }
     },
@@ -24,14 +24,14 @@ export const Applicative = applicative.create<IterableHkt> (Functor, {
 export const ApplicativeWithIndex = applicativeWithIndex.create<
   IterableHkt,
   number
-> (FunctorWithIndex, Applicative, {
+>(FunctorWithIndex, Applicative, {
   apWithIndex: fa => self => ({
     *[Symbol.iterator]() {
       let i = -1
       for (const a of fa) {
         i++
         for (const aib of self) {
-          yield aib (a, i)
+          yield aib(a, i)
         }
       }
     },

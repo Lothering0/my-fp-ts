@@ -1,9 +1,9 @@
-import { create } from "../../typeclasses/Monad"
-import { DoObject, DoObjectKey } from "../../types/DoObject"
-import { Applicative } from "./applicative"
-import { SyncHkt, Sync, execute } from "./sync"
+import { create } from '../../typeclasses/Monad'
+import { DoObject, DoObjectKey } from '../../types/DoObject'
+import { Applicative } from './applicative'
+import { SyncHkt, Sync, execute } from './sync'
 
-export const Monad = create<SyncHkt> (Applicative, {
+export const Monad = create<SyncHkt>(Applicative, {
   flat: execute,
 })
 

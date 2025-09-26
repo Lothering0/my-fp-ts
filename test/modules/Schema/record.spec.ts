@@ -1,42 +1,42 @@
-import { pipe, result, schema } from "../../../src"
+import { pipe, result, schema } from '../../../src'
 
-describe ("Record", () => {
-  it ("should check is value a valid record", () => {
-    const RecordKeys = pipe (schema.exact ("a"), schema.union (schema.exact ("b")))
-    const Record = schema.Record ({
+describe('Record', () => {
+  it('should check is value a valid record', () => {
+    const RecordKeys = pipe(schema.exact('a'), schema.union(schema.exact('b')))
+    const Record = schema.Record({
       key: RecordKeys,
       value: schema.Number,
     })
-    pipe (schema.proceedUnknown (Record) (undefined), expect).toEqual (
-      result.fail (["value `undefined` is not a record"]),
+    pipe(schema.proceedUnknown(Record)(undefined), expect).toEqual(
+      result.fail(['value `undefined` is not a record']),
     )
-    pipe (schema.proceed (Record) ({}), expect).toEqual (result.succeed ({}))
-    pipe (schema.proceed (Record) ({ a: 1 }), expect).toEqual (
-      result.succeed ({ a: 1 }),
+    pipe(schema.proceed(Record)({}), expect).toEqual(result.succeed({}))
+    pipe(schema.proceed(Record)({ a: 1 }), expect).toEqual(
+      result.succeed({ a: 1 }),
     )
-    pipe (schema.proceed (Record) ({ a: 1, b: 2 }), expect).toEqual (
-      result.succeed ({ a: 1, b: 2 }),
+    pipe(schema.proceed(Record)({ a: 1, b: 2 }), expect).toEqual(
+      result.succeed({ a: 1, b: 2 }),
     )
-    pipe (schema.proceedUnknown (Record) ({ a: false }), expect).toEqual (
-      result.fail (['on property "a": value `false` is not a number']),
+    pipe(schema.proceedUnknown(Record)({ a: false }), expect).toEqual(
+      result.fail(['on property "a": value `false` is not a number']),
     )
-    pipe (schema.proceedUnknown (Record) ({ a: false, b: 1 }), expect).toEqual (
-      result.fail (['on property "a": value `false` is not a number']),
+    pipe(schema.proceedUnknown(Record)({ a: false, b: 1 }), expect).toEqual(
+      result.fail(['on property "a": value `false` is not a number']),
     )
-    pipe (schema.proceedUnknown (Record) ({ a: 1, b: true }), expect).toEqual (
-      result.fail (['on property "b": value `true` is not a number']),
+    pipe(schema.proceedUnknown(Record)({ a: 1, b: true }), expect).toEqual(
+      result.fail(['on property "b": value `true` is not a number']),
     )
-    pipe (schema.proceedUnknown (Record) ({ a: false, b: true }), expect).toEqual (
-      result.fail ([
+    pipe(schema.proceedUnknown(Record)({ a: false, b: true }), expect).toEqual(
+      result.fail([
         'on property "a": value `false` is not a number',
         'on property "b": value `true` is not a number',
       ]),
     )
-    pipe (
-      schema.proceedUnknown (Record) ({ a: false, b: true, c: 3 }),
+    pipe(
+      schema.proceedUnknown(Record)({ a: false, b: true, c: 3 }),
       expect,
-    ).toEqual (
-      result.fail ([
+    ).toEqual(
+      result.fail([
         'on property "a": value `false` is not a number',
         'on property "b": value `true` is not a number',
         'property "c": value "c" is not equal to "a"',

@@ -1,15 +1,15 @@
-import * as functor from "../../typeclasses/Functor"
-import * as functorWithIndex from "../../typeclasses/FunctorWithIndex"
-import * as array from "../ReadonlyArray"
-import { flow } from "../../utils/flow"
-import { ReadonlyRecord, ReadonlyRecordHkt } from "./readonly-record"
-import { fromEntries, toEntries } from "./utils"
+import * as functor from '../../typeclasses/Functor'
+import * as functorWithIndex from '../../typeclasses/FunctorWithIndex'
+import * as array from '../ReadonlyArray'
+import { flow } from '../../utils/flow'
+import { ReadonlyRecord, ReadonlyRecordHkt } from './readonly-record'
+import { fromEntries, toEntries } from './utils'
 
 export const Functor: functor.Functor<ReadonlyRecordHkt> = {
   map: ab =>
-    flow (
+    flow(
       toEntries,
-      array.map (([k, a]) => [k, ab (a)] as const),
+      array.map(([k, a]) => [k, ab(a)] as const),
       fromEntries,
     ),
 }
@@ -20,9 +20,9 @@ export const FunctorWithIndex: functorWithIndex.FunctorWithIndex<
 > = {
   ...Functor,
   mapWithIndex: akb =>
-    flow (
+    flow(
       toEntries,
-      array.map (([k, a]) => [k, akb (a, k)] as const),
+      array.map(([k, a]) => [k, akb(a, k)] as const),
       fromEntries,
     ),
 }

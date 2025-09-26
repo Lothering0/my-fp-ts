@@ -17,7 +17,7 @@ export type Kind<
       readonly In: In
       readonly Collectable: Collectable
       readonly Fixed: Fixed
-    })["Type"]
+    })['Type']
   : {
       readonly _F: F
       readonly In: () => In

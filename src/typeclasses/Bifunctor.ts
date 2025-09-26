@@ -1,6 +1,6 @@
-import { Hkt, Kind } from "./Hkt"
-import { Functor } from "./Functor"
-import { flow } from "../utils/flow"
+import { Hkt, Kind } from './Hkt'
+import { Functor } from './Functor'
+import { flow } from '../utils/flow'
 
 export interface Bifunctor<F extends Hkt> extends Functor<F> {
   readonly mapLeft: <CollectableIn, CollectableOut>(
@@ -19,9 +19,9 @@ export interface Bifunctor<F extends Hkt> extends Functor<F> {
 
 export const create = <F extends Hkt>(
   Functor: Functor<F>,
-  Bifunctor: Pick<Bifunctor<F>, "mapLeft">,
+  Bifunctor: Pick<Bifunctor<F>, 'mapLeft'>,
 ): Bifunctor<F> => ({
   ...Functor,
   ...Bifunctor,
-  bimap: (ed, ab) => flow (Functor.map (ab), Bifunctor.mapLeft (ed)),
+  bimap: (ed, ab) => flow(Functor.map(ab), Bifunctor.mapLeft(ed)),
 })

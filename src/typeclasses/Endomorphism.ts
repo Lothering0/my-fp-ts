@@ -1,7 +1,7 @@
-import { Semigroup } from "./Semigroup"
-import { Monoid } from "./Monoid"
-import { identity, compose } from "../modules/Identity"
-import { curry } from "../utils/currying"
+import { Semigroup } from './Semigroup'
+import { Monoid } from './Monoid'
+import { identity, compose } from '../modules/Identity'
+import { curry } from '../utils/currying'
 
 export interface Endomorphism<In> {
   (a: In): In
@@ -10,10 +10,10 @@ export interface Endomorphism<In> {
 export const empty = identity
 
 export const getSemigroup = <In>(): Semigroup<Endomorphism<In>> => ({
-  combine: curry (compose),
+  combine: curry(compose),
 })
 
 export const getMonoid = <In>(): Monoid<Endomorphism<In>> => ({
-  ...getSemigroup (),
+  ...getSemigroup(),
   empty,
 })

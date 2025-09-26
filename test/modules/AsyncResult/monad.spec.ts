@@ -1,93 +1,93 @@
-import { asyncResult, flow, pipe, result } from "../../../src"
+import { asyncResult, flow, pipe, result } from '../../../src'
 
-describe ("monad", () => {
-  describe ("flatMap", () => {
-    it ("should satisfy left identity law", async () => {
+describe('monad', () => {
+  describe('flatMap', () => {
+    it('should satisfy left identity law', async () => {
       const a = 1
-      const fa: asyncResult.AsyncResult<never, typeof a> = jest.fn (
-        asyncResult.of (a),
+      const fa: asyncResult.AsyncResult<never, typeof a> = jest.fn(
+        asyncResult.of(a),
       )
-      const afb = (x: number) => asyncResult.of (x + 1)
+      const afb = (x: number) => asyncResult.of(x + 1)
 
-      const result1 = await pipe (
+      const result1 = await pipe(
         fa,
-        asyncResult.flatMap (afb),
+        asyncResult.flatMap(afb),
         asyncResult.toPromise,
       )
-      const result2 = await pipe (a, afb, asyncResult.toPromise)
+      const result2 = await pipe(a, afb, asyncResult.toPromise)
 
-      expect (result1).toEqual (result2)
-      expect (fa).toHaveBeenCalledTimes (1)
+      expect(result1).toEqual(result2)
+      expect(fa).toHaveBeenCalledTimes(1)
     })
 
-    it ("should satisfy right identity law", async () => {
+    it('should satisfy right identity law', async () => {
       const a = 1
-      const fa: asyncResult.AsyncResult<never, typeof a> = jest.fn (
-        asyncResult.of (a),
+      const fa: asyncResult.AsyncResult<never, typeof a> = jest.fn(
+        asyncResult.of(a),
       )
 
-      const result1 = await pipe (
+      const result1 = await pipe(
         fa,
-        asyncResult.flatMap (asyncResult.of),
+        asyncResult.flatMap(asyncResult.of),
         asyncResult.toPromise,
       )
-      const result2 = await pipe (fa, asyncResult.toPromise)
+      const result2 = await pipe(fa, asyncResult.toPromise)
 
-      expect (result1).toEqual (result2)
-      expect (fa).toHaveBeenCalledTimes (2)
+      expect(result1).toEqual(result2)
+      expect(fa).toHaveBeenCalledTimes(2)
     })
 
-    it ("should satisfy associativity law", async () => {
+    it('should satisfy associativity law', async () => {
       const a = 1
-      const fa: asyncResult.AsyncResult<never, typeof a> = jest.fn (
-        asyncResult.of (a),
+      const fa: asyncResult.AsyncResult<never, typeof a> = jest.fn(
+        asyncResult.of(a),
       )
-      const afb = (x: number) => asyncResult.of (x + 1)
-      const bfc = (x: number) => asyncResult.of (x / 2)
+      const afb = (x: number) => asyncResult.of(x + 1)
+      const bfc = (x: number) => asyncResult.of(x / 2)
 
-      const result1 = await pipe (
+      const result1 = await pipe(
         fa,
-        asyncResult.flatMap (afb),
-        asyncResult.flatMap (bfc),
+        asyncResult.flatMap(afb),
+        asyncResult.flatMap(bfc),
         asyncResult.toPromise,
       )
-      const result2 = await pipe (
+      const result2 = await pipe(
         fa,
-        asyncResult.flatMap (flow (afb, asyncResult.flatMap (bfc))),
+        asyncResult.flatMap(flow(afb, asyncResult.flatMap(bfc))),
         asyncResult.toPromise,
       )
 
-      expect (result1).toEqual (result2)
-      expect (fa).toHaveBeenCalledTimes (2)
+      expect(result1).toEqual(result2)
+      expect(fa).toHaveBeenCalledTimes(2)
     })
 
-    it ("should return function containing `failure` if the same was provided", async () => {
-      const e = "e"
-      const fa: asyncResult.AsyncResult<typeof e, never> = jest.fn (
-        asyncResult.fail (e),
+    it('should return function containing `failure` if the same was provided', async () => {
+      const e = 'e'
+      const fa: asyncResult.AsyncResult<typeof e, never> = jest.fn(
+        asyncResult.fail(e),
       )
-      const result_ = await pipe (
+      const result_ = await pipe(
         fa,
-        asyncResult.flatMap (a => asyncResult.succeed (a + 2)),
+        asyncResult.flatMap(a => asyncResult.succeed(a + 2)),
         asyncResult.toPromise,
       )
-      expect (result_).toEqual<result.Result<typeof e, never>> (result.fail (e))
-      expect (fa).toHaveBeenCalledTimes (1)
+      expect(result_).toEqual<result.Result<typeof e, never>>(result.fail(e))
+      expect(fa).toHaveBeenCalledTimes(1)
     })
 
-    it ("should return function containing `failure` if the same was returned by callback function", async () => {
-      const e = "e"
+    it('should return function containing `failure` if the same was returned by callback function', async () => {
+      const e = 'e'
       const a = 1
-      const fa: asyncResult.AsyncResult<typeof e, typeof a> = jest.fn (
-        asyncResult.succeed (a),
+      const fa: asyncResult.AsyncResult<typeof e, typeof a> = jest.fn(
+        asyncResult.succeed(a),
       )
-      const result_ = await pipe (
+      const result_ = await pipe(
         fa,
-        asyncResult.flatMap (() => asyncResult.fail (e)),
+        asyncResult.flatMap(() => asyncResult.fail(e)),
         asyncResult.toPromise,
       )
-      expect (result_).toEqual<result.Result<typeof e, never>> (result.fail (e))
-      expect (fa).toHaveBeenCalledTimes (1)
+      expect(result_).toEqual<result.Result<typeof e, never>>(result.fail(e))
+      expect(fa).toHaveBeenCalledTimes(1)
     })
   })
 })

@@ -1,18 +1,18 @@
-import * as option from "../Option"
-import { create } from "../../typeclasses/Applicative"
-import { AsyncOptionHkt, some, toPromise, AsyncOption } from "./async-option"
-import { pipe } from "../../utils/flow"
-import { Functor } from "./functor"
+import * as option from '../Option'
+import { create } from '../../typeclasses/Applicative'
+import { AsyncOptionHkt, some, toPromise, AsyncOption } from './async-option'
+import { pipe } from '../../utils/flow'
+import { Functor } from './functor'
 
-export const Applicative = create<AsyncOptionHkt> (Functor, {
+export const Applicative = create<AsyncOptionHkt>(Functor, {
   of: some,
   ap: fma => self => () =>
-    Promise.all ([toPromise (self), toPromise (fma)]).then (([mab, ma]) =>
-      pipe (
+    Promise.all([toPromise(self), toPromise(fma)]).then(([mab, ma]) =>
+      pipe(
         option.Do,
-        option.apS ("a", ma),
-        option.apS ("ab", mab),
-        option.map (({ ab, a }) => ab (a)),
+        option.apS('a', ma),
+        option.apS('ab', mab),
+        option.map(({ ab, a }) => ab(a)),
       ),
     ),
 })

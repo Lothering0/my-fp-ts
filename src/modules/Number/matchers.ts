@@ -1,6 +1,6 @@
-import { pipe } from "../../utils/flow"
-import { equals } from "./equivalence"
-import { isEven, lessThan, lessThanOrEquals } from "./utils"
+import { pipe } from '../../utils/flow'
+import { equals } from './equivalence'
+import { isEven, lessThan, lessThanOrEquals } from './utils'
 
 export interface MatchersZero<A, B = A> {
   readonly onZero: (e: 0) => A
@@ -11,7 +11,7 @@ export interface MatchersZero<A, B = A> {
 export const matchZero: {
   <A, B = A>(matchers: MatchersZero<A, B>): (self: number) => A | B
 } = matchers => self =>
-  pipe (self, equals (0)) ? matchers.onZero (0) : matchers.onNonZero (self)
+  pipe(self, equals(0)) ? matchers.onZero(0) : matchers.onNonZero(self)
 
 export interface MatchersNegative<A, B = A> {
   readonly onNegative: (e: number) => A
@@ -22,9 +22,9 @@ export interface MatchersNegative<A, B = A> {
 export const matchNegative: {
   <A, B = A>(matchers: MatchersNegative<A, B>): (self: number) => A | B
 } = matchers => self =>
-  pipe (self, lessThan (0))
-    ? matchers.onNegative (self)
-    : matchers.onNonNegative (self)
+  pipe(self, lessThan(0))
+    ? matchers.onNegative(self)
+    : matchers.onNonNegative(self)
 
 export interface MatchersNonPositive<A, B = A> {
   readonly onNonPositive: (e: number) => A
@@ -35,9 +35,9 @@ export interface MatchersNonPositive<A, B = A> {
 export const matchNonPositive: {
   <A, B = A>(matchers: MatchersNonPositive<A, B>): (self: number) => A | B
 } = matchers => self =>
-  pipe (self, lessThanOrEquals (0))
-    ? matchers.onNonPositive (self)
-    : matchers.onPositive (self)
+  pipe(self, lessThanOrEquals(0))
+    ? matchers.onNonPositive(self)
+    : matchers.onPositive(self)
 
 export interface MatchersFloat<A, B = A> {
   readonly onFloat: (e: number) => A
@@ -48,7 +48,7 @@ export interface MatchersFloat<A, B = A> {
 export const matchFloat: {
   <A, B = A>(matchers: MatchersFloat<A, B>): (self: number) => A | B
 } = matchers => self =>
-  Number.isInteger (self) ? matchers.onInteger (self) : matchers.onFloat (self)
+  Number.isInteger(self) ? matchers.onInteger(self) : matchers.onFloat(self)
 
 export interface MatchersOdd<A, B = A> {
   readonly onOdd: (e: number) => A
@@ -59,4 +59,4 @@ export interface MatchersOdd<A, B = A> {
 export const matchOdd: {
   <A, B = A>(matchers: MatchersOdd<A, B>): (self: number) => A | B
 } = matchers => self =>
-  isEven (self) ? matchers.onEven (self) : matchers.onOdd (self)
+  isEven(self) ? matchers.onEven(self) : matchers.onOdd(self)

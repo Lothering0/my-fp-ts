@@ -1,7 +1,7 @@
-import { Hkt } from "../../typeclasses/Hkt"
+import { Hkt } from '../../typeclasses/Hkt'
 
 export interface TreeHkt extends Hkt {
-  readonly Type: Tree<this["In"]>
+  readonly Type: Tree<this['In']>
 }
 
 export interface Tree<A> extends Iterable<A> {

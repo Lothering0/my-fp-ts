@@ -1,14 +1,14 @@
-import * as option from "./option"
-import * as result from "../Result"
-import { Sync } from "../Sync"
-import { Monad, flatMap } from "./monad"
-import { map } from "./functor"
-import { zero } from "./alternative"
-import { pipe } from "../../utils/flow"
-import { constant } from "../../utils/constant"
-import { create } from "../../typeclasses/Tappable"
+import * as option from './option'
+import * as result from '../Result'
+import { Sync } from '../Sync'
+import { Monad, flatMap } from './monad'
+import { map } from './functor'
+import { zero } from './alternative'
+import { pipe } from '../../utils/flow'
+import { constant } from '../../utils/constant'
+import { create } from '../../typeclasses/Tappable'
 
-export const Tappable = create (Monad)
+export const Tappable = create(Monad)
 
 export const tap: {
   <A>(
@@ -25,13 +25,13 @@ export const tapResult: {
     afe: (a: A) => result.Result<E, unknown>,
   ): (self: option.Option<A>) => option.Option<A>
 } = afe => self =>
-  pipe (
+  pipe(
     self,
-    map (afe),
-    flatMap (
-      result.match ({
+    map(afe),
+    flatMap(
+      result.match({
         onFailure: zero,
-        onSuccess: constant (self),
+        onSuccess: constant(self),
       }),
     ),
   )

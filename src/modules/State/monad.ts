@@ -1,11 +1,11 @@
-import { flow } from "../../utils/flow"
-import { create } from "../../typeclasses/Monad"
-import { Applicative } from "./applicative"
-import { State, StateHkt } from "./state"
-import { DoObject, DoObjectKey } from "../../types/DoObject"
+import { flow } from '../../utils/flow'
+import { create } from '../../typeclasses/Monad'
+import { Applicative } from './applicative'
+import { State, StateHkt } from './state'
+import { DoObject, DoObjectKey } from '../../types/DoObject'
 
-export const Monad = create<StateHkt> (Applicative, {
-  flat: self => flow (self, ([ma, s1]) => ma (s1)),
+export const Monad = create<StateHkt>(Applicative, {
+  flat: self => flow(self, ([ma, s1]) => ma(s1)),
 })
 
 export const Do = Monad.Do

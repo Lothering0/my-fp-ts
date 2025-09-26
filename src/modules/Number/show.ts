@@ -1,4 +1,4 @@
-import * as show_ from "../../typeclasses/Show"
+import * as show_ from '../../typeclasses/Show'
 
 export const show: {
   <N extends number>(self: N): `${N}`

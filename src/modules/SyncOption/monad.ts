@@ -1,14 +1,14 @@
-import * as option from "../Option"
-import { create } from "../../typeclasses/Monad"
-import { DoObject, DoObjectKey } from "../../types/DoObject"
-import { Applicative } from "./applicative"
-import { pipe } from "../../utils/flow"
-import { SyncOptionHkt, execute, SyncOption } from "./sync-option"
+import * as option from '../Option'
+import { create } from '../../typeclasses/Monad'
+import { DoObject, DoObjectKey } from '../../types/DoObject'
+import { Applicative } from './applicative'
+import { pipe } from '../../utils/flow'
+import { SyncOptionHkt, execute, SyncOption } from './sync-option'
 
-export const Monad = create<SyncOptionHkt> (Applicative, {
+export const Monad = create<SyncOptionHkt>(Applicative, {
   flat: self => () =>
-    pipe (self, execute, ma =>
-      option.isNone (ma) ? ma : pipe (ma, option.value, execute),
+    pipe(self, execute, ma =>
+      option.isNone(ma) ? ma : pipe(ma, option.value, execute),
     ),
 })
 

@@ -1,9 +1,9 @@
-import * as functor from "../../typeclasses/Functor"
-import { flow } from "../../utils/flow"
-import { Reader, ReaderHkt } from "./reader"
+import * as functor from '../../typeclasses/Functor'
+import { flow } from '../../utils/flow'
+import { Reader, ReaderHkt } from './reader'
 
 export const Functor: functor.Functor<ReaderHkt> = {
-  map: ab => self => flow (self, ab),
+  map: ab => self => flow(self, ab),
 }
 
 export const map: {

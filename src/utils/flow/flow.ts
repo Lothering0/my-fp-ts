@@ -396,5 +396,5 @@ export function flow(
   ...rest: ReadonlyArray<(a: unknown) => unknown>
 ) {
   return (...a: readonly unknown[]) =>
-    rest.reduce ((prev, f) => f (prev), f (...a))
+    rest.reduce((prev, f) => f(prev), f(...a))
 }

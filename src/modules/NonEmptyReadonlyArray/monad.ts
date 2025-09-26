@@ -1,11 +1,11 @@
-import * as array from "../ReadonlyArray"
-import * as monad from "../../typeclasses/Monad"
-import * as monadWithIndex from "../../typeclasses/MonadWithIndex"
+import * as array from '../ReadonlyArray'
+import * as monad from '../../typeclasses/Monad'
+import * as monadWithIndex from '../../typeclasses/MonadWithIndex'
 import {
   NonEmptyReadonlyArray,
   NonEmptyReadonlyArrayHkt,
-} from "./non-empty-readonly-array"
-import { DoObject, DoObjectKey } from "../../types/DoObject"
+} from './non-empty-readonly-array'
+import { DoObject, DoObjectKey } from '../../types/DoObject'
 
 export const Monad = {
   ...array.Monad,

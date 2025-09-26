@@ -1,4 +1,4 @@
-import { number, array } from "../../../src"
+import { number, array } from '../../../src'
 
 interface TestCase {
   readonly description: string
@@ -7,39 +7,39 @@ interface TestCase {
   readonly expected: boolean
 }
 
-describe ("getEquivalence", () => {
-  const Equivalence = array.getEquivalence (number.Equivalence)
+describe('getEquivalence', () => {
+  const Equivalence = array.getEquivalence(number.Equivalence)
 
   const testCases: ReadonlyArray<TestCase> = [
     {
-      description: "should return `true` for empty arrays",
+      description: 'should return `true` for empty arrays',
       array1: [],
       array2: [],
       expected: true,
     },
     {
-      description: "should return `false` for arrays with different length",
+      description: 'should return `false` for arrays with different length',
       array1: [1, 2, 3],
       array2: [],
       expected: false,
     },
     {
-      description: "should return `true` for same arrays",
+      description: 'should return `true` for same arrays',
       array1: [1, 2, 3],
       array2: [1, 2, 3],
       expected: true,
     },
     {
-      description: "should return `false` for different arrays",
+      description: 'should return `false` for different arrays',
       array1: [1, 2, 3],
       array2: [1, 3, 2],
       expected: false,
     },
   ]
 
-  testCases.forEach (({ description, array1, array2, expected }) =>
-    it (description, () =>
-      expect (Equivalence.equals (array1) (array2)).toBe (expected),
+  testCases.forEach(({ description, array1, array2, expected }) =>
+    it(description, () =>
+      expect(Equivalence.equals(array1)(array2)).toBe(expected),
     ),
   )
 })

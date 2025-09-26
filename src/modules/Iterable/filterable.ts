@@ -1,19 +1,19 @@
-import * as filterable from "../../typeclasses/Filterable"
-import * as filterableWithIndex from "../../typeclasses/FilterableWithIndex"
-import { Option } from "../Option"
-import { PredicateWithIndex } from "../Predicate"
-import { Result } from "../Result"
-import { IterableHkt } from "./iterable"
-import { Compactable } from "./compactable"
-import { Functor, FunctorWithIndex } from "./functor"
-import { RefinementWithIndex } from "../Refinement"
+import * as filterable from '../../typeclasses/Filterable'
+import * as filterableWithIndex from '../../typeclasses/FilterableWithIndex'
+import { Option } from '../Option'
+import { PredicateWithIndex } from '../Predicate'
+import { Result } from '../Result'
+import { IterableHkt } from './iterable'
+import { Compactable } from './compactable'
+import { Functor, FunctorWithIndex } from './functor'
+import { RefinementWithIndex } from '../Refinement'
 
-export const Filterable = filterable.create<IterableHkt> (Functor, Compactable)
+export const Filterable = filterable.create<IterableHkt>(Functor, Compactable)
 
 export const FilterableWithIndex = filterableWithIndex.create<
   IterableHkt,
   number
-> (FunctorWithIndex, Filterable)
+>(FunctorWithIndex, Filterable)
 
 export const filterMap: {
   <A, B>(p: (a: A, i: number) => Option<B>): (self: Iterable<A>) => Iterable<B>

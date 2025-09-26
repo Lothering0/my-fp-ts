@@ -1,37 +1,37 @@
-import * as applicative from "../../typeclasses/Applicative"
-import * as applicativeWithIndex from "../../typeclasses/ApplicativeWithIndex"
-import { ReadonlyArrayHkt } from "./readonly-array"
-import { Functor, FunctorWithIndex, map } from "./functor"
-import { pipe } from "../../utils/flow"
+import * as applicative from '../../typeclasses/Applicative'
+import * as applicativeWithIndex from '../../typeclasses/ApplicativeWithIndex'
+import { ReadonlyArrayHkt } from './readonly-array'
+import { Functor, FunctorWithIndex, map } from './functor'
+import { pipe } from '../../utils/flow'
 
-export const Applicative = applicative.create<ReadonlyArrayHkt> (Functor, {
+export const Applicative = applicative.create<ReadonlyArrayHkt>(Functor, {
   of: a => [a],
   ap: fa => self =>
-    pipe (
+    pipe(
       fa,
-      map (a =>
-        pipe (
+      map(a =>
+        pipe(
           self,
-          map (ab => ab (a)),
+          map(ab => ab(a)),
         ),
       ),
-    ).flat (),
+    ).flat(),
 })
 
 export const ApplicativeWithIndex = applicativeWithIndex.create<
   ReadonlyArrayHkt,
   number
-> (FunctorWithIndex, Applicative, {
+>(FunctorWithIndex, Applicative, {
   apWithIndex: fa => self =>
-    pipe (
+    pipe(
       fa,
-      map ((a, i) =>
-        pipe (
+      map((a, i) =>
+        pipe(
           self,
-          map (ab => ab (a, i)),
+          map(ab => ab(a, i)),
         ),
       ),
-    ).flat (),
+    ).flat(),
 })
 
 export const of: {

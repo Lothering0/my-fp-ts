@@ -1,10 +1,10 @@
-import * as result from "../Result"
-import * as array from "../ReadonlyArray"
-import * as record from "../ReadonlyRecord"
-import { create, Schema, Type } from "./schema"
-import { pipe } from "../../utils/flow"
-import { isRecord } from "../../utils/typeChecks"
-import { message } from "./process"
+import * as result from '../Result'
+import * as array from '../ReadonlyArray'
+import * as record from '../ReadonlyRecord'
+import { create, Schema, Type } from './schema'
+import { pipe } from '../../utils/flow'
+import { isRecord } from '../../utils/typeChecks'
+import { message } from './process'
 
 export const Record = <
   K extends Schema<string>,
@@ -13,33 +13,33 @@ export const Record = <
   readonly key: K
   readonly value: A
 }): Schema<Partial<record.ReadonlyRecord<Type<K>, Type<A>>>> =>
-  create (x => {
-    if (!isRecord (x)) {
-      return result.fail ([message`value ${x} is not a record`])
+  create(x => {
+    if (!isRecord(x)) {
+      return result.fail([message`value ${x} is not a record`])
     }
 
     const out: Partial<record.ReadonlyRecord<Type<K>, Type<A>>> = {}
     let messages: string[] = []
     for (const k in x) {
-      const keyProcessResult = schemas.key.proceed (k)
+      const keyProcessResult = schemas.key.proceed(k)
 
-      if (result.isFailure (keyProcessResult)) {
-        const keyMessages = pipe (
+      if (result.isFailure(keyProcessResult)) {
+        const keyMessages = pipe(
           keyProcessResult,
-          result.mapLeft (array.map (msg => `${message`property ${k}`}: ${msg}`)),
+          result.mapLeft(array.map(msg => `${message`property ${k}`}: ${msg}`)),
           result.failureOf,
         )
         messages = [...messages, ...keyMessages]
         continue
       }
 
-      const valueProcessResult = schemas.value.proceed (x[k])
+      const valueProcessResult = schemas.value.proceed(x[k])
 
-      if (result.isFailure (valueProcessResult)) {
-        const valueMessages = pipe (
+      if (result.isFailure(valueProcessResult)) {
+        const valueMessages = pipe(
           valueProcessResult,
-          result.mapLeft (
-            array.map (msg => `${message`on property ${k}`}: ${msg}`),
+          result.mapLeft(
+            array.map(msg => `${message`on property ${k}`}: ${msg}`),
           ),
           result.failureOf,
         )
@@ -47,14 +47,14 @@ export const Record = <
         continue
       }
 
-      const key: Type<K> = result.successOf (keyProcessResult)
-      const value = result.successOf (valueProcessResult)
+      const key: Type<K> = result.successOf(keyProcessResult)
+      const value = result.successOf(valueProcessResult)
       out[key] = value
     }
 
     if (messages.length !== 0) {
-      return result.fail (messages)
+      return result.fail(messages)
     }
 
-    return result.succeed (out)
+    return result.succeed(out)
   })

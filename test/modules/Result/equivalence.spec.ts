@@ -1,4 +1,4 @@
-import { number, result, string } from "../../../src"
+import { number, result, string } from '../../../src'
 
 interface TestCase {
   readonly description: string
@@ -7,49 +7,49 @@ interface TestCase {
   readonly expected: boolean
 }
 
-describe ("getEquivalence", () => {
-  const Equivalence = result.getEquivalence (
+describe('getEquivalence', () => {
+  const Equivalence = result.getEquivalence(
     string.Equivalence,
     number.Equivalence,
   )
 
   const testCases: TestCase[] = [
     {
-      description: "should return `false` for different `failure`s",
-      result1: result.fail ("a"),
-      result2: result.fail ("b"),
+      description: 'should return `false` for different `failure`s',
+      result1: result.fail('a'),
+      result2: result.fail('b'),
       expected: false,
     },
     {
-      description: "should return `true` for same `failure`s",
-      result1: result.fail ("a"),
-      result2: result.fail ("a"),
+      description: 'should return `true` for same `failure`s',
+      result1: result.fail('a'),
+      result2: result.fail('a'),
       expected: true,
     },
     {
       description:
-        "should return `false` if first is `failure` and second is `success`",
-      result1: result.fail ("a"),
-      result2: result.succeed (1),
+        'should return `false` if first is `failure` and second is `success`',
+      result1: result.fail('a'),
+      result2: result.succeed(1),
       expected: false,
     },
     {
-      description: "should return `false` for different `success`es",
-      result1: result.succeed (0),
-      result2: result.succeed (1),
+      description: 'should return `false` for different `success`es',
+      result1: result.succeed(0),
+      result2: result.succeed(1),
       expected: false,
     },
     {
-      description: "should return `true` for same `success`es",
-      result1: result.succeed (1),
-      result2: result.succeed (1),
+      description: 'should return `true` for same `success`es',
+      result1: result.succeed(1),
+      result2: result.succeed(1),
       expected: true,
     },
   ]
 
-  testCases.forEach (({ description, result1, result2, expected }) =>
-    it (description, () =>
-      expect (Equivalence.equals (result1) (result2)).toBe (expected),
+  testCases.forEach(({ description, result1, result2, expected }) =>
+    it(description, () =>
+      expect(Equivalence.equals(result1)(result2)).toBe(expected),
     ),
   )
 })

@@ -1,4 +1,4 @@
-import { Prettify } from "./utils"
+import { Prettify } from './utils'
 
 export type DoObjectKey = string
 

@@ -1,4 +1,4 @@
-import { number, tree } from "../../../src"
+import { number, tree } from '../../../src'
 
 interface TestCase {
   readonly description: string
@@ -7,70 +7,70 @@ interface TestCase {
   readonly expected: boolean
 }
 
-describe ("getEquivalence", () => {
-  const Equivalence = tree.getEquivalence (number.Equivalence)
+describe('getEquivalence', () => {
+  const Equivalence = tree.getEquivalence(number.Equivalence)
 
   const testCases: TestCase[] = [
     {
       description:
-        "should return `false` for trees with different values and without forest",
-      tree1: tree.make (0),
-      tree2: tree.make (1),
+        'should return `false` for trees with different values and without forest',
+      tree1: tree.make(0),
+      tree2: tree.make(1),
       expected: false,
     },
     {
       description:
-        "should return `true` for trees with same values and without forest",
-      tree1: tree.make (1),
-      tree2: tree.make (1),
+        'should return `true` for trees with same values and without forest',
+      tree1: tree.make(1),
+      tree2: tree.make(1),
       expected: true,
     },
     {
       description:
-        "should return `false` for trees with same values but different forests",
-      tree1: tree.make (1, [tree.make (1), tree.make (2)]),
-      tree2: tree.make (1),
+        'should return `false` for trees with same values but different forests',
+      tree1: tree.make(1, [tree.make(1), tree.make(2)]),
+      tree2: tree.make(1),
       expected: false,
     },
     {
       description:
-        "should return `true` for trees with same values and same forests",
-      tree1: tree.make (1, [tree.make (1), tree.make (2)]),
-      tree2: tree.make (1, [tree.make (1), tree.make (2)]),
+        'should return `true` for trees with same values and same forests',
+      tree1: tree.make(1, [tree.make(1), tree.make(2)]),
+      tree2: tree.make(1, [tree.make(1), tree.make(2)]),
       expected: true,
     },
     {
-      description: "should return `false` for different deep trees",
-      tree1: tree.make (1, [
-        tree.make (2),
-        tree.make (2, [tree.make (4)]),
-        tree.make (3),
+      description: 'should return `false` for different deep trees',
+      tree1: tree.make(1, [
+        tree.make(2),
+        tree.make(2, [tree.make(4)]),
+        tree.make(3),
       ]),
-      tree2: tree.make (1, [
-        tree.make (2, [tree.make (2), tree.make (4)]),
-        tree.make (3),
+      tree2: tree.make(1, [
+        tree.make(2, [tree.make(2), tree.make(4)]),
+        tree.make(3),
       ]),
       expected: false,
     },
     {
-      description: "should return `true` for same deep trees",
-      tree1: tree.make (1, [
-        tree.make (2),
-        tree.make (2, [tree.make (4)]),
-        tree.make (3),
+      description: 'should return `true` for same deep trees',
+      tree1: tree.make(1, [
+        tree.make(2),
+        tree.make(2, [tree.make(4)]),
+        tree.make(3),
       ]),
-      tree2: tree.make (1, [
-        tree.make (2),
-        tree.make (2, [tree.make (4)]),
-        tree.make (3),
+      tree2: tree.make(1, [
+        tree.make(2),
+        tree.make(2, [tree.make(4)]),
+        tree.make(3),
       ]),
       expected: true,
     },
   ]
 
-  testCases.forEach (({ description, tree1, tree2, expected }) =>
-    it (description, () =>
-      expect (Equivalence.equals (tree1) (tree2)).toBe (expected),
+  testCases.forEach(({ description, tree1, tree2, expected }) =>
+    it(description, () =>
+      expect(Equivalence.equals(tree1)(tree2)).toBe(expected),
     ),
   )
 })

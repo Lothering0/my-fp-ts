@@ -1,7 +1,7 @@
-import * as monoid from "../../typeclasses/Monoid"
-import { Semigroup } from "./semigroup"
+import * as monoid from '../../typeclasses/Monoid'
+import { Semigroup } from './semigroup'
 
-export const empty = ""
+export const empty = ''
 
 export const Monoid: monoid.Monoid<string> = {
   ...Semigroup,

@@ -1,17 +1,17 @@
-import * as result from "../Result"
-import { create } from "../../typeclasses/Applicative"
-import { succeed, execute, SyncResult, SyncResultHkt } from "./sync-result"
-import { pipe } from "../../utils/flow"
-import { Functor } from "./functor"
+import * as result from '../Result'
+import { create } from '../../typeclasses/Applicative'
+import { succeed, execute, SyncResult, SyncResultHkt } from './sync-result'
+import { pipe } from '../../utils/flow'
+import { Functor } from './functor'
 
-export const Applicative = create<SyncResultHkt> (Functor, {
+export const Applicative = create<SyncResultHkt>(Functor, {
   of: succeed,
   ap: fa => self => () =>
-    pipe (
+    pipe(
       result.Do,
-      result.apS ("a", execute (fa)),
-      result.apS ("ab", execute (self)),
-      result.map (({ a, ab }) => ab (a)),
+      result.apS('a', execute(fa)),
+      result.apS('ab', execute(self)),
+      result.map(({ a, ab }) => ab(a)),
     ),
 })
 

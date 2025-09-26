@@ -5,7 +5,7 @@ export interface Magma<Fixed> {
 export const reverse: {
   <Fixed>(Magma: Magma<Fixed>): Magma<Fixed>
 } = Magma => ({
-  combine: y => x => Magma.combine (x) (y),
+  combine: y => x => Magma.combine(x)(y),
 })
 
 export const constant: {
@@ -17,4 +17,4 @@ export const constant: {
 export const combineAll: {
   <Fixed>(Magma: Magma<Fixed>): (start: Fixed) => (as: Iterable<Fixed>) => Fixed
 } = Magma => start => as =>
-  [...as].reduce ((out, a) => Magma.combine (a) (out), start)
+  [...as].reduce((out, a) => Magma.combine(a)(out), start)

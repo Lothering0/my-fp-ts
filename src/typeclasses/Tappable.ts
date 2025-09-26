@@ -1,8 +1,8 @@
-import { Sync } from "../modules/Sync"
-import { pipe } from "../utils/flow"
-import { Hkt, Kind } from "./Hkt"
-import { Monad } from "./Monad"
-import { TypeClass } from "./TypeClass"
+import { Sync } from '../modules/Sync'
+import { pipe } from '../utils/flow'
+import { Hkt, Kind } from './Hkt'
+import { Monad } from './Monad'
+import { TypeClass } from './TypeClass'
 
 export interface Tappable<F extends Hkt> extends TypeClass<F> {
   readonly tap: <In, Collectable1, Fixed>(
@@ -22,26 +22,26 @@ export const create: {
   <F extends Hkt>(Monad: Monad<F>): Tappable<F>
 } = Monad => ({
   tap: f => self =>
-    pipe (
+    pipe(
       Monad.Do,
-      Monad.apS ("a", self),
-      Monad.flatMap (({ a }) =>
-        pipe (
+      Monad.apS('a', self),
+      Monad.flatMap(({ a }) =>
+        pipe(
           a,
           f,
-          Monad.flatMap (() => Monad.of (a)),
+          Monad.flatMap(() => Monad.of(a)),
         ),
       ),
     ),
   tapSync: f => self =>
-    pipe (
+    pipe(
       Monad.Do,
-      Monad.apS ("a", self),
-      Monad.map (({ a }) =>
-        pipe (
+      Monad.apS('a', self),
+      Monad.map(({ a }) =>
+        pipe(
           a,
           f,
-          sync => sync (), // From `Sync`
+          sync => sync(), // From `Sync`
           () => a,
         ),
       ),

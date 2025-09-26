@@ -1,22 +1,22 @@
-import * as option from "../Option"
-import * as result from "../Result"
-import { create } from "../../typeclasses/Compactable"
-import { AsyncOption, AsyncOptionHkt, some, toPromise } from "./async-option"
-import { Functor } from "./functor"
-import { pipe } from "../../utils/flow"
-import { flatMap } from "./monad"
-import { zero } from "./alternative"
+import * as option from '../Option'
+import * as result from '../Result'
+import { create } from '../../typeclasses/Compactable'
+import { AsyncOption, AsyncOptionHkt, some, toPromise } from './async-option'
+import { Functor } from './functor'
+import { pipe } from '../../utils/flow'
+import { flatMap } from './monad'
+import { zero } from './alternative'
 
-export const Compactable = create<AsyncOptionHkt> (Functor, {
-  compact: self => () => toPromise (self).then (option.compact),
+export const Compactable = create<AsyncOptionHkt>(Functor, {
+  compact: self => () => toPromise(self).then(option.compact),
   separate: self =>
-    pipe (
+    pipe(
       self,
       toPromise,
       ma => () => ma,
       mma => [
-        pipe (mma, flatMap (result.match ({ onFailure: some, onSuccess: zero }))),
-        pipe (mma, flatMap (result.match ({ onFailure: zero, onSuccess: some }))),
+        pipe(mma, flatMap(result.match({ onFailure: some, onSuccess: zero }))),
+        pipe(mma, flatMap(result.match({ onFailure: zero, onSuccess: some }))),
       ],
     ),
 })

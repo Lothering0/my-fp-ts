@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as async from "./async"
-import { create } from "../../typeclasses/Monad"
-import { Applicative } from "./applicative"
-import { DoObject, DoObjectKey } from "../../types/DoObject"
+import * as async from './async'
+import { create } from '../../typeclasses/Monad'
+import { Applicative } from './applicative'
+import { DoObject, DoObjectKey } from '../../types/DoObject'
 
-export const Monad = create<async.AsyncHkt> (Applicative, {
-  flat: self => () => async.toPromise (self).then (async.toPromise),
+export const Monad = create<async.AsyncHkt>(Applicative, {
+  flat: self => () => async.toPromise(self).then(async.toPromise),
 })
 
 export const Do = Monad.Do
@@ -67,7 +67,7 @@ export const parallel: {
     fb: async.Async<Out>,
   ): (fa: async.Async<In>) => async.Async<DoObject<N, In, Out>>
 } = fb => fa => () =>
-  Promise.all ([async.toPromise (fa), async.toPromise (fb)]).then (
+  Promise.all([async.toPromise(fa), async.toPromise(fb)]).then(
     ([a]) => a as any,
   )
 
@@ -77,6 +77,6 @@ export const parallelTo: {
     fb: async.Async<Out>,
   ): (fa: async.Async<In>) => async.Async<DoObject<N, In, Out>>
 } = (name, fb) => fa => () =>
-  Promise.all ([async.toPromise (fa), async.toPromise (fb)]).then (
+  Promise.all([async.toPromise(fa), async.toPromise(fb)]).then(
     ([a, b]) => ({ [name]: b, ...a }) as any,
   )

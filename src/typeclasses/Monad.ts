@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Applicative } from "./Applicative"
-import { DoObject, DoObjectKey } from "../types/DoObject"
-import { Hkt, Kind } from "./Hkt"
-import { flow, pipe } from "../utils/flow"
-import { constant } from "../utils/constant"
+import { Applicative } from './Applicative'
+import { DoObject, DoObjectKey } from '../types/DoObject'
+import { Hkt, Kind } from './Hkt'
+import { flow, pipe } from '../utils/flow'
+import { constant } from '../utils/constant'
 
 export interface Monad<F extends Hkt> extends Applicative<F> {
   readonly Do: Kind<F, {}>
@@ -61,47 +61,47 @@ export interface Monad<F extends Hkt> extends Applicative<F> {
 
 export const create = <F extends Hkt>(
   Applicative: Applicative<F>,
-  Monad: Pick<Monad<F>, "flat">,
+  Monad: Pick<Monad<F>, 'flat'>,
 ): Monad<F> => {
   const { of, map } = Applicative
   const { flat } = Monad
-  const Do: Monad<F>["Do"] = of ({})
+  const Do: Monad<F>['Do'] = of({})
 
-  const apS: Monad<F>["apS"] = (name, fb) =>
-    flow (
-      map (a => map (b => ({ [name]: b, ...a }) as any) (fb)),
+  const apS: Monad<F>['apS'] = (name, fb) =>
+    flow(
+      map(a => map(b => ({ [name]: b, ...a }) as any)(fb)),
       flat,
     )
 
-  const flatMap: Monad<F>["flatMap"] = amb => flow (map (amb), flat)
+  const flatMap: Monad<F>['flatMap'] = amb => flow(map(amb), flat)
 
-  const compose: Monad<F>["compose"] = (bmc, amb) => flow (amb, flatMap (bmc))
+  const compose: Monad<F>['compose'] = (bmc, amb) => flow(amb, flatMap(bmc))
 
-  const mapTo: Monad<F>["mapTo"] = (name, ab) =>
-    flatMap (a =>
-      of ({
-        [name]: ab (a),
+  const mapTo: Monad<F>['mapTo'] = (name, ab) =>
+    flatMap(a =>
+      of({
+        [name]: ab(a),
         ...a,
       } as any),
     )
 
-  const setTo: Monad<F>["setTo"] = (name, b) => mapTo (name, constant (b))
+  const setTo: Monad<F>['setTo'] = (name, b) => mapTo(name, constant(b))
 
-  const flapTo: Monad<F>["flapTo"] = (name, fab) => self =>
-    pipe (
+  const flapTo: Monad<F>['flapTo'] = (name, fab) => self =>
+    pipe(
       Do,
-      apS ("a", self),
-      apS ("ab", fab),
-      map (({ a, ab }) => ({ [name]: ab (a), ...a }) as any),
+      apS('a', self),
+      apS('ab', fab),
+      map(({ a, ab }) => ({ [name]: ab(a), ...a }) as any),
     )
 
-  const flatMapTo: Monad<F>["flatMapTo"] = (name, amb) =>
-    flatMap (a =>
-      pipe (
+  const flatMapTo: Monad<F>['flatMapTo'] = (name, amb) =>
+    flatMap(a =>
+      pipe(
         a,
         amb,
-        flatMap (b =>
-          of ({
+        flatMap(b =>
+          of({
             [name]: b,
             ...a,
           } as any),

@@ -1,33 +1,33 @@
-import * as result from "../Result"
-import { create, Schema } from "./schema"
-import { message } from "./process"
-import { pipe } from "../../utils/flow"
-import { NonEmptyReadonlyArray } from "../NonEmptyReadonlyArray"
-import { minLength } from "./utils"
+import * as result from '../Result'
+import { create, Schema } from './schema'
+import { message } from './process'
+import { pipe } from '../../utils/flow'
+import { NonEmptyReadonlyArray } from '../NonEmptyReadonlyArray'
+import { minLength } from './utils'
 
 const array = <A>(schema: Schema<A>): Schema<ReadonlyArray<A>> =>
-  create (x => {
-    const isArray = Array.isArray (x)
+  create(x => {
+    const isArray = Array.isArray(x)
 
     if (!isArray) {
-      return result.fail ([message`value ${x} is not an array`])
+      return result.fail([message`value ${x} is not an array`])
     }
 
     const xs: ReadonlyArray<A> = x
     const out: A[] = []
 
     for (const i in xs) {
-      const processResult = schema.proceed (xs[i])
+      const processResult = schema.proceed(xs[i])
 
-      if (result.isFailure (processResult)) {
-        const msg = result.failureOf (processResult)
-        return result.fail ([`${message`on index ${i}`}: ${msg}`])
+      if (result.isFailure(processResult)) {
+        const msg = result.failureOf(processResult)
+        return result.fail([`${message`on index ${i}`}: ${msg}`])
       }
 
-      out.push (result.successOf (processResult))
+      out.push(result.successOf(processResult))
     }
 
-    return result.succeed (out)
+    return result.succeed(out)
   })
 
 export { array as Array }
@@ -35,4 +35,4 @@ export { array as Array }
 export const NonEmptyArray = <A>(
   schema: Schema<A>,
 ): Schema<NonEmptyReadonlyArray<A>> =>
-  pipe (schema, array, minLength (1)) as Schema<NonEmptyReadonlyArray<A>>
+  pipe(schema, array, minLength(1)) as Schema<NonEmptyReadonlyArray<A>>

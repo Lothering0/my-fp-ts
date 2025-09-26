@@ -1,5 +1,5 @@
-import { Monoid } from "../../typeclasses/Monoid"
-import { SemigroupAll, SemigroupAny } from "./semigroup"
+import { Monoid } from '../../typeclasses/Monoid'
+import { SemigroupAll, SemigroupAny } from './semigroup'
 
 export const MonoidAny: Monoid<boolean> = {
   ...SemigroupAny,

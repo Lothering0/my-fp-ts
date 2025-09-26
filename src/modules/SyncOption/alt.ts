@@ -1,14 +1,14 @@
-import * as alt from "../../typeclasses/Alt"
-import { SyncOption, SyncOptionHkt, some } from "./sync-option"
-import { identity } from "../Identity"
-import { LazyArg } from "../../types/utils"
-import { match } from "./matchers"
-import { constant } from "../../utils/constant"
+import * as alt from '../../typeclasses/Alt'
+import { SyncOption, SyncOptionHkt, some } from './sync-option'
+import { identity } from '../Identity'
+import { LazyArg } from '../../types/utils'
+import { match } from './matchers'
+import { constant } from '../../utils/constant'
 
 export const getOrElse: {
   <Out>(onNone: LazyArg<Out>): <In>(self: SyncOption<In>) => In | Out
 } = onNone =>
-  match ({
+  match({
     onNone,
     onSome: identity,
   })
@@ -18,8 +18,8 @@ export const orElse: {
     that: SyncOption<Out>,
   ): <In>(self: SyncOption<In>) => SyncOption<In | Out>
 } = that =>
-  match ({
-    onNone: constant (that),
+  match({
+    onNone: constant(that),
     onSome: some,
   })
 
@@ -29,7 +29,7 @@ export const catchAll: {
     that: LazyArg<SyncOption<Out>>,
   ): <In>(self: SyncOption<In>) => SyncOption<In | Out>
 } = that =>
-  match ({
+  match({
     onNone: that,
     onSome: some,
   })

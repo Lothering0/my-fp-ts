@@ -1,26 +1,26 @@
-import { Monad } from "./monad"
-import { Option } from "./option"
-import { Semigroup } from "../../typeclasses/Semigroup"
-import { isNone } from "./refinements"
-import { pipe } from "../../utils/flow"
+import { Monad } from './monad'
+import { Option } from './option'
+import { Semigroup } from '../../typeclasses/Semigroup'
+import { isNone } from './refinements'
+import { pipe } from '../../utils/flow'
 
 export const getSemigroup: {
   <A>(Semigroup: Semigroup<A>): Semigroup<Option<A>>
 } = Semigroup => ({
   combine: mx => my => {
-    if (isNone (mx)) {
+    if (isNone(mx)) {
       return my
     }
 
-    if (isNone (my)) {
+    if (isNone(my)) {
       return mx
     }
 
-    return pipe (
+    return pipe(
       Monad.Do,
-      Monad.apS ("x", mx),
-      Monad.apS ("y", my),
-      Monad.map (({ x, y }) => Semigroup.combine (y) (x)),
+      Monad.apS('x', mx),
+      Monad.apS('y', my),
+      Monad.map(({ x, y }) => Semigroup.combine(y)(x)),
     )
   },
 })

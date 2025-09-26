@@ -1,10 +1,10 @@
-import { number, pipe, record, string } from "../../../src"
+import { number, pipe, record, string } from '../../../src'
 
-describe ("getUnion", () => {
-  const union = record.getUnion (number.GroupSum)
+describe('getUnion', () => {
+  const union = record.getUnion(number.GroupSum)
 
-  it ("should return union of first and second record combined by provided magma", () => {
-    pipe ({ a: 1, b: 2, c: 3 }, union ({ b: 1, c: 2, d: 3 }), expect).toEqual ({
+  it('should return union of first and second record combined by provided magma', () => {
+    pipe({ a: 1, b: 2, c: 3 }, union({ b: 1, c: 2, d: 3 }), expect).toEqual({
       a: 1,
       b: 3,
       c: 5,
@@ -13,32 +13,32 @@ describe ("getUnion", () => {
   })
 })
 
-describe ("sortValues", () => {
-  it ("should sort record by values with provided `Order` instance", () => {
-    pipe (
-      { b: "c", a: "b", c: "a" },
-      record.sortValues (string.Order),
+describe('sortValues', () => {
+  it('should sort record by values with provided `Order` instance', () => {
+    pipe(
+      { b: 'c', a: 'b', c: 'a' },
+      record.sortValues(string.Order),
       record.toEntries,
       expect,
-    ).toEqual ([
-      ["c", "a"],
-      ["a", "b"],
-      ["b", "c"],
+    ).toEqual([
+      ['c', 'a'],
+      ['a', 'b'],
+      ['b', 'c'],
     ])
   })
 })
 
-describe ("sortKeys", () => {
-  it ("should sort record by keys with provided `Order` instance", () => {
-    pipe (
-      { b: "c", a: "b", c: "a" },
-      record.sortKeys (string.Order),
+describe('sortKeys', () => {
+  it('should sort record by keys with provided `Order` instance', () => {
+    pipe(
+      { b: 'c', a: 'b', c: 'a' },
+      record.sortKeys(string.Order),
       record.toEntries,
       expect,
-    ).toEqual ([
-      ["a", "b"],
-      ["b", "c"],
-      ["c", "a"],
+    ).toEqual([
+      ['a', 'b'],
+      ['b', 'c'],
+      ['c', 'a'],
     ])
   })
 })

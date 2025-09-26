@@ -12,13 +12,13 @@ import {
   isSymbol,
   isUndefined,
   typeOf,
-} from "../../src"
+} from '../../src'
 
-describe ("typeChecks", () => {
+describe('typeChecks', () => {
   const typeByName = {
     number: 1,
     bigint: 1n,
-    string: "",
+    string: '',
     true: true,
     false: false,
     null: null,
@@ -26,14 +26,14 @@ describe ("typeChecks", () => {
     array: [],
     object: {},
     undefined: undefined,
-    symbol: Symbol (),
+    symbol: Symbol(),
   }
 
-  describe ("typeOf", () => {
-    Object.values (typeByName).forEach (x => {
+  describe('typeOf', () => {
+    Object.values(typeByName).forEach(x => {
       const expected = typeof x
-      it (`should correctly determine \`${expected}\` type`, () =>
-        expect (typeOf (x)).toBe (expected))
+      it(`should correctly determine \`${expected}\` type`, () =>
+        expect(typeOf(x)).toBe(expected))
     })
   })
 
@@ -90,18 +90,18 @@ describe ("typeChecks", () => {
     },
     {
       f: isDefined,
-      values: Object.values (typeByName).filter (
+      values: Object.values(typeByName).filter(
         x => x !== null && x !== undefined,
       ),
     },
   ]
 
-  testCases.forEach (({ f, values }) => {
-    describe (f.name, () => {
-      it.each (Object.entries (typeByName)) (
-        "should correctly determine %p",
+  testCases.forEach(({ f, values }) => {
+    describe(f.name, () => {
+      it.each(Object.entries(typeByName))(
+        'should correctly determine %p',
         (_, x) => {
-          expect (f (x)).toBe (values.includes (x))
+          expect(f(x)).toBe(values.includes(x))
         },
       )
     })

@@ -1,10 +1,10 @@
-import * as array from "../ReadonlyArray"
-import * as functor from "../../typeclasses/Functor"
-import * as functorWithIndex from "../../typeclasses/FunctorWithIndex"
+import * as array from '../ReadonlyArray'
+import * as functor from '../../typeclasses/Functor'
+import * as functorWithIndex from '../../typeclasses/FunctorWithIndex'
 import {
   NonEmptyReadonlyArray,
   NonEmptyReadonlyArrayHkt,
-} from "./non-empty-readonly-array"
+} from './non-empty-readonly-array'
 
 export const Functor = {
   ...array.Functor,

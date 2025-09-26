@@ -6,7 +6,7 @@ import {
   nonEmptyArray,
   pipe,
   flow,
-} from "../../src"
+} from '../../src'
 
 export const describeMonadLaws: {
   <F extends Hkt>(
@@ -21,42 +21,42 @@ export const describeMonadLaws: {
     >,
   ): void
 } = (Monad, Equivalence, fas, afbs, bfcs) => {
-  describe ("monad", () => {
-    describe ("flatMap", () => {
-      it ("should satisfy left identity law", () => {
+  describe('monad', () => {
+    describe('flatMap', () => {
+      it('should satisfy left identity law', () => {
         const x = 1
-        afbs.forEach (afb => {
-          pipe (
+        afbs.forEach(afb => {
+          pipe(
             x,
             Monad.of,
-            Monad.flatMap (afb),
-            Equivalence.equals (afb (x)),
+            Monad.flatMap(afb),
+            Equivalence.equals(afb(x)),
             expect,
-          ).toBe (true)
+          ).toBe(true)
         })
       })
 
-      it ("should satisfy right identity law", () => {
-        fas.forEach (fa => {
-          pipe (
+      it('should satisfy right identity law', () => {
+        fas.forEach(fa => {
+          pipe(
             fa,
-            Monad.flatMap (Monad.of),
-            Equivalence.equals (fa),
+            Monad.flatMap(Monad.of),
+            Equivalence.equals(fa),
             expect,
-          ).toBe (true)
+          ).toBe(true)
         })
       })
 
-      it ("should satisfy associativity law", () => {
-        fas.forEach (fa => {
-          afbs.forEach (afb => {
-            bfcs.forEach (bfc => {
-              const result1 = pipe (fa, Monad.flatMap (afb), Monad.flatMap (bfc))
-              const result2 = pipe (
+      it('should satisfy associativity law', () => {
+        fas.forEach(fa => {
+          afbs.forEach(afb => {
+            bfcs.forEach(bfc => {
+              const result1 = pipe(fa, Monad.flatMap(afb), Monad.flatMap(bfc))
+              const result2 = pipe(
                 fa,
-                Monad.flatMap (flow (afb, Monad.flatMap (bfc))),
+                Monad.flatMap(flow(afb, Monad.flatMap(bfc))),
               )
-              pipe (result1, Equivalence.equals (result2), expect).toBe (true)
+              pipe(result1, Equivalence.equals(result2), expect).toBe(true)
             })
           })
         })

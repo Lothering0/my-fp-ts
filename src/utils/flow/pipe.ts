@@ -264,5 +264,5 @@ export function pipe(
   a: unknown,
   ...rest: ReadonlyArray<(a: unknown) => unknown>
 ) {
-  return rest.reduce ((prev, f) => f (prev), a)
+  return rest.reduce((prev, f) => f(prev), a)
 }

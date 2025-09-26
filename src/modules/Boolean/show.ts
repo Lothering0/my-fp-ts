@@ -1,4 +1,4 @@
-import * as show_ from "../../typeclasses/Show"
+import * as show_ from '../../typeclasses/Show'
 
 export const show: {
   <B extends boolean>(self: B): `${B}`

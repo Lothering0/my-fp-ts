@@ -1,25 +1,25 @@
-import * as iterable from "../Iterable"
-import { Tree, TreeHkt } from "./tree"
-import { create } from "../../typeclasses/Applicative"
-import { Functor, map } from "./functor"
-import { make, valueOf, forestOf } from "./utils"
-import { pipe, flow } from "../../utils/flow"
+import * as iterable from '../Iterable'
+import { Tree, TreeHkt } from './tree'
+import { create } from '../../typeclasses/Applicative'
+import { Functor, map } from './functor'
+import { make, valueOf, forestOf } from './utils'
+import { pipe, flow } from '../../utils/flow'
 
 export const flat: {
   <A>(self: Tree<Tree<A>>): Tree<A>
 } = self =>
-  make (
-    pipe (self, valueOf, valueOf),
-    iterable.concat (pipe (self, forestOf, iterable.map (flat))) (
-      pipe (self, valueOf, forestOf),
+  make(
+    pipe(self, valueOf, valueOf),
+    iterable.concat(pipe(self, forestOf, iterable.map(flat)))(
+      pipe(self, valueOf, forestOf),
     ),
   )
 
-export const Applicative = create<TreeHkt> (Functor, {
+export const Applicative = create<TreeHkt>(Functor, {
   of: make,
   ap: fa =>
-    flow (
-      map (ab => pipe (fa, map (ab))),
+    flow(
+      map(ab => pipe(fa, map(ab))),
       flat,
     ),
 })

@@ -1,5 +1,5 @@
-import { Hkt, Kind } from "./Hkt"
-import { TypeClass } from "./TypeClass"
+import { Hkt, Kind } from './Hkt'
+import { TypeClass } from './TypeClass'
 
 export interface Contravariant<F extends Hkt> extends TypeClass<F> {
   readonly contramap: <In, Out>(

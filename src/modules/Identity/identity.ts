@@ -1,7 +1,7 @@
-import { Hkt } from "../../typeclasses/Hkt"
+import { Hkt } from '../../typeclasses/Hkt'
 
 export interface IdentityHkt extends Hkt {
-  readonly Type: Identity<this["In"]>
+  readonly Type: Identity<this['In']>
 }
 
 export type Identity<A> = A

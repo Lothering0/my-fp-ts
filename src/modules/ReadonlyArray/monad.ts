@@ -1,14 +1,14 @@
-import * as monad from "../../typeclasses/Monad"
-import * as monadWithIndex from "../../typeclasses/MonadWithIndex"
-import { ReadonlyArrayHkt } from "./readonly-array"
-import { DoObject, DoObjectKey } from "../../types/DoObject"
-import { Applicative, ApplicativeWithIndex } from "./applicative"
+import * as monad from '../../typeclasses/Monad'
+import * as monadWithIndex from '../../typeclasses/MonadWithIndex'
+import { ReadonlyArrayHkt } from './readonly-array'
+import { DoObject, DoObjectKey } from '../../types/DoObject'
+import { Applicative, ApplicativeWithIndex } from './applicative'
 
-export const Monad = monad.create<ReadonlyArrayHkt> (Applicative, {
-  flat: self => self.flat (),
+export const Monad = monad.create<ReadonlyArrayHkt>(Applicative, {
+  flat: self => self.flat(),
 })
 
-export const MonadWithIndex = monadWithIndex.create<ReadonlyArrayHkt, number> (
+export const MonadWithIndex = monadWithIndex.create<ReadonlyArrayHkt, number>(
   ApplicativeWithIndex,
   Monad,
 )

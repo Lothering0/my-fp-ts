@@ -1,7 +1,7 @@
-import * as comonad from "../../typeclasses/Comonad"
-import { Tree, TreeHkt } from "./tree"
-import { valueOf } from "./utils"
-import { Extendable } from "./extendable"
+import * as comonad from '../../typeclasses/Comonad'
+import { Tree, TreeHkt } from './tree'
+import { valueOf } from './utils'
+import { Extendable } from './extendable'
 
 export const Comonad: comonad.Comonad<TreeHkt> = {
   ...Extendable,

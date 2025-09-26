@@ -7,7 +7,7 @@ import {
   pipe,
   identity,
   number,
-} from "../../src"
+} from '../../src'
 
 export const describeApplicativeLaws: {
   <F extends Hkt>(
@@ -19,45 +19,45 @@ export const describeApplicativeLaws: {
     >,
   ): void
 } = (Applicative, Equivalence, fas, fabs) => {
-  describe ("applicative", () => {
-    describe ("ap", () => {
-      it ("should satisfy identity law", () => {
-        fas.forEach (fa => {
-          pipe (
+  describe('applicative', () => {
+    describe('ap', () => {
+      it('should satisfy identity law', () => {
+        fas.forEach(fa => {
+          pipe(
             identity,
             Applicative.of,
-            Applicative.ap (fa),
-            Equivalence.equals (fa),
+            Applicative.ap(fa),
+            Equivalence.equals(fa),
             expect,
-          ).toBe (true)
+          ).toBe(true)
         })
       })
 
-      it ("should satisfy homomorphism law", () => {
-        const ab = number.add (5)
+      it('should satisfy homomorphism law', () => {
+        const ab = number.add(5)
         const x = 1
 
-        pipe (
+        pipe(
           ab,
           Applicative.of,
-          Applicative.ap (Applicative.of (x)),
-          Equivalence.equals (Applicative.of (ab (x))),
+          Applicative.ap(Applicative.of(x)),
+          Equivalence.equals(Applicative.of(ab(x))),
           expect,
-        ).toBe (true)
+        ).toBe(true)
       })
 
-      it ("should satisfy interchange law", () => {
+      it('should satisfy interchange law', () => {
         const x = 1
 
-        fabs.forEach (fab => {
-          pipe (
+        fabs.forEach(fab => {
+          pipe(
             fab,
-            Applicative.ap (Applicative.of (x)),
-            Equivalence.equals (
-              Applicative.ap (fab) (Applicative.of (ab => ab (x))),
+            Applicative.ap(Applicative.of(x)),
+            Equivalence.equals(
+              Applicative.ap(fab)(Applicative.of(ab => ab(x))),
             ),
             expect,
-          ).toBe (true)
+          ).toBe(true)
         })
       })
     })

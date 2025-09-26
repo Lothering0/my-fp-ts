@@ -1,18 +1,18 @@
-import * as option from "../Option"
-import * as array from "../ReadonlyArray"
-import * as iterable from "../Iterable"
-import * as boolean from "../Boolean"
-import * as equivalence from "../../typeclasses/Equivalence"
-import * as order from "../../typeclasses/Order"
-import { flow, pipe } from "../../utils/flow"
-import { ReadonlyRecord } from "./readonly-record"
-import { TheseOrAnyString } from "../../types/utils"
-import { Predicate, PredicateWithIndex } from "../Predicate"
-import { Refinement, RefinementWithIndex } from "../Refinement"
-import { Magma } from "../../typeclasses/Magma"
-import { map } from "./functor"
-import { Endomorphism } from "../../typeclasses/Endomorphism"
-import { constant } from "../../utils/constant"
+import * as option from '../Option'
+import * as array from '../ReadonlyArray'
+import * as iterable from '../Iterable'
+import * as boolean from '../Boolean'
+import * as equivalence from '../../typeclasses/Equivalence'
+import * as order from '../../typeclasses/Order'
+import { flow, pipe } from '../../utils/flow'
+import { ReadonlyRecord } from './readonly-record'
+import { TheseOrAnyString } from '../../types/utils'
+import { Predicate, PredicateWithIndex } from '../Predicate'
+import { Refinement, RefinementWithIndex } from '../Refinement'
+import { Magma } from '../../typeclasses/Magma'
+import { map } from './functor'
+import { Endomorphism } from '../../typeclasses/Endomorphism'
+import { constant } from '../../utils/constant'
 
 export const keys: {
   <K extends string, A>(self: ReadonlyRecord<K, A>): ReadonlyArray<K>
@@ -34,7 +34,7 @@ export const fromEntries: {
 
 export const isEmpty = (
   self: ReadonlyRecord<string, unknown>,
-): self is ReadonlyRecord<never, never> => pipe (self, keys, array.isEmpty)
+): self is ReadonlyRecord<never, never> => pipe(self, keys, array.isEmpty)
 
 export const has: {
   (k: string): (self: ReadonlyRecord<string, unknown>) => boolean
@@ -45,12 +45,12 @@ export const lookup: {
     k: TheseOrAnyString<NoInfer<K>>,
   ): (self: ReadonlyRecord<K, A>) => option.Option<A>
 } = k => self =>
-  pipe (
+  pipe(
     self,
-    has (k),
-    boolean.match ({
+    has(k),
+    boolean.match({
       onFalse: option.zero,
-      onTrue: () => option.some (self[k as keyof typeof self]),
+      onTrue: () => option.some(self[k as keyof typeof self]),
     }),
   )
 
@@ -66,7 +66,7 @@ export const elem =
     (a: A): (self: ReadonlyRecord<string, A>) => boolean
   } =>
   a =>
-    flow (values, array.elem (Equivalence) (a))
+    flow(values, array.elem(Equivalence)(a))
 
 export const every: {
   <A, B extends A, K extends string>(
@@ -78,9 +78,9 @@ export const every: {
 } = (<A, K extends string>(
   p: PredicateWithIndex<A, K>,
 ): Predicate<ReadonlyRecord<K, A>> =>
-  flow (
+  flow(
     toEntries,
-    array.every (([k, a]) => p (a, k)),
+    array.every(([k, a]) => p(a, k)),
   )) as typeof every
 
 export const exists: {
@@ -88,9 +88,9 @@ export const exists: {
     p: PredicateWithIndex<A, K>,
   ): Predicate<ReadonlyRecord<K, A>>
 } = p =>
-  flow (
+  flow(
     toEntries,
-    array.exists (([k, a]) => p (a, k)),
+    array.exists(([k, a]) => p(a, k)),
   )
 
 /** Alias for `exists` */
@@ -101,10 +101,10 @@ export const find: {
     p: PredicateWithIndex<A, K>,
   ): (self: ReadonlyRecord<K, A>) => option.Option<A>
 } = p =>
-  flow (
+  flow(
     toEntries,
-    array.find (([k, a]) => p (a, k)),
-    option.map (([, a]) => a),
+    array.find(([k, a]) => p(a, k)),
+    option.map(([, a]) => a),
   )
 
 export const findMap: {
@@ -112,9 +112,9 @@ export const findMap: {
     p: (a: A, k: K) => option.Option<B>,
   ): (self: ReadonlyRecord<K, A>) => option.Option<B>
 } = p =>
-  flow (
+  flow(
     toEntries,
-    array.findMap (([k, a]) => p (a, k)),
+    array.findMap(([k, a]) => p(a, k)),
   )
 
 export const prepend: {
@@ -148,18 +148,18 @@ export const getUnion: {
     self: ReadonlyRecord<K2, A>,
   ) => ReadonlyRecord<K1 | K2, A>
 } = Magma => as => self =>
-  pipe (
+  pipe(
     as,
-    concat (self),
-    map ((a, k) =>
-      pipe (
+    concat(self),
+    map((a, k) =>
+      pipe(
         as,
-        has (k),
-        boolean.and (has (k) (self)),
-        boolean.match ({
+        has(k),
+        boolean.and(has(k)(self)),
+        boolean.match({
           onFalse: () => a,
           onTrue: () =>
-            Magma.combine (as[k as keyof typeof as]) (
+            Magma.combine(as[k as keyof typeof as])(
               self[k as keyof typeof self],
             ),
         }),
@@ -175,7 +175,7 @@ export const omit: {
   (...keys) =>
   self => {
     const copied = { ...self }
-    keys.forEach (key => {
+    keys.forEach(key => {
       delete copied[key as keyof typeof copied]
     })
     return copied
@@ -190,7 +190,7 @@ export const pick: {
   self => {
     const copied = { ...self }
     for (const key in copied) {
-      if (!keys.includes (key as unknown as (typeof keys)[number])) {
+      if (!keys.includes(key as unknown as (typeof keys)[number])) {
         delete copied[key as keyof typeof copied]
       }
     }
@@ -210,10 +210,10 @@ export const modifyAt: {
     f: Endomorphism<A>,
   ): (self: ReadonlyRecord<K, A>) => option.Option<ReadonlyRecord<K, A>>
 } = (k, f) => self =>
-  pipe (
+  pipe(
     self,
-    lookup (k),
-    option.map (a => ({ ...self, [k]: f (a) })),
+    lookup(k),
+    option.map(a => ({ ...self, [k]: f(a) })),
   )
 
 export const updateAt: {
@@ -221,13 +221,13 @@ export const updateAt: {
     k: K,
     a: A,
   ): (self: ReadonlyRecord<K, A>) => option.Option<ReadonlyRecord<K, A>>
-} = (k, a) => modifyAt (k, constant (a))
+} = (k, a) => modifyAt(k, constant(a))
 
 export const removeAt: {
   <A extends ReadonlyRecord<string, unknown>, K extends keyof A>(
     key: K,
   ): (self: A) => Omit<A, typeof key>
-} = k => omit (k)
+} = k => omit(k)
 
 export const sortValues: {
   <B>(
@@ -236,12 +236,12 @@ export const sortValues: {
     self: ReadonlyRecord<K, A>,
   ) => ReadonlyRecord<K, A>
 } = Order =>
-  flow (
+  flow(
     toEntries,
-    array.sort (
-      pipe (
+    array.sort(
+      pipe(
         Order,
-        order.contramap (([, a]) => a),
+        order.contramap(([, a]) => a),
       ),
     ),
     fromEntries,
@@ -254,9 +254,9 @@ export const sortValuesBy: {
     self: ReadonlyRecord<K, A>,
   ) => ReadonlyRecord<K, A>
 } = orders =>
-  flow (
+  flow(
     toEntries,
-    array.sortBy (pipe (orders, iterable.map (order.contramap (([, a]) => a)))),
+    array.sortBy(pipe(orders, iterable.map(order.contramap(([, a]) => a)))),
     fromEntries,
   )
 
@@ -265,12 +265,12 @@ export const sortKeys: {
     Order: order.Order<string>,
   ): <A, K extends string>(self: ReadonlyRecord<K, A>) => ReadonlyRecord<K, A>
 } = Order =>
-  flow (
+  flow(
     toEntries,
-    array.sort (
-      pipe (
+    array.sort(
+      pipe(
         Order,
-        order.contramap (([k]) => k),
+        order.contramap(([k]) => k),
       ),
     ),
     fromEntries,
@@ -281,8 +281,8 @@ export const sortKeysBy: {
     orders: Iterable<order.Order<string>>,
   ): <A, K extends string>(self: ReadonlyRecord<K, A>) => ReadonlyRecord<K, A>
 } = orders =>
-  flow (
+  flow(
     toEntries,
-    array.sortBy (pipe (orders, iterable.map (order.contramap (([k]) => k)))),
+    array.sortBy(pipe(orders, iterable.map(order.contramap(([k]) => k)))),
     fromEntries,
   )

@@ -1,8 +1,8 @@
-import * as result from "../Result"
-import * as array from "../ReadonlyArray"
-import { pipe } from "../../utils/flow"
-import { create, Schema, SchemaOptional, Type } from "./schema"
-import { message } from "./process"
+import * as result from '../Result'
+import * as array from '../ReadonlyArray'
+import { pipe } from '../../utils/flow'
+import { create, Schema, SchemaOptional, Type } from './schema'
+import { message } from './process'
 
 type ExtractTupleTypes<A extends ReadonlyArray<Schema<unknown>>> = A extends [
   infer X,
@@ -22,22 +22,22 @@ type ExtractTupleTypes<A extends ReadonlyArray<Schema<unknown>>> = A extends [
 export const Tuple = <A extends ReadonlyArray<Schema<unknown>>>(
   ...schemas: A
 ): Schema<ExtractTupleTypes<A>> =>
-  create (xs => {
-    const isArray = Array.isArray (xs)
+  create(xs => {
+    const isArray = Array.isArray(xs)
 
     if (!isArray) {
-      return result.fail ([message`value ${xs} is not a tuple`])
+      return result.fail([message`value ${xs} is not a tuple`])
     }
 
-    const tupleMinLength = pipe (
+    const tupleMinLength = pipe(
       schemas,
-      array.dropRightWhile (({ isOptional }) => Boolean (isOptional)),
+      array.dropRightWhile(({ isOptional }) => Boolean(isOptional)),
       array.length,
     )
     const tupleMaxLength = schemas.length
 
     if (xs.length < tupleMinLength || xs.length > tupleMaxLength) {
-      return result.fail ([
+      return result.fail([
         message`tuple length must be from ${tupleMinLength} to ${tupleMaxLength}, got ${xs.length}`,
       ])
     }
@@ -47,17 +47,17 @@ export const Tuple = <A extends ReadonlyArray<Schema<unknown>>>(
 
     for (const i in schemas) {
       const schema = schemas[i]!
-      const processResult = schema.proceed (xs[i])
+      const processResult = schema.proceed(xs[i])
 
-      if (result.isFailure (processResult)) {
-        return pipe (
+      if (result.isFailure(processResult)) {
+        return pipe(
           processResult,
-          result.mapLeft (array.map (msg => `${message`on index ${i}`}: ${msg}`)),
+          result.mapLeft(array.map(msg => `${message`on index ${i}`}: ${msg}`)),
         )
       }
 
-      out.push (result.successOf (processResult))
+      out.push(result.successOf(processResult))
     }
 
-    return result.succeed (out)
+    return result.succeed(out)
   })

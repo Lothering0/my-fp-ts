@@ -1,6 +1,6 @@
-import { identity } from "../modules/Identity"
-import { Functor } from "./Functor"
-import { Hkt, Kind } from "./Hkt"
+import { identity } from '../modules/Identity'
+import { Functor } from './Functor'
+import { Hkt, Kind } from './Hkt'
 
 export interface Extendable<F extends Hkt> extends Functor<F> {
   readonly extend: <In, Out, Collectable, Fixed>(
@@ -16,10 +16,10 @@ export interface Extendable<F extends Hkt> extends Functor<F> {
 export const create: {
   <F extends Hkt>(
     Functor: Functor<F>,
-    Extendable: Pick<Extendable<F>, "extend">,
+    Extendable: Pick<Extendable<F>, 'extend'>,
   ): Extendable<F>
 } = (Functor, Extendable) => ({
   ...Functor,
   ...Extendable,
-  duplicate: Extendable.extend (identity),
+  duplicate: Extendable.extend(identity),
 })

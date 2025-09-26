@@ -1,10 +1,10 @@
-import * as comonad from "../../typeclasses/Comonad"
+import * as comonad from '../../typeclasses/Comonad'
 import {
   NonEmptyReadonlyArray,
   NonEmptyReadonlyArrayHkt,
-} from "./non-empty-readonly-array"
-import { head } from "./utils"
-import { Extendable } from "./extendable"
+} from './non-empty-readonly-array'
+import { head } from './utils'
+import { Extendable } from './extendable'
 
 export const Comonad: comonad.Comonad<NonEmptyReadonlyArrayHkt> = {
   ...Extendable,

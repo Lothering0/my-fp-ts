@@ -1,13 +1,13 @@
-import { Result, ResultHkt, fail, succeed } from "./result"
-import { create } from "../../typeclasses/Bifunctor"
-import { match } from "./matchers"
-import { flow } from "../../utils/flow"
-import { Functor } from "./functor"
+import { Result, ResultHkt, fail, succeed } from './result'
+import { create } from '../../typeclasses/Bifunctor'
+import { match } from './matchers'
+import { flow } from '../../utils/flow'
+import { Functor } from './functor'
 
-export const Bifunctor = create<ResultHkt> (Functor, {
+export const Bifunctor = create<ResultHkt>(Functor, {
   mapLeft: ed =>
-    match ({
-      onFailure: flow (ed, fail),
+    match({
+      onFailure: flow(ed, fail),
       onSuccess: succeed,
     }),
 })

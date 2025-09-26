@@ -5,4 +5,4 @@ export interface Matchers<A, B = A> {
 
 export const match: {
   <A, B = A>(matchers: Matchers<A, B>): (self: boolean) => A | B
-} = matchers => self => self ? matchers.onTrue (true) : matchers.onFalse (false)
+} = matchers => self => (self ? matchers.onTrue(true) : matchers.onFalse(false))

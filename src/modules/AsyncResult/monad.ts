@@ -1,21 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as result from "../Result"
-import * as async from "../Async"
-import { identity } from "../Identity"
-import { create } from "../../typeclasses/Monad"
-import { Applicative } from "./applicative"
-import { AsyncResultHkt, AsyncResult, toPromise, fail } from "./async-result"
-import { pipe } from "../../utils/flow"
-import { DoObject, DoObjectKey } from "../../types/DoObject"
-import { match } from "./matchers"
+import * as result from '../Result'
+import * as async from '../Async'
+import { identity } from '../Identity'
+import { create } from '../../typeclasses/Monad'
+import { Applicative } from './applicative'
+import { AsyncResultHkt, AsyncResult, toPromise, fail } from './async-result'
+import { pipe } from '../../utils/flow'
+import { DoObject, DoObjectKey } from '../../types/DoObject'
+import { match } from './matchers'
 
-export const Monad = create<AsyncResultHkt> (Applicative, {
+export const Monad = create<AsyncResultHkt>(Applicative, {
   flat: self => () =>
-    pipe (
+    pipe(
       self,
-      match ({ onFailure: fail, onSuccess: identity }),
+      match({ onFailure: fail, onSuccess: identity }),
       async.toPromise,
-      promise => promise.then (toPromise),
+      promise => promise.then(toPromise),
     ),
 })
 
@@ -90,8 +90,8 @@ export const parallel: {
     self: AsyncResult<Failure2, In>,
   ) => AsyncResult<Failure1 | Failure2, DoObject<N, In, Out>>
 } = fb => self => () =>
-  Promise.all ([toPromise (self), toPromise (fb)]).then (([ma, mb]) =>
-    pipe (mb, result.flatMap (() => ma) as any),
+  Promise.all([toPromise(self), toPromise(fb)]).then(([ma, mb]) =>
+    pipe(mb, result.flatMap(() => ma) as any),
   )
 
 export const parallelTo: {
@@ -102,6 +102,6 @@ export const parallelTo: {
     self: AsyncResult<Failure1, In>,
   ) => AsyncResult<Failure1 | Failure2, DoObject<N, In, Out>>
 } = (name, fb) => self => () =>
-  Promise.all ([toPromise (self), toPromise (fb)]).then (([ma, mb]) =>
-    result.apS (name, mb) (ma),
+  Promise.all([toPromise(self), toPromise(fb)]).then(([ma, mb]) =>
+    result.apS(name, mb)(ma),
   )

@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as option from "../Option"
-import { create } from "../../typeclasses/Monad"
-import { AsyncOptionHkt, AsyncOption, toPromise } from "./async-option"
-import { Applicative } from "./applicative"
-import { pipe } from "../../utils/flow"
-import { DoObject, DoObjectKey } from "../../types/DoObject"
+import * as option from '../Option'
+import { create } from '../../typeclasses/Monad'
+import { AsyncOptionHkt, AsyncOption, toPromise } from './async-option'
+import { Applicative } from './applicative'
+import { pipe } from '../../utils/flow'
+import { DoObject, DoObjectKey } from '../../types/DoObject'
 
-export const Monad = create<AsyncOptionHkt> (Applicative, {
+export const Monad = create<AsyncOptionHkt>(Applicative, {
   flat: self => () =>
-    toPromise (self).then (ma =>
-      option.isNone (ma) ? ma : pipe (ma, option.value, toPromise),
+    toPromise(self).then(ma =>
+      option.isNone(ma) ? ma : pipe(ma, option.value, toPromise),
     ),
 })
 
@@ -72,10 +72,10 @@ export const parallel: {
     fb: AsyncOption<Out>,
   ): <In>(fa: AsyncOption<In>) => AsyncOption<DoObject<N, In, Out>>
 } = fb => fa => () =>
-  Promise.all ([toPromise (fa), toPromise (fb)]).then (([ma, mb]) =>
-    pipe (
+  Promise.all([toPromise(fa), toPromise(fb)]).then(([ma, mb]) =>
+    pipe(
       mb,
-      option.flatMap (() => ma as any),
+      option.flatMap(() => ma as any),
     ),
   )
 
@@ -85,6 +85,6 @@ export const parallelTo: {
     fb: AsyncOption<Out>,
   ): (fa: AsyncOption<In>) => AsyncOption<DoObject<N, In, Out>>
 } = (name, fb) => fa => () =>
-  Promise.all ([toPromise (fa), toPromise (fb)]).then (([ma, mb]) =>
-    option.apS (name, mb) (ma),
+  Promise.all([toPromise(fa), toPromise(fb)]).then(([ma, mb]) =>
+    option.apS(name, mb)(ma),
   )

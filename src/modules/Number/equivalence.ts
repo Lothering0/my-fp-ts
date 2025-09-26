@@ -1,4 +1,4 @@
-import * as equivalence from "../../typeclasses/Equivalence"
+import * as equivalence from '../../typeclasses/Equivalence'
 
 export const Equivalence: equivalence.Equivalence<number> =
   equivalence.EquivalenceStrict

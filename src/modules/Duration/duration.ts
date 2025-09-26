@@ -1,15 +1,15 @@
-import * as record from "../ReadonlyRecord"
+import * as record from '../ReadonlyRecord'
 
 export const durationUnitsFull = [
-  "milliseconds",
-  "seconds",
-  "minutes",
-  "hours",
-  "days",
-  "months",
-  "years",
+  'milliseconds',
+  'seconds',
+  'minutes',
+  'hours',
+  'days',
+  'months',
+  'years',
 ] as const
-export const durationUnitsShort = ["ms", "s", "m", "h", "d", "mn", "y"] as const
+export const durationUnitsShort = ['ms', 's', 'm', 'h', 'd', 'mn', 'y'] as const
 export const durationUnits = [
   ...durationUnitsFull,
   ...durationUnitsShort,

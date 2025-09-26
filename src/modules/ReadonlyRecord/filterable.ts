@@ -1,14 +1,14 @@
-import * as filterable from "../../typeclasses/Filterable"
-import * as filterableWithIndex from "../../typeclasses/FilterableWithIndex"
-import { Option } from "../Option"
-import { PredicateWithIndex } from "../Predicate"
-import { Result } from "../Result"
-import { Compactable } from "./compactable"
-import { Functor, FunctorWithIndex } from "./functor"
-import { ReadonlyRecord, ReadonlyRecordHkt } from "./readonly-record"
-import { RefinementWithIndex } from "../Refinement"
+import * as filterable from '../../typeclasses/Filterable'
+import * as filterableWithIndex from '../../typeclasses/FilterableWithIndex'
+import { Option } from '../Option'
+import { PredicateWithIndex } from '../Predicate'
+import { Result } from '../Result'
+import { Compactable } from './compactable'
+import { Functor, FunctorWithIndex } from './functor'
+import { ReadonlyRecord, ReadonlyRecordHkt } from './readonly-record'
+import { RefinementWithIndex } from '../Refinement'
 
-export const Filterable = filterable.create<ReadonlyRecordHkt> (
+export const Filterable = filterable.create<ReadonlyRecordHkt>(
   Functor,
   Compactable,
 )
@@ -16,7 +16,7 @@ export const Filterable = filterable.create<ReadonlyRecordHkt> (
 export const FilterableWithIndex = filterableWithIndex.create<
   ReadonlyRecordHkt,
   string
-> (FunctorWithIndex, Filterable)
+>(FunctorWithIndex, Filterable)
 
 export const filterMap: {
   <A, B, K extends string>(

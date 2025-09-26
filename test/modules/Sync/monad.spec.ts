@@ -1,50 +1,50 @@
-import { flow, pipe, sync } from "../../../src"
+import { flow, pipe, sync } from '../../../src'
 
-describe ("monad", () => {
-  describe ("flatMap", () => {
-    it ("should satisfy left identity law", () => {
+describe('monad', () => {
+  describe('flatMap', () => {
+    it('should satisfy left identity law', () => {
       const a = 1
-      const fa: sync.Sync<typeof a> = jest.fn (sync.of (a))
-      const afb = (x: number) => sync.of (x + 1)
+      const fa: sync.Sync<typeof a> = jest.fn(sync.of(a))
+      const afb = (x: number) => sync.of(x + 1)
 
-      const result1 = pipe (fa, sync.flatMap (afb), sync.execute)
-      const result2 = pipe (a, afb, sync.execute)
+      const result1 = pipe(fa, sync.flatMap(afb), sync.execute)
+      const result2 = pipe(a, afb, sync.execute)
 
-      expect (result1).toEqual (result2)
-      expect (fa).toHaveBeenCalledTimes (1)
+      expect(result1).toEqual(result2)
+      expect(fa).toHaveBeenCalledTimes(1)
     })
 
-    it ("should satisfy right identity law", () => {
+    it('should satisfy right identity law', () => {
       const a = 1
-      const fa: sync.Sync<typeof a> = jest.fn (sync.of (a))
+      const fa: sync.Sync<typeof a> = jest.fn(sync.of(a))
 
-      const result1 = pipe (fa, sync.flatMap (sync.of), sync.execute)
-      const result2 = pipe (fa, sync.execute)
+      const result1 = pipe(fa, sync.flatMap(sync.of), sync.execute)
+      const result2 = pipe(fa, sync.execute)
 
-      expect (result1).toEqual (result2)
-      expect (fa).toHaveBeenCalledTimes (2)
+      expect(result1).toEqual(result2)
+      expect(fa).toHaveBeenCalledTimes(2)
     })
 
-    it ("should satisfy associativity law", () => {
+    it('should satisfy associativity law', () => {
       const a = 1
-      const fa: sync.Sync<typeof a> = jest.fn (sync.of (a))
-      const afb = (x: number) => sync.of (x + 1)
-      const bfc = (x: number) => sync.of (x / 2)
+      const fa: sync.Sync<typeof a> = jest.fn(sync.of(a))
+      const afb = (x: number) => sync.of(x + 1)
+      const bfc = (x: number) => sync.of(x / 2)
 
-      const result1 = pipe (
+      const result1 = pipe(
         fa,
-        sync.flatMap (afb),
-        sync.flatMap (bfc),
+        sync.flatMap(afb),
+        sync.flatMap(bfc),
         sync.execute,
       )
-      const result2 = pipe (
+      const result2 = pipe(
         fa,
-        sync.flatMap (flow (afb, sync.flatMap (bfc))),
+        sync.flatMap(flow(afb, sync.flatMap(bfc))),
         sync.execute,
       )
 
-      expect (result1).toEqual (result2)
-      expect (fa).toHaveBeenCalledTimes (2)
+      expect(result1).toEqual(result2)
+      expect(fa).toHaveBeenCalledTimes(2)
     })
   })
 })

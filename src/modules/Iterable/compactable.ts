@@ -1,15 +1,15 @@
-import * as option from "../Option"
-import * as result from "../Result"
-import { create } from "../../typeclasses/Compactable"
-import { IterableHkt } from "./iterable"
-import { Functor } from "./functor"
+import * as option from '../Option'
+import * as result from '../Result'
+import { create } from '../../typeclasses/Compactable'
+import { IterableHkt } from './iterable'
+import { Functor } from './functor'
 
-export const Compactable = create<IterableHkt> (Functor, {
+export const Compactable = create<IterableHkt>(Functor, {
   compact: self => ({
     *[Symbol.iterator]() {
       for (const a of self) {
-        if (option.isSome (a)) {
-          yield option.value (a)
+        if (option.isSome(a)) {
+          yield option.value(a)
         }
       }
     },

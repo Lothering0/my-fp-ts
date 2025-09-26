@@ -1,5 +1,5 @@
-import { Group } from "../../typeclasses/Group"
-import { MonoidProduct, MonoidSum } from "./monoid"
+import { Group } from '../../typeclasses/Group'
+import { MonoidProduct, MonoidSum } from './monoid'
 
 export const GroupSum: Group<number> = {
   ...MonoidSum,

@@ -1,8 +1,8 @@
-import * as functor from "../../typeclasses/Functor"
-import { Identity, IdentityHkt } from "./identity"
+import * as functor from '../../typeclasses/Functor'
+import { Identity, IdentityHkt } from './identity'
 
 export const Functor: functor.Functor<IdentityHkt> = {
-  map: ab => self => ab (self),
+  map: ab => self => ab(self),
 }
 
 export const map: {

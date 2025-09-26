@@ -1,5 +1,5 @@
-import { Foldable } from "./Foldable"
-import { Hkt, Kind } from "./Hkt"
+import { Foldable } from './Foldable'
+import { Hkt, Kind } from './Hkt'
 
 export interface FoldableWithIndex<F extends Hkt, Index> extends Foldable<F> {
   readonly reduceWithIndex: <In, Out>(

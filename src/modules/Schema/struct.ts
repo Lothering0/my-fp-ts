@@ -1,14 +1,14 @@
-import * as result from "../Result"
-import * as string from "../String"
-import * as array from "../ReadonlyArray"
-import * as record from "../ReadonlyRecord"
-import { create, Schema, SchemaOptional, Type } from "./schema"
-import { pipe } from "../../utils/flow"
-import { hole } from "../../utils/hole"
-import { isRecord, isUndefined } from "../../utils/typeChecks"
-import { message } from "./process"
-import { optional } from "./utils"
-import { Prettify } from "../../types/utils"
+import * as result from '../Result'
+import * as string from '../String'
+import * as array from '../ReadonlyArray'
+import * as record from '../ReadonlyRecord'
+import { create, Schema, SchemaOptional, Type } from './schema'
+import { pipe } from '../../utils/flow'
+import { hole } from '../../utils/hole'
+import { isRecord, isUndefined } from '../../utils/typeChecks'
+import { message } from './process'
+import { optional } from './utils'
+import { Prettify } from '../../types/utils'
 
 export interface StructSchema<
   Out extends record.ReadonlyRecord<string, Schema<unknown>>,
@@ -33,41 +33,41 @@ export const Struct = <
 >(
   schemasByKey: A,
 ): StructSchema<A> => ({
-  In: hole (),
-  Type: hole (),
+  In: hole(),
+  Type: hole(),
   isOptional: false,
   schemasByKey,
   proceed: x => {
-    if (!isRecord (x)) {
-      return result.fail ([message`value ${x} is not a struct`])
+    if (!isRecord(x)) {
+      return result.fail([message`value ${x} is not a struct`])
     }
 
-    const DifferenceMagma = array.getDifferenceMagma (string.Equivalence)
-    const excessiveKeys = pipe (
+    const DifferenceMagma = array.getDifferenceMagma(string.Equivalence)
+    const excessiveKeys = pipe(
       x,
       record.keys,
-      DifferenceMagma.combine (pipe (schemasByKey, record.keys)),
+      DifferenceMagma.combine(pipe(schemasByKey, record.keys)),
     )
 
-    if (array.isNonEmpty (excessiveKeys)) {
-      return pipe (
+    if (array.isNonEmpty(excessiveKeys)) {
+      return pipe(
         excessiveKeys,
-        array.map (key => message`property ${key} should not exist`),
+        array.map(key => message`property ${key} should not exist`),
         result.fail,
       )
     }
 
-    const missingKeys = pipe (
+    const missingKeys = pipe(
       schemasByKey,
       record.keys,
-      array.filter (k => !schemasByKey[k]?.isOptional),
-      DifferenceMagma.combine (pipe (x, record.keys)),
+      array.filter(k => !schemasByKey[k]?.isOptional),
+      DifferenceMagma.combine(pipe(x, record.keys)),
     )
 
-    if (array.isNonEmpty (missingKeys)) {
-      return pipe (
+    if (array.isNonEmpty(missingKeys)) {
+      return pipe(
         missingKeys,
-        array.map (key => message`property ${key} is required`),
+        array.map(key => message`property ${key} is required`),
         result.fail,
       )
     }
@@ -76,26 +76,26 @@ export const Struct = <
     let messages: string[] = []
 
     for (const k in x) {
-      const processResult = schemasByKey[k]!.proceed (x[k])
+      const processResult = schemasByKey[k]!.proceed(x[k])
 
-      if (result.isFailure (processResult)) {
-        const msgs = pipe (
+      if (result.isFailure(processResult)) {
+        const msgs = pipe(
           processResult,
           result.failureOf,
-          array.map (msg => `${message`on property ${k}`}: ${msg}`),
+          array.map(msg => `${message`on property ${k}`}: ${msg}`),
         )
         messages = [...messages, ...msgs]
         continue
       }
 
-      out[k] = result.successOf (processResult)
+      out[k] = result.successOf(processResult)
     }
 
-    if (array.isNonEmpty (messages)) {
-      return result.fail (messages)
+    if (array.isNonEmpty(messages)) {
+      return result.fail(messages)
     }
 
-    return result.succeed (out as Type<StructSchema<A>>)
+    return result.succeed(out as Type<StructSchema<A>>)
   },
 })
 
@@ -104,15 +104,15 @@ export const keyof: {
     self: StructSchema<A>,
   ): Schema<keyof A>
 } = self => {
-  const keys = Object.keys (self.schemasByKey)
+  const keys = Object.keys(self.schemasByKey)
 
-  return create ((x: string) => {
-    if (keys.includes (x)) {
-      return result.succeed (x)
+  return create((x: string) => {
+    if (keys.includes(x)) {
+      return result.succeed(x)
     }
 
-    return result.fail ([
-      `${message`got ${x}, expected one of the following values`}: ${keys.map (key => `"${key}"`).join (", ")}`,
+    return result.fail([
+      `${message`got ${x}, expected one of the following values`}: ${keys.map(key => `"${key}"`).join(', ')}`,
     ])
   })
 }
@@ -127,7 +127,7 @@ export const omit: {
 } =
   (...keys) =>
   self =>
-    pipe (self.schemasByKey, record.omit (...keys), Struct)
+    pipe(self.schemasByKey, record.omit(...keys), Struct)
 
 export const pick: {
   <
@@ -139,34 +139,34 @@ export const pick: {
 } =
   (...keys) =>
   self =>
-    pipe (self.schemasByKey, record.pick (...keys), Struct)
+    pipe(self.schemasByKey, record.pick(...keys), Struct)
 
 export const partial: {
   <A extends record.ReadonlyRecord<string, Schema<unknown>>>(
     self: StructSchema<A>,
   ): StructSchema<{ [K in keyof A]: SchemaOptional<Type<A[K]>> }>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-} = self => pipe (self.schemasByKey, record.map (optional), Struct) as any
+} = self => pipe(self.schemasByKey, record.map(optional), Struct) as any
 
 export const required: {
   <A extends record.ReadonlyRecord<string, Schema<unknown>>>(
     self: StructSchema<A>,
   ): StructSchema<{ [K in keyof A]: Schema<Type<A[K]>> }>
 } = self =>
-  pipe (
+  pipe(
     self.schemasByKey,
-    record.map (
+    record.map(
       (schema): Schema<unknown> => ({
-        In: hole (),
-        Type: hole (),
+        In: hole(),
+        Type: hole(),
         isOptional: false,
         schemasByKey: schema.schemasByKey,
         proceed: x => {
-          if (isUndefined (x)) {
-            return result.fail ([message`value is undefined`])
+          if (isUndefined(x)) {
+            return result.fail([message`value is undefined`])
           }
 
-          return result.succeed (x)
+          return result.succeed(x)
         },
       }),
     ),
@@ -181,7 +181,7 @@ export const intersection: {
     self: StructSchema<B>,
   ) => StructSchema<A & B>
 } = that => self =>
-  Struct ({
+  Struct({
     ...self.schemasByKey,
     ...that.schemasByKey,
   })

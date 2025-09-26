@@ -1,4 +1,4 @@
-import { Hkt, Kind } from "./Hkt"
+import { Hkt, Kind } from './Hkt'
 
 export interface NaturalTransformation<F extends Hkt, G extends Hkt> {
   <In, Collectable, Fixed>(

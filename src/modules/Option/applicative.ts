@@ -1,23 +1,23 @@
-import { create } from "../../typeclasses/Applicative"
-import { OptionHkt, Option, some } from "./option"
-import { pipe } from "../../utils/flow"
-import { Functor } from "./functor"
-import { match } from "./matchers"
-import { zero } from "./alternative"
+import { create } from '../../typeclasses/Applicative'
+import { OptionHkt, Option, some } from './option'
+import { pipe } from '../../utils/flow'
+import { Functor } from './functor'
+import { match } from './matchers'
+import { zero } from './alternative'
 
-export const Applicative = create<OptionHkt> (Functor, {
+export const Applicative = create<OptionHkt>(Functor, {
   of: some,
   ap: fa => self =>
-    pipe (
+    pipe(
       fa,
-      match ({
+      match({
         onNone: zero,
         onSome: a =>
-          pipe (
+          pipe(
             self,
-            match ({
+            match({
               onNone: zero,
-              onSome: ab => pipe (a, ab, some),
+              onSome: ab => pipe(a, ab, some),
             }),
           ),
       }),

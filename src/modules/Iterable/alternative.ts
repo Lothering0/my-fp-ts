@@ -1,6 +1,6 @@
-import * as alternative from "../../typeclasses/Alternative"
-import { Alt } from "./alt"
-import { IterableHkt } from "./iterable"
+import * as alternative from '../../typeclasses/Alternative'
+import { Alt } from './alt'
+import { IterableHkt } from './iterable'
 
 export const zero: {
   <Out>(): Iterable<Out>

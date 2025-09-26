@@ -1,10 +1,10 @@
-import * as array from "../ReadonlyArray"
-import * as applicative from "../../typeclasses/Applicative"
-import * as applicativeWithIndex from "../../typeclasses/ApplicativeWithIndex"
+import * as array from '../ReadonlyArray'
+import * as applicative from '../../typeclasses/Applicative'
+import * as applicativeWithIndex from '../../typeclasses/ApplicativeWithIndex'
 import {
   NonEmptyReadonlyArray,
   NonEmptyReadonlyArrayHkt,
-} from "./non-empty-readonly-array"
+} from './non-empty-readonly-array'
 
 export const Applicative = {
   ...array.Applicative,

@@ -1,11 +1,11 @@
-import { Option, some, none } from "../modules/Option"
-import { Result, fail, succeed } from "../modules/Result"
-import { Hkt, Kind } from "./Hkt"
-import { FunctorWithIndex } from "./FunctorWithIndex"
-import { Filterable } from "./Filterable"
-import { flow } from "../utils/flow"
-import { RefinementWithIndex } from "../modules/Refinement"
-import { PredicateWithIndex } from "../modules/Predicate"
+import { Option, some, none } from '../modules/Option'
+import { Result, fail, succeed } from '../modules/Result'
+import { Hkt, Kind } from './Hkt'
+import { FunctorWithIndex } from './FunctorWithIndex'
+import { Filterable } from './Filterable'
+import { flow } from '../utils/flow'
+import { RefinementWithIndex } from '../modules/Refinement'
+import { PredicateWithIndex } from '../modules/Predicate'
 
 export interface FilterableWithIndex<F extends Hkt, Index>
   extends FunctorWithIndex<F, Index>,
@@ -60,24 +60,24 @@ export const create = <F extends Hkt, Index>(
   const filterMapWithIndex: FilterableWithIndex<
     F,
     Index
-  >["filterMapWithIndex"] = p => flow (mapWithIndex (p), compact)
+  >['filterMapWithIndex'] = p => flow(mapWithIndex(p), compact)
 
-  const filterWithIndex: FilterableWithIndex<F, Index>["filterWithIndex"] = <
+  const filterWithIndex: FilterableWithIndex<F, Index>['filterWithIndex'] = <
     In,
   >(
     p: PredicateWithIndex<In, Index>,
-  ) => filterMapWithIndex<In, In> ((a, i) => p (a, i) ? some (a) : none)
+  ) => filterMapWithIndex<In, In>((a, i) => (p(a, i) ? some(a) : none))
 
   const partitionMapWithIndex: FilterableWithIndex<
     F,
     Index
-  >["partitionMapWithIndex"] = p => flow (mapWithIndex (p), separate)
+  >['partitionMapWithIndex'] = p => flow(mapWithIndex(p), separate)
 
   const partitionWithIndex: FilterableWithIndex<
     F,
     Index
-  >["partitionWithIndex"] = p =>
-    partitionMapWithIndex ((a, i) => p (a, i) ? succeed (a) : fail (a))
+  >['partitionWithIndex'] = p =>
+    partitionMapWithIndex((a, i) => (p(a, i) ? succeed(a) : fail(a)))
 
   return {
     ...FunctorWithIndex,

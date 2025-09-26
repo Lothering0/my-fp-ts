@@ -1,6 +1,6 @@
-import { Sync } from "../modules/Sync"
-import { Hkt, Kind } from "./Hkt"
-import { Tappable } from "./Tappable"
+import { Sync } from '../modules/Sync'
+import { Hkt, Kind } from './Hkt'
+import { Tappable } from './Tappable'
 
 export interface TappableBoth<F extends Hkt> extends Tappable<F> {
   readonly tapLeft: <Collectable1, Collectable2, Fixed>(

@@ -1,14 +1,14 @@
-import * as result from "../Result"
-import { create } from "../../typeclasses/Monad"
-import { DoObject, DoObjectKey } from "../../types/DoObject"
-import { SyncResultHkt, execute, SyncResult } from "./sync-result"
-import { Applicative } from "./applicative"
-import { pipe } from "../../utils/flow"
+import * as result from '../Result'
+import { create } from '../../typeclasses/Monad'
+import { DoObject, DoObjectKey } from '../../types/DoObject'
+import { SyncResultHkt, execute, SyncResult } from './sync-result'
+import { Applicative } from './applicative'
+import { pipe } from '../../utils/flow'
 
-export const Monad = create<SyncResultHkt> (Applicative, {
+export const Monad = create<SyncResultHkt>(Applicative, {
   flat: self => () =>
-    pipe (self, execute, ma =>
-      result.isFailure (ma) ? ma : pipe (ma, result.successOf, execute),
+    pipe(self, execute, ma =>
+      result.isFailure(ma) ? ma : pipe(ma, result.successOf, execute),
     ),
 })
 

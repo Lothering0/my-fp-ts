@@ -1,20 +1,20 @@
-import { pipe, record } from "../../../src"
+import { pipe, record } from '../../../src'
 
-describe ("getDifferenceMagma", () => {
-  const Magma = record.getDifferenceMagma ()
+describe('getDifferenceMagma', () => {
+  const Magma = record.getDifferenceMagma()
 
-  it ("should return record containing all keys with its values which not included in first or second record", () => {
-    pipe ({}, Magma.combine ({ b: 2, c: 3 }), expect).toEqual ({ b: 2, c: 3 })
-    pipe ({ a: 1 }, Magma.combine ({}), expect).toEqual ({ a: 1 })
-    pipe ({ a: 1, b: 2, c: 3 }, Magma.combine ({ b: 2, c: 3 }), expect).toEqual ({
+  it('should return record containing all keys with its values which not included in first or second record', () => {
+    pipe({}, Magma.combine({ b: 2, c: 3 }), expect).toEqual({ b: 2, c: 3 })
+    pipe({ a: 1 }, Magma.combine({}), expect).toEqual({ a: 1 })
+    pipe({ a: 1, b: 2, c: 3 }, Magma.combine({ b: 2, c: 3 }), expect).toEqual({
       a: 1,
     })
-    pipe (
+    pipe(
       { a: 1, b: 2, c: 3 },
-      Magma.combine ({ a: 1, b: 2, c: 3 }),
+      Magma.combine({ a: 1, b: 2, c: 3 }),
       expect,
-    ).toEqual ({})
-    pipe ({ a: 1, b: 2, c: 3 }, Magma.combine ({ a: 1, b: 2 }), expect).toEqual ({
+    ).toEqual({})
+    pipe({ a: 1, b: 2, c: 3 }, Magma.combine({ a: 1, b: 2 }), expect).toEqual({
       c: 3,
     })
   })

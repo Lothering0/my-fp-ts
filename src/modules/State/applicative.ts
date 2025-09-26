@@ -1,12 +1,12 @@
-import { flow, pipe } from "../../utils/flow"
-import { create } from "../../typeclasses/Applicative"
-import { Functor } from "./functor"
-import { State, StateHkt } from "./state"
+import { flow, pipe } from '../../utils/flow'
+import { create } from '../../typeclasses/Applicative'
+import { Functor } from './functor'
+import { State, StateHkt } from './state'
 
-export const Applicative = create<StateHkt> (Functor, {
+export const Applicative = create<StateHkt>(Functor, {
   of: a => s => [a, s],
   ap: fab => self =>
-    flow (fab, ([a1, s1]) => pipe (s1, self, ([a2, s2]) => [a2 (a1), s2])),
+    flow(fab, ([a1, s1]) => pipe(s1, self, ([a2, s2]) => [a2(a1), s2])),
 })
 
 export const of: {

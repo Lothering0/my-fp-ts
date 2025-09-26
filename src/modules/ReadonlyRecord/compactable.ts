@@ -1,21 +1,21 @@
-import * as option from "../Option"
-import * as result from "../Result"
-import * as array from "../ReadonlyArray"
-import { create } from "../../typeclasses/Compactable"
-import { flow, pipe } from "../../utils/flow"
-import { ReadonlyRecord, ReadonlyRecordHkt } from "./readonly-record"
-import { fromEntries, toEntries } from "./utils"
-import { Functor } from "./functor"
+import * as option from '../Option'
+import * as result from '../Result'
+import * as array from '../ReadonlyArray'
+import { create } from '../../typeclasses/Compactable'
+import { flow, pipe } from '../../utils/flow'
+import { ReadonlyRecord, ReadonlyRecordHkt } from './readonly-record'
+import { fromEntries, toEntries } from './utils'
+import { Functor } from './functor'
 
-export const Compactable = create<ReadonlyRecordHkt> (Functor, {
-  compact: flow (
+export const Compactable = create<ReadonlyRecordHkt>(Functor, {
+  compact: flow(
     toEntries,
-    array.filterMap (([k, ma]) =>
-      pipe (
+    array.filterMap(([k, ma]) =>
+      pipe(
         ma,
-        option.match ({
+        option.match({
           onNone: option.zero,
-          onSome: a => option.some ([k, a] as const),
+          onSome: a => option.some([k, a] as const),
         }),
       ),
     ),

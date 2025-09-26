@@ -1,5 +1,5 @@
-import { Functor } from "./Functor"
-import { Hkt, Kind } from "./Hkt"
+import { Functor } from './Functor'
+import { Hkt, Kind } from './Hkt'
 
 export interface Profunctor<F extends Hkt> extends Functor<F> {
   readonly promap: <Collectable1, Collectable2, In, Out, Fixed>(

@@ -1,7 +1,7 @@
-import { Hkt } from "../../typeclasses/Hkt"
+import { Hkt } from '../../typeclasses/Hkt'
 
 export interface SyncHkt extends Hkt {
-  readonly Type: Sync<this["In"]>
+  readonly Type: Sync<this['In']>
 }
 
 export interface Sync<A> {
@@ -14,4 +14,4 @@ export const sync: {
 
 export const execute: {
   <A>(self: Sync<A>): A
-} = self => self ()
+} = self => self()

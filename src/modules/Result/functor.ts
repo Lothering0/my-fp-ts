@@ -1,13 +1,13 @@
-import * as functor from "../../typeclasses/Functor"
-import { Result, ResultHkt, fail, succeed } from "./result"
-import { match } from "./matchers"
-import { flow } from "../../utils/flow"
+import * as functor from '../../typeclasses/Functor'
+import { Result, ResultHkt, fail, succeed } from './result'
+import { match } from './matchers'
+import { flow } from '../../utils/flow'
 
 export const Functor: functor.Functor<ResultHkt> = {
   map: ab =>
-    match ({
+    match({
       onFailure: fail,
-      onSuccess: flow (ab, succeed),
+      onSuccess: flow(ab, succeed),
     }),
 }
 

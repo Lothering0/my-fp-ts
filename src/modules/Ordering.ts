@@ -1,9 +1,9 @@
-import * as equivalence from "../typeclasses/Equivalence"
-import * as semigroup from "../typeclasses/Semigroup"
-import * as monoid from "../typeclasses/Monoid"
-import * as matching from "../modules/Matching"
-import { constant } from "../utils/constant"
-import { flow } from "../utils/flow"
+import * as equivalence from '../typeclasses/Equivalence'
+import * as semigroup from '../typeclasses/Semigroup'
+import * as monoid from '../typeclasses/Monoid'
+import * as matching from '../modules/Matching'
+import { constant } from '../utils/constant'
+import { flow } from '../utils/flow'
 
 export type Ordering = -1 | 0 | 1
 
@@ -18,28 +18,28 @@ export const match: {
     matchers: OrderingMatchers<A, B, C>,
   ): (self: Ordering) => A | B | C
 } = matchers =>
-  flow (
+  flow(
     matching.match,
-    matching.when (-1, matchers.onLessThan),
-    matching.when (1, matchers.onMoreThan),
-    matching.getOrElse (() => matchers.onEqual (0)),
+    matching.when(-1, matchers.onLessThan),
+    matching.when(1, matchers.onMoreThan),
+    matching.getOrElse(() => matchers.onEqual(0)),
   )
 
 export const reverse: {
   (self: Ordering): Ordering
-} = match ({
-  onLessThan: constant (1),
-  onEqual: constant (0),
-  onMoreThan: constant (-1),
+} = match({
+  onLessThan: constant(1),
+  onEqual: constant(0),
+  onMoreThan: constant(-1),
 })
 
 export const fromNumber: {
   (n: number): Ordering
-} = flow (
+} = flow(
   matching.match,
-  matching.on (n => n <= -1, constant<Ordering> (-1)),
-  matching.on (n => n >= 1, constant<Ordering> (1)),
-  matching.getOrElse (constant<Ordering> (0)),
+  matching.on(n => n <= -1, constant<Ordering>(-1)),
+  matching.on(n => n >= 1, constant<Ordering>(1)),
+  matching.getOrElse(constant<Ordering>(0)),
 )
 
 export const Equivalence: equivalence.Equivalence<Ordering> =
@@ -48,7 +48,7 @@ export const Equivalence: equivalence.Equivalence<Ordering> =
 export const { equals } = Equivalence
 
 export const Semigroup: semigroup.Semigroup<Ordering> = {
-  combine: y => x => y === 0 ? x : y,
+  combine: y => x => (y === 0 ? x : y),
 }
 
 export const Monoid: monoid.Monoid<Ordering> = {

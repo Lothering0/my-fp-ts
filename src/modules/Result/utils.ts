@@ -1,6 +1,6 @@
-import { identity } from "../Identity"
-import { match } from "./matchers"
-import { Result, fail, Failure, succeed, Success } from "./result"
+import { identity } from '../Identity'
+import { match } from './matchers'
+import { Result, fail, Failure, succeed, Success } from './result'
 
 export const failureOf: {
   <E>(self: Failure<E>): E
@@ -12,14 +12,14 @@ export const successOf: {
 
 export const toUnion: {
   <A, E>(self: Result<A, E>): A | E
-} = match ({
+} = match({
   onFailure: identity,
   onSuccess: identity,
 })
 
 export const swap: {
   <E, A>(self: Result<E, A>): Result<A, E>
-} = match ({
+} = match({
   onFailure: succeed,
   onSuccess: fail,
 })

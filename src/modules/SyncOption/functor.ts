@@ -1,10 +1,10 @@
-import * as option from "../Option"
-import * as functor from "../../typeclasses/Functor"
-import { SyncOptionHkt, execute, SyncOption } from "./sync-option"
-import { pipe } from "../../utils/flow"
+import * as option from '../Option'
+import * as functor from '../../typeclasses/Functor'
+import { SyncOptionHkt, execute, SyncOption } from './sync-option'
+import { pipe } from '../../utils/flow'
 
 export const Functor: functor.Functor<SyncOptionHkt> = {
-  map: ab => self => () => pipe (self, execute, option.map (ab)),
+  map: ab => self => () => pipe(self, execute, option.map(ab)),
 }
 
 export const map: {

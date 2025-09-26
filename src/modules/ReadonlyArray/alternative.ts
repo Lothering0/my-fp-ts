@@ -1,6 +1,6 @@
-import * as alternative from "../../typeclasses/Alternative"
-import { Alt } from "./alt"
-import { ReadonlyArrayHkt } from "./readonly-array"
+import * as alternative from '../../typeclasses/Alternative'
+import { Alt } from './alt'
+import { ReadonlyArrayHkt } from './readonly-array'
 
 export const zero: {
   <Out>(): ReadonlyArray<Out>

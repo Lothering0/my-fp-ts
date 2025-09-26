@@ -1,4 +1,4 @@
-import * as magma from "./Magma"
+import * as magma from './Magma'
 
 /** Has associative operation */
 export interface Semigroup<Fixed> extends magma.Magma<Fixed> {}

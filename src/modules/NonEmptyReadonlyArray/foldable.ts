@@ -1,10 +1,10 @@
-import * as array from "../ReadonlyArray"
-import * as foldable from "../../typeclasses/Foldable"
-import * as foldableWithIndex from "../../typeclasses/FoldableWithIndex"
+import * as array from '../ReadonlyArray'
+import * as foldable from '../../typeclasses/Foldable'
+import * as foldableWithIndex from '../../typeclasses/FoldableWithIndex'
 import {
   NonEmptyReadonlyArray,
   NonEmptyReadonlyArrayHkt,
-} from "./non-empty-readonly-array"
+} from './non-empty-readonly-array'
 
 export const Foldable = {
   ...array.Foldable,

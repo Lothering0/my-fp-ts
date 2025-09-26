@@ -1,13 +1,13 @@
-import * as option from "./option"
-import { create } from "../../typeclasses/Monad"
-import { DoObject, DoObjectKey } from "../../types/DoObject"
-import { Applicative } from "./applicative"
-import { identity } from "../Identity"
-import { match } from "./matchers"
-import { zero } from "./alternative"
+import * as option from './option'
+import { create } from '../../typeclasses/Monad'
+import { DoObject, DoObjectKey } from '../../types/DoObject'
+import { Applicative } from './applicative'
+import { identity } from '../Identity'
+import { match } from './matchers'
+import { zero } from './alternative'
 
-export const Monad = create<option.OptionHkt> (Applicative, {
-  flat: match ({
+export const Monad = create<option.OptionHkt>(Applicative, {
+  flat: match({
     onNone: zero,
     onSome: identity,
   }),

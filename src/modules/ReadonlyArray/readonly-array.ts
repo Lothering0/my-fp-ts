@@ -1,5 +1,5 @@
-import { Hkt } from "../../typeclasses/Hkt"
+import { Hkt } from '../../typeclasses/Hkt'
 
 export interface ReadonlyArrayHkt extends Hkt {
-  readonly Type: ReadonlyArray<this["In"]>
+  readonly Type: ReadonlyArray<this['In']>
 }

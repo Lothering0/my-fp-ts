@@ -22,7 +22,6 @@
   "license": "ISC",
   "devDependencies": {
     "@jest/globals": "^30.0.4",
-    "@stylistic/eslint-plugin": "^4.2.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^20.11.0",
     "esbuild": "^0.25.1",
