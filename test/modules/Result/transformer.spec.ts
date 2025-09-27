@@ -1,60 +1,75 @@
-import { number, array, result } from '../../../src'
+import { number, array, result, pipe, string, equivalence } from '../../../src'
 
 describe('transformer', () => {
+  const arrayResult = result.transform(array.Monad)
+
   it('should correctly transform `ReadonlyArray` monad', () => {
-    const arrayResult = result.transform(array.Monad)
+    const EquivalenceNumber = array.getEquivalence(
+      result.getEquivalence(string.Equivalence, number.Equivalence),
+    )
+    const EquivalenceString = array.getEquivalence(
+      result.getEquivalence(string.Equivalence, string.Equivalence),
+    )
 
-    expect(arrayResult.succeed(1)).toEqual<
-      ReadonlyArray<result.Result<string, number>>
-    >([
-      {
-        _id: 'Result',
-        _tag: 'Success',
-        success: 1,
-      },
-    ])
+    pipe(
+      1,
+      arrayResult.succeed,
+      EquivalenceNumber.equals([result.succeed(1)]),
+      expect,
+    ).toBe(true)
 
-    expect(arrayResult.fail('a')).toEqual<
-      ReadonlyArray<result.Result<string, number>>
-    >([
-      {
-        _id: 'Result',
-        _tag: 'Failure',
-        failure: 'a',
-      },
-    ])
+    pipe(
+      'a',
+      arrayResult.fail,
+      EquivalenceNumber.equals([result.fail('a')]),
+      expect,
+    ).toBe(true)
 
-    expect(arrayResult.map(number.show)(arrayResult.of(1))).toEqual<
-      ReadonlyArray<result.Result<never, string>>
-    >([{ _id: 'Result', _tag: 'Success', success: '1' }])
+    pipe(
+      1,
+      arrayResult.of,
+      arrayResult.map(number.show),
+      EquivalenceString.equals([result.succeed('1')]),
+      expect,
+    ).toBe(true)
   })
 
   it('should correctly compose multiple monads', () => {
-    const arrayResult = result.transform(array.Monad)
     const arrayResultResult = result.transform(arrayResult.Monad)
+    const EquivalenceNumber = pipe(
+      result.getEquivalence(
+        equivalence.EquivalenceStrict,
+        result.getEquivalence(
+          equivalence.EquivalenceStrict,
+          number.Equivalence,
+        ),
+      ),
+      array.getEquivalence,
+    )
+    const EquivalenceString = pipe(
+      result.getEquivalence(
+        equivalence.EquivalenceStrict,
+        result.getEquivalence(
+          equivalence.EquivalenceStrict,
+          string.Equivalence,
+        ),
+      ),
+      array.getEquivalence,
+    )
 
-    expect(arrayResultResult.of(1)).toEqual<
-      ReadonlyArray<result.Result<never, result.Result<never, number>>>
-    >([
-      {
-        _id: 'Result',
-        _tag: 'Success',
-        success: { _id: 'Result', _tag: 'Success', success: 1 },
-      },
-    ])
+    pipe(
+      1,
+      arrayResultResult.of,
+      EquivalenceNumber.equals([pipe(1, result.succeed, result.succeed)]),
+      expect,
+    ).toBe(true)
 
-    expect(arrayResultResult.map(String)(arrayResultResult.of(1))).toEqual<
-      ReadonlyArray<result.Result<never, result.Result<never, string>>>
-    >([
-      {
-        _id: 'Result',
-        _tag: 'Success',
-        success: {
-          _id: 'Result',
-          _tag: 'Success',
-          success: '1',
-        },
-      },
-    ])
+    pipe(
+      1,
+      arrayResultResult.of,
+      arrayResultResult.map(String),
+      EquivalenceString.equals([pipe('1', result.succeed, result.succeed)]),
+      expect,
+    ).toBe(true)
   })
 })

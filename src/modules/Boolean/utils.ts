@@ -6,6 +6,10 @@ export const or: {
   (a: boolean): (self: boolean) => boolean
 } = a => self => a || self
 
+export const xor: {
+  (a: boolean): (self: boolean) => boolean
+} = a => self => (a || self) && !(a && self)
+
 export const and: {
   (a: boolean): (self: boolean) => boolean
 } = a => self => a && self
