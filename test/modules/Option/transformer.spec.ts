@@ -1,52 +1,64 @@
-import { option, array } from '../../../src'
+import { option, array, pipe, number, string } from '../../../src'
 
 describe('transformer', () => {
+  const arrayOfOptions = option.transform(array.Monad)
+
   it('should correctly transform `ReadonlyArray` monad', () => {
-    const arrayOption = option.transform(array.Monad)
+    const EquivalenceNumber = pipe(
+      number.Equivalence,
+      option.getEquivalence,
+      array.getEquivalence,
+    )
+    const EquivalenceString = pipe(
+      string.Equivalence,
+      option.getEquivalence,
+      array.getEquivalence,
+    )
 
-    expect(arrayOption.of(1)).toEqual<ReadonlyArray<option.Option<number>>>([
-      {
-        _id: 'Option',
-        _tag: 'Some',
-        value: 1,
-      },
-    ])
+    pipe(
+      1,
+      arrayOfOptions.of,
+      EquivalenceNumber.equals([option.some(1)]),
+      expect,
+    ).toBe(true)
 
-    expect(arrayOption.map(String)(arrayOption.of(1))).toEqual<
-      ReadonlyArray<option.Option<string>>
-    >([{ _id: 'Option', _tag: 'Some', value: '1' }])
+    pipe(
+      1,
+      arrayOfOptions.of,
+      arrayOfOptions.map(String),
+      EquivalenceString.equals([option.some('1')]),
+      expect,
+    ).toBe(true)
   })
 
   it('should correctly compose multiple monads', () => {
-    const arrayOption = option.transform(array.Monad)
-    const arrayOptionOption = option.transform(arrayOption.Monad)
+    const arrayOfOptionOption = option.transform(arrayOfOptions.Monad)
+    const EquivalenceNumber = pipe(
+      number.Equivalence,
+      option.getEquivalence,
+      option.getEquivalence,
+      array.getEquivalence,
+    )
+    const EquivalenceString = pipe(
+      string.Equivalence,
+      option.getEquivalence,
+      option.getEquivalence,
+      array.getEquivalence,
+    )
 
-    expect(arrayOptionOption.of(1)).toEqual<
-      ReadonlyArray<option.Option<option.Option<number>>>
-    >([
-      {
-        _id: 'Option',
-        _tag: 'Some',
-        value: {
-          _id: 'Option',
-          _tag: 'Some',
-          value: 1,
-        },
-      },
-    ])
+    pipe(
+      1,
+      arrayOfOptionOption.of,
+      EquivalenceNumber.equals([pipe(1, option.some, option.some)]),
+      expect,
+    ).toBe(true)
 
-    expect(arrayOptionOption.map(String)(arrayOptionOption.of(1))).toEqual<
-      ReadonlyArray<option.Option<option.Option<string>>>
-    >([
-      {
-        _id: 'Option',
-        _tag: 'Some',
-        value: {
-          _id: 'Option',
-          _tag: 'Some',
-          value: '1',
-        },
-      },
-    ])
+    pipe(
+      1,
+      arrayOfOptionOption.of,
+      arrayOfOptionOption.map(String),
+      EquivalenceString.equals([pipe('1', option.some, option.some)]),
+      expect,
+    ).toBe(true)
   })
 })

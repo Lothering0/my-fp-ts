@@ -51,10 +51,9 @@ export const succeed: {
 })
 
 export const gen: {
-  <E, A>(f: ResultGenerator<E, A>): Result<E, A>
-} = f => {
-  const iterator = f()
-  const { value, done } = iterator.next()
+  <E, A>(generator: ResultGenerator<E, A>): Result<E, A>
+} = generator => {
+  const { value, done } = generator().next()
   if (!done) {
     return fail(value)
   }
