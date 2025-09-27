@@ -210,11 +210,11 @@ export const includes: {
 } = a => self => self.includes(a)
 
 export const failures: {
-  <E, A>(self: ReadonlyArray<Result.Result<E, A>>): ReadonlyArray<E>
+  <A, E>(self: ReadonlyArray<Result.Result<A, E>>): ReadonlyArray<E>
 } = flatMap(Result.match({ onFailure: of, onSuccess: constEmptyArray }))
 
 export const successes: {
-  <E, A>(self: ReadonlyArray<Result.Result<E, A>>): ReadonlyArray<A>
+  <A, E>(self: ReadonlyArray<Result.Result<A, E>>): ReadonlyArray<A>
 } = flatMap(Result.match({ onFailure: constEmptyArray, onSuccess: of }))
 
 export const concat: {

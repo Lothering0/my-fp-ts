@@ -7,7 +7,7 @@ import { Schema } from './schema'
 import { flow, pipe } from '../../utils/flow'
 import { isString } from '../../utils/typeChecks'
 
-export type ProcessResult<Out> = Result.Result<ReadonlyArray<string>, Out>
+export type ProcessResult<A> = Result.Result<A, ReadonlyArray<string>>
 
 export const message: {
   (parts: TemplateStringsArray, ...values: ReadonlyArray<unknown>): string
@@ -46,9 +46,9 @@ export const validate: {
 } = self => flow(proceed(self), Result.isSuccess)
 
 export const proceedUnknown =
-  <Out>(self: Schema<unknown, Out>) =>
-  (a: unknown): Result.Result<ReadonlyArray<string>, Out> =>
-    pipe(a as Out, proceed(self))
+  <A>(self: Schema<unknown, A>) =>
+  (a: unknown): Result.Result<A, ReadonlyArray<string>> =>
+    pipe(a as A, proceed(self))
 
 export const proceedUnknownOption: {
   <Out>(self: Schema<unknown, Out>): (a: unknown) => Option.Option<Out>

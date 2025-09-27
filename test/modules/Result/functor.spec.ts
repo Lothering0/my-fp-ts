@@ -3,7 +3,7 @@ import { describeFunctorLaws } from '../../_utils/describeFunctorLaws'
 
 describeFunctorLaws(
   Result.Functor,
-  Result.getEquivalence(String.Equivalence, Number.Equivalence),
+  Result.getEquivalence(Number.Equivalence, String.Equivalence),
   [Result.fail('e'), Result.succeed(1)],
 )
 

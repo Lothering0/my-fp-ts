@@ -8,37 +8,33 @@ import { constant } from '../../utils/constant'
 import { pipe } from '../../utils/flow'
 
 export const getOrElse: {
-  <Failure, Out>(
-    onFailure: (failure: Failure) => Out,
-  ): <In>(self: AsyncResult<Failure, In>) => Async.Async<In | Out>
+  <B, E>(
+    onFailure: (failure: E) => B,
+  ): <A>(self: AsyncResult<A, E>) => Async.Async<A | B>
 } = onFailure => match({ onFailure, onSuccess: identity })
 
 export const orElse =
-  <Failure1, Out>(onFailure: AsyncResult<Failure1, Out>) =>
-  <Failure2, In>(
-    self: AsyncResult<Failure2, In>,
-  ): AsyncResult<Failure1 | Failure2, In | Out> =>
+  <B, E1>(onFailure: AsyncResult<B, E1>) =>
+  <A, E2>(self: AsyncResult<A, E2>): AsyncResult<A | B, E1 | E2> =>
     pipe(
       self,
       Async.flatMap(
         Result.match({
           onFailure: constant(onFailure),
-          onSuccess: succeed<In & Out>,
+          onSuccess: succeed<A & B>,
         }),
       ),
     )
 
 export const catchAll =
-  <Failure1, Failure2, In, Out>(
-    onFailure: (failure: Failure1) => AsyncResult<Failure2, Out>,
-  ) =>
-  (self: AsyncResult<Failure1, In>): AsyncResult<Failure2, In | Out> =>
+  <A, B, E1, E2>(onFailure: (failure: E1) => AsyncResult<B, E2>) =>
+  (self: AsyncResult<A, E1>): AsyncResult<A | B, E2> =>
     pipe(
       self,
       Async.flatMap(
         Result.match({
           onFailure,
-          onSuccess: succeed<In & Out>,
+          onSuccess: succeed<A & B>,
         }),
       ),
     )

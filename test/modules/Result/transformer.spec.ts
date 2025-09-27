@@ -5,7 +5,7 @@ describe('transformer', () => {
 
   it('should correctly transform `ReadonlyArray` monad', () => {
     const EquivalenceNumber = Array.getEquivalence(
-      Result.getEquivalence(String.Equivalence, Number.Equivalence),
+      Result.getEquivalence(Number.Equivalence, String.Equivalence),
     )
     const EquivalenceString = Array.getEquivalence(
       Result.getEquivalence(String.Equivalence, String.Equivalence),
@@ -38,21 +38,21 @@ describe('transformer', () => {
     const ArrayOfResultResult = Result.transform(ArrayOfResult.Monad)
     const EquivalenceNumber = pipe(
       Result.getEquivalence(
-        Equivalence.EquivalenceStrict,
         Result.getEquivalence(
-          Equivalence.EquivalenceStrict,
           Number.Equivalence,
+          Equivalence.EquivalenceStrict,
         ),
+        Equivalence.EquivalenceStrict,
       ),
       Array.getEquivalence,
     )
     const EquivalenceString = pipe(
       Result.getEquivalence(
-        Equivalence.EquivalenceStrict,
         Result.getEquivalence(
-          Equivalence.EquivalenceStrict,
           String.Equivalence,
+          Equivalence.EquivalenceStrict,
         ),
+        Equivalence.EquivalenceStrict,
       ),
       Array.getEquivalence,
     )

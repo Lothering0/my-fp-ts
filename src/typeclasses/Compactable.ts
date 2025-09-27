@@ -10,7 +10,7 @@ export interface Compactable<F extends Hkt> extends TypeClass<F> {
     self: Kind<F, Option<Out>, Collectable, Fixed>,
   ) => Kind<F, Out, Collectable, Fixed>
   readonly compactResults: <Out, Collectable, Fixed>(
-    self: Kind<F, Result<unknown, Out>, Collectable, Fixed>,
+    self: Kind<F, Result<Out, unknown>, Collectable, Fixed>,
   ) => Kind<F, Out, Collectable, Fixed>
   readonly separate: <Out1, Out2, Collectable, Fixed>(
     self: Kind<F, Result<Out1, Out2>, Collectable, Fixed>,
@@ -30,12 +30,12 @@ export const create: {
   separate: self => [
     pipe(
       self,
-      Functor.map(match({ onFailure: some, onSuccess: zero })),
+      Functor.map(match({ onFailure: zero, onSuccess: some })),
       Compactable.compact,
     ),
     pipe(
       self,
-      Functor.map(match({ onFailure: zero, onSuccess: some })),
+      Functor.map(match({ onFailure: some, onSuccess: zero })),
       Compactable.compact,
     ),
   ],

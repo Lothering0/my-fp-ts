@@ -8,5 +8,5 @@ export const Functor: Functor_.Functor<SyncResultHkt> = {
 }
 
 export const map: {
-  <A, B>(ab: (a: A) => B): <E>(self: SyncResult<E, A>) => SyncResult<E, B>
+  <A, B>(ab: (a: A) => B): <E>(self: SyncResult<A, E>) => SyncResult<B, E>
 } = Functor.map

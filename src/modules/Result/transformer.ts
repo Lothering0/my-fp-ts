@@ -12,7 +12,7 @@ import { Alt } from '../../typeclasses/Alt'
 
 export type ResultT<F extends Hkt, In, Collectable, Fixed, TCollectable> = Kind<
   F,
-  Result.Result<Collectable, In>,
+  Result.Result<In, Collectable>,
   TCollectable,
   Fixed
 >
@@ -52,7 +52,7 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
 
   const match: {
     <In, Out, Collectable, Fixed, CollectableOut>(
-      matchers: Result.Matchers<Collectable, In, Out, CollectableOut>,
+      matchers: Result.Matchers<In, Out, Collectable, CollectableOut>,
     ): (
       self: Kind<THkt, In, Collectable, Fixed>,
     ) => Kind<F, Out | CollectableOut, TCollectable, Fixed>
@@ -114,8 +114,8 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
       pipe(
         self,
         M.flatMap<
-          Result.Result<Collectable1, In>,
-          Result.Result<Collectable1 | Collectable2, In | Out>,
+          Result.Result<In, Collectable1>,
+          Result.Result<In | Out, Collectable1 | Collectable2>,
           TCollectable,
           Fixed
         >(
@@ -148,7 +148,7 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
         pipe(
           self,
           M.map(
-            mf => (mg: Result.Result<Collectable1, In>) => Result.ap(mg)(mf),
+            mf => (mg: Result.Result<In, Collectable1>) => Result.ap(mg)(mf),
           ),
           M.ap(fma),
         ),
@@ -167,10 +167,10 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
         self,
         M.flatMap<
           Result.Result<
-            Collectable1,
-            Kind<F, Result.Result<Collectable2, In>, TCollectable, Fixed>
+            Kind<F, Result.Result<In, Collectable2>, TCollectable, Fixed>,
+            Collectable1
           >,
-          Result.Result<Collectable1 | Collectable2, In>,
+          Result.Result<In, Collectable1 | Collectable2>,
           TCollectable,
           Fixed
         >(

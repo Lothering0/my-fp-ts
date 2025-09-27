@@ -83,7 +83,7 @@ export class DurationTemplateParseError extends SyntaxError {
 }
 
 export const fromTemplate: {
-  (template: string): Result.Result<DurationTemplateParseError, Duration>
+  (template: string): Result.Result<Duration, DurationTemplateParseError>
 } = template =>
   pipe(
     template,

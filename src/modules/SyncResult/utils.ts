@@ -4,5 +4,5 @@ import { pipe } from '../../utils/flow'
 import { execute, SyncResult } from './sync-result'
 
 export const toUnion: {
-  <E, A>(self: SyncResult<E, A>): Sync.Sync<E | A>
+  <A, E>(self: SyncResult<A, E>): Sync.Sync<A | E>
 } = self => () => pipe(self, execute, Result.toUnion)

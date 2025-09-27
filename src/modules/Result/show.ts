@@ -4,10 +4,10 @@ import { match } from './matchers'
 import { flow } from '../../utils/flow'
 
 export const getShow: {
-  <E, A>(ShowE: Show<E>, ShowA: Show<A>): Show<Result<E, A>>
-} = (ShowE, ShowA) => ({
+  <A, E>(ShowA: Show<A>, ShowE: Show<E>): Show<Result<A, E>>
+} = (ShowA, ShowE) => ({
   show: match({
-    onFailure: flow(ShowE.show, e => `failure(${e})`),
     onSuccess: flow(ShowA.show, a => `success(${a})`),
+    onFailure: flow(ShowE.show, e => `failure(${e})`),
   }),
 })

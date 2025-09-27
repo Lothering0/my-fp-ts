@@ -2,8 +2,8 @@ import { Number, pipe, Result, String } from '../../../src'
 
 describe('gen', () => {
   const Equivalence = Result.getEquivalence(
-    String.Equivalence,
     Number.Equivalence,
+    String.Equivalence,
   )
 
   it('should return succeed value', () => {
@@ -23,8 +23,8 @@ describe('gen', () => {
   })
 
   it('should work correctly with several successful generators', () => {
-    const ma: Result.Result<string, number> = Result.succeed(1)
-    const mb: Result.Result<string, number> = Result.succeed(2)
+    const ma: Result.Result<number, string> = Result.succeed(1)
+    const mb: Result.Result<number, string> = Result.succeed(2)
     const mc = Result.gen(function* () {
       const a = yield* ma
       const b = yield* mb
@@ -34,8 +34,8 @@ describe('gen', () => {
   })
 
   it('should work correctly with several generators', () => {
-    const ma: Result.Result<string, number> = Result.succeed(1)
-    const mb: Result.Result<string, number> = Result.fail('a')
+    const ma: Result.Result<number, string> = Result.succeed(1)
+    const mb: Result.Result<number, string> = Result.fail('a')
     const mc = Result.gen(function* () {
       const a = yield* ma
       const b = yield* mb

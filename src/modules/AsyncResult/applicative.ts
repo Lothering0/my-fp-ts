@@ -18,26 +18,22 @@ export const Applicative = create<AsyncResultHkt>(Functor, {
 })
 
 export const of: {
-  <Out>(a: Out): AsyncResult<never, Out>
+  <A>(a: A): AsyncResult<A>
 } = Applicative.of
 
 export const ap: {
-  <Failure1, In>(
-    fa: AsyncResult<Failure1, In>,
-  ): <Failure2, Out>(
-    self: AsyncResult<Failure2, (a: In) => Out>,
-  ) => AsyncResult<Failure1 | Failure2, Out>
+  <A, E1>(
+    fa: AsyncResult<A, E1>,
+  ): <B, E2>(self: AsyncResult<(a: A) => B, E2>) => AsyncResult<B, E1 | E2>
 } = Applicative.ap
 
 /** Alias for `ap` */
 export const apply = ap
 
 export const flap: {
-  <Failure1, In, Out>(
-    fab: AsyncResult<Failure1, (a: In) => Out>,
-  ): <Failure2>(
-    self: AsyncResult<Failure2, In>,
-  ) => AsyncResult<Failure1 | Failure2, Out>
+  <A, B, E1>(
+    fab: AsyncResult<(a: A) => B, E1>,
+  ): <E2>(self: AsyncResult<A, E2>) => AsyncResult<B, E1 | E2>
 } = Applicative.flap
 
 /** Alias for `flap` */

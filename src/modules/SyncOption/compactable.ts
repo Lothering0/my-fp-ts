@@ -15,8 +15,8 @@ export const Compactable = create<SyncOptionHkt>(Functor, {
       Option.match({
         onNone: () => [none, none],
         onSome: ma => [
-          pipe(ma, Result.match({ onFailure: some, onSuccess: zero })),
           pipe(ma, Result.match({ onFailure: zero, onSuccess: some })),
+          pipe(ma, Result.match({ onFailure: some, onSuccess: zero })),
         ],
       }),
     ),
@@ -27,11 +27,11 @@ export const compact: {
 } = Compactable.compact
 
 export const compactResults: {
-  <A>(self: SyncOption<Result.Result<unknown, A>>): SyncOption<A>
+  <A>(self: SyncOption<Result.Result<A, unknown>>): SyncOption<A>
 } = Compactable.compactResults
 
 export const separate: {
-  <E, A>(
-    self: SyncOption<Result.Result<E, A>>,
-  ): readonly [SyncOption<E>, SyncOption<A>]
+  <A, E>(
+    self: SyncOption<Result.Result<A, E>>,
+  ): readonly [SyncOption<A>, SyncOption<E>]
 } = Compactable.separate

@@ -4,9 +4,7 @@ describe('monad', () => {
   describe('flatMap', () => {
     it('should satisfy left identity law', () => {
       const a = 1
-      const fa: SyncResult.SyncResult<never, typeof a> = jest.fn(
-        SyncResult.of(a),
-      )
+      const fa: SyncResult.SyncResult<typeof a> = jest.fn(SyncResult.of(a))
       const afb = (x: number) => SyncResult.of(x + 1)
 
       const result1 = pipe(fa, SyncResult.flatMap(afb), SyncResult.execute)
@@ -18,9 +16,7 @@ describe('monad', () => {
 
     it('should satisfy right identity law', () => {
       const a = 1
-      const fa: SyncResult.SyncResult<never, typeof a> = jest.fn(
-        SyncResult.of(a),
-      )
+      const fa: SyncResult.SyncResult<typeof a> = jest.fn(SyncResult.of(a))
 
       const result1 = pipe(
         fa,
@@ -35,9 +31,7 @@ describe('monad', () => {
 
     it('should satisfy associativity law', () => {
       const a = 1
-      const fa: SyncResult.SyncResult<never, typeof a> = jest.fn(
-        SyncResult.of(a),
-      )
+      const fa: SyncResult.SyncResult<typeof a> = jest.fn(SyncResult.of(a))
       const afb = (x: number) => SyncResult.of(x + 1)
       const bfc = (x: number) => SyncResult.of(x / 2)
 
@@ -59,7 +53,7 @@ describe('monad', () => {
 
     it('should return function containing `failure` if the same was provided', () => {
       const e = 'e'
-      const fa: SyncResult.SyncResult<typeof e, never> = jest.fn(
+      const fa: SyncResult.SyncResult<never, typeof e> = jest.fn(
         SyncResult.fail(e),
       )
       const result = pipe(
@@ -67,14 +61,14 @@ describe('monad', () => {
         SyncResult.flatMap(a => SyncResult.succeed(a + 2)),
         SyncResult.execute,
       )
-      expect(result).toEqual<Result.Result<typeof e, never>>(Result.fail(e))
+      expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
       expect(fa).toHaveBeenCalledTimes(1)
     })
 
     it('should return function containing `failure` if the same was returned by callback function', () => {
       const e = 'e'
       const a = 1
-      const fa: SyncResult.SyncResult<typeof e, typeof a> = jest.fn(
+      const fa: SyncResult.SyncResult<typeof a, typeof e> = jest.fn(
         SyncResult.succeed(a),
       )
       const result = pipe(
@@ -82,7 +76,7 @@ describe('monad', () => {
         SyncResult.flatMap(() => SyncResult.fail(e)),
         SyncResult.execute,
       )
-      expect(result).toEqual<Result.Result<typeof e, never>>(Result.fail(e))
+      expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
       expect(fa).toHaveBeenCalledTimes(1)
     })
   })

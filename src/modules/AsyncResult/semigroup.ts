@@ -2,7 +2,7 @@ import { Semigroup } from '../../typeclasses/Semigroup'
 import { AsyncResult, toPromise } from './async-result'
 
 export const getRaceSemigroup: {
-  <Failure, In>(): Semigroup<AsyncResult<Failure, In>>
+  <A, E>(): Semigroup<AsyncResult<A, E>>
 } = () => ({
   combine: y => x => () => Promise.race([toPromise(x), toPromise(y)]),
 })

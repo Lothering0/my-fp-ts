@@ -125,7 +125,7 @@ export const whenNotSchema: {
 } = (Schema, ea) => onNot(Schema_.validate(Schema), ea)
 
 export const getResult: {
-  <E, A>(self: Matching<E, A>): Result.Result<E, A>
+  <E, A>(self: Matching<E, A>): Result.Result<A, E>
 } = self =>
   pipe(
     self.patterns,
@@ -145,7 +145,7 @@ export const getOrElse: {
 } = onDefault => flow(getResult, Result.getOrElse(onDefault))
 
 export const getResults: {
-  <E, A>(self: Matching<E, A>): ReadonlyArray<Result.Result<E, A>>
+  <E, A>(self: Matching<E, A>): ReadonlyArray<Result.Result<A, E>>
 } = self =>
   pipe(
     self.patterns,

@@ -4,7 +4,7 @@ import { flow } from '../../utils/flow'
 import { execute, SyncResult } from './sync-result'
 
 export const match: {
-  <Failure, In, Out1, Out2 = Out1>(
-    matchers: Result.Matchers<Failure, In, Out1, Out2>,
-  ): (self: SyncResult<Failure, In>) => Sync.Sync<Out1 | Out2>
+  <A, B, E, C = B>(
+    matchers: Result.Matchers<A, B, E, C>,
+  ): (self: SyncResult<A, E>) => Sync.Sync<B | C>
 } = matchers => flow(execute, Result.match(matchers), Sync.of)

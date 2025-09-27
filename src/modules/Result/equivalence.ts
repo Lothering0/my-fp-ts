@@ -5,11 +5,11 @@ import { constFalse } from '../../utils/constant'
 import { pipe } from '../../utils/flow'
 
 export const getEquivalence: {
-  <Failure, In>(
-    EquivalenceE: Equivalence<Failure>,
-    EquivalenceA: Equivalence<In>,
-  ): Equivalence<Result<Failure, In>>
-} = (EquivalenceE, EquivalenceA) => ({
+  <A, E>(
+    EquivalenceA: Equivalence<A>,
+    EquivalenceE: Equivalence<E>,
+  ): Equivalence<Result<A, E>>
+} = (EquivalenceA, EquivalenceE) => ({
   equals: mx => my =>
     pipe(
       mx,

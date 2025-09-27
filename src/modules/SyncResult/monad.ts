@@ -15,53 +15,53 @@ export const Monad = create<SyncResultHkt>(Applicative, {
 export const Do = Monad.Do
 
 export const flat: {
-  <E1, E2, A>(self: SyncResult<E1, SyncResult<E2, A>>): SyncResult<E1 | E2, A>
+  <A, E1, E2>(self: SyncResult<SyncResult<A, E2>, E1>): SyncResult<A, E1 | E2>
 } = Monad.flat
 
 export const flatMap: {
-  <E1, A, B>(
-    amb: (a: A) => SyncResult<E1, B>,
-  ): <E2>(self: SyncResult<E2, A>) => SyncResult<E1 | E2, B>
+  <A, B, E1>(
+    amb: (a: A) => SyncResult<B, E1>,
+  ): <E2>(self: SyncResult<A, E2>) => SyncResult<B, E1 | E2>
 } = Monad.flatMap
 
 export const compose: {
   <E1, E2, A, B, C>(
-    bmc: (b: B) => SyncResult<E2, C>,
-    amb: (a: A) => SyncResult<E1, B>,
-  ): (a: A) => SyncResult<E1 | E2, C>
+    bmc: (b: B) => SyncResult<C, E2>,
+    amb: (a: A) => SyncResult<B, E1>,
+  ): (a: A) => SyncResult<C, E1 | E2>
 } = Monad.compose
 
 export const setTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     b: B,
-  ): <E>(self: SyncResult<E, A>) => SyncResult<E, DoObject<N, A, B>>
+  ): <E>(self: SyncResult<A, E>) => SyncResult<DoObject<N, A, B>, E>
 } = Monad.setTo
 
 export const mapTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     ab: (a: A) => B,
-  ): <E>(self: SyncResult<E, A>) => SyncResult<E, DoObject<N, A, B>>
+  ): <E>(self: SyncResult<A, E>) => SyncResult<DoObject<N, A, B>, E>
 } = Monad.mapTo
 
 export const flapTo: {
-  <N extends DoObjectKey, E1, A, B>(
+  <N extends DoObjectKey, A, B, E1>(
     name: Exclude<N, keyof A>,
-    fab: SyncResult<E1, (a: A) => B>,
-  ): <E2>(self: SyncResult<E2, A>) => SyncResult<E1 | E2, DoObject<N, A, B>>
+    fab: SyncResult<(a: A) => B, E1>,
+  ): <E2>(self: SyncResult<A, E2>) => SyncResult<DoObject<N, A, B>, E1 | E2>
 } = Monad.flapTo
 
 export const apS: {
-  <N extends DoObjectKey, E1, A, B>(
+  <N extends DoObjectKey, A, B, E1>(
     name: Exclude<N, keyof A>,
-    fb: SyncResult<E1, B>,
-  ): <E2>(self: SyncResult<E2, A>) => SyncResult<E1 | E2, DoObject<N, A, B>>
+    fb: SyncResult<B, E1>,
+  ): <E2>(self: SyncResult<A, E2>) => SyncResult<DoObject<N, A, B>, E1 | E2>
 } = Monad.apS
 
 export const flatMapTo: {
-  <N extends DoObjectKey, E1, A, B>(
+  <N extends DoObjectKey, A, B, E1>(
     name: Exclude<N, keyof A>,
-    amb: (a: A) => SyncResult<E1, B>,
-  ): <E2>(self: SyncResult<E2, A>) => SyncResult<E1 | E2, DoObject<N, A, B>>
+    amb: (a: A) => SyncResult<B, E1>,
+  ): <E2>(self: SyncResult<A, E2>) => SyncResult<DoObject<N, A, B>, E1 | E2>
 } = Monad.flatMapTo

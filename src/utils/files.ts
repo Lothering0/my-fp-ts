@@ -4,9 +4,9 @@ import * as SyncResult from '../modules/SyncResult'
 import * as AsyncResult from '../modules/AsyncResult'
 
 export const readFileSync: {
-  (path: string): SyncResult.SyncResult<Error, Buffer>
+  (path: string): SyncResult.SyncResult<Buffer, Error>
 } = path => SyncResult.fromSync(() => fs.readFileSync(path))
 
 export const readFile: {
-  (path: string): AsyncResult.AsyncResult<Error, Buffer>
+  (path: string): AsyncResult.AsyncResult<Buffer, Error>
 } = path => AsyncResult.fromAsync(() => fsPromises.readFile(path))

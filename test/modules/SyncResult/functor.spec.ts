@@ -4,7 +4,7 @@ describe('functor', () => {
   describe('map', () => {
     it('should satisfy identity law', () => {
       const a = 1
-      const fa: SyncResult.SyncResult<never, number> = jest.fn(SyncResult.of(a))
+      const fa: SyncResult.SyncResult<number> = jest.fn(SyncResult.of(a))
 
       const result = pipe(fa, SyncResult.map(identity), SyncResult.execute)
       expect(result).toEqual(Result.succeed(a))
@@ -18,8 +18,8 @@ describe('functor', () => {
       const a = 1
       const getFa = () => SyncResult.of<typeof a>(a)
 
-      const fa1: SyncResult.SyncResult<never, typeof a> = jest.fn(getFa())
-      const fa2: SyncResult.SyncResult<never, typeof a> = jest.fn(getFa())
+      const fa1: SyncResult.SyncResult<typeof a> = jest.fn(getFa())
+      const fa2: SyncResult.SyncResult<typeof a> = jest.fn(getFa())
 
       const result1 = pipe(
         fa1,
@@ -41,7 +41,7 @@ describe('functor', () => {
     it('should return function containing `failure` if the same was provided', () => {
       const a = 1
       const n = 1
-      const fe: SyncResult.SyncResult<typeof a, never> = jest.fn(
+      const fe: SyncResult.SyncResult<never, typeof a> = jest.fn(
         SyncResult.fail(a),
       )
       const result = pipe(fe, SyncResult.map(Number.add(n)), SyncResult.execute)
@@ -52,9 +52,7 @@ describe('functor', () => {
     it('should return function containing `success` if it was provided', () => {
       const a = 1
       const n = 1
-      const fa: SyncResult.SyncResult<never, typeof a> = jest.fn(
-        SyncResult.succeed(a),
-      )
+      const fa: SyncResult.SyncResult<typeof a> = jest.fn(SyncResult.succeed(a))
       const result = pipe(fa, SyncResult.map(Number.add(n)), SyncResult.execute)
       expect(result).toEqual(Result.succeed(Number.add(a)(n)))
       expect(fa).toHaveBeenCalledTimes(1)

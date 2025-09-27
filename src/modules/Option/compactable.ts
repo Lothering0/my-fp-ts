@@ -13,9 +13,9 @@ export const compact: {
 } = Compactable.compact
 
 export const compactResults: {
-  <A>(self: Option<Result.Result<unknown, A>>): Option<A>
+  <A>(self: Option<Result.Result<A, unknown>>): Option<A>
 } = Compactable.compactResults
 
 export const separate: {
-  <E, A>(self: Option<Result.Result<E, A>>): readonly [Option<E>, Option<A>]
+  <A, E>(self: Option<Result.Result<A, E>>): readonly [Option<A>, Option<E>]
 } = Compactable.separate

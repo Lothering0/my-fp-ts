@@ -21,11 +21,11 @@ export const compact: {
 } = Compactable.compact
 
 export const compactResults: {
-  <A>(self: ReadonlyArray<Result.Result<unknown, A>>): ReadonlyArray<A>
+  <A>(self: ReadonlyArray<Result.Result<A, unknown>>): ReadonlyArray<A>
 } = Compactable.compactResults
 
 export const separate: {
-  <E, A>(
-    self: ReadonlyArray<Result.Result<E, A>>,
-  ): readonly [ReadonlyArray<E>, ReadonlyArray<A>]
+  <A, E>(
+    self: ReadonlyArray<Result.Result<A, E>>,
+  ): readonly [ReadonlyArray<A>, ReadonlyArray<E>]
 } = Compactable.separate

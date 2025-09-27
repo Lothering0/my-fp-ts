@@ -5,7 +5,7 @@ describe('fromSync', () => {
     const a = 1
     const fa: Sync.Sync<never> = jest.fn(() => raise(a))
     const result = pipe(SyncResult.fromSync(fa), SyncResult.execute)
-    expect(result).toEqual<Result.Result<typeof a, never>>(Result.fail(a))
+    expect(result).toEqual<Result.Result<never, typeof a>>(Result.fail(a))
     expect(fa).toHaveBeenCalledTimes(1)
   })
 
@@ -13,7 +13,7 @@ describe('fromSync', () => {
     const a = 1
     const fa: Sync.Sync<typeof a> = jest.fn(() => a)
     const result = pipe(SyncResult.fromSync(fa), SyncResult.execute)
-    expect(result).toEqual<Result.Result<never, typeof a>>(Result.succeed(a))
+    expect(result).toEqual<Result.Result<typeof a>>(Result.succeed(a))
     expect(fa).toHaveBeenCalledTimes(1)
   })
 })

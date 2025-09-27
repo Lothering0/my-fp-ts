@@ -4,9 +4,7 @@ describe('applicative', () => {
   describe('ap', () => {
     it('should satisfy identity law', () => {
       const a = 1
-      const fa: SyncResult.SyncResult<never, typeof a> = jest.fn(
-        SyncResult.of(a),
-      )
+      const fa: SyncResult.SyncResult<typeof a> = jest.fn(SyncResult.of(a))
 
       const result = pipe(
         identity,
@@ -15,7 +13,7 @@ describe('applicative', () => {
         SyncResult.execute,
       )
 
-      expect(result).toEqual<Result.Result<never, typeof a>>(Result.succeed(a))
+      expect(result).toEqual<Result.Result<typeof a>>(Result.succeed(a))
       expect(fa).toHaveBeenCalledTimes(1)
     })
 
@@ -23,12 +21,8 @@ describe('applicative', () => {
       const a = 1
       const ab = Number.add(5)
 
-      const fa: SyncResult.SyncResult<never, typeof a> = jest.fn(
-        SyncResult.of(a),
-      )
-      const fab: SyncResult.SyncResult<never, typeof ab> = jest.fn(
-        SyncResult.of(ab),
-      )
+      const fa: SyncResult.SyncResult<typeof a> = jest.fn(SyncResult.of(a))
+      const fab: SyncResult.SyncResult<typeof ab> = jest.fn(SyncResult.of(ab))
 
       const result1 = pipe(fab, SyncResult.ap(fa), SyncResult.execute)
       const result2 = pipe(a, ab, SyncResult.of, SyncResult.execute)
@@ -42,12 +36,8 @@ describe('applicative', () => {
       const a = 1
       const ab = Number.add(5)
 
-      const fa: SyncResult.SyncResult<never, typeof a> = jest.fn(
-        SyncResult.of(a),
-      )
-      const fab: SyncResult.SyncResult<never, typeof ab> = jest.fn(
-        SyncResult.of(ab),
-      )
+      const fa: SyncResult.SyncResult<typeof a> = jest.fn(SyncResult.of(a))
+      const fab: SyncResult.SyncResult<typeof ab> = jest.fn(SyncResult.of(ab))
 
       const result1 = pipe(fab, SyncResult.ap(fa), SyncResult.execute)
       const result2 = pipe(
@@ -64,16 +54,14 @@ describe('applicative', () => {
       const e = 'e'
       const ab = Number.add(5)
 
-      const fa: SyncResult.SyncResult<typeof e, never> = jest.fn(
+      const fa: SyncResult.SyncResult<never, typeof e> = jest.fn(
         SyncResult.fail(e),
       )
-      const fab: SyncResult.SyncResult<never, typeof ab> = jest.fn(
-        SyncResult.of(ab),
-      )
+      const fab: SyncResult.SyncResult<typeof ab> = jest.fn(SyncResult.of(ab))
 
       const result = pipe(fab, SyncResult.ap(fa), SyncResult.execute)
 
-      expect(result).toEqual<Result.Result<typeof e, never>>(Result.fail(e))
+      expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
       expect(fa).toHaveBeenCalledTimes(1)
       expect(fab).toHaveBeenCalledTimes(1)
     })
@@ -82,16 +70,16 @@ describe('applicative', () => {
       const e = 'e'
       const a = 1
 
-      const fa: SyncResult.SyncResult<typeof e, typeof a> = jest.fn(
+      const fa: SyncResult.SyncResult<typeof a, typeof e> = jest.fn(
         SyncResult.of(a),
       )
-      const fab: SyncResult.SyncResult<typeof e, never> = jest.fn(
+      const fab: SyncResult.SyncResult<never, typeof e> = jest.fn(
         SyncResult.fail(e),
       )
 
       const result = pipe(fab, SyncResult.ap(fa), SyncResult.execute)
 
-      expect(result).toEqual<Result.Result<typeof e, never>>(Result.fail(e))
+      expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
       expect(fa).toHaveBeenCalledTimes(1)
       expect(fab).toHaveBeenCalledTimes(1)
     })
@@ -99,20 +87,20 @@ describe('applicative', () => {
     it('should return function containing `failure` if `failure` is applying to `failure`', () => {
       const e = 'e'
       const d = 'd'
-      const fa: SyncResult.SyncResult<typeof e, never> = jest.fn(
+      const fa: SyncResult.SyncResult<never, typeof e> = jest.fn(
         SyncResult.fail(e),
       )
-      const fab: SyncResult.SyncResult<typeof d, never> = jest.fn(
+      const fab: SyncResult.SyncResult<never, typeof d> = jest.fn(
         SyncResult.fail(d),
       )
 
-      const result: Result.Result<typeof e | typeof d, unknown> = pipe(
+      const result: Result.Result<unknown, typeof e | typeof d> = pipe(
         fab,
         SyncResult.ap(fa),
         SyncResult.execute,
       )
 
-      expect(result).toEqual<Result.Result<typeof e, never>>(Result.fail(e))
+      expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
       expect(fa).toHaveBeenCalledTimes(1)
       expect(fab).toHaveBeenCalledTimes(1)
     })

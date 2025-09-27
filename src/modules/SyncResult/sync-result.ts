@@ -5,37 +5,38 @@ import { pipe } from '../../utils/flow'
 import { tryDo } from '../../utils/exceptions'
 
 export interface SyncResultHkt extends Hkt {
-  readonly Type: SyncResult<this['Collectable'], this['In']>
+  readonly Type: SyncResult<this['In'], this['Collectable']>
 }
 
-export interface SyncResult<E, A> extends Sync.Sync<Result.Result<E, A>> {}
+export interface SyncResult<A, E = never>
+  extends Sync.Sync<Result.Result<A, E>> {}
 
 export const fail: {
-  <E>(e: E): SyncResult<E, never>
+  <E>(e: E): SyncResult<never, E>
 } = e => () => Result.fail(e)
 
 export const failSync: {
-  <E>(me: Sync.Sync<E>): SyncResult<E, never>
+  <E>(me: Sync.Sync<E>): SyncResult<never, E>
 } = me => () => pipe(me, Sync.execute, Result.fail)
 
 export const succeed: {
-  <A>(a: A): SyncResult<never, A>
+  <A>(a: A): SyncResult<A>
 } = a => () => Result.succeed(a)
 
 export const succeedSync: {
-  <A>(ma: Sync.Sync<A>): SyncResult<never, A>
+  <A>(ma: Sync.Sync<A>): SyncResult<A>
 } = ma => () => pipe(ma, Sync.execute, Result.succeed)
 
 export const fromSync: {
-  <E, A>(ma: Sync.Sync<A>): SyncResult<E, A>
+  <A, E>(ma: Sync.Sync<A>): SyncResult<A, E>
 } = ma => () => tryDo(ma)
 
 export const fromResult: {
-  <E, A>(result: Result.Result<E, A>): SyncResult<E, A>
+  <A, E>(result: Result.Result<A, E>): SyncResult<A, E>
 } = Sync.of
 
 export const execute: {
-  <E, A>(ma: SyncResult<E, A>): Result.Result<E, A>
+  <A, E>(ma: SyncResult<A, E>): Result.Result<A, E>
 } = ma => {
   try {
     return ma()

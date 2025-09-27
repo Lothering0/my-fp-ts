@@ -2,15 +2,15 @@ import { Number, Result, String } from '../../../src'
 
 interface TestCase {
   readonly description: string
-  readonly result1: Result.Result<string, number>
-  readonly result2: Result.Result<string, number>
+  readonly result1: Result.Result<number, string>
+  readonly result2: Result.Result<number, string>
   readonly expected: boolean
 }
 
 describe('getEquivalence', () => {
   const Equivalence = Result.getEquivalence(
-    String.Equivalence,
     Number.Equivalence,
+    String.Equivalence,
   )
 
   const testCases: TestCase[] = [

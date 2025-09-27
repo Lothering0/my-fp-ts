@@ -22,85 +22,75 @@ export const Monad = create<AsyncResultHkt>(Applicative, {
 export const Do = Monad.Do
 
 export const flat: {
-  <Failure1, Failure2, Out>(
-    self: AsyncResult<Failure1, AsyncResult<Failure2, Out>>,
-  ): AsyncResult<Failure1 | Failure2, Out>
+  <A, E1, E2>(
+    self: AsyncResult<AsyncResult<A, E2>, E1>,
+  ): AsyncResult<A, E1 | E2>
 } = Monad.flat
 
 export const flatMap: {
-  <Failure1, In, Out>(
-    amb: (a: In) => AsyncResult<Failure1, Out>,
-  ): <E2>(self: AsyncResult<E2, In>) => AsyncResult<Failure1 | E2, Out>
+  <A, B, E1>(
+    amb: (a: A) => AsyncResult<B, E1>,
+  ): <E2>(self: AsyncResult<A, E2>) => AsyncResult<B, E1 | E2>
 } = Monad.flatMap
 
 export const compose: {
-  <Failure1, Failure2, In, Out1, Out2>(
-    bmc: (b: Out1) => AsyncResult<Failure2, Out2>,
-    amb: (a: In) => AsyncResult<Failure1, Out1>,
-  ): (a: In) => AsyncResult<Failure1 | Failure2, Out2>
+  <E1, E2, A, B, C>(
+    bmc: (b: B) => AsyncResult<C, E2>,
+    amb: (a: A) => AsyncResult<B, E1>,
+  ): (a: A) => AsyncResult<C, E1 | E2>
 } = Monad.compose
 
 export const setTo: {
-  <N extends DoObjectKey, In, Out>(
-    name: Exclude<N, keyof In>,
-    b: Out,
-  ): <E>(self: AsyncResult<E, In>) => AsyncResult<E, DoObject<N, In, Out>>
+  <N extends DoObjectKey, A, B>(
+    name: Exclude<N, keyof A>,
+    b: B,
+  ): <E>(self: AsyncResult<A, E>) => AsyncResult<DoObject<N, A, B>, E>
 } = Monad.setTo
 
 export const mapTo: {
-  <N extends DoObjectKey, In, Out>(
-    name: Exclude<N, keyof In>,
-    ab: (a: In) => Out,
-  ): <Failure>(
-    self: AsyncResult<Failure, In>,
-  ) => AsyncResult<Failure, DoObject<N, In, Out>>
+  <N extends DoObjectKey, A, B>(
+    name: Exclude<N, keyof A>,
+    ab: (a: A) => B,
+  ): <E>(self: AsyncResult<A, E>) => AsyncResult<DoObject<N, A, B>, E>
 } = Monad.mapTo
 
 export const flapTo: {
-  <N extends DoObjectKey, Failure1, In, Out>(
-    name: Exclude<N, keyof In>,
-    fab: AsyncResult<Failure1, (a: In) => Out>,
-  ): <Failure2>(
-    self: AsyncResult<Failure2, In>,
-  ) => AsyncResult<Failure1 | Failure2, DoObject<N, In, Out>>
+  <N extends DoObjectKey, A, B, E1>(
+    name: Exclude<N, keyof A>,
+    fab: AsyncResult<(a: A) => B, E1>,
+  ): <E2>(self: AsyncResult<A, E2>) => AsyncResult<DoObject<N, A, B>, E1 | E2>
 } = Monad.flapTo
 
 export const apS: {
-  <N extends DoObjectKey, Failure1, In, Out>(
-    name: Exclude<N, keyof In>,
-    fb: AsyncResult<Failure1, Out>,
-  ): <E2>(
-    self: AsyncResult<E2, In>,
-  ) => AsyncResult<Failure1 | E2, DoObject<N, In, Out>>
+  <N extends DoObjectKey, A, B, E1>(
+    name: Exclude<N, keyof A>,
+    fb: AsyncResult<B, E1>,
+  ): <E2>(self: AsyncResult<A, E2>) => AsyncResult<DoObject<N, A, B>, E1 | E2>
 } = Monad.apS
 
 export const flatMapTo: {
-  <N extends DoObjectKey, Failure1, In, Out>(
-    name: Exclude<N, keyof In>,
-    amb: (a: In) => AsyncResult<Failure1, Out>,
-  ): <Failure2>(
-    self: AsyncResult<Failure2, In>,
-  ) => AsyncResult<Failure1 | Failure2, DoObject<N, In, Out>>
+  <N extends DoObjectKey, A, B, E1>(
+    name: Exclude<N, keyof A>,
+    amb: (a: A) => AsyncResult<B, E1>,
+  ): <E2>(self: AsyncResult<A, E2>) => AsyncResult<DoObject<N, A, B>, E1 | E2>
 } = Monad.flatMapTo
 
 export const parallel: {
-  <N extends DoObjectKey, Failure1, Out>(
-    fb: AsyncResult<Failure1, Out>,
-  ): <Failure2, In>(
-    self: AsyncResult<Failure2, In>,
-  ) => AsyncResult<Failure1 | Failure2, DoObject<N, In, Out>>
+  <N extends DoObjectKey, A, E1>(
+    fb: AsyncResult<A, E1>,
+  ): <A, E2>(
+    self: AsyncResult<A, E2>,
+  ) => AsyncResult<DoObject<N, A, A>, E1 | E2>
 } = fb => self => () =>
   Promise.all([toPromise(self), toPromise(fb)]).then(([ma, mb]) =>
     pipe(mb, Result.flatMap(() => ma) as any),
   )
 
 export const parallelTo: {
-  <N extends DoObjectKey, Failure1, In, Out>(
-    name: Exclude<N, keyof In>,
-    fb: AsyncResult<Failure1, Out>,
-  ): <Failure2>(
-    self: AsyncResult<Failure1, In>,
-  ) => AsyncResult<Failure1 | Failure2, DoObject<N, In, Out>>
+  <N extends DoObjectKey, A, B, E1>(
+    name: Exclude<N, keyof A>,
+    fb: AsyncResult<B, E1>,
+  ): <E2>(self: AsyncResult<A, E1>) => AsyncResult<DoObject<N, A, B>, E1 | E2>
 } = (name, fb) => self => () =>
   Promise.all([toPromise(self), toPromise(fb)]).then(([ma, mb]) =>
     Result.apS(name, mb)(ma),

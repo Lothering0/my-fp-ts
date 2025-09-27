@@ -31,12 +31,12 @@ export const compact: {
 
 export const compactResults: {
   <A, K extends string>(
-    self: ReadonlyRecord<K, Result.Result<unknown, A>>,
+    self: ReadonlyRecord<K, Result.Result<A, unknown>>,
   ): ReadonlyRecord<K, A>
 } = Compactable.compactResults
 
 export const separate: {
-  <E, A, K extends string>(
-    self: ReadonlyRecord<K, Result.Result<E, A>>,
-  ): readonly [ReadonlyRecord<K, E>, ReadonlyRecord<K, A>]
+  <A, E, K extends string>(
+    self: ReadonlyRecord<K, Result.Result<A, E>>,
+  ): readonly [ReadonlyRecord<K, A>, ReadonlyRecord<K, E>]
 } = Compactable.separate

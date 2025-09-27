@@ -18,7 +18,7 @@ export const toUnion: {
 })
 
 export const swap: {
-  <E, A>(self: Result<E, A>): Result<A, E>
+  <A, E>(self: Result<A, E>): Result<E, A>
 } = match({
   onFailure: succeed,
   onSuccess: fail,

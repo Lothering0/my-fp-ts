@@ -18,10 +18,10 @@ export class JsonParseError extends SyntaxError {
 }
 
 export const parse: {
-  (json: string): Result.Result<JsonParseError, Json>
+  (json: string): Result.Result<Json, JsonParseError>
 } = json =>
   pipe(
-    tryDo<SyntaxError, Json>(() => JSON.parse(json)),
+    tryDo<Json, SyntaxError>(() => JSON.parse(json)),
     Result.catchAll(({ message }) =>
       pipe(new JsonParseError(message), Result.fail),
     ),

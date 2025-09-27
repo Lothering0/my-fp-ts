@@ -15,22 +15,22 @@ export const Compactable = create<AsyncOptionHkt>(Functor, {
       toPromise,
       ma => () => ma,
       mma => [
-        pipe(mma, flatMap(Result.match({ onFailure: some, onSuccess: zero }))),
         pipe(mma, flatMap(Result.match({ onFailure: zero, onSuccess: some }))),
+        pipe(mma, flatMap(Result.match({ onFailure: some, onSuccess: zero }))),
       ],
     ),
 })
 
 export const compact: {
-  <Out>(self: AsyncOption<Option.Option<Out>>): AsyncOption<Out>
+  <A>(self: AsyncOption<Option.Option<A>>): AsyncOption<A>
 } = Compactable.compact
 
 export const compactResults: {
-  <Out>(self: AsyncOption<Result.Result<unknown, Out>>): AsyncOption<Out>
+  <A>(self: AsyncOption<Result.Result<A, unknown>>): AsyncOption<A>
 } = Compactable.compactResults
 
 export const separate: {
-  <Collectable, Out>(
-    self: AsyncOption<Result.Result<Collectable, Out>>,
-  ): readonly [AsyncOption<Collectable>, AsyncOption<Out>]
+  <A, E>(
+    self: AsyncOption<Result.Result<A, E>>,
+  ): readonly [AsyncOption<A>, AsyncOption<E>]
 } = Compactable.separate

@@ -9,14 +9,12 @@ export const Bifunctor = create<SyncResultHkt>(Functor, {
 })
 
 export const mapLeft: {
-  <FailureIn, FailureOut>(
-    ed: (failure: FailureIn) => FailureOut,
-  ): <Out>(self: SyncResult<FailureIn, Out>) => SyncResult<FailureOut, Out>
+  <E, D>(ed: (failure: E) => D): <A>(self: SyncResult<A, E>) => SyncResult<A, D>
 } = Bifunctor.mapLeft
 
 export const bimap: {
-  <FailureIn, In, FailureOut, Out>(
-    ed: (failure: FailureIn) => FailureOut,
-    ab: (success: In) => Out,
-  ): (self: SyncResult<FailureIn, In>) => SyncResult<FailureOut, Out>
+  <E, D, A, B>(
+    ed: (failure: E) => D,
+    ab: (success: A) => B,
+  ): (self: SyncResult<A, E>) => SyncResult<B, D>
 } = Bifunctor.bimap

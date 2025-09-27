@@ -12,7 +12,5 @@ export const Functor: Functor_.Functor<ResultHkt> = {
 }
 
 export const map: {
-  <In, Out>(
-    ab: (success: In) => Out,
-  ): <Failure>(self: Result<Failure, In>) => Result<Failure, Out>
+  <A, B>(ab: (success: A) => B): <E>(self: Result<A, E>) => Result<B, E>
 } = Functor.map

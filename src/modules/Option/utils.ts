@@ -47,11 +47,11 @@ export const toVoid: {
 })
 
 export const fromResult: {
-  <E, A>(ma: Result.Result<E, A>): Option<A>
+  <A, E>(ma: Result.Result<A, E>): Option<A>
 } = Result.match({ onFailure: zero, onSuccess: some })
 
 export const toResult: {
-  <E>(onNone: LazyArg<E>): <A>(self: Option<A>) => Result.Result<E, A>
+  <E>(onNone: LazyArg<E>): <A>(self: Option<A>) => Result.Result<A, E>
 } = onNone =>
   match({
     onNone: flow(onNone, Result.fail),

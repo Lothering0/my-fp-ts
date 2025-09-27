@@ -12,7 +12,7 @@ describe('Matching', () => {
   describe('getResult', () => {
     it('should return `failure` of unexpectned number', () => {
       const result = pipe(1, Matching.match, Matching.getResult)
-      expect(result).toEqual<Result.Result<number, string>>(Result.fail(1))
+      expect(result).toEqual<Result.Result<string, number>>(Result.fail(1))
     })
 
     it('should return `success` of first matching found', () => {
@@ -23,7 +23,7 @@ describe('Matching', () => {
         Matching.when(1, () => 'b'),
         Matching.getResult,
       )
-      expect<Result.Result<number, string>>(result).toEqual(Result.succeed('a'))
+      expect<Result.Result<string, number>>(result).toEqual(Result.succeed('a'))
     })
 
     it('should return `success` of found matching', () => {
@@ -35,7 +35,7 @@ describe('Matching', () => {
         Matching.when(2, () => 'c'),
         Matching.getResult,
       )
-      expect<Result.Result<number, string>>(result).toEqual(Result.succeed('b'))
+      expect<Result.Result<string, number>>(result).toEqual(Result.succeed('b'))
     })
   })
 

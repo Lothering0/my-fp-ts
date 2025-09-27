@@ -99,7 +99,7 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
 
   const fromResult: {
     <In, Collectable, Fixed>(
-      ma: Kind<F, Result.Result<unknown, In>, Collectable, Fixed>,
+      ma: Kind<F, Result.Result<In, unknown>, Collectable, Fixed>,
     ): Kind<THkt, In, Collectable, Fixed>
   } = M.map(Option.fromResult)
 
@@ -108,7 +108,7 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
       onNone: LazyArg<E>,
     ): <A, Collectable, Fixed>(
       self: Kind<THkt, A, Collectable, Fixed>,
-    ) => Kind<F, Result.Result<E, A>, Collectable, Fixed>
+    ) => Kind<F, Result.Result<A, E>, Collectable, Fixed>
   } = onNone => M.map(Option.toResult(onNone))
 
   const getOrElse: {

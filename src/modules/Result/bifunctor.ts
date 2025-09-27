@@ -13,14 +13,12 @@ export const Bifunctor = create<ResultHkt>(Functor, {
 })
 
 export const mapLeft: {
-  <FailureIn, FailureOut>(
-    ed: (failure: FailureIn) => FailureOut,
-  ): <Out>(self: Result<FailureIn, Out>) => Result<FailureOut, Out>
+  <E1, E2>(ed: (failure: E1) => E2): <A>(self: Result<A, E1>) => Result<A, E2>
 } = Bifunctor.mapLeft
 
 export const bimap: {
-  <FailureIn, In, FailureOut, Out>(
-    ed: (failure: FailureIn) => FailureOut,
-    ab: (success: In) => Out,
-  ): (self: Result<FailureIn, In>) => Result<FailureOut, Out>
+  <E1, E2, A, B>(
+    ed: (failure: E1) => E2,
+    ab: (success: A) => B,
+  ): (self: Result<A, E1>) => Result<B, E2>
 } = Bifunctor.bimap

@@ -4,9 +4,7 @@ describe('functor', () => {
   describe('map', () => {
     it('should satisfy identity law', async () => {
       const a = 1
-      const fa: AsyncResult.AsyncResult<never, number> = jest.fn(
-        AsyncResult.of(a),
-      )
+      const fa: AsyncResult.AsyncResult<number> = jest.fn(AsyncResult.of(a))
 
       const result = await pipe(
         fa,
@@ -24,8 +22,8 @@ describe('functor', () => {
       const a = 1
       const getFa = () => AsyncResult.of<typeof a>(a)
 
-      const fa1: AsyncResult.AsyncResult<never, typeof a> = jest.fn(getFa())
-      const fa2: AsyncResult.AsyncResult<never, typeof a> = jest.fn(getFa())
+      const fa1: AsyncResult.AsyncResult<typeof a> = jest.fn(getFa())
+      const fa2: AsyncResult.AsyncResult<typeof a> = jest.fn(getFa())
 
       const result1 = await pipe(
         fa1,
@@ -47,7 +45,7 @@ describe('functor', () => {
     it('should return function containing promise of `failure` if the same was provided', async () => {
       const a = 1
       const n = 1
-      const fe: AsyncResult.AsyncResult<typeof a, never> = jest.fn(
+      const fe: AsyncResult.AsyncResult<never, typeof a> = jest.fn(
         AsyncResult.fail(a),
       )
       const result = await pipe(
@@ -62,7 +60,7 @@ describe('functor', () => {
     it('should return function containing promise of `success` if it was provided', async () => {
       const a = 1
       const n = 1
-      const fa: AsyncResult.AsyncResult<never, typeof a> = jest.fn(
+      const fa: AsyncResult.AsyncResult<typeof a> = jest.fn(
         AsyncResult.succeed(a),
       )
       const result = await pipe(

@@ -28,9 +28,7 @@ export const fromAsync: {
 } = ma => () => ma().then(Option.some, () => Option.none)
 
 export const fromAsyncResult: {
-  <Collectable, Out>(
-    ma: AsyncResult.AsyncResult<Collectable, Out>,
-  ): AsyncOption<Out>
+  <A, E>(ma: AsyncResult.AsyncResult<A, E>): AsyncOption<A>
 } = ma => () =>
   ma().then(
     Result.match({

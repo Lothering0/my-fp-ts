@@ -5,7 +5,7 @@ import { successOf } from './utils'
 import { pipe } from '../../utils/flow'
 
 export const getSemigroup: {
-  <E, A>(Semigroup: Semigroup<A>): Semigroup<Result<E, A>>
+  <A, E>(Semigroup: Semigroup<A>): Semigroup<Result<A, E>>
 } = Semigroup => ({
   combine: my => mx => {
     if (isFailure(mx) && isFailure(my)) {

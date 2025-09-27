@@ -8,17 +8,13 @@ import { constant } from '../../utils/constant'
 import { flow } from '../../utils/flow'
 
 export const getOrElse: {
-  <Collectable, Out>(
-    onFailure: (e: Collectable) => Out,
-  ): <In>(self: SyncResult<Collectable, In>) => Sync<In | Out>
+  <B, E>(onFailure: (e: E) => B): <A>(self: SyncResult<A, E>) => Sync<A | B>
 } = onFailure => match({ onFailure, onSuccess: identity })
 
 export const orElse: {
-  <Collectable1, Out>(
-    onFailure: SyncResult<Collectable1, Out>,
-  ): <Collectable2, In>(
-    self: SyncResult<Collectable2, In>,
-  ) => SyncResult<Collectable1 | Collectable2, In | Out>
+  <B, E1>(
+    onFailure: SyncResult<B, E1>,
+  ): <A, E2>(self: SyncResult<A, E2>) => SyncResult<A | B, E1 | E2>
 } = onFailure =>
   flow(
     execute,
@@ -29,11 +25,9 @@ export const orElse: {
   )
 
 export const catchAll: {
-  <Collectable1, Collectable2, Out>(
-    onFailure: (e: Collectable1) => SyncResult<Collectable2, Out>,
-  ): <In>(
-    self: SyncResult<Collectable1, In>,
-  ) => SyncResult<Collectable2, In | Out>
+  <B, E1, E2>(
+    onFailure: (e: E1) => SyncResult<B, E2>,
+  ): <A>(self: SyncResult<A, E1>) => SyncResult<A | B, E2>
 } = onFailure =>
   flow(
     execute,

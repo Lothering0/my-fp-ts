@@ -2,33 +2,44 @@ import { Hkt } from '../../typeclasses/Hkt'
 import { hole } from '../../utils/hole'
 
 export interface ResultHkt extends Hkt {
-  readonly Type: Result<this['Collectable'], this['In']>
+  readonly Type: Result<this['In'], this['Collectable']>
 }
 
-export type Result<E, A> = (Failure<E> | Success<A>) & {
-  readonly [Symbol.iterator]: ResultGenerator<E, A>
+export type Result<A, E = never> = (Success<A> | Failure<E>) & {
+  readonly [Symbol.iterator]: ResultGenerator<A, E>
 }
 
-export interface ResultGenerator<E, A> {
+export interface ResultGenerator<A, E> {
   (): Generator<E, A>
-}
-
-export interface Failure<E> {
-  readonly _id: 'Result'
-  readonly _tag: 'Failure'
-  readonly failure: E
-  readonly [Symbol.iterator]: ResultGenerator<E, never>
 }
 
 export interface Success<A> {
   readonly _id: 'Result'
   readonly _tag: 'Success'
   readonly success: A
-  readonly [Symbol.iterator]: ResultGenerator<never, A>
+  readonly [Symbol.iterator]: ResultGenerator<A, never>
 }
 
+export interface Failure<E> {
+  readonly _id: 'Result'
+  readonly _tag: 'Failure'
+  readonly failure: E
+  readonly [Symbol.iterator]: ResultGenerator<never, E>
+}
+
+export const succeed: {
+  <A>(success: A): Result<A>
+} = success => ({
+  _id: 'Result',
+  _tag: 'Success',
+  success: success,
+  *[Symbol.iterator]() {
+    return success
+  },
+})
+
 export const fail: {
-  <Failure>(failure: Failure): Result<Failure, never>
+  <E>(failure: E): Result<never, E>
 } = failure => ({
   _id: 'Result',
   _tag: 'Failure',
@@ -39,19 +50,8 @@ export const fail: {
   },
 })
 
-export const succeed: {
-  <Success>(success: Success): Result<never, Success>
-} = success => ({
-  _id: 'Result',
-  _tag: 'Success',
-  success: success,
-  *[Symbol.iterator]() {
-    return success
-  },
-})
-
 export const gen: {
-  <E, A>(generator: ResultGenerator<E, A>): Result<E, A>
+  <A, E>(generator: ResultGenerator<A, E>): Result<A, E>
 } = generator => {
   const { value, done } = generator().next()
   if (!done) {

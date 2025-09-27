@@ -31,21 +31,21 @@ export const TappableBoth: TappableBoth_.TappableBoth<ResultHkt> = {
 }
 
 export const tap: {
-  <E1, A>(
-    f: (a: A) => Result<E1, unknown>,
-  ): <E2>(self: Result<E2, A>) => Result<E1 | E2, A>
+  <A, E1>(
+    f: (a: A) => Result<unknown, E1>,
+  ): <E2>(self: Result<A, E2>) => Result<A, E1 | E2>
 } = Tappable.tap
 
 export const tapSync: {
-  <A>(f: (a: A) => Sync.Sync<unknown>): <E>(self: Result<E, A>) => Result<E, A>
+  <A>(f: (a: A) => Sync.Sync<unknown>): <E>(self: Result<A, E>) => Result<A, E>
 } = Tappable.tapSync
 
 export const tapLeft: {
   <E1, E2>(
-    f: (e: E1) => Result<E2, unknown>,
-  ): <A>(self: Result<E1, A>) => Result<E1 | E2, A>
+    f: (e: E1) => Result<unknown, E2>,
+  ): <A>(self: Result<A, E1>) => Result<A, E1 | E2>
 } = TappableBoth.tapLeft
 
 export const tapLeftSync: {
-  <E>(f: (e: E) => Sync.Sync<unknown>): <A>(self: Result<E, A>) => Result<E, A>
+  <E>(f: (e: E) => Sync.Sync<unknown>): <A>(self: Result<A, E>) => Result<A, E>
 } = TappableBoth.tapLeftSync
