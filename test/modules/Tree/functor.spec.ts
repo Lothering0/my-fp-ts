@@ -1,25 +1,25 @@
-import { number, pipe, tree } from '../../../src'
+import { Number, pipe, Tree } from '../../../src'
 import { describeFunctorLaws } from '../../_utils/describeFunctorLaws'
 
-describeFunctorLaws(tree.Functor, tree.getEquivalence(number.Equivalence), [
-  tree.make(1),
-  tree.make(1, [tree.make(2), tree.make(3)]),
-  tree.make(1, [tree.make(2, [tree.make(4)]), tree.make(3)]),
+describeFunctorLaws(Tree.Functor, Tree.getEquivalence(Number.Equivalence), [
+  Tree.make(1),
+  Tree.make(1, [Tree.make(2), Tree.make(3)]),
+  Tree.make(1, [Tree.make(2, [Tree.make(4)]), Tree.make(3)]),
 ])
 
 describe('functor', () => {
-  const Equivalence = tree.getEquivalence(number.Equivalence)
+  const Equivalence = Tree.getEquivalence(Number.Equivalence)
 
   describe('map', () => {
     it('should apply function to value of each node', () => {
       const n = 1
       pipe(
-        tree.make(1, [tree.make(2, [tree.make(4)]), tree.make(3)]),
-        tree.map(number.add(n)),
+        Tree.make(1, [Tree.make(2, [Tree.make(4)]), Tree.make(3)]),
+        Tree.map(Number.add(n)),
         Equivalence.equals(
-          tree.make(number.add(1)(n), [
-            tree.make(number.add(2)(n), [tree.make(number.add(4)(n))]),
-            tree.make(number.add(3)(n)),
+          Tree.make(Number.add(1)(n), [
+            Tree.make(Number.add(2)(n), [Tree.make(Number.add(4)(n))]),
+            Tree.make(Number.add(3)(n)),
           ]),
         ),
         expect,

@@ -1,10 +1,10 @@
-import * as functor from '../../typeclasses/Functor'
+import * as Functor_ from '../../typeclasses/Functor'
 import { OptionHkt, Option, some } from './option'
 import { flow } from '../../utils/flow'
 import { match } from './matchers'
 import { zero } from './alternative'
 
-export const Functor: functor.Functor<OptionHkt> = {
+export const Functor: Functor_.Functor<OptionHkt> = {
   map: fab =>
     match({
       onNone: zero,

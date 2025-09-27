@@ -1,3 +1,4 @@
+export * from './boolean'
 export * from './utils'
 export * from './matchers'
 export * from './show'

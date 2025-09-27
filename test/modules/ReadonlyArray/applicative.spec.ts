@@ -1,9 +1,9 @@
-import { number, array } from '../../../src'
+import { Number, Array } from '../../../src'
 import { describeApplicativeLaws } from '../../_utils/describeApplicativeLaws'
 
 describeApplicativeLaws(
-  array.Applicative,
-  array.getEquivalence(number.Equivalence),
+  Array.Applicative,
+  Array.getEquivalence(Number.Equivalence),
   [[], [1], [1, 2, 3]],
-  [[], [number.add(1)], [number.add(3), number.add(4)]],
+  [[], [Number.add(1)], [Number.add(3), Number.add(4)]],
 )

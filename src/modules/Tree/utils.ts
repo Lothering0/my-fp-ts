@@ -1,4 +1,4 @@
-import * as iterable from '../Iterable'
+import * as Iterable from '../Iterable'
 import { isNonEmpty } from '../ReadonlyArray'
 import { Forest, Tree } from './tree'
 import { pipe } from '../../utils/flow'
@@ -25,4 +25,4 @@ export const make: {
 })
 
 export const hasForest = <A>(tree: Tree<A>): boolean =>
-  pipe(tree, forestOf, iterable.toReadonlyArray, isNonEmpty)
+  pipe(tree, forestOf, Iterable.toReadonlyArray, isNonEmpty)

@@ -1,4 +1,4 @@
-import * as iterable from '../Iterable'
+import * as Iterable from '../Iterable'
 import { Tree } from './tree'
 import { Equivalence } from '../../typeclasses/Equivalence'
 import { forestOf, valueOf } from './utils'
@@ -11,7 +11,7 @@ export const getEquivalence: {
     const IterableEquivalence = pipe(
       Equivalence,
       getEquivalence,
-      iterable.getEquivalence,
+      Iterable.getEquivalence,
     )
     const areValuesEqual = pipe(mx, valueOf, Equivalence.equals(valueOf(my)))
     const areForestsEqual = pipe(

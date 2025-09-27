@@ -1,5 +1,5 @@
-import * as alt from '../../typeclasses/Alt'
-import * as result from '../Result'
+import * as Alt_ from '../../typeclasses/Alt'
+import * as Result from '../Result'
 import { Sync } from '../Sync'
 import { identity } from '../Identity'
 import { SyncResult, SyncResultHkt, execute, succeed } from './sync-result'
@@ -22,7 +22,7 @@ export const orElse: {
 } = onFailure =>
   flow(
     execute,
-    result.match({
+    Result.match({
       onFailure: constant(onFailure),
       onSuccess: succeed,
     }),
@@ -37,12 +37,12 @@ export const catchAll: {
 } = onFailure =>
   flow(
     execute,
-    result.match({
+    Result.match({
       onFailure,
       onSuccess: succeed,
     }),
   )
 
-export const Alt: alt.Alt<SyncResultHkt> = {
+export const Alt: Alt_.Alt<SyncResultHkt> = {
   orElse,
 }

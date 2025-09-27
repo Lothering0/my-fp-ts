@@ -1,17 +1,17 @@
-import { asyncOption, option } from '../../../src'
+import { AsyncOption, Option } from '../../../src'
 
 describe('separate', () => {
   it('should call `AsyncOption` instance only once', async () => {
-    const fa: asyncOption.AsyncOption<never> = jest.fn(
+    const fa: AsyncOption.AsyncOption<never> = jest.fn(
       () =>
         new Promise(resolve => {
           setTimeout(() => {
-            resolve(option.none)
+            resolve(Option.none)
           })
         }),
     )
 
-    const [left, right] = asyncOption.separate(fa)
+    const [left, right] = AsyncOption.separate(fa)
     await left()
     await right()
 

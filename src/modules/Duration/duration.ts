@@ -1,4 +1,4 @@
-import * as record from '../ReadonlyRecord'
+import * as Record from '../ReadonlyRecord'
 
 export const durationUnitsFull = [
   'milliseconds',
@@ -17,7 +17,7 @@ export const durationUnits = [
 
 type DurationUnit = (typeof durationUnits)[number]
 
-export type Duration = Partial<record.ReadonlyRecord<DurationUnit, number>>
+export type Duration = Partial<Record.ReadonlyRecord<DurationUnit, number>>
 
 // NOTICE: too detailed template typization leads to performance issues
 /* type DurationTemplateMilliseconds = `${number} ${"milliseconds" | "ms"}`

@@ -1,9 +1,9 @@
-import * as equivalence from '../../typeclasses/Equivalence'
+import * as Equivalence from '../../typeclasses/Equivalence'
 
 export const getEquivalence: {
   <A>(
-    Equivalence: equivalence.Equivalence<A>,
-  ): equivalence.Equivalence<Iterable<A>>
+    Equivalence: Equivalence.Equivalence<A>,
+  ): Equivalence.Equivalence<Iterable<A>>
 } = Equivalence => ({
   equals: second => first => {
     const firstIterator = first[Symbol.iterator]()

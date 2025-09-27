@@ -1,4 +1,4 @@
-import * as option from '../Option'
+import * as Option from '../Option'
 import { Semigroup } from '../../typeclasses/Semigroup'
 import { pipe } from '../../utils/flow'
 import { filterMap } from './filterable'
@@ -13,7 +13,7 @@ export const getIntersectionSemigroup: {
     pipe(
       xs,
       filterMap((x, k) =>
-        pipe(ys, lookup(k), option.map(Semigroup.combine(x))),
+        pipe(ys, lookup(k), Option.map(Semigroup.combine(x))),
       ),
     ),
 })

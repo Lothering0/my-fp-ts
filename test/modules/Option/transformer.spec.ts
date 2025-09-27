@@ -1,63 +1,63 @@
-import { option, array, pipe, number, string } from '../../../src'
+import { Option, Array, pipe, Number, String } from '../../../src'
 
 describe('transformer', () => {
-  const arrayOfOptions = option.transform(array.Monad)
+  const ArrayOfOptions = Option.transform(Array.Monad)
 
   it('should correctly transform `ReadonlyArray` monad', () => {
     const EquivalenceNumber = pipe(
-      number.Equivalence,
-      option.getEquivalence,
-      array.getEquivalence,
+      Number.Equivalence,
+      Option.getEquivalence,
+      Array.getEquivalence,
     )
     const EquivalenceString = pipe(
-      string.Equivalence,
-      option.getEquivalence,
-      array.getEquivalence,
+      String.Equivalence,
+      Option.getEquivalence,
+      Array.getEquivalence,
     )
 
     pipe(
       1,
-      arrayOfOptions.of,
-      EquivalenceNumber.equals([option.some(1)]),
+      ArrayOfOptions.of,
+      EquivalenceNumber.equals([Option.some(1)]),
       expect,
     ).toBe(true)
 
     pipe(
       1,
-      arrayOfOptions.of,
-      arrayOfOptions.map(String),
-      EquivalenceString.equals([option.some('1')]),
+      ArrayOfOptions.of,
+      ArrayOfOptions.map(String.String),
+      EquivalenceString.equals([Option.some('1')]),
       expect,
     ).toBe(true)
   })
 
   it('should correctly compose multiple monads', () => {
-    const arrayOfOptionOption = option.transform(arrayOfOptions.Monad)
+    const ArrayOfOptionOption = Option.transform(ArrayOfOptions.Monad)
     const EquivalenceNumber = pipe(
-      number.Equivalence,
-      option.getEquivalence,
-      option.getEquivalence,
-      array.getEquivalence,
+      Number.Equivalence,
+      Option.getEquivalence,
+      Option.getEquivalence,
+      Array.getEquivalence,
     )
     const EquivalenceString = pipe(
-      string.Equivalence,
-      option.getEquivalence,
-      option.getEquivalence,
-      array.getEquivalence,
+      String.Equivalence,
+      Option.getEquivalence,
+      Option.getEquivalence,
+      Array.getEquivalence,
     )
 
     pipe(
       1,
-      arrayOfOptionOption.of,
-      EquivalenceNumber.equals([pipe(1, option.some, option.some)]),
+      ArrayOfOptionOption.of,
+      EquivalenceNumber.equals([pipe(1, Option.some, Option.some)]),
       expect,
     ).toBe(true)
 
     pipe(
       1,
-      arrayOfOptionOption.of,
-      arrayOfOptionOption.map(String),
-      EquivalenceString.equals([pipe('1', option.some, option.some)]),
+      ArrayOfOptionOption.of,
+      ArrayOfOptionOption.map(String.String),
+      EquivalenceString.equals([pipe('1', Option.some, Option.some)]),
       expect,
     ).toBe(true)
   })

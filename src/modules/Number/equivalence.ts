@@ -1,6 +1,6 @@
-import * as equivalence from '../../typeclasses/Equivalence'
+import * as Equivalence_ from '../../typeclasses/Equivalence'
 
-export const Equivalence: equivalence.Equivalence<number> =
-  equivalence.EquivalenceStrict
+export const Equivalence: Equivalence_.Equivalence<number> =
+  Equivalence_.EquivalenceStrict
 
 export const { equals } = Equivalence

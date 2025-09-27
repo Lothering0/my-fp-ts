@@ -1,10 +1,10 @@
-import { option, syncOption } from '../../../src'
+import { Option, SyncOption } from '../../../src'
 
 describe('separate', () => {
   it('should call `SyncOption` instance only once', () => {
-    const fa: syncOption.SyncOption<never> = jest.fn(() => option.none)
+    const fa: SyncOption.SyncOption<never> = jest.fn(() => Option.none)
 
-    const [left, right] = syncOption.separate(fa)
+    const [left, right] = SyncOption.separate(fa)
     left()
     right()
 

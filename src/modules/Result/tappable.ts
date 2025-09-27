@@ -1,5 +1,5 @@
-import * as tappableBoth from '../../typeclasses/TappableBoth'
-import * as sync from '../Sync'
+import * as TappableBoth_ from '../../typeclasses/TappableBoth'
+import * as Sync from '../Sync'
 import { create } from '../../typeclasses/Tappable'
 import { Monad } from './monad'
 import { fail, Result, ResultHkt, succeed } from './result'
@@ -8,7 +8,7 @@ import { match } from './matchers'
 
 export const Tappable = create(Monad)
 
-export const TappableBoth: tappableBoth.TappableBoth<ResultHkt> = {
+export const TappableBoth: TappableBoth_.TappableBoth<ResultHkt> = {
   ...Tappable,
   tapLeft: f =>
     match({
@@ -25,7 +25,7 @@ export const TappableBoth: tappableBoth.TappableBoth<ResultHkt> = {
     }),
   tapLeftSync: f =>
     match({
-      onFailure: e => pipe(e, f, sync.execute, () => fail(e)),
+      onFailure: e => pipe(e, f, Sync.execute, () => fail(e)),
       onSuccess: succeed,
     }),
 }
@@ -37,7 +37,7 @@ export const tap: {
 } = Tappable.tap
 
 export const tapSync: {
-  <A>(f: (a: A) => sync.Sync<unknown>): <E>(self: Result<E, A>) => Result<E, A>
+  <A>(f: (a: A) => Sync.Sync<unknown>): <E>(self: Result<E, A>) => Result<E, A>
 } = Tappable.tapSync
 
 export const tapLeft: {
@@ -47,5 +47,5 @@ export const tapLeft: {
 } = TappableBoth.tapLeft
 
 export const tapLeftSync: {
-  <E>(f: (e: E) => sync.Sync<unknown>): <A>(self: Result<E, A>) => Result<E, A>
+  <E>(f: (e: E) => Sync.Sync<unknown>): <A>(self: Result<E, A>) => Result<E, A>
 } = TappableBoth.tapLeftSync

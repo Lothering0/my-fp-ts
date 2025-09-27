@@ -1,7 +1,7 @@
-import { number, pipe, array } from '../../../src'
+import { Number, pipe, Array } from '../../../src'
 
 describe('getIntersectionSemigroup', () => {
-  const Semigroup = array.getIntersectionSemigroup(number.Equivalence)
+  const Semigroup = Array.getIntersectionSemigroup(Number.Equivalence)
 
   it('should return all elements that contained by both arrays', () => {
     pipe([1, 2, 3], Semigroup.combine([2, 3]), expect).toEqual([2, 3])

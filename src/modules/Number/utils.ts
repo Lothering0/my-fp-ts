@@ -1,5 +1,5 @@
-import * as option from '../Option'
-import * as boolean from '../Boolean'
+import * as Option from '../Option'
+import * as Boolean from '../Boolean'
 import { Predicate } from '../Predicate'
 import { flow } from '../../utils/flow'
 import { constant } from '../../utils/constant'
@@ -23,8 +23,8 @@ export const divide: {
 } = y => x => x / y
 
 export const divideSafe: {
-  (y: number): (x: number) => option.Option<number>
-} = y => x => (y === 0 ? option.none : option.some(x / y))
+  (y: number): (x: number) => Option.Option<number>
+} = y => x => (y === 0 ? Option.none : Option.some(x / y))
 
 export const lessThan: {
   (y: number): (x: number) => boolean
@@ -44,7 +44,7 @@ export const moreThanOrEquals: {
 
 export const isEven: Predicate<number> = x => x % 2 === 0
 
-export const isOdd: Predicate<number> = flow(isEven, boolean.not)
+export const isOdd: Predicate<number> = flow(isEven, Boolean.not)
 
 export const toNonNegative: {
   (self: number): number

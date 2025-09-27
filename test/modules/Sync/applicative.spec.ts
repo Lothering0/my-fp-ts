@@ -1,12 +1,12 @@
-import { identity, number, pipe, sync } from '../../../src'
+import { identity, Number, pipe, Sync } from '../../../src'
 
 describe('applicative', () => {
   describe('ap', () => {
     it('should satisfy identity law', () => {
       const a = 1
-      const fa: sync.Sync<typeof a> = jest.fn(sync.of(a))
+      const fa: Sync.Sync<typeof a> = jest.fn(Sync.of(a))
 
-      const result = pipe(identity, sync.of, sync.ap(fa), sync.execute)
+      const result = pipe(identity, Sync.of, Sync.ap(fa), Sync.execute)
 
       expect(result).toEqual(a)
       expect(fa).toHaveBeenCalledTimes(1)
@@ -14,13 +14,13 @@ describe('applicative', () => {
 
     it('should satisfy homomorphism law', () => {
       const a = 1
-      const ab = number.add(5)
+      const ab = Number.add(5)
 
-      const fa: sync.Sync<typeof a> = jest.fn(sync.of(a))
-      const fab: sync.Sync<typeof ab> = jest.fn(sync.of(ab))
+      const fa: Sync.Sync<typeof a> = jest.fn(Sync.of(a))
+      const fab: Sync.Sync<typeof ab> = jest.fn(Sync.of(ab))
 
-      const result1 = pipe(fab, sync.ap(fa), sync.execute)
-      const result2 = pipe(a, ab, sync.of, sync.execute)
+      const result1 = pipe(fab, Sync.ap(fa), Sync.execute)
+      const result2 = pipe(a, ab, Sync.of, Sync.execute)
 
       expect(result1).toEqual(result2)
       expect(fa).toHaveBeenCalledTimes(1)
@@ -29,13 +29,13 @@ describe('applicative', () => {
 
     it('should satisfy interchange law', () => {
       const a = 1
-      const ab = number.add(5)
+      const ab = Number.add(5)
 
-      const fa: sync.Sync<typeof a> = jest.fn(sync.of(a))
-      const fab: sync.Sync<typeof ab> = jest.fn(sync.of(ab))
+      const fa: Sync.Sync<typeof a> = jest.fn(Sync.of(a))
+      const fab: Sync.Sync<typeof ab> = jest.fn(Sync.of(ab))
 
-      const result1 = pipe(fab, sync.ap(fa), sync.execute)
-      const result2 = pipe(sync.ap(fab)(sync.of(ab => ab(a))), sync.execute)
+      const result1 = pipe(fab, Sync.ap(fa), Sync.execute)
+      const result2 = pipe(Sync.ap(fab)(Sync.of(ab => ab(a))), Sync.execute)
 
       expect(result1).toEqual(result2)
       expect(fa).toHaveBeenCalledTimes(1)

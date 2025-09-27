@@ -1,31 +1,31 @@
-import { identity, number, option, pipe, syncOption } from '../../../src'
+import { identity, Number, Option, pipe, SyncOption } from '../../../src'
 
 describe('applicative', () => {
   describe('ap', () => {
     it('should satisfy identity law', () => {
       const a = 1
-      const fa: syncOption.SyncOption<typeof a> = jest.fn(syncOption.of(a))
+      const fa: SyncOption.SyncOption<typeof a> = jest.fn(SyncOption.of(a))
 
       const result = pipe(
         identity,
-        syncOption.of,
-        syncOption.ap(fa),
-        syncOption.execute,
+        SyncOption.of,
+        SyncOption.ap(fa),
+        SyncOption.execute,
       )
 
-      expect(result).toEqual<option.Option<typeof a>>(option.some(a))
+      expect(result).toEqual<Option.Option<typeof a>>(Option.some(a))
       expect(fa).toHaveBeenCalledTimes(1)
     })
 
     it('should satisfy homomorphism law', () => {
       const a = 1
-      const ab = number.add(5)
+      const ab = Number.add(5)
 
-      const fa: syncOption.SyncOption<typeof a> = jest.fn(syncOption.of(a))
-      const fab: syncOption.SyncOption<typeof ab> = jest.fn(syncOption.of(ab))
+      const fa: SyncOption.SyncOption<typeof a> = jest.fn(SyncOption.of(a))
+      const fab: SyncOption.SyncOption<typeof ab> = jest.fn(SyncOption.of(ab))
 
-      const result1 = pipe(fab, syncOption.ap(fa), syncOption.execute)
-      const result2 = pipe(a, ab, syncOption.of, syncOption.execute)
+      const result1 = pipe(fab, SyncOption.ap(fa), SyncOption.execute)
+      const result2 = pipe(a, ab, SyncOption.of, SyncOption.execute)
 
       expect(result1).toEqual(result2)
       expect(fa).toHaveBeenCalledTimes(1)
@@ -34,15 +34,15 @@ describe('applicative', () => {
 
     it('should satisfy interchange law', () => {
       const a = 1
-      const ab = number.add(5)
+      const ab = Number.add(5)
 
-      const fa: syncOption.SyncOption<typeof a> = jest.fn(syncOption.of(a))
-      const fab: syncOption.SyncOption<typeof ab> = jest.fn(syncOption.of(ab))
+      const fa: SyncOption.SyncOption<typeof a> = jest.fn(SyncOption.of(a))
+      const fab: SyncOption.SyncOption<typeof ab> = jest.fn(SyncOption.of(ab))
 
-      const result1 = pipe(fab, syncOption.ap(fa), syncOption.execute)
+      const result1 = pipe(fab, SyncOption.ap(fa), SyncOption.execute)
       const result2 = pipe(
-        syncOption.ap(fab)(syncOption.of(ab => ab(a))),
-        syncOption.execute,
+        SyncOption.ap(fab)(SyncOption.of(ab => ab(a))),
+        SyncOption.execute,
       )
 
       expect(result1).toEqual(result2)
@@ -51,14 +51,14 @@ describe('applicative', () => {
     })
 
     it('should return function containing `none` if `none` was applied to function', () => {
-      const ab = number.add(5)
+      const ab = Number.add(5)
 
-      const fa: syncOption.SyncOption<never> = jest.fn(syncOption.none)
-      const fab: syncOption.SyncOption<typeof ab> = jest.fn(syncOption.of(ab))
+      const fa: SyncOption.SyncOption<never> = jest.fn(SyncOption.none)
+      const fab: SyncOption.SyncOption<typeof ab> = jest.fn(SyncOption.of(ab))
 
-      const result = pipe(fab, syncOption.ap(fa), syncOption.execute)
+      const result = pipe(fab, SyncOption.ap(fa), SyncOption.execute)
 
-      expect(result).toEqual<option.Option<never>>(option.none)
+      expect(result).toEqual<Option.Option<never>>(Option.none)
       expect(fa).toHaveBeenCalledTimes(1)
       expect(fab).toHaveBeenCalledTimes(1)
     })
@@ -66,23 +66,23 @@ describe('applicative', () => {
     it('should return function containing `none` if value was applied to `none`', () => {
       const a = 1
 
-      const fa: syncOption.SyncOption<typeof a> = jest.fn(syncOption.of(a))
-      const fab: syncOption.SyncOption<never> = jest.fn(syncOption.none)
+      const fa: SyncOption.SyncOption<typeof a> = jest.fn(SyncOption.of(a))
+      const fab: SyncOption.SyncOption<never> = jest.fn(SyncOption.none)
 
-      const result = pipe(fab, syncOption.ap(fa), syncOption.execute)
+      const result = pipe(fab, SyncOption.ap(fa), SyncOption.execute)
 
-      expect(result).toEqual<option.Option<never>>(option.none)
+      expect(result).toEqual<Option.Option<never>>(Option.none)
       expect(fa).toHaveBeenCalledTimes(1)
       expect(fab).toHaveBeenCalledTimes(1)
     })
 
     it('should return function containing `none` if `none` was applied to `none`', () => {
-      const fa: syncOption.SyncOption<never> = jest.fn(syncOption.none)
-      const fab: syncOption.SyncOption<never> = jest.fn(syncOption.none)
+      const fa: SyncOption.SyncOption<never> = jest.fn(SyncOption.none)
+      const fab: SyncOption.SyncOption<never> = jest.fn(SyncOption.none)
 
-      const result = pipe(fab, syncOption.ap(fa), syncOption.execute)
+      const result = pipe(fab, SyncOption.ap(fa), SyncOption.execute)
 
-      expect(result).toEqual<option.Option<never>>(option.none)
+      expect(result).toEqual<Option.Option<never>>(Option.none)
       expect(fa).toHaveBeenCalledTimes(1)
       expect(fab).toHaveBeenCalledTimes(1)
     })

@@ -1,12 +1,12 @@
-import { identity, number, pipe, state } from '../../../src'
+import { identity, Number, pipe, State } from '../../../src'
 
 describe('applicative', () => {
   describe('ap', () => {
     it('should satisfy identity law', () => {
       const a = 1
-      const fa = jest.fn(state.of(a))
+      const fa = jest.fn(State.of(a))
 
-      const result = pipe(identity, state.of, state.ap(fa), state.evaluate(''))
+      const result = pipe(identity, State.of, State.ap(fa), State.evaluate(''))
 
       expect(result).toEqual(a)
       expect(fa).toHaveBeenCalledTimes(1)
@@ -14,13 +14,13 @@ describe('applicative', () => {
 
     it('should satisfy homomorphism law', () => {
       const a = 1
-      const ab = number.add(5)
+      const ab = Number.add(5)
 
-      const fa: state.State<string, typeof a> = jest.fn(state.of(a))
-      const fab: state.State<string, typeof ab> = jest.fn(state.of(ab))
+      const fa: State.State<string, typeof a> = jest.fn(State.of(a))
+      const fab: State.State<string, typeof ab> = jest.fn(State.of(ab))
 
-      const result1 = pipe(fab, state.ap(fa), state.evaluate(''))
-      const result2 = pipe(a, ab, state.of, state.evaluate(''))
+      const result1 = pipe(fab, State.ap(fa), State.evaluate(''))
+      const result2 = pipe(a, ab, State.of, State.evaluate(''))
 
       expect(result1).toEqual(result2)
       expect(fa).toHaveBeenCalledTimes(1)
@@ -29,15 +29,15 @@ describe('applicative', () => {
 
     it('should satisfy interchange law', () => {
       const a = 1
-      const ab = number.add(5)
+      const ab = Number.add(5)
 
-      const fa: state.State<string, typeof a> = jest.fn(state.of(a))
-      const fab: state.State<string, typeof ab> = jest.fn(state.of(ab))
+      const fa: State.State<string, typeof a> = jest.fn(State.of(a))
+      const fab: State.State<string, typeof ab> = jest.fn(State.of(ab))
 
-      const result1 = pipe(fab, state.ap(fa), state.evaluate(''))
+      const result1 = pipe(fab, State.ap(fa), State.evaluate(''))
       const result2 = pipe(
-        state.ap(fab)(state.of(ab => ab(a))),
-        state.evaluate(''),
+        State.ap(fab)(State.of(ab => ab(a))),
+        State.evaluate(''),
       )
 
       expect(result1).toEqual(result2)

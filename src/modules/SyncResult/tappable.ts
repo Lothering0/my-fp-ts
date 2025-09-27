@@ -1,5 +1,5 @@
-import * as result from '../Result'
-import * as tappableBoth from '../../typeclasses/TappableBoth'
+import * as Result from '../Result'
+import * as TappableBoth_ from '../../typeclasses/TappableBoth'
 import { Sync } from '../Sync'
 import { Monad } from './monad'
 import { execute, fromSync, SyncResult, SyncResultHkt } from './sync-result'
@@ -8,33 +8,33 @@ import { create } from '../../typeclasses/Tappable'
 
 export const Tappable = create(Monad)
 
-export const TappableBoth: tappableBoth.TappableBoth<SyncResultHkt> = {
+export const TappableBoth: TappableBoth_.TappableBoth<SyncResultHkt> = {
   ...Tappable,
   tapLeft: f => self => () =>
     pipe(
       self,
       execute,
-      result.match({
+      Result.match({
         onFailure: e =>
           pipe(
             e,
             f,
             execute,
-            result.match({
-              onFailure: result.fail,
-              onSuccess: () => result.fail(e),
+            Result.match({
+              onFailure: Result.fail,
+              onSuccess: () => Result.fail(e),
             }),
           ),
-        onSuccess: result.succeed,
+        onSuccess: Result.succeed,
       }),
     ),
   tapLeftSync: f => self => () =>
     pipe(
       self,
       execute,
-      result.match({
-        onFailure: e => pipe(e, f, fromSync, execute, () => result.fail(e)),
-        onSuccess: result.succeed,
+      Result.match({
+        onFailure: e => pipe(e, f, fromSync, execute, () => Result.fail(e)),
+        onSuccess: Result.succeed,
       }),
     ),
 }
@@ -53,9 +53,9 @@ export const tapSync: {
 
 export const tapResult: {
   <E1, A>(
-    f: (a: A) => result.Result<E1, unknown>,
+    f: (a: A) => Result.Result<E1, unknown>,
   ): <E2>(self: SyncResult<E2, A>) => SyncResult<E1 | E2, A>
-} = f => self => () => pipe(self, execute, result.tap(f))
+} = f => self => () => pipe(self, execute, Result.tap(f))
 
 export const tapLeft: {
   <E1, E2>(
@@ -71,22 +71,22 @@ export const tapLeftSync: {
 
 export const tapLeftResult: {
   <E1, E2>(
-    f: (e: E1) => result.Result<E2, unknown>,
+    f: (e: E1) => Result.Result<E2, unknown>,
   ): <A>(self: SyncResult<E1, A>) => SyncResult<E1 | E2, A>
 } = f => self => () =>
   pipe(
     self,
     execute,
-    result.match({
+    Result.match({
       onFailure: e =>
         pipe(
           e,
           f,
-          result.match({
-            onFailure: result.fail,
-            onSuccess: () => result.fail(e),
+          Result.match({
+            onFailure: Result.fail,
+            onSuccess: () => Result.fail(e),
           }),
         ),
-      onSuccess: result.succeed,
+      onSuccess: Result.succeed,
     }),
   )

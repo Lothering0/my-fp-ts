@@ -1,4 +1,4 @@
-import * as result from '../Result'
+import * as Result from '../Result'
 import { flow } from '../../utils/flow'
 import { isNull, isUndefined } from '../../utils/typeChecks'
 import { create, Schema } from './schema'
@@ -8,17 +8,17 @@ import { message } from './process'
 export const Null: Schema<null> = create({
   proceed: x => {
     if (!isNull(x)) {
-      return result.fail([message`value ${x} is not a null`])
+      return Result.fail([message`value ${x} is not a null`])
     }
-    return result.succeed(x)
+    return Result.succeed(x)
   },
 })
 
 export const Undefined: Schema<undefined> = create(x => {
   if (!isUndefined(x)) {
-    return result.fail([message`value ${x} is not undefined`])
+    return Result.fail([message`value ${x} is not undefined`])
   }
-  return result.succeed(x)
+  return Result.succeed(x)
 })
 
 export const Nullable: {

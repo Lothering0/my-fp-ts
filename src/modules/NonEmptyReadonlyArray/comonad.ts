@@ -1,4 +1,4 @@
-import * as comonad from '../../typeclasses/Comonad'
+import * as Comonad_ from '../../typeclasses/Comonad'
 import {
   NonEmptyReadonlyArray,
   NonEmptyReadonlyArrayHkt,
@@ -6,7 +6,7 @@ import {
 import { head } from './utils'
 import { Extendable } from './extendable'
 
-export const Comonad: comonad.Comonad<NonEmptyReadonlyArrayHkt> = {
+export const Comonad: Comonad_.Comonad<NonEmptyReadonlyArrayHkt> = {
   ...Extendable,
   extract: head,
 }

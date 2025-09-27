@@ -1,4 +1,4 @@
-import { doWhile, option, array, sync } from '../../src'
+import { doWhile, Option, Array, Sync } from '../../src'
 
 describe('getDoWhile', () => {
   it('should correctly run', () => {
@@ -6,10 +6,10 @@ describe('getDoWhile', () => {
     const xs: number[] = []
 
     const unsafeInsert: {
-      <A>(xs: A[], x: A): sync.Sync<void>
+      <A>(xs: A[], x: A): Sync.Sync<void>
     } = (xs, x) => jest.fn(() => xs.push(x))
-    const p = jest.fn(() => array.length(xs) < iterationsCount)
-    const f: sync.Sync<void> = unsafeInsert(xs, 0)
+    const p = jest.fn(() => Array.length(xs) < iterationsCount)
+    const f: Sync.Sync<void> = unsafeInsert(xs, 0)
 
     const result = doWhile(f)(p)
 
@@ -17,6 +17,6 @@ describe('getDoWhile', () => {
     expect(f).toHaveBeenCalledTimes(iterationsCount)
 
     expect(xs).toEqual([0, 0, 0, 0, 0])
-    expect(result).toEqual(option.some(iterationsCount))
+    expect(result).toEqual(Option.some(iterationsCount))
   })
 })

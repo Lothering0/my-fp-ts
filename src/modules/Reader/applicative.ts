@@ -1,10 +1,10 @@
-import * as applicative from '../../typeclasses/Applicative'
+import * as Applicative_ from '../../typeclasses/Applicative'
 import { constant } from '../../utils/constant'
 import { pipe } from '../../utils/flow'
 import { Functor } from './functor'
 import { Reader, ReaderHkt } from './reader'
 
-export const Applicative = applicative.create<ReaderHkt>(Functor, {
+export const Applicative = Applicative_.create<ReaderHkt>(Functor, {
   of: constant,
   ap: fa => self => r => pipe(r, fa, self(r)),
 })

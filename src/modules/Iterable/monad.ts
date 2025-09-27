@@ -1,10 +1,10 @@
-import * as monad from '../../typeclasses/Monad'
-import * as monadWithIndex from '../../typeclasses/MonadWithIndex'
+import * as Monad_ from '../../typeclasses/Monad'
+import * as MonadWithIndex_ from '../../typeclasses/MonadWithIndex'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
 import { Applicative, ApplicativeWithIndex } from './applicative'
 import { IterableHkt } from './iterable'
 
-export const Monad = monad.create<IterableHkt>(Applicative, {
+export const Monad = Monad_.create<IterableHkt>(Applicative, {
   flat: self => ({
     *[Symbol.iterator]() {
       for (const iterable of self) {
@@ -14,7 +14,7 @@ export const Monad = monad.create<IterableHkt>(Applicative, {
   }),
 })
 
-export const MonadWithIndex = monadWithIndex.create<IterableHkt, number>(
+export const MonadWithIndex = MonadWithIndex_.create<IterableHkt, number>(
   ApplicativeWithIndex,
   Monad,
 )

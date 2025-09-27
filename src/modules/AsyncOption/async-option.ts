@@ -1,7 +1,7 @@
-import * as async from '../Async'
-import * as asyncResult from '../AsyncResult'
-import * as result from '../Result'
-import * as option from '../Option'
+import * as Async from '../Async'
+import * as AsyncResult from '../AsyncResult'
+import * as Result from '../Result'
+import * as Option from '../Option'
 import { Hkt } from '../../typeclasses/Hkt'
 import { identity } from '../Identity'
 import { constant } from '../../utils/constant'
@@ -11,31 +11,31 @@ export interface AsyncOptionHkt extends Hkt {
   readonly Type: AsyncOption<this['In']>
 }
 
-export interface AsyncOption<A> extends async.Async<option.Option<A>> {}
+export interface AsyncOption<A> extends Async.Async<Option.Option<A>> {}
 
-export const none: AsyncOption<never> = async.of(option.none)
+export const none: AsyncOption<never> = Async.of(Option.none)
 
 export const some: {
   <Out>(a: Out): AsyncOption<Out>
-} = flow(option.some, async.of)
+} = flow(Option.some, Async.of)
 
 export const toPromise: {
-  <Out>(ma: AsyncOption<Out>): Promise<option.Option<Out>>
-} = mma => mma().then(identity, constant(option.none))
+  <Out>(ma: AsyncOption<Out>): Promise<Option.Option<Out>>
+} = mma => mma().then(identity, constant(Option.none))
 
 export const fromAsync: {
-  <Out>(ma: async.Async<Out>): AsyncOption<Out>
-} = ma => () => ma().then(option.some, () => option.none)
+  <Out>(ma: Async.Async<Out>): AsyncOption<Out>
+} = ma => () => ma().then(Option.some, () => Option.none)
 
 export const fromAsyncResult: {
   <Collectable, Out>(
-    ma: asyncResult.AsyncResult<Collectable, Out>,
+    ma: AsyncResult.AsyncResult<Collectable, Out>,
   ): AsyncOption<Out>
 } = ma => () =>
   ma().then(
-    result.match({
-      onFailure: constant(option.none),
-      onSuccess: option.some,
+    Result.match({
+      onFailure: constant(Option.none),
+      onSuccess: Option.some,
     }),
-    constant(option.none),
+    constant(Option.none),
   )

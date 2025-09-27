@@ -1,6 +1,6 @@
-import * as order from '../../typeclasses/Order'
+import * as Order_ from '../../typeclasses/Order'
 
-export const Order: order.Order<number> = {
+export const Order: Order_.Order<number> = {
   compare: y => x => (x === y ? 0 : x > y ? 1 : -1),
 }
 

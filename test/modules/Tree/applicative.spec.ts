@@ -1,66 +1,66 @@
-import { number, pipe, tree } from '../../../src'
+import { Number, pipe, Tree } from '../../../src'
 import { describeApplicativeLaws } from '../../_utils/describeApplicativeLaws'
 
 describeApplicativeLaws(
-  tree.Applicative,
-  tree.getEquivalence(number.Equivalence),
+  Tree.Applicative,
+  Tree.getEquivalence(Number.Equivalence),
   [
-    tree.make(1),
-    tree.make(1, [tree.make(2), tree.make(3)]),
-    tree.make(1, [tree.make(2, [tree.make(4)]), tree.make(3)]),
+    Tree.make(1),
+    Tree.make(1, [Tree.make(2), Tree.make(3)]),
+    Tree.make(1, [Tree.make(2, [Tree.make(4)]), Tree.make(3)]),
   ],
   [
-    tree.make(number.add(10)),
-    tree.make(number.add(10), [
-      tree.make(number.add(20)),
-      tree.make(number.add(30)),
+    Tree.make(Number.add(10)),
+    Tree.make(Number.add(10), [
+      Tree.make(Number.add(20)),
+      Tree.make(Number.add(30)),
     ]),
-    tree.make(number.add(10), [
-      tree.make(number.add(20), [tree.make(number.add(40))]),
-      tree.make(number.add(30)),
+    Tree.make(Number.add(10), [
+      Tree.make(Number.add(20), [Tree.make(Number.add(40))]),
+      Tree.make(Number.add(30)),
     ]),
   ],
 )
 
 describe('applicative', () => {
-  const Equivalence = tree.getEquivalence(number.Equivalence)
+  const Equivalence = Tree.getEquivalence(Number.Equivalence)
 
   describe('ap', () => {
     it('should correctly build a tree', () => {
-      const fa = tree.make(1, [
-        tree.make(2, [tree.make(4)]),
-        tree.make(3, [tree.make(5)]),
+      const fa = Tree.make(1, [
+        Tree.make(2, [Tree.make(4)]),
+        Tree.make(3, [Tree.make(5)]),
       ])
-      const fab = tree.make(number.add(10), [
-        tree.make(number.add(20), [
-          tree.make(number.add(40)),
-          tree.make(number.add(50)),
+      const fab = Tree.make(Number.add(10), [
+        Tree.make(Number.add(20), [
+          Tree.make(Number.add(40)),
+          Tree.make(Number.add(50)),
         ]),
-        tree.make(number.add(30)),
+        Tree.make(Number.add(30)),
       ])
 
       pipe(
         fab,
-        tree.ap(fa),
+        Tree.ap(fa),
         Equivalence.equals(
-          tree.make(11, [
-            tree.make(12, [tree.make(14)]),
-            tree.make(13, [tree.make(15)]),
-            tree.make(21, [
-              tree.make(22, [tree.make(24)]),
-              tree.make(23, [tree.make(25)]),
-              tree.make(41, [
-                tree.make(42, [tree.make(44)]),
-                tree.make(43, [tree.make(45)]),
+          Tree.make(11, [
+            Tree.make(12, [Tree.make(14)]),
+            Tree.make(13, [Tree.make(15)]),
+            Tree.make(21, [
+              Tree.make(22, [Tree.make(24)]),
+              Tree.make(23, [Tree.make(25)]),
+              Tree.make(41, [
+                Tree.make(42, [Tree.make(44)]),
+                Tree.make(43, [Tree.make(45)]),
               ]),
-              tree.make(51, [
-                tree.make(52, [tree.make(54)]),
-                tree.make(53, [tree.make(55)]),
+              Tree.make(51, [
+                Tree.make(52, [Tree.make(54)]),
+                Tree.make(53, [Tree.make(55)]),
               ]),
             ]),
-            tree.make(31, [
-              tree.make(32, [tree.make(34)]),
-              tree.make(33, [tree.make(35)]),
+            Tree.make(31, [
+              Tree.make(32, [Tree.make(34)]),
+              Tree.make(33, [Tree.make(35)]),
             ]),
           ]),
         ),

@@ -1,27 +1,27 @@
-import * as foldable from '../../typeclasses/Foldable'
-import * as foldableWithIndex from '../../typeclasses/FoldableWithIndex'
-import * as array from '../../modules/ReadonlyArray'
+import * as Foldable_ from '../../typeclasses/Foldable'
+import * as FoldableWithIndex_ from '../../typeclasses/FoldableWithIndex'
+import * as Array from '../../modules/ReadonlyArray'
 import { IterableHkt } from './iterable'
 import { flow } from '../../utils/flow'
 import { toReadonlyArray } from './utils'
 
-export const Foldable: foldable.Foldable<IterableHkt> = {
-  reduce: (b, bab) => flow(toReadonlyArray, array.Foldable.reduce(b, bab)),
+export const Foldable: Foldable_.Foldable<IterableHkt> = {
+  reduce: (b, bab) => flow(toReadonlyArray, Array.Foldable.reduce(b, bab)),
   reduceRight: (b, abb) =>
-    flow(toReadonlyArray, array.Foldable.reduceRight(b, abb)),
+    flow(toReadonlyArray, Array.Foldable.reduceRight(b, abb)),
 }
 
-export const FoldableWithIndex: foldableWithIndex.FoldableWithIndex<
+export const FoldableWithIndex: FoldableWithIndex_.FoldableWithIndex<
   IterableHkt,
   number
 > = {
   ...Foldable,
   reduceWithIndex: (b, baib) =>
-    flow(toReadonlyArray, array.FoldableWithIndex.reduceWithIndex(b, baib)),
+    flow(toReadonlyArray, Array.FoldableWithIndex.reduceWithIndex(b, baib)),
   reduceRightWithIndex: (b, abib) =>
     flow(
       toReadonlyArray,
-      array.FoldableWithIndex.reduceRightWithIndex(b, abib),
+      Array.FoldableWithIndex.reduceRightWithIndex(b, abib),
     ),
 }
 

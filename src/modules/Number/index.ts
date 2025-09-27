@@ -1,3 +1,4 @@
+export * from './number'
 export * from './utils'
 export * from './matchers'
 export * from './equivalence'

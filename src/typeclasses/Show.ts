@@ -1,4 +1,4 @@
-import * as contravariant from './Contravariant'
+import * as Contravariant_ from './Contravariant'
 import { Hkt } from './Hkt'
 import { flow } from '../utils/flow'
 
@@ -10,7 +10,7 @@ export interface ShowHkt extends Hkt {
   readonly Type: Show<this['In']>
 }
 
-export const Contravariant: contravariant.Contravariant<ShowHkt> = {
+export const Contravariant: Contravariant_.Contravariant<ShowHkt> = {
   contramap: ba => self => ({
     show: flow(ba, self.show),
   }),

@@ -1,4 +1,4 @@
-import * as alt from '../../typeclasses/Alt'
+import * as Alt_ from '../../typeclasses/Alt'
 import { identity } from '../Identity'
 import { Result, ResultHkt, succeed } from './result'
 import { match } from './matchers'
@@ -34,6 +34,6 @@ export const catchAll: {
     onSuccess: succeed,
   })
 
-export const Alt: alt.Alt<ResultHkt> = {
+export const Alt: Alt_.Alt<ResultHkt> = {
   orElse,
 }

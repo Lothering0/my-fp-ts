@@ -1,9 +1,9 @@
-import { number, result, string } from '../../../src'
+import { Number, Result, String } from '../../../src'
 import { describeApplicativeLaws } from '../../_utils/describeApplicativeLaws'
 
 describeApplicativeLaws(
-  result.Applicative,
-  result.getEquivalence(string.Equivalence, number.Equivalence),
-  [result.fail('a'), result.succeed(1)],
-  [result.fail('a'), result.succeed(number.add(5))],
+  Result.Applicative,
+  Result.getEquivalence(String.Equivalence, Number.Equivalence),
+  [Result.fail('a'), Result.succeed(1)],
+  [Result.fail('a'), Result.succeed(Number.add(5))],
 )

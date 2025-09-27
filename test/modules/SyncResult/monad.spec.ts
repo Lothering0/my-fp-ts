@@ -1,16 +1,16 @@
-import { flow, pipe, result, syncResult } from '../../../src'
+import { flow, pipe, Result, SyncResult } from '../../../src'
 
 describe('monad', () => {
   describe('flatMap', () => {
     it('should satisfy left identity law', () => {
       const a = 1
-      const fa: syncResult.SyncResult<never, typeof a> = jest.fn(
-        syncResult.of(a),
+      const fa: SyncResult.SyncResult<never, typeof a> = jest.fn(
+        SyncResult.of(a),
       )
-      const afb = (x: number) => syncResult.of(x + 1)
+      const afb = (x: number) => SyncResult.of(x + 1)
 
-      const result1 = pipe(fa, syncResult.flatMap(afb), syncResult.execute)
-      const result2 = pipe(a, afb, syncResult.execute)
+      const result1 = pipe(fa, SyncResult.flatMap(afb), SyncResult.execute)
+      const result2 = pipe(a, afb, SyncResult.execute)
 
       expect(result1).toEqual(result2)
       expect(fa).toHaveBeenCalledTimes(1)
@@ -18,16 +18,16 @@ describe('monad', () => {
 
     it('should satisfy right identity law', () => {
       const a = 1
-      const fa: syncResult.SyncResult<never, typeof a> = jest.fn(
-        syncResult.of(a),
+      const fa: SyncResult.SyncResult<never, typeof a> = jest.fn(
+        SyncResult.of(a),
       )
 
       const result1 = pipe(
         fa,
-        syncResult.flatMap(syncResult.of),
-        syncResult.execute,
+        SyncResult.flatMap(SyncResult.of),
+        SyncResult.execute,
       )
-      const result2 = pipe(fa, syncResult.execute)
+      const result2 = pipe(fa, SyncResult.execute)
 
       expect(result1).toEqual(result2)
       expect(fa).toHaveBeenCalledTimes(2)
@@ -35,22 +35,22 @@ describe('monad', () => {
 
     it('should satisfy associativity law', () => {
       const a = 1
-      const fa: syncResult.SyncResult<never, typeof a> = jest.fn(
-        syncResult.of(a),
+      const fa: SyncResult.SyncResult<never, typeof a> = jest.fn(
+        SyncResult.of(a),
       )
-      const afb = (x: number) => syncResult.of(x + 1)
-      const bfc = (x: number) => syncResult.of(x / 2)
+      const afb = (x: number) => SyncResult.of(x + 1)
+      const bfc = (x: number) => SyncResult.of(x / 2)
 
       const result1 = pipe(
         fa,
-        syncResult.flatMap(afb),
-        syncResult.flatMap(bfc),
-        syncResult.execute,
+        SyncResult.flatMap(afb),
+        SyncResult.flatMap(bfc),
+        SyncResult.execute,
       )
       const result2 = pipe(
         fa,
-        syncResult.flatMap(flow(afb, syncResult.flatMap(bfc))),
-        syncResult.execute,
+        SyncResult.flatMap(flow(afb, SyncResult.flatMap(bfc))),
+        SyncResult.execute,
       )
 
       expect(result1).toEqual(result2)
@@ -59,30 +59,30 @@ describe('monad', () => {
 
     it('should return function containing `failure` if the same was provided', () => {
       const e = 'e'
-      const fa: syncResult.SyncResult<typeof e, never> = jest.fn(
-        syncResult.fail(e),
+      const fa: SyncResult.SyncResult<typeof e, never> = jest.fn(
+        SyncResult.fail(e),
       )
-      const result_ = pipe(
+      const result = pipe(
         fa,
-        syncResult.flatMap(a => syncResult.succeed(a + 2)),
-        syncResult.execute,
+        SyncResult.flatMap(a => SyncResult.succeed(a + 2)),
+        SyncResult.execute,
       )
-      expect(result_).toEqual<result.Result<typeof e, never>>(result.fail(e))
+      expect(result).toEqual<Result.Result<typeof e, never>>(Result.fail(e))
       expect(fa).toHaveBeenCalledTimes(1)
     })
 
     it('should return function containing `failure` if the same was returned by callback function', () => {
       const e = 'e'
       const a = 1
-      const fa: syncResult.SyncResult<typeof e, typeof a> = jest.fn(
-        syncResult.succeed(a),
+      const fa: SyncResult.SyncResult<typeof e, typeof a> = jest.fn(
+        SyncResult.succeed(a),
       )
-      const result_ = pipe(
+      const result = pipe(
         fa,
-        syncResult.flatMap(() => syncResult.fail(e)),
-        syncResult.execute,
+        SyncResult.flatMap(() => SyncResult.fail(e)),
+        SyncResult.execute,
       )
-      expect(result_).toEqual<result.Result<typeof e, never>>(result.fail(e))
+      expect(result).toEqual<Result.Result<typeof e, never>>(Result.fail(e))
       expect(fa).toHaveBeenCalledTimes(1)
     })
   })

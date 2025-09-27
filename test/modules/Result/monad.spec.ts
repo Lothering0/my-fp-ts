@@ -1,10 +1,10 @@
-import { number, result, string } from '../../../src'
+import { Number, Result, String } from '../../../src'
 import { describeMonadLaws } from '../../_utils/describeMonadLaws'
 
 describeMonadLaws(
-  result.Monad,
-  result.getEquivalence(string.Equivalence, number.Equivalence),
-  [result.fail('e'), result.succeed(1)],
-  [() => result.fail('e'), a => result.succeed(a + 1)],
-  [() => result.fail('e'), b => result.succeed(b / 2)],
+  Result.Monad,
+  Result.getEquivalence(String.Equivalence, Number.Equivalence),
+  [Result.fail('e'), Result.succeed(1)],
+  [() => Result.fail('e'), a => Result.succeed(a + 1)],
+  [() => Result.fail('e'), b => Result.succeed(b / 2)],
 )

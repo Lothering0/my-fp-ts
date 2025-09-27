@@ -1,11 +1,11 @@
-import * as sync from '../Sync'
+import * as Sync from '../Sync'
 import { Hkt } from '../../typeclasses/Hkt'
 
 export interface AsyncHkt extends Hkt {
   readonly Type: Async<this['In']>
 }
 
-export interface Async<In> extends sync.Sync<Promise<In>> {}
+export interface Async<In> extends Sync.Sync<Promise<In>> {}
 
 export const async: {
   <In>(a: In): Async<In>

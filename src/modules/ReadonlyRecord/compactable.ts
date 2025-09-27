@@ -1,6 +1,6 @@
-import * as option from '../Option'
-import * as result from '../Result'
-import * as array from '../ReadonlyArray'
+import * as Option from '../Option'
+import * as Result from '../Result'
+import * as Array from '../ReadonlyArray'
 import { create } from '../../typeclasses/Compactable'
 import { flow, pipe } from '../../utils/flow'
 import { ReadonlyRecord, ReadonlyRecordHkt } from './readonly-record'
@@ -10,12 +10,12 @@ import { Functor } from './functor'
 export const Compactable = create<ReadonlyRecordHkt>(Functor, {
   compact: flow(
     toEntries,
-    array.filterMap(([k, ma]) =>
+    Array.filterMap(([k, ma]) =>
       pipe(
         ma,
-        option.match({
-          onNone: option.zero,
-          onSome: a => option.some([k, a] as const),
+        Option.match({
+          onNone: Option.zero,
+          onSome: a => Option.some([k, a] as const),
         }),
       ),
     ),
@@ -25,18 +25,18 @@ export const Compactable = create<ReadonlyRecordHkt>(Functor, {
 
 export const compact: {
   <A, K extends string>(
-    self: ReadonlyRecord<K, option.Option<A>>,
+    self: ReadonlyRecord<K, Option.Option<A>>,
   ): ReadonlyRecord<K, A>
 } = Compactable.compact
 
 export const compactResults: {
   <A, K extends string>(
-    self: ReadonlyRecord<K, result.Result<unknown, A>>,
+    self: ReadonlyRecord<K, Result.Result<unknown, A>>,
   ): ReadonlyRecord<K, A>
 } = Compactable.compactResults
 
 export const separate: {
   <E, A, K extends string>(
-    self: ReadonlyRecord<K, result.Result<E, A>>,
+    self: ReadonlyRecord<K, Result.Result<E, A>>,
   ): readonly [ReadonlyRecord<K, E>, ReadonlyRecord<K, A>]
 } = Compactable.separate

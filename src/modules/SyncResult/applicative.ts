@@ -1,4 +1,4 @@
-import * as result from '../Result'
+import * as Result from '../Result'
 import { create } from '../../typeclasses/Applicative'
 import { succeed, execute, SyncResult, SyncResultHkt } from './sync-result'
 import { pipe } from '../../utils/flow'
@@ -8,10 +8,10 @@ export const Applicative = create<SyncResultHkt>(Functor, {
   of: succeed,
   ap: fa => self => () =>
     pipe(
-      result.Do,
-      result.apS('a', execute(fa)),
-      result.apS('ab', execute(self)),
-      result.map(({ a, ab }) => ab(a)),
+      Result.Do,
+      Result.apS('a', execute(fa)),
+      Result.apS('ab', execute(self)),
+      Result.map(({ a, ab }) => ab(a)),
     ),
 })
 

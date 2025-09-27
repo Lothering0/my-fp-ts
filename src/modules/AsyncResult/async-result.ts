@@ -1,7 +1,7 @@
-import * as async from '../Async'
-import * as result from '../Result'
-import * as sync from '../Sync'
-import * as syncResult from '../SyncResult'
+import * as Async from '../Async'
+import * as Result from '../Result'
+import * as Sync from '../Sync'
+import * as SyncResult from '../SyncResult'
 import { identity } from '../Identity'
 import { flow, pipe } from '../../utils/flow'
 import { Hkt } from '../../typeclasses/Hkt'
@@ -10,50 +10,50 @@ export interface AsyncResultHkt extends Hkt {
   readonly Type: AsyncResult<this['Collectable'], this['In']>
 }
 
-export interface AsyncResult<E, A> extends async.Async<result.Result<E, A>> {}
+export interface AsyncResult<E, A> extends Async.Async<Result.Result<E, A>> {}
 
 export const fail: {
   <Failure>(e: Failure): AsyncResult<Failure, never>
-} = flow(result.fail, async.of)
+} = flow(Result.fail, Async.of)
 
 export const failSync: {
-  <Failure>(me: sync.Sync<Failure>): AsyncResult<Failure, never>
-} = flow(sync.execute, fail)
+  <Failure>(me: Sync.Sync<Failure>): AsyncResult<Failure, never>
+} = flow(Sync.execute, fail)
 
 export const failAsync: {
-  <Failure>(me: async.Async<Failure>): AsyncResult<Failure, never>
-} = async.map(result.fail)
+  <Failure>(me: Async.Async<Failure>): AsyncResult<Failure, never>
+} = Async.map(Result.fail)
 
 export const succeed: {
   <Success>(a: Success): AsyncResult<never, Success>
-} = flow(result.succeed, async.of)
+} = flow(Result.succeed, Async.of)
 
 export const succeedSync: {
-  <Success>(ma: sync.Sync<Success>): AsyncResult<never, Success>
-} = flow(sync.execute, succeed)
+  <Success>(ma: Sync.Sync<Success>): AsyncResult<never, Success>
+} = flow(Sync.execute, succeed)
 
 export const succeedAsync: {
-  <Success>(me: async.Async<Success>): AsyncResult<never, Success>
-} = async.map(result.succeed)
+  <Success>(me: Async.Async<Success>): AsyncResult<never, Success>
+} = Async.map(Result.succeed)
 
 export const fromAsync: {
-  <Failure, Success>(ma: async.Async<Success>): AsyncResult<Failure, Success>
-} = ma => () => ma().then(result.succeed, result.fail)
+  <Failure, Success>(ma: Async.Async<Success>): AsyncResult<Failure, Success>
+} = ma => () => ma().then(Result.succeed, Result.fail)
 
 export const fromResult: {
   <Failure, Success>(
-    ma: result.Result<Failure, Success>,
+    ma: Result.Result<Failure, Success>,
   ): AsyncResult<Failure, Success>
-} = async.of
+} = Async.of
 
 export const fromSyncResult: {
   <Failure, Success>(
-    mma: syncResult.SyncResult<Failure, Success>,
+    mma: SyncResult.SyncResult<Failure, Success>,
   ): AsyncResult<Failure, Success>
-} = mma => () => pipe(mma, syncResult.execute, ma => Promise.resolve(ma))
+} = mma => () => pipe(mma, SyncResult.execute, ma => Promise.resolve(ma))
 
 export const toPromise: {
   <Failure, Success>(
     ma: AsyncResult<Failure, Success>,
-  ): Promise<result.Result<Failure, Success>>
-} = mma => mma().then(identity, result.fail)
+  ): Promise<Result.Result<Failure, Success>>
+} = mma => mma().then(identity, Result.fail)

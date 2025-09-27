@@ -1,43 +1,43 @@
-import { number, pipe, option } from '../../../src'
+import { Number, pipe, Option } from '../../../src'
 
 describe('gen', () => {
-  const Equivalence = option.getEquivalence(number.Equivalence)
+  const Equivalence = Option.getEquivalence(Number.Equivalence)
 
   it('should return value of some', () => {
-    const ma = option.gen(function* () {
-      const a = yield* option.some(1)
+    const ma = Option.gen(function* () {
+      const a = yield* Option.some(1)
       return a
     })
-    pipe(ma, Equivalence.equals(option.some(1)), expect).toBe(true)
+    pipe(ma, Equivalence.equals(Option.some(1)), expect).toBe(true)
   })
 
   it('should return none', () => {
-    const ma = option.gen(function* () {
-      const a = yield* option.none
+    const ma = Option.gen(function* () {
+      const a = yield* Option.none
       return a
     })
-    pipe(ma, Equivalence.equals(option.none), expect).toBe(true)
+    pipe(ma, Equivalence.equals(Option.none), expect).toBe(true)
   })
 
   it('should work correctly with several successful generators', () => {
-    const ma: option.Option<number> = option.some(1)
-    const mb: option.Option<number> = option.some(2)
-    const mc = option.gen(function* () {
+    const ma: Option.Option<number> = Option.some(1)
+    const mb: Option.Option<number> = Option.some(2)
+    const mc = Option.gen(function* () {
       const a = yield* ma
       const b = yield* mb
       return a + b
     })
-    pipe(mc, Equivalence.equals(option.some(3)), expect).toBe(true)
+    pipe(mc, Equivalence.equals(Option.some(3)), expect).toBe(true)
   })
 
   it('should work correctly with several generators', () => {
-    const ma: option.Option<number> = option.some(1)
-    const mb: option.Option<number> = option.none
-    const mc = option.gen(function* () {
+    const ma: Option.Option<number> = Option.some(1)
+    const mb: Option.Option<number> = Option.none
+    const mc = Option.gen(function* () {
       const a = yield* ma
       const b = yield* mb
       return a + b
     })
-    pipe(mc, Equivalence.equals(option.none), expect).toBe(true)
+    pipe(mc, Equivalence.equals(Option.none), expect).toBe(true)
   })
 })

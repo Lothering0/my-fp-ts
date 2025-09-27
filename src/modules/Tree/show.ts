@@ -1,6 +1,6 @@
-import * as array from '../ReadonlyArray'
-import * as iterable from '../Iterable'
-import * as boolean from '../Boolean'
+import * as Array from '../ReadonlyArray'
+import * as Iterable from '../Iterable'
+import * as Boolean from '../Boolean'
 import { Tree } from './tree'
 import { Show } from '../../typeclasses/Show'
 import { pipe } from '../../utils/flow'
@@ -14,10 +14,10 @@ export const getShow: {
       pipe(
         self,
         hasForest,
-        boolean.match({
+        Boolean.match({
           onFalse: () => `make(${s})`,
           onTrue: () =>
-            `make(${s}, ${pipe(self, forestOf, iterable.toReadonlyArray, array.getShow(getShow(Show)).show)})`,
+            `make(${s}, ${pipe(self, forestOf, Iterable.toReadonlyArray, Array.getShow(getShow(Show)).show)})`,
         }),
       ),
     ),

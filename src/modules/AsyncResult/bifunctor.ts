@@ -1,10 +1,10 @@
-import * as result from '../Result'
+import * as Result from '../Result'
 import { create } from '../../typeclasses/Bifunctor'
 import { AsyncResultHkt, toPromise, AsyncResult } from './async-result'
 import { Functor } from './functor'
 
 export const Bifunctor = create<AsyncResultHkt>(Functor, {
-  mapLeft: ed => self => () => toPromise(self).then(result.mapLeft(ed)),
+  mapLeft: ed => self => () => toPromise(self).then(Result.mapLeft(ed)),
 })
 
 export const mapLeft: {

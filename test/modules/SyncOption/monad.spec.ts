@@ -1,14 +1,14 @@
-import { flow, option, pipe, syncOption } from '../../../src'
+import { flow, Option, pipe, SyncOption } from '../../../src'
 
 describe('monad', () => {
   describe('flatMap', () => {
     it('should satisfy left identity law', () => {
       const a = 1
-      const fa: syncOption.SyncOption<typeof a> = jest.fn(syncOption.of(a))
-      const afb = (x: number) => syncOption.of(x + 1)
+      const fa: SyncOption.SyncOption<typeof a> = jest.fn(SyncOption.of(a))
+      const afb = (x: number) => SyncOption.of(x + 1)
 
-      const result1 = pipe(fa, syncOption.flatMap(afb), syncOption.execute)
-      const result2 = pipe(a, afb, syncOption.execute)
+      const result1 = pipe(fa, SyncOption.flatMap(afb), SyncOption.execute)
+      const result2 = pipe(a, afb, SyncOption.execute)
 
       expect(result1).toEqual(result2)
       expect(fa).toHaveBeenCalledTimes(1)
@@ -16,14 +16,14 @@ describe('monad', () => {
 
     it('should satisfy right identity law', () => {
       const a = 1
-      const fa: syncOption.SyncOption<typeof a> = jest.fn(syncOption.of(a))
+      const fa: SyncOption.SyncOption<typeof a> = jest.fn(SyncOption.of(a))
 
       const result1 = pipe(
         fa,
-        syncOption.flatMap(syncOption.of),
-        syncOption.execute,
+        SyncOption.flatMap(SyncOption.of),
+        SyncOption.execute,
       )
-      const result2 = pipe(fa, syncOption.execute)
+      const result2 = pipe(fa, SyncOption.execute)
 
       expect(result1).toEqual(result2)
       expect(fa).toHaveBeenCalledTimes(2)
@@ -31,20 +31,20 @@ describe('monad', () => {
 
     it('should satisfy associativity law', () => {
       const a = 1
-      const fa: syncOption.SyncOption<typeof a> = jest.fn(syncOption.of(a))
-      const afb = (x: number) => syncOption.of(x + 1)
-      const bfc = (x: number) => syncOption.of(x / 2)
+      const fa: SyncOption.SyncOption<typeof a> = jest.fn(SyncOption.of(a))
+      const afb = (x: number) => SyncOption.of(x + 1)
+      const bfc = (x: number) => SyncOption.of(x / 2)
 
       const result1 = pipe(
         fa,
-        syncOption.flatMap(afb),
-        syncOption.flatMap(bfc),
-        syncOption.execute,
+        SyncOption.flatMap(afb),
+        SyncOption.flatMap(bfc),
+        SyncOption.execute,
       )
       const result2 = pipe(
         fa,
-        syncOption.flatMap(flow(afb, syncOption.flatMap(bfc))),
-        syncOption.execute,
+        SyncOption.flatMap(flow(afb, SyncOption.flatMap(bfc))),
+        SyncOption.execute,
       )
 
       expect(result1).toEqual(result2)
@@ -52,25 +52,25 @@ describe('monad', () => {
     })
 
     it('should return function containing `none` if the same was provided', () => {
-      const fa: syncOption.SyncOption<number> = jest.fn(syncOption.none)
+      const fa: SyncOption.SyncOption<number> = jest.fn(SyncOption.none)
       const result = pipe(
         fa,
-        syncOption.flatMap(a => syncOption.some(a + 2)),
-        syncOption.execute,
+        SyncOption.flatMap(a => SyncOption.some(a + 2)),
+        SyncOption.execute,
       )
-      expect(result).toEqual<option.Option<never>>(option.none)
+      expect(result).toEqual<Option.Option<never>>(Option.none)
       expect(fa).toHaveBeenCalledTimes(1)
     })
 
     it('should return function containing `none` if the same was returned by callback function', () => {
       const a = 1
-      const fa: syncOption.SyncOption<number> = jest.fn(syncOption.some(a))
+      const fa: SyncOption.SyncOption<number> = jest.fn(SyncOption.some(a))
       const result = pipe(
         fa,
-        syncOption.flatMap(syncOption.zero),
-        syncOption.execute,
+        SyncOption.flatMap(SyncOption.zero),
+        SyncOption.execute,
       )
-      expect(result).toEqual<option.Option<never>>(option.none)
+      expect(result).toEqual<Option.Option<never>>(Option.none)
       expect(fa).toHaveBeenCalledTimes(1)
     })
   })

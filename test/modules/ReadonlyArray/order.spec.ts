@@ -1,7 +1,7 @@
-import { number, pipe, array } from '../../../src'
+import { Number, pipe, Array } from '../../../src'
 
 describe('getOrder', () => {
-  const Order = array.getOrder(number.Order)
+  const Order = Array.getOrder(Number.Order)
 
   it('should correctly compare two arrays', () => {
     pipe([], Order.compare([]), expect).toBe(0)

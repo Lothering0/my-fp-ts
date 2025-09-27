@@ -1,3 +1,4 @@
+export * from './string'
 export * from './utils'
 export * from './refinements'
 export * from './matchers'

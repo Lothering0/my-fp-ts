@@ -1,6 +1,6 @@
-import * as result from '../Result'
-import * as array from '../ReadonlyArray'
-import * as record from '../ReadonlyRecord'
+import * as Result from '../Result'
+import * as Array from '../ReadonlyArray'
+import * as Record_ from '../ReadonlyRecord'
 import { create, Schema, Type } from './schema'
 import { pipe } from '../../utils/flow'
 import { isRecord } from '../../utils/typeChecks'
@@ -12,22 +12,22 @@ export const Record = <
 >(schemas: {
   readonly key: K
   readonly value: A
-}): Schema<Partial<record.ReadonlyRecord<Type<K>, Type<A>>>> =>
+}): Schema<Partial<Record_.ReadonlyRecord<Type<K>, Type<A>>>> =>
   create(x => {
     if (!isRecord(x)) {
-      return result.fail([message`value ${x} is not a record`])
+      return Result.fail([message`value ${x} is not a record`])
     }
 
-    const out: Partial<record.ReadonlyRecord<Type<K>, Type<A>>> = {}
+    const out: Partial<Record_.ReadonlyRecord<Type<K>, Type<A>>> = {}
     let messages: string[] = []
     for (const k in x) {
       const keyProcessResult = schemas.key.proceed(k)
 
-      if (result.isFailure(keyProcessResult)) {
+      if (Result.isFailure(keyProcessResult)) {
         const keyMessages = pipe(
           keyProcessResult,
-          result.mapLeft(array.map(msg => `${message`property ${k}`}: ${msg}`)),
-          result.failureOf,
+          Result.mapLeft(Array.map(msg => `${message`property ${k}`}: ${msg}`)),
+          Result.failureOf,
         )
         messages = [...messages, ...keyMessages]
         continue
@@ -35,26 +35,26 @@ export const Record = <
 
       const valueProcessResult = schemas.value.proceed(x[k])
 
-      if (result.isFailure(valueProcessResult)) {
+      if (Result.isFailure(valueProcessResult)) {
         const valueMessages = pipe(
           valueProcessResult,
-          result.mapLeft(
-            array.map(msg => `${message`on property ${k}`}: ${msg}`),
+          Result.mapLeft(
+            Array.map(msg => `${message`on property ${k}`}: ${msg}`),
           ),
-          result.failureOf,
+          Result.failureOf,
         )
         messages = [...messages, ...valueMessages]
         continue
       }
 
-      const key: Type<K> = result.successOf(keyProcessResult)
-      const value = result.successOf(valueProcessResult)
+      const key: Type<K> = Result.successOf(keyProcessResult)
+      const value = Result.successOf(valueProcessResult)
       out[key] = value
     }
 
     if (messages.length !== 0) {
-      return result.fail(messages)
+      return Result.fail(messages)
     }
 
-    return result.succeed(out)
+    return Result.succeed(out)
   })

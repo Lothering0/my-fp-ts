@@ -1,6 +1,6 @@
-import * as alt from '../../typeclasses/Alt'
-import * as async from '../Async'
-import * as result from '../Result'
+import * as Alt_ from '../../typeclasses/Alt'
+import * as Async from '../Async'
+import * as Result from '../Result'
 import { identity } from '../Identity'
 import { AsyncResult, AsyncResultHkt, succeed } from './async-result'
 import { match } from './matchers'
@@ -10,7 +10,7 @@ import { pipe } from '../../utils/flow'
 export const getOrElse: {
   <Failure, Out>(
     onFailure: (failure: Failure) => Out,
-  ): <In>(self: AsyncResult<Failure, In>) => async.Async<In | Out>
+  ): <In>(self: AsyncResult<Failure, In>) => Async.Async<In | Out>
 } = onFailure => match({ onFailure, onSuccess: identity })
 
 export const orElse =
@@ -20,8 +20,8 @@ export const orElse =
   ): AsyncResult<Failure1 | Failure2, In | Out> =>
     pipe(
       self,
-      async.flatMap(
-        result.match({
+      Async.flatMap(
+        Result.match({
           onFailure: constant(onFailure),
           onSuccess: succeed<In & Out>,
         }),
@@ -35,14 +35,14 @@ export const catchAll =
   (self: AsyncResult<Failure1, In>): AsyncResult<Failure2, In | Out> =>
     pipe(
       self,
-      async.flatMap(
-        result.match({
+      Async.flatMap(
+        Result.match({
           onFailure,
           onSuccess: succeed<In & Out>,
         }),
       ),
     )
 
-export const Alt: alt.Alt<AsyncResultHkt> = {
+export const Alt: Alt_.Alt<AsyncResultHkt> = {
   orElse,
 }

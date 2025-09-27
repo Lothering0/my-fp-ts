@@ -1,7 +1,7 @@
-import * as show_ from '../../typeclasses/Show'
+import * as Show_ from '../../typeclasses/Show'
 
 export const show: {
   <N extends number>(self: N): `${N}`
 } = self => `${self}`
 
-export const Show: show_.Show<number> = { show }
+export const Show: Show_.Show<number> = { show }

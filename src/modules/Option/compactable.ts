@@ -1,4 +1,4 @@
-import * as result from '../Result'
+import * as Result from '../Result'
 import { create } from '../../typeclasses/Compactable'
 import { Option, OptionHkt } from './option'
 import { flat } from './monad'
@@ -13,9 +13,9 @@ export const compact: {
 } = Compactable.compact
 
 export const compactResults: {
-  <A>(self: Option<result.Result<unknown, A>>): Option<A>
+  <A>(self: Option<Result.Result<unknown, A>>): Option<A>
 } = Compactable.compactResults
 
 export const separate: {
-  <E, A>(self: Option<result.Result<E, A>>): readonly [Option<E>, Option<A>]
+  <E, A>(self: Option<Result.Result<E, A>>): readonly [Option<E>, Option<A>]
 } = Compactable.separate

@@ -1,4 +1,4 @@
-import * as result from '../Result'
+import * as Result from '../Result'
 import { create, Schema } from './schema'
 import { message } from './process'
 import { pipe } from '../../utils/flow'
@@ -10,7 +10,7 @@ const array = <A>(schema: Schema<A>): Schema<ReadonlyArray<A>> =>
     const isArray = Array.isArray(x)
 
     if (!isArray) {
-      return result.fail([message`value ${x} is not an array`])
+      return Result.fail([message`value ${x} is not an array`])
     }
 
     const xs: ReadonlyArray<A> = x
@@ -19,15 +19,15 @@ const array = <A>(schema: Schema<A>): Schema<ReadonlyArray<A>> =>
     for (const i in xs) {
       const processResult = schema.proceed(xs[i])
 
-      if (result.isFailure(processResult)) {
-        const msg = result.failureOf(processResult)
-        return result.fail([`${message`on index ${i}`}: ${msg}`])
+      if (Result.isFailure(processResult)) {
+        const msg = Result.failureOf(processResult)
+        return Result.fail([`${message`on index ${i}`}: ${msg}`])
       }
 
-      out.push(result.successOf(processResult))
+      out.push(Result.successOf(processResult))
     }
 
-    return result.succeed(out)
+    return Result.succeed(out)
   })
 
 export { array as Array }

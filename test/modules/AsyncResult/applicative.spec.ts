@@ -1,37 +1,37 @@
-import { asyncResult, identity, number, pipe, result } from '../../../src'
+import { AsyncResult, identity, Number, pipe, Result } from '../../../src'
 
 describe('applicative', () => {
   describe('ap', () => {
     it('should satisfy identity law', async () => {
       const a = 1
-      const fa: asyncResult.AsyncResult<never, typeof a> = jest.fn(
-        asyncResult.of(a),
+      const fa: AsyncResult.AsyncResult<never, typeof a> = jest.fn(
+        AsyncResult.of(a),
       )
 
-      const result_ = await pipe(
+      const result = await pipe(
         identity,
-        asyncResult.of,
-        asyncResult.ap(fa),
-        asyncResult.toPromise,
+        AsyncResult.of,
+        AsyncResult.ap(fa),
+        AsyncResult.toPromise,
       )
 
-      expect(result_).toEqual<result.Result<never, typeof a>>(result.succeed(a))
+      expect(result).toEqual<Result.Result<never, typeof a>>(Result.succeed(a))
       expect(fa).toHaveBeenCalledTimes(1)
     })
 
     it('should satisfy homomorphism law', async () => {
       const a = 1
-      const ab = number.add(5)
+      const ab = Number.add(5)
 
-      const fa: asyncResult.AsyncResult<never, typeof a> = jest.fn(
-        asyncResult.of(a),
+      const fa: AsyncResult.AsyncResult<never, typeof a> = jest.fn(
+        AsyncResult.of(a),
       )
-      const fab: asyncResult.AsyncResult<never, typeof ab> = jest.fn(
-        asyncResult.of(ab),
+      const fab: AsyncResult.AsyncResult<never, typeof ab> = jest.fn(
+        AsyncResult.of(ab),
       )
 
-      const result1 = await pipe(fab, asyncResult.ap(fa), asyncResult.toPromise)
-      const result2 = await pipe(a, ab, asyncResult.of, asyncResult.toPromise)
+      const result1 = await pipe(fab, AsyncResult.ap(fa), AsyncResult.toPromise)
+      const result2 = await pipe(a, ab, AsyncResult.of, AsyncResult.toPromise)
 
       expect(result1).toEqual(result2)
       expect(fa).toHaveBeenCalledTimes(1)
@@ -40,19 +40,19 @@ describe('applicative', () => {
 
     it('should satisfy interchange law', async () => {
       const a = 1
-      const ab = number.add(5)
+      const ab = Number.add(5)
 
-      const fa: asyncResult.AsyncResult<never, typeof a> = jest.fn(
-        asyncResult.of(a),
+      const fa: AsyncResult.AsyncResult<never, typeof a> = jest.fn(
+        AsyncResult.of(a),
       )
-      const fab: asyncResult.AsyncResult<never, typeof ab> = jest.fn(
-        asyncResult.of(ab),
+      const fab: AsyncResult.AsyncResult<never, typeof ab> = jest.fn(
+        AsyncResult.of(ab),
       )
 
-      const result1 = await pipe(fab, asyncResult.ap(fa), asyncResult.toPromise)
+      const result1 = await pipe(fab, AsyncResult.ap(fa), AsyncResult.toPromise)
       const result2 = await pipe(
-        asyncResult.ap(fab)(asyncResult.of(ab => ab(a))),
-        asyncResult.toPromise,
+        AsyncResult.ap(fab)(AsyncResult.of(ab => ab(a))),
+        AsyncResult.toPromise,
       )
 
       expect(result1).toEqual(result2)
@@ -62,18 +62,18 @@ describe('applicative', () => {
 
     it('should return promise containing `failure` if `failure` was applied to function', async () => {
       const e = 'e'
-      const ab = number.add(5)
+      const ab = Number.add(5)
 
-      const fa: asyncResult.AsyncResult<typeof e, never> = jest.fn(
-        asyncResult.fail(e),
+      const fa: AsyncResult.AsyncResult<typeof e, never> = jest.fn(
+        AsyncResult.fail(e),
       )
-      const fab: asyncResult.AsyncResult<never, typeof ab> = jest.fn(
-        asyncResult.of(ab),
+      const fab: AsyncResult.AsyncResult<never, typeof ab> = jest.fn(
+        AsyncResult.of(ab),
       )
 
-      const result_ = await pipe(fab, asyncResult.ap(fa), asyncResult.toPromise)
+      const result = await pipe(fab, AsyncResult.ap(fa), AsyncResult.toPromise)
 
-      expect(result_).toEqual<result.Result<typeof e, never>>(result.fail(e))
+      expect(result).toEqual<Result.Result<typeof e, never>>(Result.fail(e))
       expect(fa).toHaveBeenCalledTimes(1)
       expect(fab).toHaveBeenCalledTimes(1)
     })
@@ -82,16 +82,16 @@ describe('applicative', () => {
       const e = 'e'
       const a = 1
 
-      const fa: asyncResult.AsyncResult<typeof e, typeof a> = jest.fn(
-        asyncResult.of(a),
+      const fa: AsyncResult.AsyncResult<typeof e, typeof a> = jest.fn(
+        AsyncResult.of(a),
       )
-      const fab: asyncResult.AsyncResult<typeof e, never> = jest.fn(
-        asyncResult.fail(e),
+      const fab: AsyncResult.AsyncResult<typeof e, never> = jest.fn(
+        AsyncResult.fail(e),
       )
 
-      const result_ = await pipe(fab, asyncResult.ap(fa), asyncResult.toPromise)
+      const result = await pipe(fab, AsyncResult.ap(fa), AsyncResult.toPromise)
 
-      expect(result_).toEqual<result.Result<typeof e, never>>(result.fail(e))
+      expect(result).toEqual<Result.Result<typeof e, never>>(Result.fail(e))
       expect(fa).toHaveBeenCalledTimes(1)
       expect(fab).toHaveBeenCalledTimes(1)
     })
@@ -99,20 +99,20 @@ describe('applicative', () => {
     it('should return promise containing `failure` if `failure` is applying to `failure`', async () => {
       const e = 'e'
       const d = 'd'
-      const fa: asyncResult.AsyncResult<typeof e, never> = jest.fn(
-        asyncResult.fail(e),
+      const fa: AsyncResult.AsyncResult<typeof e, never> = jest.fn(
+        AsyncResult.fail(e),
       )
-      const fab: asyncResult.AsyncResult<typeof d, never> = jest.fn(
-        asyncResult.fail(d),
+      const fab: AsyncResult.AsyncResult<typeof d, never> = jest.fn(
+        AsyncResult.fail(d),
       )
 
-      const result_: result.Result<typeof e | typeof d, unknown> = await pipe(
+      const result: Result.Result<typeof e | typeof d, unknown> = await pipe(
         fab,
-        asyncResult.ap(fa),
-        asyncResult.toPromise,
+        AsyncResult.ap(fa),
+        AsyncResult.toPromise,
       )
 
-      expect(result_).toEqual<result.Result<typeof e, never>>(result.fail(e))
+      expect(result).toEqual<Result.Result<typeof e, never>>(Result.fail(e))
       expect(fa).toHaveBeenCalledTimes(1)
       expect(fab).toHaveBeenCalledTimes(1)
     })

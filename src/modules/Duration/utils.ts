@@ -1,10 +1,10 @@
-import * as array from '../ReadonlyArray'
-import * as record from '../ReadonlyRecord'
-import * as option from '../Option'
-import * as result from '../Result'
-import * as number from '../Number'
-import * as string from '../String'
-import * as boolean from '../Boolean'
+import * as Array from '../ReadonlyArray'
+import * as Record from '../ReadonlyRecord'
+import * as Option from '../Option'
+import * as Result from '../Result'
+import * as Number from '../Number'
+import * as String from '../String'
+import * as Boolean from '../Boolean'
 import { flow, pipe } from '../../utils/flow'
 import { isNumber, isObject, isString } from '../../utils/typeChecks'
 import {
@@ -49,26 +49,26 @@ export const fromYears: {
   (years: number): Duration
 } = years => ({ years })
 
-const arrayOption = option.transform(array.Monad)
+const arrayOption = Option.transform(Array.Monad)
 
 export const isTemplateValid: {
   (template: string): boolean
 } = template =>
   pipe(
     durationUnitsFull,
-    array.reduce('', (acc, unit, i) => {
+    Array.reduce('', (acc, unit, i) => {
       const shortUnit = durationUnitsShort[i]
       const part = `(\\d+ (${unit}|${shortUnit}))|(1 ${unit}?)`
       return acc ? `(${part})? ?(${acc})?` : part
     }),
-    string.prepend('^'),
-    string.append('$'),
+    String.prepend('^'),
+    String.append('$'),
     pattern => new RegExp(pattern),
     regExp =>
       pipe(
         template,
-        string.trim,
-        string.match({
+        String.trim,
+        String.match({
           onEmpty: constFalse,
           onNonEmpty: trimmed => regExp.test(trimmed),
         }),
@@ -83,33 +83,35 @@ export class DurationTemplateParseError extends SyntaxError {
 }
 
 export const fromTemplate: {
-  (template: string): result.Result<DurationTemplateParseError, Duration>
+  (template: string): Result.Result<DurationTemplateParseError, Duration>
 } = template =>
   pipe(
     template,
     isTemplateValid,
-    boolean.match({
+    Boolean.match({
       onFalse: () =>
-        result.fail(
+        Result.fail(
           new DurationTemplateParseError('Invalid duration template'),
         ),
       onTrue: () =>
         pipe(
           template.matchAll(/(-?\d+) +(\w+)/g),
-          Array.from<ReadonlyArray<string>>,
-          array.map(array.tail),
-          arrayOption.map(([value, unit]) => [unit!, Number(value)] as const),
-          array.compact,
-          array.filter(([key]) => pipe(durationUnits, array.includes(key))),
-          record.fromEntries,
-          result.succeed,
+          Array.Array.from<ReadonlyArray<string>>,
+          Array.map(Array.tail),
+          arrayOption.map(
+            ([value, unit]) => [unit!, Number.Number(value)] as const,
+          ),
+          Array.compact,
+          Array.filter(([key]) => pipe(durationUnits, Array.includes(key))),
+          Record.fromEntries,
+          Result.succeed,
         ),
     }),
   )
 
 export const fromTemplateOrZero: {
   (template: string): Duration
-} = flow(fromTemplate, result.getOrElse(constant(empty)))
+} = flow(fromTemplate, Result.getOrElse(constant(empty)))
 
 export const make: {
   (input: DurationInput): Duration
@@ -141,7 +143,7 @@ export const prettify: {
   }
   return pipe(
     out,
-    record.filter(value => value !== 0),
+    Record.filter(value => value !== 0),
   )
 }
 
@@ -149,13 +151,13 @@ export const toTemplate: {
   (self: Duration): string
 } = flow(
   prettify,
-  record.toEntries,
-  array.filter(([unit]) => pipe(durationUnits, array.includes(unit))),
-  array.map(([unit, value]) =>
-    value === 1 ? [pipe(unit, string.slice(0, -1)), value] : [unit, value],
+  Record.toEntries,
+  Array.filter(([unit]) => pipe(durationUnits, Array.includes(unit))),
+  Array.map(([unit, value]) =>
+    value === 1 ? [pipe(unit, String.slice(0, -1)), value] : [unit, value],
   ),
-  array.map(([unit, value]) => `${value} ${unit}`),
-  array.join(' '),
+  Array.map(([unit, value]) => `${value} ${unit}`),
+  Array.join(' '),
 )
 
 const millisecondsFromSeconds: {
@@ -207,31 +209,31 @@ export const toMilliseconds: {
 
 export const toSeconds: {
   (duration: DurationInput): number
-} = flow(toMilliseconds, number.divide(1000))
+} = flow(toMilliseconds, Number.divide(1000))
 
 export const toMinutes: {
   (duration: DurationInput): number
-} = flow(toSeconds, number.divide(60))
+} = flow(toSeconds, Number.divide(60))
 
 export const toHours: {
   (duration: DurationInput): number
-} = flow(toMinutes, number.divide(60))
+} = flow(toMinutes, Number.divide(60))
 
 export const toDays: {
   (duration: DurationInput): number
-} = flow(toHours, number.divide(24))
+} = flow(toHours, Number.divide(24))
 
 export const toWeeks: {
   (duration: DurationInput): number
-} = flow(toDays, number.divide(7))
+} = flow(toDays, Number.divide(7))
 
 export const toMonths: {
   (duration: DurationInput): number
-} = flow(toDays, number.divide(30))
+} = flow(toDays, Number.divide(30))
 
 export const toYears: {
   (duration: DurationInput): number
-} = flow(toMonths, number.divide(12))
+} = flow(toMonths, Number.divide(12))
 
 export const fromDate: {
   (date: Date): Duration
@@ -244,50 +246,50 @@ export const toDate: {
 export const add: {
   (durationY: Duration): (durationX: Duration) => Duration
 } = durationY =>
-  flow(toMilliseconds, number.add(toMilliseconds(durationY)), fromMilliseconds)
+  flow(toMilliseconds, Number.add(toMilliseconds(durationY)), fromMilliseconds)
 
 export const subtract: {
   (durationY: Duration): (durationX: Duration) => Duration
 } = durationY =>
   flow(
     toMilliseconds,
-    number.subtract(toMilliseconds(durationY)),
+    Number.subtract(toMilliseconds(durationY)),
     fromMilliseconds,
   )
 
 export const multiply: {
   (times: number): (durationX: Duration) => Duration
-} = times => flow(toMilliseconds, number.multiply(times), fromMilliseconds)
+} = times => flow(toMilliseconds, Number.multiply(times), fromMilliseconds)
 
 export const divide: {
   (times: number): (durationX: Duration) => Duration
-} = times => flow(toMilliseconds, number.divide(times), fromMilliseconds)
+} = times => flow(toMilliseconds, Number.divide(times), fromMilliseconds)
 
 export const divideSafe: {
-  (times: number): (durationX: Duration) => option.Option<Duration>
+  (times: number): (durationX: Duration) => Option.Option<Duration>
 } = times =>
-  flow(toMilliseconds, number.divideSafe(times), option.map(fromMilliseconds))
+  flow(toMilliseconds, Number.divideSafe(times), Option.map(fromMilliseconds))
 
 export const equals: {
   (durationY: Duration): (durationX: Duration) => boolean
-} = durationY => flow(toMilliseconds, number.equals(toMilliseconds(durationY)))
+} = durationY => flow(toMilliseconds, Number.equals(toMilliseconds(durationY)))
 
 export const lessThan: {
   (durationY: Duration): (durationX: Duration) => boolean
 } = durationY =>
-  flow(toMilliseconds, number.lessThan(toMilliseconds(durationY)))
+  flow(toMilliseconds, Number.lessThan(toMilliseconds(durationY)))
 
 export const lessThanOrEquals: {
   (durationY: Duration): (durationX: Duration) => boolean
 } = durationY =>
-  flow(toMilliseconds, number.lessThanOrEquals(toMilliseconds(durationY)))
+  flow(toMilliseconds, Number.lessThanOrEquals(toMilliseconds(durationY)))
 
 export const moreThan: {
   (durationY: Duration): (durationX: Duration) => boolean
 } = durationY =>
-  flow(toMilliseconds, number.moreThan(toMilliseconds(durationY)))
+  flow(toMilliseconds, Number.moreThan(toMilliseconds(durationY)))
 
 export const moreThanOrEquals: {
   (durationY: Duration): (durationX: Duration) => boolean
 } = durationY =>
-  flow(toMilliseconds, number.moreThanOrEquals(toMilliseconds(durationY)))
+  flow(toMilliseconds, Number.moreThanOrEquals(toMilliseconds(durationY)))

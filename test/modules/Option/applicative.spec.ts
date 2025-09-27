@@ -1,9 +1,9 @@
-import { number, option } from '../../../src'
+import { Number, Option } from '../../../src'
 import { describeApplicativeLaws } from '../../_utils/describeApplicativeLaws'
 
 describeApplicativeLaws(
-  option.Applicative,
-  option.getEquivalence(number.Equivalence),
-  [option.none, option.some(1)],
-  [option.none, option.some(number.add(5))],
+  Option.Applicative,
+  Option.getEquivalence(Number.Equivalence),
+  [Option.none, Option.some(1)],
+  [Option.none, Option.some(Number.add(5))],
 )

@@ -1,4 +1,4 @@
-import * as result from './Result'
+import * as Result from './Result'
 import { tryDo } from '../utils/exceptions'
 import { pipe } from '../utils/flow'
 
@@ -18,12 +18,12 @@ export class JsonParseError extends SyntaxError {
 }
 
 export const parse: {
-  (json: string): result.Result<JsonParseError, Json>
+  (json: string): Result.Result<JsonParseError, Json>
 } = json =>
   pipe(
     tryDo<SyntaxError, Json>(() => JSON.parse(json)),
-    result.catchAll(({ message }) =>
-      pipe(new JsonParseError(message), result.fail),
+    Result.catchAll(({ message }) =>
+      pipe(new JsonParseError(message), Result.fail),
     ),
   )
 

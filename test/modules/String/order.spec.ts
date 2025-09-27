@@ -1,14 +1,14 @@
-import { pipe, string } from '../../../src'
+import { pipe, String } from '../../../src'
 
 describe('Order', () => {
   it('should correctly compare two strings', () => {
-    pipe('', string.compare(''), expect).toBe(0)
-    pipe('a', string.compare(''), expect).toBe(1)
-    pipe('', string.compare('a'), expect).toBe(-1)
-    pipe('a', string.compare('a'), expect).toBe(0)
-    pipe('a', string.compare('b'), expect).toBe(-1)
-    pipe('b', string.compare('a'), expect).toBe(1)
-    pipe('ab', string.compare('a'), expect).toBe(1)
-    pipe('a', string.compare('ab'), expect).toBe(-1)
+    pipe('', String.compare(''), expect).toBe(0)
+    pipe('a', String.compare(''), expect).toBe(1)
+    pipe('', String.compare('a'), expect).toBe(-1)
+    pipe('a', String.compare('a'), expect).toBe(0)
+    pipe('a', String.compare('b'), expect).toBe(-1)
+    pipe('b', String.compare('a'), expect).toBe(1)
+    pipe('ab', String.compare('a'), expect).toBe(1)
+    pipe('a', String.compare('ab'), expect).toBe(-1)
   })
 })

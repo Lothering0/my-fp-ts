@@ -1,4 +1,4 @@
-import * as alt from '../../typeclasses/Alt'
+import * as Alt_ from '../../typeclasses/Alt'
 import { SyncOption, SyncOptionHkt, some } from './sync-option'
 import { identity } from '../Identity'
 import { LazyArg } from '../../types/utils'
@@ -34,6 +34,6 @@ export const catchAll: {
     onSome: some,
   })
 
-export const Alt: alt.Alt<SyncOptionHkt> = {
+export const Alt: Alt_.Alt<SyncOptionHkt> = {
   orElse,
 }

@@ -1,5 +1,5 @@
-import * as result from '../Result'
-import * as array from '../ReadonlyArray'
+import * as Result from '../Result'
+import * as Array from '../ReadonlyArray'
 import { pipe } from '../../utils/flow'
 import { create, Schema, SchemaOptional, Type } from './schema'
 import { message } from './process'
@@ -23,21 +23,21 @@ export const Tuple = <A extends ReadonlyArray<Schema<unknown>>>(
   ...schemas: A
 ): Schema<ExtractTupleTypes<A>> =>
   create(xs => {
-    const isArray = Array.isArray(xs)
+    const isArray = Array.Array.isArray(xs)
 
     if (!isArray) {
-      return result.fail([message`value ${xs} is not a tuple`])
+      return Result.fail([message`value ${xs} is not a tuple`])
     }
 
     const tupleMinLength = pipe(
       schemas,
-      array.dropRightWhile(({ isOptional }) => Boolean(isOptional)),
-      array.length,
+      Array.dropRightWhile(({ isOptional }) => Boolean(isOptional)),
+      Array.length,
     )
     const tupleMaxLength = schemas.length
 
     if (xs.length < tupleMinLength || xs.length > tupleMaxLength) {
-      return result.fail([
+      return Result.fail([
         message`tuple length must be from ${tupleMinLength} to ${tupleMaxLength}, got ${xs.length}`,
       ])
     }
@@ -49,15 +49,15 @@ export const Tuple = <A extends ReadonlyArray<Schema<unknown>>>(
       const schema = schemas[i]!
       const processResult = schema.proceed(xs[i])
 
-      if (result.isFailure(processResult)) {
+      if (Result.isFailure(processResult)) {
         return pipe(
           processResult,
-          result.mapLeft(array.map(msg => `${message`on index ${i}`}: ${msg}`)),
+          Result.mapLeft(Array.map(msg => `${message`on index ${i}`}: ${msg}`)),
         )
       }
 
-      out.push(result.successOf(processResult))
+      out.push(Result.successOf(processResult))
     }
 
-    return result.succeed(out)
+    return Result.succeed(out)
   })

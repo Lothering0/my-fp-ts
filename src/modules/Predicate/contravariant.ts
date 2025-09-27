@@ -1,8 +1,8 @@
-import * as contravariant from '../../typeclasses/Contravariant'
+import * as Contravariant_ from '../../typeclasses/Contravariant'
 import { Predicate, PredicateHkt } from './predicate'
 import { flow } from '../../utils/flow'
 
-export const Contravariant: contravariant.Contravariant<PredicateHkt> = {
+export const Contravariant: Contravariant_.Contravariant<PredicateHkt> = {
   contramap: ba => self => flow(ba, self),
 }
 

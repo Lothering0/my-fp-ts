@@ -1,4 +1,4 @@
-import * as result from '../Result'
+import * as Result from '../Result'
 import { create } from '../../typeclasses/Monad'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
 import { SyncResultHkt, execute, SyncResult } from './sync-result'
@@ -8,7 +8,7 @@ import { pipe } from '../../utils/flow'
 export const Monad = create<SyncResultHkt>(Applicative, {
   flat: self => () =>
     pipe(self, execute, ma =>
-      result.isFailure(ma) ? ma : pipe(ma, result.successOf, execute),
+      Result.isFailure(ma) ? ma : pipe(ma, Result.successOf, execute),
     ),
 })
 

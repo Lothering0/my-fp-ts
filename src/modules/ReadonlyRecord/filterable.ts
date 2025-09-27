@@ -1,5 +1,5 @@
-import * as filterable from '../../typeclasses/Filterable'
-import * as filterableWithIndex from '../../typeclasses/FilterableWithIndex'
+import * as Filterable_ from '../../typeclasses/Filterable'
+import * as FilterableWithIndex_ from '../../typeclasses/FilterableWithIndex'
 import { Option } from '../Option'
 import { PredicateWithIndex } from '../Predicate'
 import { Result } from '../Result'
@@ -8,12 +8,12 @@ import { Functor, FunctorWithIndex } from './functor'
 import { ReadonlyRecord, ReadonlyRecordHkt } from './readonly-record'
 import { RefinementWithIndex } from '../Refinement'
 
-export const Filterable = filterable.create<ReadonlyRecordHkt>(
+export const Filterable = Filterable_.create<ReadonlyRecordHkt>(
   Functor,
   Compactable,
 )
 
-export const FilterableWithIndex = filterableWithIndex.create<
+export const FilterableWithIndex = FilterableWithIndex_.create<
   ReadonlyRecordHkt,
   string
 >(FunctorWithIndex, Filterable)

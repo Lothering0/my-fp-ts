@@ -1,20 +1,20 @@
-import * as functor from '../../typeclasses/Functor'
-import * as functorWithIndex from '../../typeclasses/FunctorWithIndex'
-import * as array from '../ReadonlyArray'
+import * as Functor_ from '../../typeclasses/Functor'
+import * as FunctorWithIndex_ from '../../typeclasses/FunctorWithIndex'
+import * as Array from '../ReadonlyArray'
 import { flow } from '../../utils/flow'
 import { ReadonlyRecord, ReadonlyRecordHkt } from './readonly-record'
 import { fromEntries, toEntries } from './utils'
 
-export const Functor: functor.Functor<ReadonlyRecordHkt> = {
+export const Functor: Functor_.Functor<ReadonlyRecordHkt> = {
   map: ab =>
     flow(
       toEntries,
-      array.map(([k, a]) => [k, ab(a)] as const),
+      Array.map(([k, a]) => [k, ab(a)] as const),
       fromEntries,
     ),
 }
 
-export const FunctorWithIndex: functorWithIndex.FunctorWithIndex<
+export const FunctorWithIndex: FunctorWithIndex_.FunctorWithIndex<
   ReadonlyRecordHkt,
   string
 > = {
@@ -22,7 +22,7 @@ export const FunctorWithIndex: functorWithIndex.FunctorWithIndex<
   mapWithIndex: akb =>
     flow(
       toEntries,
-      array.map(([k, a]) => [k, akb(a, k)] as const),
+      Array.map(([k, a]) => [k, akb(a, k)] as const),
       fromEntries,
     ),
 }

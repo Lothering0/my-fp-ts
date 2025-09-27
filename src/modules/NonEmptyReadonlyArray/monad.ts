@@ -1,6 +1,6 @@
-import * as array from '../ReadonlyArray'
-import * as monad from '../../typeclasses/Monad'
-import * as monadWithIndex from '../../typeclasses/MonadWithIndex'
+import * as Array from '../ReadonlyArray'
+import * as Monad_ from '../../typeclasses/Monad'
+import * as MonadWithIndex_ from '../../typeclasses/MonadWithIndex'
 import {
   NonEmptyReadonlyArray,
   NonEmptyReadonlyArrayHkt,
@@ -8,12 +8,12 @@ import {
 import { DoObject, DoObjectKey } from '../../types/DoObject'
 
 export const Monad = {
-  ...array.Monad,
-} as monad.Monad<NonEmptyReadonlyArrayHkt>
+  ...Array.Monad,
+} as Monad_.Monad<NonEmptyReadonlyArrayHkt>
 
 export const MonadWithIndex = {
-  ...array.MonadWithIndex,
-} as monadWithIndex.MonadWithIndex<NonEmptyReadonlyArrayHkt, number>
+  ...Array.MonadWithIndex,
+} as MonadWithIndex_.MonadWithIndex<NonEmptyReadonlyArrayHkt, number>
 
 export const Do = Monad.Do
 

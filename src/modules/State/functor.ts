@@ -1,9 +1,9 @@
-import * as functor from '../../typeclasses/Functor'
+import * as Functor_ from '../../typeclasses/Functor'
 import { StateHkt, State } from './state'
 import { run } from './utils'
 import { flow } from '../../utils/flow'
 
-export const Functor: functor.Functor<StateHkt> = {
+export const Functor: Functor_.Functor<StateHkt> = {
   map: ab => self =>
     flow(
       s => run(s)(self),

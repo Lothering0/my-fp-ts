@@ -1,4 +1,4 @@
-import * as contravariant from './Contravariant'
+import * as Contravariant_ from './Contravariant'
 import { Hkt } from './Hkt'
 import { Semigroup } from './Semigroup'
 import { Monoid } from './Monoid'
@@ -22,7 +22,7 @@ export const reverse: {
   equals: y => x => !Equivalence.equals(y)(x),
 })
 
-export const Contravariant: contravariant.Contravariant<EquivalenceHkt> = {
+export const Contravariant: Contravariant_.Contravariant<EquivalenceHkt> = {
   contramap: ba => self => ({
     equals: y => x => self.equals(ba(y))(ba(x)),
   }),

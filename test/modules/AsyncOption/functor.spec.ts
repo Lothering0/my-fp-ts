@@ -1,40 +1,40 @@
-import { asyncOption, identity, number, option, pipe } from '../../../src'
+import { AsyncOption, identity, Number, Option, pipe } from '../../../src'
 
 describe('functor', () => {
   describe('map', () => {
     it('should satisfy identity law', async () => {
       const a = 1
-      const fa: asyncOption.AsyncOption<typeof a> = jest.fn(asyncOption.of(a))
+      const fa: AsyncOption.AsyncOption<typeof a> = jest.fn(AsyncOption.of(a))
 
       const result = await pipe(
         fa,
-        asyncOption.map(identity),
-        asyncOption.toPromise,
+        AsyncOption.map(identity),
+        AsyncOption.toPromise,
       )
-      expect(result).toEqual<option.Option<typeof a>>(option.some(a))
+      expect(result).toEqual<Option.Option<typeof a>>(Option.some(a))
       expect(fa).toHaveBeenCalledTimes(1)
     })
 
     it('should satisfy composition law', async () => {
-      const ab = number.add(5)
-      const bc = number.divide(2)
+      const ab = Number.add(5)
+      const bc = Number.divide(2)
 
       const a = 1
-      const getFa = () => asyncOption.of<typeof a>(a)
+      const getFa = () => AsyncOption.of<typeof a>(a)
 
-      const fa1: asyncOption.AsyncOption<typeof a> = jest.fn(getFa())
-      const fa2: asyncOption.AsyncOption<typeof a> = jest.fn(getFa())
+      const fa1: AsyncOption.AsyncOption<typeof a> = jest.fn(getFa())
+      const fa2: AsyncOption.AsyncOption<typeof a> = jest.fn(getFa())
 
       const result1 = await pipe(
         fa1,
-        asyncOption.map(a => bc(ab(a))),
-        asyncOption.toPromise,
+        AsyncOption.map(a => bc(ab(a))),
+        AsyncOption.toPromise,
       )
       const result2 = await pipe(
         fa2,
-        asyncOption.map(ab),
-        asyncOption.map(bc),
-        asyncOption.toPromise,
+        AsyncOption.map(ab),
+        AsyncOption.map(bc),
+        AsyncOption.toPromise,
       )
 
       expect(result1).toEqual(result2)
@@ -44,26 +44,26 @@ describe('functor', () => {
 
     it('should return function containing promise of `none` if the same was provided', async () => {
       const n = 1
-      const fa: asyncOption.AsyncOption<never> = jest.fn(asyncOption.none)
+      const fa: AsyncOption.AsyncOption<never> = jest.fn(AsyncOption.none)
       const result = await pipe(
         fa,
-        asyncOption.map(number.add(n)),
-        asyncOption.toPromise,
+        AsyncOption.map(Number.add(n)),
+        AsyncOption.toPromise,
       )
-      expect(result).toEqual<option.Option<never>>(option.none)
+      expect(result).toEqual<Option.Option<never>>(Option.none)
       expect(fa).toHaveBeenCalledTimes(1)
     })
 
     it('should return function containing promise of `some` if it was provided', async () => {
       const a = 1
       const n = 1
-      const fa: asyncOption.AsyncOption<typeof a> = jest.fn(asyncOption.some(a))
+      const fa: AsyncOption.AsyncOption<typeof a> = jest.fn(AsyncOption.some(a))
       const result = await pipe(
         fa,
-        asyncOption.map(number.add(n)),
-        asyncOption.toPromise,
+        AsyncOption.map(Number.add(n)),
+        AsyncOption.toPromise,
       )
-      expect(result).toEqual(option.some(number.add(a)(n)))
+      expect(result).toEqual(Option.some(Number.add(a)(n)))
       expect(fa).toHaveBeenCalledTimes(1)
     })
   })

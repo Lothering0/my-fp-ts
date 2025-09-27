@@ -1,20 +1,20 @@
-import * as option from '../Option'
-import * as result from '../Result'
+import * as Option_ from '../Option'
+import * as Result from '../Result'
 import { flow, pipe } from '../../utils/flow'
 import { create, Schema } from './schema'
 import { message } from './process'
 
-export const Option = <A>(schema: Schema<A>): Schema<option.Option<A>> =>
+export const Option = <A>(schema: Schema<A>): Schema<Option_.Option<A>> =>
   create(x => {
-    if (!option.isOption(x)) {
-      return result.fail([message`value ${x} is not an option`])
+    if (!Option_.isOption(x)) {
+      return Result.fail([message`value ${x} is not an option`])
     }
 
     return pipe(
       x,
-      option.match({
-        onSome: flow(schema.proceed, result.map(option.some)),
-        onNone: () => result.succeed(option.none),
+      Option_.match({
+        onSome: flow(schema.proceed, Result.map(Option_.some)),
+        onNone: () => Result.succeed(Option_.none),
       }),
     )
   })

@@ -1,8 +1,8 @@
-import * as async from '../modules/Async'
+import * as Async from '../modules/Async'
 import { createInterface } from 'node:readline'
 
 export const ask: {
-  (question: string): async.Async<string>
+  (question: string): Async.Async<string>
 } = question => () => {
   const readlineInterface = createInterface({
     input: process.stdin,

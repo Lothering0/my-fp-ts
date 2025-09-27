@@ -1,4 +1,4 @@
-import * as iterable from '../Iterable'
+import * as Iterable from '../Iterable'
 import { Tree, TreeHkt } from './tree'
 import { create } from '../../typeclasses/Applicative'
 import { Functor, map } from './functor'
@@ -10,7 +10,7 @@ export const flat: {
 } = self =>
   make(
     pipe(self, valueOf, valueOf),
-    iterable.concat(pipe(self, forestOf, iterable.map(flat)))(
+    Iterable.concat(pipe(self, forestOf, Iterable.map(flat)))(
       pipe(self, valueOf, forestOf),
     ),
   )

@@ -1,36 +1,36 @@
-import { async, identity, number, pipe } from '../../../src'
+import { Async, identity, Number, pipe } from '../../../src'
 
 describe('functor', () => {
   describe('map', () => {
     it('should satisfy identity law', async () => {
       const a = 1
-      const fa: async.Async<typeof a> = jest.fn(async.of(a))
+      const fa: Async.Async<typeof a> = jest.fn(Async.of(a))
 
-      const result = await pipe(fa, async.map(identity), async.toPromise)
+      const result = await pipe(fa, Async.map(identity), Async.toPromise)
       expect(result).toEqual(a)
       expect(fa).toHaveBeenCalledTimes(1)
     })
 
     it('should satisfy composition law', async () => {
-      const ab = number.add(5)
-      const bc = number.divide(2)
+      const ab = Number.add(5)
+      const bc = Number.divide(2)
 
       const a = 1
-      const getFa = () => async.of<typeof a>(a)
+      const getFa = () => Async.of<typeof a>(a)
 
-      const fa1: async.Async<typeof a> = jest.fn(getFa())
-      const fa2: async.Async<typeof a> = jest.fn(getFa())
+      const fa1: Async.Async<typeof a> = jest.fn(getFa())
+      const fa2: Async.Async<typeof a> = jest.fn(getFa())
 
       const result1 = await pipe(
         fa1,
-        async.map(a => bc(ab(a))),
-        async.toPromise,
+        Async.map(a => bc(ab(a))),
+        Async.toPromise,
       )
       const result2 = await pipe(
         fa2,
-        async.map(ab),
-        async.map(bc),
-        async.toPromise,
+        Async.map(ab),
+        Async.map(bc),
+        Async.toPromise,
       )
 
       expect(result1).toEqual(result2)

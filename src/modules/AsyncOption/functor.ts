@@ -1,9 +1,9 @@
-import * as option from '../Option'
-import * as functor from '../../typeclasses/Functor'
+import * as Option from '../Option'
+import * as Functor_ from '../../typeclasses/Functor'
 import { AsyncOptionHkt, AsyncOption, toPromise } from './async-option'
 
-export const Functor: functor.Functor<AsyncOptionHkt> = {
-  map: ab => self => () => toPromise(self).then(option.map(ab)),
+export const Functor: Functor_.Functor<AsyncOptionHkt> = {
+  map: ab => self => () => toPromise(self).then(Option.map(ab)),
 }
 
 export const map: {

@@ -1,7 +1,7 @@
-import * as functor from '../../typeclasses/Functor'
+import * as Functor_ from '../../typeclasses/Functor'
 import { Identity, IdentityHkt } from './identity'
 
-export const Functor: functor.Functor<IdentityHkt> = {
+export const Functor: Functor_.Functor<IdentityHkt> = {
   map: ab => self => ab(self),
 }
 

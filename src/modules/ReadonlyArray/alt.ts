@@ -1,4 +1,4 @@
-import * as alt from '../../typeclasses/Alt'
+import * as Alt_ from '../../typeclasses/Alt'
 import { concat } from './utils'
 import { ReadonlyArrayHkt } from './readonly-array'
 
@@ -7,6 +7,6 @@ export const orElse =
   <In>(self: ReadonlyArray<In>): ReadonlyArray<In | Out> =>
     concat<In | Out>(that)(self)
 
-export const Alt: alt.Alt<ReadonlyArrayHkt> = {
+export const Alt: Alt_.Alt<ReadonlyArrayHkt> = {
   orElse,
 }

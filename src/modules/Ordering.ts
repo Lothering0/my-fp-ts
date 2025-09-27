@@ -1,7 +1,7 @@
-import * as equivalence from '../typeclasses/Equivalence'
-import * as semigroup from '../typeclasses/Semigroup'
-import * as monoid from '../typeclasses/Monoid'
-import * as matching from '../modules/Matching'
+import * as Equivalence_ from '../typeclasses/Equivalence'
+import * as Semigroup_ from '../typeclasses/Semigroup'
+import * as Monoid_ from '../typeclasses/Monoid'
+import * as Matching from '../modules/Matching'
 import { constant } from '../utils/constant'
 import { flow } from '../utils/flow'
 
@@ -19,10 +19,10 @@ export const match: {
   ): (self: Ordering) => A | B | C
 } = matchers =>
   flow(
-    matching.match,
-    matching.when(-1, matchers.onLessThan),
-    matching.when(1, matchers.onMoreThan),
-    matching.getOrElse(() => matchers.onEqual(0)),
+    Matching.match,
+    Matching.when(-1, matchers.onLessThan),
+    Matching.when(1, matchers.onMoreThan),
+    Matching.getOrElse(() => matchers.onEqual(0)),
   )
 
 export const reverse: {
@@ -36,22 +36,22 @@ export const reverse: {
 export const fromNumber: {
   (n: number): Ordering
 } = flow(
-  matching.match,
-  matching.on(n => n <= -1, constant<Ordering>(-1)),
-  matching.on(n => n >= 1, constant<Ordering>(1)),
-  matching.getOrElse(constant<Ordering>(0)),
+  Matching.match,
+  Matching.on(n => n <= -1, constant<Ordering>(-1)),
+  Matching.on(n => n >= 1, constant<Ordering>(1)),
+  Matching.getOrElse(constant<Ordering>(0)),
 )
 
-export const Equivalence: equivalence.Equivalence<Ordering> =
-  equivalence.EquivalenceStrict
+export const Equivalence: Equivalence_.Equivalence<Ordering> =
+  Equivalence_.EquivalenceStrict
 
 export const { equals } = Equivalence
 
-export const Semigroup: semigroup.Semigroup<Ordering> = {
+export const Semigroup: Semigroup_.Semigroup<Ordering> = {
   combine: y => x => (y === 0 ? x : y),
 }
 
-export const Monoid: monoid.Monoid<Ordering> = {
+export const Monoid: Monoid_.Monoid<Ordering> = {
   ...Semigroup,
   empty: 0,
 }

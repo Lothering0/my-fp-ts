@@ -1,5 +1,5 @@
-import * as syncResult from '../SyncResult'
-import * as option from '../Option'
+import * as SyncResult from '../SyncResult'
+import * as Option from '../Option'
 import { Sync } from '../Sync'
 import { Result } from '../Result'
 import { Monad } from './monad'
@@ -19,23 +19,23 @@ export const tapSync: {
 
 export const tapOption: {
   <A>(
-    f: (a: A) => option.Option<unknown>,
+    f: (a: A) => Option.Option<unknown>,
   ): (self: SyncOption<A>) => SyncOption<A>
-} = f => self => () => pipe(self, execute, option.tap(f))
+} = f => self => () => pipe(self, execute, Option.tap(f))
 
 export const tapResult: {
   <E, A>(
     f: (a: A) => Result<E, unknown>,
   ): (self: SyncOption<A>) => SyncOption<A>
-} = f => self => () => pipe(self, execute, option.tapResult(f))
+} = f => self => () => pipe(self, execute, Option.tapResult(f))
 
 export const tapSyncResult: {
   <E, A>(
-    f: (a: A) => syncResult.SyncResult<E, unknown>,
+    f: (a: A) => SyncResult.SyncResult<E, unknown>,
   ): (self: SyncOption<A>) => SyncOption<A>
 } = f => self => () =>
   pipe(
     self,
     execute,
-    option.tap(a => pipe(a, f, syncResult.execute, option.fromResult)),
+    Option.tap(a => pipe(a, f, SyncResult.execute, Option.fromResult)),
   )

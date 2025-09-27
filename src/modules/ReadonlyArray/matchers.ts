@@ -1,10 +1,10 @@
-import * as nonEmptyArray from '../NonEmptyReadonlyArray'
+import * as NonEmptyArray from '../NonEmptyReadonlyArray'
 import { LazyArg } from '../../types/utils'
 import { isNonEmpty } from './refinements'
 
 export interface Matchers<A, B, C = B> {
   readonly onEmpty: LazyArg<B>
-  readonly onNonEmpty: (as: nonEmptyArray.NonEmptyReadonlyArray<A>) => C
+  readonly onNonEmpty: (as: NonEmptyArray.NonEmptyReadonlyArray<A>) => C
 }
 
 export const match: {
@@ -23,7 +23,7 @@ export const matchLeft: {
   ): (self: ReadonlyArray<A>) => B | C
 } = matchers => self =>
   isNonEmpty(self)
-    ? matchers.onNonEmpty(nonEmptyArray.head(self), nonEmptyArray.tail(self))
+    ? matchers.onNonEmpty(NonEmptyArray.head(self), NonEmptyArray.tail(self))
     : matchers.onEmpty()
 
 export interface MatchersRight<A, B, C = B> {
@@ -37,5 +37,5 @@ export const matchRight: {
   ): (self: ReadonlyArray<A>) => B | C
 } = matchers => self =>
   isNonEmpty(self)
-    ? matchers.onNonEmpty(nonEmptyArray.init(self), nonEmptyArray.last(self))
+    ? matchers.onNonEmpty(NonEmptyArray.init(self), NonEmptyArray.last(self))
     : matchers.onEmpty()

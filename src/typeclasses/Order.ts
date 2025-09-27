@@ -1,6 +1,6 @@
-import * as ordering from '../modules/Ordering'
-import * as contravariant from './Contravariant'
-import * as boolean from '../modules/Boolean'
+import * as Ordering from '../modules/Ordering'
+import * as Contravariant_ from './Contravariant'
+import * as Boolean from '../modules/Boolean'
 import { flow, pipe } from '../utils/flow'
 import { Hkt } from './Hkt'
 import { constant } from '../utils/constant'
@@ -15,13 +15,13 @@ export interface OrderHkt extends Hkt {
 }
 
 export interface Order<A> {
-  readonly compare: (y: A) => (x: A) => ordering.Ordering
+  readonly compare: (y: A) => (x: A) => Ordering.Ordering
 }
 
 export const reverse: {
   <A>(Order: Order<A>): Order<A>
 } = Order => ({
-  compare: y => flow(Order.compare(y), ordering.reverse),
+  compare: y => flow(Order.compare(y), Ordering.reverse),
 })
 
 export const equals: {
@@ -50,7 +50,7 @@ export const min: {
   pipe(
     x,
     Order.compare(y),
-    ordering.match({
+    Ordering.match({
       onLessThan: constant(x),
       onEqual: constant(x),
       onMoreThan: constant(y),
@@ -63,7 +63,7 @@ export const max: {
   pipe(
     x,
     Order.compare(y),
-    ordering.match({
+    Ordering.match({
       onLessThan: constant(y),
       onEqual: constant(x),
       onMoreThan: constant(x),
@@ -80,10 +80,10 @@ export const between: {
   pipe(
     a,
     moreThanOrEquals(Order)(low),
-    boolean.and(pipe(a, lessThanOrEquals(Order)(high))),
+    Boolean.and(pipe(a, lessThanOrEquals(Order)(high))),
   )
 
-export const Contravariant: contravariant.Contravariant<OrderHkt> = {
+export const Contravariant: Contravariant_.Contravariant<OrderHkt> = {
   contramap: ba => Order => ({
     compare: y => x => Order.compare(ba(y))(ba(x)),
   }),
@@ -100,7 +100,7 @@ export const getSemigroup: {
       pipe(
         x,
         ordX.compare(y),
-        ordering.match({
+        Ordering.match({
           onLessThan: identity,
           onEqual: () => ordY.compare(y)(x),
           onMoreThan: identity,

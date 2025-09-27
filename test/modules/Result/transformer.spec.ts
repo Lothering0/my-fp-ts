@@ -1,74 +1,74 @@
-import { number, array, result, pipe, string, equivalence } from '../../../src'
+import { Number, Array, Result, pipe, String, Equivalence } from '../../../src'
 
 describe('transformer', () => {
-  const arrayResult = result.transform(array.Monad)
+  const ArrayOfResult = Result.transform(Array.Monad)
 
   it('should correctly transform `ReadonlyArray` monad', () => {
-    const EquivalenceNumber = array.getEquivalence(
-      result.getEquivalence(string.Equivalence, number.Equivalence),
+    const EquivalenceNumber = Array.getEquivalence(
+      Result.getEquivalence(String.Equivalence, Number.Equivalence),
     )
-    const EquivalenceString = array.getEquivalence(
-      result.getEquivalence(string.Equivalence, string.Equivalence),
+    const EquivalenceString = Array.getEquivalence(
+      Result.getEquivalence(String.Equivalence, String.Equivalence),
     )
 
     pipe(
       1,
-      arrayResult.succeed,
-      EquivalenceNumber.equals([result.succeed(1)]),
+      ArrayOfResult.succeed,
+      EquivalenceNumber.equals([Result.succeed(1)]),
       expect,
     ).toBe(true)
 
     pipe(
       'a',
-      arrayResult.fail,
-      EquivalenceNumber.equals([result.fail('a')]),
+      ArrayOfResult.fail,
+      EquivalenceNumber.equals([Result.fail('a')]),
       expect,
     ).toBe(true)
 
     pipe(
       1,
-      arrayResult.of,
-      arrayResult.map(number.show),
-      EquivalenceString.equals([result.succeed('1')]),
+      ArrayOfResult.of,
+      ArrayOfResult.map(Number.show),
+      EquivalenceString.equals([Result.succeed('1')]),
       expect,
     ).toBe(true)
   })
 
   it('should correctly compose multiple monads', () => {
-    const arrayResultResult = result.transform(arrayResult.Monad)
+    const ArrayOfResultResult = Result.transform(ArrayOfResult.Monad)
     const EquivalenceNumber = pipe(
-      result.getEquivalence(
-        equivalence.EquivalenceStrict,
-        result.getEquivalence(
-          equivalence.EquivalenceStrict,
-          number.Equivalence,
+      Result.getEquivalence(
+        Equivalence.EquivalenceStrict,
+        Result.getEquivalence(
+          Equivalence.EquivalenceStrict,
+          Number.Equivalence,
         ),
       ),
-      array.getEquivalence,
+      Array.getEquivalence,
     )
     const EquivalenceString = pipe(
-      result.getEquivalence(
-        equivalence.EquivalenceStrict,
-        result.getEquivalence(
-          equivalence.EquivalenceStrict,
-          string.Equivalence,
+      Result.getEquivalence(
+        Equivalence.EquivalenceStrict,
+        Result.getEquivalence(
+          Equivalence.EquivalenceStrict,
+          String.Equivalence,
         ),
       ),
-      array.getEquivalence,
+      Array.getEquivalence,
     )
 
     pipe(
       1,
-      arrayResultResult.of,
-      EquivalenceNumber.equals([pipe(1, result.succeed, result.succeed)]),
+      ArrayOfResultResult.of,
+      EquivalenceNumber.equals([pipe(1, Result.succeed, Result.succeed)]),
       expect,
     ).toBe(true)
 
     pipe(
       1,
-      arrayResultResult.of,
-      arrayResultResult.map(String),
-      EquivalenceString.equals([pipe('1', result.succeed, result.succeed)]),
+      ArrayOfResultResult.of,
+      ArrayOfResultResult.map(String.String),
+      EquivalenceString.equals([pipe('1', Result.succeed, Result.succeed)]),
       expect,
     ).toBe(true)
   })

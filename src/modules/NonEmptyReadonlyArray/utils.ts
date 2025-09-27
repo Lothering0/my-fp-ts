@@ -1,4 +1,4 @@
-import * as order from '../../typeclasses/Order'
+import * as Order from '../../typeclasses/Order'
 import { NonEmptyReadonlyArray } from './non-empty-readonly-array'
 
 export const head: {
@@ -36,7 +36,7 @@ export const reverse = <A>(
   self.toReversed() as unknown as NonEmptyReadonlyArray<A>
 
 export const sort =
-  <B>(Order: order.Order<B>) =>
+  <B>(Order: Order.Order<B>) =>
   <A extends B>(self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<A> =>
     self.toSorted((x, y) =>
       Order.compare(y)(x),
@@ -44,6 +44,6 @@ export const sort =
 
 export const sortBy: {
   <B>(
-    orders: Iterable<order.Order<B>>,
+    orders: Iterable<Order.Order<B>>,
   ): <A extends B>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A>
 } = orders => self => [...orders].reduce((out, Ord) => sort(Ord)(out), self)

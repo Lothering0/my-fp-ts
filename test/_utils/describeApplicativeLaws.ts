@@ -1,20 +1,20 @@
 import {
   Hkt,
   Kind,
-  applicative,
-  equivalence,
-  nonEmptyArray,
+  Applicative,
+  Equivalence,
+  NonEmptyArray,
   pipe,
   identity,
-  number,
+  Number,
 } from '../../src'
 
 export const describeApplicativeLaws: {
   <F extends Hkt>(
-    Applicative: applicative.Applicative<F>,
-    Equivalence: equivalence.Equivalence<Kind<F, number, unknown, unknown>>,
-    fas: nonEmptyArray.NonEmptyReadonlyArray<Kind<F, number, unknown, unknown>>,
-    fabs: nonEmptyArray.NonEmptyReadonlyArray<
+    Applicative: Applicative.Applicative<F>,
+    Equivalence: Equivalence.Equivalence<Kind<F, number, unknown, unknown>>,
+    fas: NonEmptyArray.NonEmptyReadonlyArray<Kind<F, number, unknown, unknown>>,
+    fabs: NonEmptyArray.NonEmptyReadonlyArray<
       Kind<F, (x: number) => number, unknown, never>
     >,
   ): void
@@ -34,7 +34,7 @@ export const describeApplicativeLaws: {
       })
 
       it('should satisfy homomorphism law', () => {
-        const ab = number.add(5)
+        const ab = Number.add(5)
         const x = 1
 
         pipe(

@@ -1,57 +1,57 @@
-import * as result from '../Result'
-import * as duration from '../Duration'
-import * as boolean from '../Boolean'
+import * as Result from '../Result'
+import * as Duration_ from '../Duration'
+import * as Boolean from '../Boolean'
 import { isNumber, isRecord, isString } from '../../utils/typeChecks'
 import { create, Schema } from './schema'
 import { message } from './process'
 import { pipe } from '../../utils/flow'
 
-export const Duration: Schema<duration.DurationInput, duration.Duration> =
+export const Duration: Schema<Duration_.DurationInput, Duration_.Duration> =
   create(x => {
     if (isString(x)) {
       return pipe(
         x,
-        duration.fromTemplate,
-        result.orElse(
-          result.fail([message`value ${x} is not a valid duration template`]),
+        Duration_.fromTemplate,
+        Result.orElse(
+          Result.fail([message`value ${x} is not a valid duration template`]),
         ),
       )
     }
 
     if (!isNumber(x) && !isRecord(x)) {
-      return result.fail([
+      return Result.fail([
         message`value ${x} is not a duration instance or a number of milliseconds`,
       ])
     }
 
-    return pipe(x, duration.make, result.succeed)
+    return pipe(x, Duration_.make, Result.succeed)
   })
 
 const durationProceed: {
   (
     f: (
-      durationY: duration.Duration,
-    ) => (durationX: duration.Duration) => boolean,
+      durationY: Duration_.Duration,
+    ) => (durationX: Duration_.Duration) => boolean,
     getMessages: (
-      durationX: duration.Duration,
-      durationY: duration.Duration,
+      durationX: Duration_.Duration,
+      durationY: Duration_.Duration,
     ) => ReadonlyArray<string>,
   ): (
-    Schema: Schema<duration.Duration>,
-  ) => (input: duration.DurationInput) => Schema<duration.Duration>
+    Schema: Schema<Duration_.Duration>,
+  ) => (input: Duration_.DurationInput) => Schema<Duration_.Duration>
 } = (f, getMessages) => Schema => input =>
-  create((x: duration.Duration) =>
+  create((x: Duration_.Duration) =>
     pipe(
-      result.Do,
-      result.apS('durationX', Schema.proceed(x)),
-      result.setTo('durationY', duration.make(input)),
-      result.flatMap(({ durationX, durationY }) =>
+      Result.Do,
+      Result.apS('durationX', Schema.proceed(x)),
+      Result.setTo('durationY', Duration_.make(input)),
+      Result.flatMap(({ durationX, durationY }) =>
         pipe(
           durationX,
           f(durationY),
-          boolean.match({
-            onTrue: () => result.succeed(x),
-            onFalse: () => result.fail(getMessages(durationX, durationY)),
+          Boolean.match({
+            onTrue: () => Result.succeed(x),
+            onFalse: () => Result.fail(getMessages(durationX, durationY)),
           }),
         ),
       ),
@@ -60,32 +60,32 @@ const durationProceed: {
 
 /** Fails if current duration is not less than or equals to provided */
 export const lessThanOrEquals = durationProceed(
-  duration.lessThanOrEquals,
+  Duration_.lessThanOrEquals,
   (durationX, durationY) => [
-    message`duration should be less than or equal to ${duration.toTemplate(durationY)}, got ${duration.toTemplate(durationX)}`,
+    message`duration should be less than or equal to ${Duration_.toTemplate(durationY)}, got ${Duration_.toTemplate(durationX)}`,
   ],
 )
 
 /** Fails if current duration is not less than provided */
 export const lessThan = durationProceed(
-  duration.lessThan,
+  Duration_.lessThan,
   (durationX, durationY) => [
-    message`duration should be less than ${duration.toTemplate(durationY)}, got ${duration.toTemplate(durationX)}`,
+    message`duration should be less than ${Duration_.toTemplate(durationY)}, got ${Duration_.toTemplate(durationX)}`,
   ],
 )
 
 /** Fails if current duration is not more than or equal to provided */
 export const moreThanOrEquals = durationProceed(
-  duration.moreThanOrEquals,
+  Duration_.moreThanOrEquals,
   (durationX, durationY) => [
-    message`duration should be more than or equal to ${duration.toTemplate(durationY)}, got ${duration.toTemplate(durationX)}`,
+    message`duration should be more than or equal to ${Duration_.toTemplate(durationY)}, got ${Duration_.toTemplate(durationX)}`,
   ],
 )
 
 /** Fails if current duration is not more than provided */
 export const moreThan = durationProceed(
-  duration.moreThan,
+  Duration_.moreThan,
   (durationX, durationY) => [
-    message`duration should be more than ${duration.toTemplate(durationY)}, got ${duration.toTemplate(durationX)}`,
+    message`duration should be more than ${Duration_.toTemplate(durationY)}, got ${Duration_.toTemplate(durationX)}`,
   ],
 )

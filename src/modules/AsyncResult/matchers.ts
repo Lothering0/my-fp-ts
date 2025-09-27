@@ -1,4 +1,4 @@
-import * as result from '../Result'
+import * as Result from '../Result'
 import { Async } from '../Async'
 import { toPromise, AsyncResult } from './async-result'
 
@@ -11,4 +11,4 @@ export const match: {
   <Failure, In, Out1, Out2 = Out1>(
     matchers: Matchers<Failure, In, Out1, Out2>,
   ): (self: AsyncResult<Failure, In>) => Async<Out1 | Out2>
-} = matchers => self => () => toPromise(self).then(result.match(matchers))
+} = matchers => self => () => toPromise(self).then(Result.match(matchers))

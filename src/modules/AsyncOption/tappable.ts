@@ -1,9 +1,9 @@
-import * as async from '../Async'
-import * as asyncResult from '../AsyncResult'
-import * as result from '../Result'
-import * as syncOption from '../SyncOption'
-import * as syncResult from '../SyncResult'
-import * as option from '../Option'
+import * as Async from '../Async'
+import * as AsyncResult from '../AsyncResult'
+import * as Result from '../Result'
+import * as SyncOption from '../SyncOption'
+import * as SyncResult from '../SyncResult'
+import * as Option from '../Option'
 import { create } from '../../typeclasses/Tappable'
 import { Do, Monad, apS } from './monad'
 import { AsyncOption, fromAsync } from './async-option'
@@ -25,31 +25,31 @@ export const tapSync: {
 
 export const tapOption: {
   <In>(
-    f: (a: In) => option.Option<unknown>,
+    f: (a: In) => Option.Option<unknown>,
   ): (self: AsyncOption<In>) => AsyncOption<In>
 } = f => self =>
   pipe(
     Do,
     apS('a', self),
-    tap(({ a }) => pipe(a, f, async.of)),
+    tap(({ a }) => pipe(a, f, Async.of)),
     map(({ a }) => a),
   )
 
 export const tapResult: {
   <Collectable, In>(
-    f: (a: In) => result.Result<Collectable, unknown>,
+    f: (a: In) => Result.Result<Collectable, unknown>,
   ): (self: AsyncOption<In>) => AsyncOption<In>
 } = f => self =>
   pipe(
     Do,
     apS('a', self),
-    tap(({ a }) => pipe(a, f, option.fromResult, async.of)),
+    tap(({ a }) => pipe(a, f, Option.fromResult, Async.of)),
     map(({ a }) => a),
   )
 
 export const tapAsync: {
   <In>(
-    f: (a: In) => async.Async<unknown>,
+    f: (a: In) => Async.Async<unknown>,
   ): (self: AsyncOption<In>) => AsyncOption<In>
 } = f => self =>
   pipe(
@@ -61,7 +61,7 @@ export const tapAsync: {
 
 export const tapAsyncResult: {
   <Collectable, In>(
-    f: (a: In) => asyncResult.AsyncResult<Collectable, unknown>,
+    f: (a: In) => AsyncResult.AsyncResult<Collectable, unknown>,
   ): (self: AsyncOption<In>) => AsyncOption<In>
 } = f => self =>
   pipe(
@@ -71,9 +71,9 @@ export const tapAsyncResult: {
       pipe(
         a,
         f,
-        asyncResult.match({
-          onFailure: () => option.none,
-          onSuccess: () => option.some(a),
+        AsyncResult.match({
+          onFailure: () => Option.none,
+          onSuccess: () => Option.some(a),
         }),
       ),
     ),
@@ -82,24 +82,24 @@ export const tapAsyncResult: {
 
 export const tapSyncOption: {
   <In>(
-    f: (a: In) => syncOption.SyncOption<unknown>,
+    f: (a: In) => SyncOption.SyncOption<unknown>,
   ): (self: AsyncOption<In>) => AsyncOption<In>
 } = f => self =>
   pipe(
     Do,
     apS('a', self),
-    tapOption(({ a }) => pipe(a, f, syncOption.execute)),
+    tapOption(({ a }) => pipe(a, f, SyncOption.execute)),
     map(({ a }) => a),
   )
 
 export const tapSyncResult: {
   <Collectable, In>(
-    f: (a: In) => syncResult.SyncResult<Collectable, unknown>,
+    f: (a: In) => SyncResult.SyncResult<Collectable, unknown>,
   ): (self: AsyncOption<In>) => AsyncOption<In>
 } = f => self =>
   pipe(
     Do,
     apS('a', self),
-    tapResult(({ a }) => pipe(a, f, syncResult.execute)),
+    tapResult(({ a }) => pipe(a, f, SyncResult.execute)),
     map(({ a }) => a),
   )

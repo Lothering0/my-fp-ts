@@ -1,18 +1,18 @@
-import * as array from '../ReadonlyArray'
-import * as functor from '../../typeclasses/Functor'
-import * as functorWithIndex from '../../typeclasses/FunctorWithIndex'
+import * as Array from '../ReadonlyArray'
+import * as Functor_ from '../../typeclasses/Functor'
+import * as FunctorWithIndex_ from '../../typeclasses/FunctorWithIndex'
 import {
   NonEmptyReadonlyArray,
   NonEmptyReadonlyArrayHkt,
 } from './non-empty-readonly-array'
 
 export const Functor = {
-  ...array.Functor,
-} as functor.Functor<NonEmptyReadonlyArrayHkt>
+  ...Array.Functor,
+} as Functor_.Functor<NonEmptyReadonlyArrayHkt>
 
 export const FunctorWithIndex = {
-  ...array.FunctorWithIndex,
-} as functorWithIndex.FunctorWithIndex<NonEmptyReadonlyArrayHkt, number>
+  ...Array.FunctorWithIndex,
+} as FunctorWithIndex_.FunctorWithIndex<NonEmptyReadonlyArrayHkt, number>
 
 export const map: {
   <A, B>(

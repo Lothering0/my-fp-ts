@@ -1,6 +1,6 @@
-import * as option from '../Option'
-import * as boolean from '../Boolean'
-import * as array from '../ReadonlyArray'
+import * as Option from '../Option'
+import * as Boolean from '../Boolean'
+import * as Array from '../ReadonlyArray'
 import { flow, pipe } from '../../utils/flow'
 
 export const length: {
@@ -77,54 +77,54 @@ export const has: {
 
 export const isOutOfBounds: {
   (i: number): (self: string) => boolean
-} = i => flow(has(i), boolean.not)
+} = i => flow(has(i), Boolean.not)
 
 export const lookup: {
-  (i: number): (self: string) => option.Option<string>
+  (i: number): (self: string) => Option.Option<string>
 } = i => self =>
   pipe(
     self,
     has(i),
-    boolean.match({
-      onTrue: () => pipe(self[i]!, option.some),
-      onFalse: option.zero,
+    Boolean.match({
+      onTrue: () => pipe(self[i]!, Option.some),
+      onFalse: Option.zero,
     }),
   )
 
 /** Like `lookup` but accepts also negative integers where -1 is index of the last char, -2 of the pre-last and so on. */
 export const at: {
-  (i: number): (self: string) => option.Option<string>
+  (i: number): (self: string) => Option.Option<string>
 } = i => self =>
   pipe(
     i < length(self),
-    boolean.and(i >= -length(self)),
-    boolean.match({
-      onTrue: () => pipe(self.at(i)!, option.some),
-      onFalse: option.zero,
+    Boolean.and(i >= -length(self)),
+    Boolean.match({
+      onTrue: () => pipe(self.at(i)!, Option.some),
+      onFalse: Option.zero,
     }),
   )
 
 export const lookupCharCode: {
-  (i: number): (self: string) => option.Option<number>
+  (i: number): (self: string) => Option.Option<number>
 } = i => self =>
   pipe(
     self,
     has(i),
-    boolean.match({
-      onTrue: () => pipe(self.charCodeAt(i), option.some),
-      onFalse: option.zero,
+    Boolean.match({
+      onTrue: () => pipe(self.charCodeAt(i), Option.some),
+      onFalse: Option.zero,
     }),
   )
 
 /** Like `lookupCharCode` but accepts also negative integers where -1 is index of the last char, -2 of the pre-last and so on. */
 export const charCodeAt: {
-  (i: number): (self: string) => option.Option<number>
+  (i: number): (self: string) => Option.Option<number>
 } = i =>
   flow(
     at(i),
-    option.map(char => char.charCodeAt(0)),
+    Option.map(char => char.charCodeAt(0)),
   )
 
 export const reverse: {
   (self: string): string
-} = flow(toReadonlyArray, array.reverse, array.join(''))
+} = flow(toReadonlyArray, Array.reverse, Array.join(''))

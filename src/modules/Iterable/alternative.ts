@@ -1,4 +1,4 @@
-import * as alternative from '../../typeclasses/Alternative'
+import * as Alternative_ from '../../typeclasses/Alternative'
 import { Alt } from './alt'
 import { IterableHkt } from './iterable'
 
@@ -8,7 +8,7 @@ export const zero: {
   *[Symbol.iterator]() {},
 })
 
-export const Alternative: alternative.Alternative<IterableHkt> = {
+export const Alternative: Alternative_.Alternative<IterableHkt> = {
   ...Alt,
   zero,
 }

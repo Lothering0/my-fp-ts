@@ -1,7 +1,7 @@
-import { number, array } from '../../../src'
+import { Number, Array } from '../../../src'
 import { describeFunctorLaws } from '../../_utils/describeFunctorLaws'
 
-describeFunctorLaws(array.Functor, array.getEquivalence(number.Equivalence), [
+describeFunctorLaws(Array.Functor, Array.getEquivalence(Number.Equivalence), [
   [],
   [1],
   [1, 2, 3],
@@ -15,12 +15,12 @@ describe('functor', () => {
       const z = 3
       const n = 1
 
-      expect(array.map(number.add(n))([])).toEqual([])
-      expect(array.map(number.add(n))([x])).toEqual([number.add(x)(n)])
-      expect(array.map(number.add(n))([x, y, z])).toEqual([
-        number.add(x)(n),
-        number.add(y)(n),
-        number.add(z)(n),
+      expect(Array.map(Number.add(n))([])).toEqual([])
+      expect(Array.map(Number.add(n))([x])).toEqual([Number.add(x)(n)])
+      expect(Array.map(Number.add(n))([x, y, z])).toEqual([
+        Number.add(x)(n),
+        Number.add(y)(n),
+        Number.add(z)(n),
       ])
     })
   })

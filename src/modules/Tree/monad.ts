@@ -1,11 +1,12 @@
-import * as monad from '../../typeclasses/Monad'
+import * as Monad_ from '../../typeclasses/Monad'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
 import { Tree, TreeHkt } from './tree'
 import { Applicative, flat } from './applicative'
 
-export const Monad: monad.Monad<TreeHkt> = monad.create<TreeHkt>(Applicative, {
-  flat,
-})
+export const Monad: Monad_.Monad<TreeHkt> = Monad_.create<TreeHkt>(
+  Applicative,
+  { flat },
+)
 
 export const Do = Monad.Do
 

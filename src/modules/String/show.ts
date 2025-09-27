@@ -1,7 +1,7 @@
-import * as show_ from '../../typeclasses/Show'
+import * as Show_ from '../../typeclasses/Show'
 
 export const show: {
   <S extends string>(self: S): `"${S}"`
 } = self => `"${self}"`
 
-export const Show: show_.Show<string> = { show }
+export const Show: Show_.Show<string> = { show }

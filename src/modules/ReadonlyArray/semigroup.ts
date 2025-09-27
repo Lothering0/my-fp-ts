@@ -1,4 +1,4 @@
-import * as boolean from '../Boolean'
+import * as Boolean from '../Boolean'
 import { Equivalence } from '../../typeclasses/Equivalence'
 import { Semigroup } from '../../typeclasses/Semigroup'
 import { pipe } from '../../utils/flow'
@@ -17,7 +17,7 @@ export const getIntersectionSemigroup = <A>(
       pipe(
         ys,
         elem(Equivalence)(x),
-        boolean.match({
+        Boolean.match({
           onFalse: () => out,
           onTrue: () => pipe(out, append(x)),
         }),

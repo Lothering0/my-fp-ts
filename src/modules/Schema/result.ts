@@ -1,4 +1,4 @@
-import * as result from '../../modules/Result'
+import * as Result_ from '../../modules/Result'
 import { flow, pipe } from '../../utils/flow'
 import { create, Schema } from './schema'
 import { message } from './process'
@@ -10,19 +10,19 @@ export interface ResultSchemas<E, A> {
 
 export const Result = <E, A>(
   schemas: ResultSchemas<E, A>,
-): Schema<result.Result<E, A>> =>
+): Schema<Result_.Result<E, A>> =>
   create(x => {
-    if (!result.isResult(x)) {
-      return result.fail([message`value ${x} is not a result`])
+    if (!Result_.isResult(x)) {
+      return Result_.fail([message`value ${x} is not a result`])
     }
 
     return pipe(
       x,
-      result.match({
-        onSuccess: flow(schemas.success.proceed, result.map(result.succeed)),
+      Result_.match({
+        onSuccess: flow(schemas.success.proceed, Result_.map(Result_.succeed)),
         onFailure: flow(
           schemas.failure.proceed,
-          result.map<E, result.Result<E, A>>(result.fail),
+          Result_.map<E, Result_.Result<E, A>>(Result_.fail),
         ),
       }),
     )

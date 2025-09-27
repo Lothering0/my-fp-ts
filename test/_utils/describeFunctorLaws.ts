@@ -1,19 +1,19 @@
 import {
   Hkt,
   Kind,
-  functor,
-  equivalence,
-  nonEmptyArray,
+  Functor,
+  Equivalence,
+  NonEmptyArray,
   pipe,
   identity,
-  number,
+  Number,
 } from '../../src'
 
 export const describeFunctorLaws: {
   <F extends Hkt>(
-    Functor: functor.Functor<F>,
-    Equivalence: equivalence.Equivalence<Kind<F, number, unknown, unknown>>,
-    fas: nonEmptyArray.NonEmptyReadonlyArray<Kind<F, number, unknown, unknown>>,
+    Functor: Functor.Functor<F>,
+    Equivalence: Equivalence.Equivalence<Kind<F, number, unknown, unknown>>,
+    fas: NonEmptyArray.NonEmptyReadonlyArray<Kind<F, number, unknown, unknown>>,
   ): void
 } = (Functor, Equivalence, fas) => {
   describe('functor', () => {
@@ -27,8 +27,8 @@ export const describeFunctorLaws: {
       })
 
       it('should satisfy composition law', () => {
-        const ab = number.add(5)
-        const bc = number.divide(2)
+        const ab = Number.add(5)
+        const bc = Number.divide(2)
 
         fas.forEach(fa => {
           pipe(

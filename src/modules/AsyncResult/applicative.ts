@@ -1,4 +1,4 @@
-import * as result from '../Result'
+import * as Result from '../Result'
 import { create } from '../../typeclasses/Applicative'
 import { AsyncResultHkt, succeed, toPromise, AsyncResult } from './async-result'
 import { pipe } from '../../utils/flow'
@@ -9,10 +9,10 @@ export const Applicative = create<AsyncResultHkt>(Functor, {
   ap: fma => self => () =>
     Promise.all([toPromise(self), toPromise(fma)]).then(([mab, ma]) =>
       pipe(
-        result.Do,
-        result.apS('a', ma),
-        result.apS('ab', mab),
-        result.map(({ ab, a }) => ab(a)),
+        Result.Do,
+        Result.apS('a', ma),
+        Result.apS('ab', mab),
+        Result.map(({ ab, a }) => ab(a)),
       ),
     ),
 })

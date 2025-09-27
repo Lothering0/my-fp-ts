@@ -1,18 +1,18 @@
-import { asyncOption, flow, option, pipe } from '../../../src'
+import { AsyncOption, flow, Option, pipe } from '../../../src'
 
 describe('monad', () => {
   describe('flatMap', () => {
     it('should satisfy left identity law', async () => {
       const a = 1
-      const fa: asyncOption.AsyncOption<typeof a> = jest.fn(asyncOption.of(a))
-      const afb = (x: number) => asyncOption.of(x + 1)
+      const fa: AsyncOption.AsyncOption<typeof a> = jest.fn(AsyncOption.of(a))
+      const afb = (x: number) => AsyncOption.of(x + 1)
 
       const result1 = await pipe(
         fa,
-        asyncOption.flatMap(afb),
-        asyncOption.toPromise,
+        AsyncOption.flatMap(afb),
+        AsyncOption.toPromise,
       )
-      const result2 = await pipe(a, afb, asyncOption.toPromise)
+      const result2 = await pipe(a, afb, AsyncOption.toPromise)
 
       expect(result1).toEqual(result2)
       expect(fa).toHaveBeenCalledTimes(1)
@@ -20,14 +20,14 @@ describe('monad', () => {
 
     it('should satisfy right identity law', async () => {
       const a = 1
-      const fa: asyncOption.AsyncOption<typeof a> = jest.fn(asyncOption.of(a))
+      const fa: AsyncOption.AsyncOption<typeof a> = jest.fn(AsyncOption.of(a))
 
       const result1 = await pipe(
         fa,
-        asyncOption.flatMap(asyncOption.of),
-        asyncOption.toPromise,
+        AsyncOption.flatMap(AsyncOption.of),
+        AsyncOption.toPromise,
       )
-      const result2 = await pipe(fa, asyncOption.toPromise)
+      const result2 = await pipe(fa, AsyncOption.toPromise)
 
       expect(result1).toEqual(result2)
       expect(fa).toHaveBeenCalledTimes(2)
@@ -35,20 +35,20 @@ describe('monad', () => {
 
     it('should satisfy associativity law', async () => {
       const a = 1
-      const fa: asyncOption.AsyncOption<typeof a> = jest.fn(asyncOption.of(a))
-      const afb = (x: number) => asyncOption.of(x + 1)
-      const bfc = (x: number) => asyncOption.of(x / 2)
+      const fa: AsyncOption.AsyncOption<typeof a> = jest.fn(AsyncOption.of(a))
+      const afb = (x: number) => AsyncOption.of(x + 1)
+      const bfc = (x: number) => AsyncOption.of(x / 2)
 
       const result1 = await pipe(
         fa,
-        asyncOption.flatMap(afb),
-        asyncOption.flatMap(bfc),
-        asyncOption.toPromise,
+        AsyncOption.flatMap(afb),
+        AsyncOption.flatMap(bfc),
+        AsyncOption.toPromise,
       )
       const result2 = await pipe(
         fa,
-        asyncOption.flatMap(flow(afb, asyncOption.flatMap(bfc))),
-        asyncOption.toPromise,
+        AsyncOption.flatMap(flow(afb, AsyncOption.flatMap(bfc))),
+        AsyncOption.toPromise,
       )
 
       expect(result1).toEqual(result2)
@@ -56,25 +56,25 @@ describe('monad', () => {
     })
 
     it('should return function containing `none` if the same was provided', async () => {
-      const fa: asyncOption.AsyncOption<number> = jest.fn(asyncOption.none)
+      const fa: AsyncOption.AsyncOption<number> = jest.fn(AsyncOption.none)
       const result = await pipe(
         fa,
-        asyncOption.flatMap(a => asyncOption.some(a + 2)),
-        asyncOption.toPromise,
+        AsyncOption.flatMap(a => AsyncOption.some(a + 2)),
+        AsyncOption.toPromise,
       )
-      expect(result).toEqual<option.Option<never>>(option.none)
+      expect(result).toEqual<Option.Option<never>>(Option.none)
       expect(fa).toHaveBeenCalledTimes(1)
     })
 
     it('should return function containing `none` if the same was returned by callback function', async () => {
       const a = 1
-      const fa: asyncOption.AsyncOption<number> = jest.fn(asyncOption.some(a))
+      const fa: AsyncOption.AsyncOption<number> = jest.fn(AsyncOption.some(a))
       const result = await pipe(
         fa,
-        asyncOption.flatMap(asyncOption.zero),
-        asyncOption.toPromise,
+        AsyncOption.flatMap(AsyncOption.zero),
+        AsyncOption.toPromise,
       )
-      expect(result).toEqual<option.Option<never>>(option.none)
+      expect(result).toEqual<Option.Option<never>>(Option.none)
       expect(fa).toHaveBeenCalledTimes(1)
     })
   })

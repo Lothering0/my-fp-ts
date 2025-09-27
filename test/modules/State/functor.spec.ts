@@ -1,37 +1,37 @@
-import { identity, number, pipe, state } from '../../../src'
+import { identity, Number, pipe, State } from '../../../src'
 
 describe('functor', () => {
   describe('map', () => {
     it('should satisfy identity law', () => {
       const a = 0
-      const fa: state.State<string, typeof a> = jest.fn(s => [a, s])
+      const fa: State.State<string, typeof a> = jest.fn(s => [a, s])
 
-      const result = pipe(fa, state.map(identity), state.evaluate(''))
+      const result = pipe(fa, State.map(identity), State.evaluate(''))
 
       expect(result).toEqual(a)
       expect(fa).toHaveBeenCalledTimes(1)
     })
 
     it('should satisfy composition law', () => {
-      const ab = number.add(5)
-      const bc = number.divide(2)
+      const ab = Number.add(5)
+      const bc = Number.divide(2)
 
       const a = 1
-      const getFa = () => state.of<string, typeof a>(a)
+      const getFa = () => State.of<string, typeof a>(a)
 
-      const fa1: state.State<string, typeof a> = jest.fn(getFa())
-      const fa2: state.State<string, typeof a> = jest.fn(getFa())
+      const fa1: State.State<string, typeof a> = jest.fn(getFa())
+      const fa2: State.State<string, typeof a> = jest.fn(getFa())
 
       const result1 = pipe(
         fa1,
-        state.map(a => bc(ab(a))),
-        state.evaluate(''),
+        State.map(a => bc(ab(a))),
+        State.evaluate(''),
       )
       const result2 = pipe(
         fa2,
-        state.map(ab),
-        state.map(bc),
-        state.evaluate(''),
+        State.map(ab),
+        State.map(bc),
+        State.evaluate(''),
       )
 
       expect(result1).toEqual(result2)

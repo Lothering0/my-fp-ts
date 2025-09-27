@@ -1,10 +1,10 @@
-import * as option from '../Option'
-import * as result from '../Result'
-import * as applicative from '../../typeclasses/Applicative'
-import * as monad from '../../typeclasses/Monad'
-import * as compactable from '../../typeclasses/Compactable'
-import * as extendable from '../../typeclasses/Extendable'
-import * as tappable from '../../typeclasses/Tappable'
+import * as Option from '../Option'
+import * as Result from '../Result'
+import * as Applicative_ from '../../typeclasses/Applicative'
+import * as Monad_ from '../../typeclasses/Monad'
+import * as Compactable_ from '../../typeclasses/Compactable'
+import * as Extendable_ from '../../typeclasses/Extendable'
+import * as Tappable_ from '../../typeclasses/Tappable'
 import { Hkt, Kind } from '../../typeclasses/Hkt'
 import { Functor } from '../../typeclasses/Functor'
 import { flow, pipe } from '../../utils/flow'
@@ -15,7 +15,7 @@ import { Alternative } from '../../typeclasses/Alternative'
 
 export type OptionT<F extends Hkt, In, Collectable, Fixed> = Kind<
   F,
-  option.Option<In>,
+  Option.Option<In>,
   Collectable,
   Fixed
 >
@@ -24,92 +24,92 @@ export interface OptionTHkt<F extends Hkt> extends Hkt {
   readonly Type: OptionT<F, this['In'], this['Collectable'], this['Fixed']>
 }
 
-export const transform = <F extends Hkt>(M: monad.Monad<F>) => {
+export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
   type THkt = OptionTHkt<F>
 
   const some: {
     <In, Collectable, Fixed>(a: In): Kind<THkt, In, Collectable, Fixed>
-  } = flow(option.some, M.of)
+  } = flow(Option.some, M.of)
 
   const zero: {
     <Collectable, Fixed>(): Kind<THkt, never, Collectable, Fixed>
-  } = () => M.of(option.none)
+  } = () => M.of(Option.none)
 
   const fromKind: {
     <In, Collectable, Fixed>(
       ma: Kind<F, In, Collectable, Fixed>,
     ): Kind<THkt, In, Collectable, Fixed>
-  } = M.map(option.some)
+  } = M.map(Option.some)
 
   const match: {
     <In, Out1, Collectable, Fixed, Out2 = Out1>(
-      matchers: option.Matchers<In, Out1, Out2>,
+      matchers: Option.Matchers<In, Out1, Out2>,
     ): (
       self: Kind<THkt, In, Collectable, Fixed>,
     ) => Kind<F, Out1 | Out2, Collectable, Fixed>
-  } = flow(option.match, M.map)
+  } = flow(Option.match, M.map)
 
   const value: {
     <In, Collectable, Fixed>(
-      self: Kind<F, option.Some<In>, Collectable, Fixed>,
+      self: Kind<F, Option.Some<In>, Collectable, Fixed>,
     ): Kind<F, In, Collectable, Fixed>
-  } = M.map(option.value)
+  } = M.map(Option.value)
 
   const fromNullable: {
     <In, Collectable, Fixed>(
       a: Kind<F, In, Collectable, Fixed>,
     ): Kind<THkt, NonNullable<In>, Collectable, Fixed>
-  } = M.map(option.fromNullable)
+  } = M.map(Option.fromNullable)
 
   const fromNull: {
     <In, Collectable, Fixed>(
       a: Kind<F, In, Collectable, Fixed>,
     ): Kind<THkt, Exclude<In, null>, Collectable, Fixed>
-  } = M.map(option.fromNull)
+  } = M.map(Option.fromNull)
 
   const toNull: {
     <In, Collectable, Fixed>(
       self: Kind<THkt, In, Collectable, Fixed>,
     ): Kind<F, In | null, Collectable, Fixed>
-  } = M.map(option.toNull)
+  } = M.map(Option.toNull)
 
   const fromUndefined: {
     <In, Collectable, Fixed>(
       a: Kind<F, In, Collectable, Fixed>,
     ): Kind<THkt, Exclude<In, undefined>, Collectable, Fixed>
-  } = M.map(option.fromUndefined)
+  } = M.map(Option.fromUndefined)
 
   const toUndefined: {
     <In, Collectable, Fixed>(
       self: Kind<THkt, In, Collectable, Fixed>,
     ): Kind<F, In | undefined, Collectable, Fixed>
-  } = M.map(option.toUndefined)
+  } = M.map(Option.toUndefined)
 
   const fromVoid: {
     <In, Collectable, Fixed>(
       a: Kind<F, In, Collectable, Fixed>,
     ): Kind<THkt, Exclude<In, void>, Collectable, Fixed>
-  } = M.map(option.fromVoid)
+  } = M.map(Option.fromVoid)
 
   const toVoid: {
     <In, Collectable, Fixed>(
       self: Kind<THkt, In, Collectable, Fixed>,
     ): Kind<F, In | void, Collectable, Fixed>
-  } = M.map(option.toVoid)
+  } = M.map(Option.toVoid)
 
   const fromResult: {
     <In, Collectable, Fixed>(
-      ma: Kind<F, result.Result<unknown, In>, Collectable, Fixed>,
+      ma: Kind<F, Result.Result<unknown, In>, Collectable, Fixed>,
     ): Kind<THkt, In, Collectable, Fixed>
-  } = M.map(option.fromResult)
+  } = M.map(Option.fromResult)
 
   const toResult: {
     <E>(
       onNone: LazyArg<E>,
     ): <A, Collectable, Fixed>(
       self: Kind<THkt, A, Collectable, Fixed>,
-    ) => Kind<F, result.Result<E, A>, Collectable, Fixed>
-  } = onNone => M.map(option.toResult(onNone))
+    ) => Kind<F, Result.Result<E, A>, Collectable, Fixed>
+  } = onNone => M.map(Option.toResult(onNone))
 
   const getOrElse: {
     <B>(
@@ -117,7 +117,7 @@ export const transform = <F extends Hkt>(M: monad.Monad<F>) => {
     ): <A, Collectable, Fixed>(
       self: Kind<THkt, A, Collectable, Fixed>,
     ) => Kind<F, A | B, Collectable, Fixed>
-  } = onNone => M.map(option.getOrElse(onNone))
+  } = onNone => M.map(Option.getOrElse(onNone))
 
   const catchAll: {
     <B, Collectable1, Fixed>(
@@ -129,7 +129,7 @@ export const transform = <F extends Hkt>(M: monad.Monad<F>) => {
     M.flatMap(self =>
       pipe(
         that(),
-        M.map(ma => pipe(self, option.orElse(ma))),
+        M.map(ma => pipe(self, Option.orElse(ma))),
       ),
     )
 
@@ -143,7 +143,7 @@ export const transform = <F extends Hkt>(M: monad.Monad<F>) => {
     M.flatMap(self =>
       pipe(
         that,
-        M.map(ma => option.orElse(ma)(self)),
+        M.map(ma => Option.orElse(ma)(self)),
       ),
     )
 
@@ -157,10 +157,10 @@ export const transform = <F extends Hkt>(M: monad.Monad<F>) => {
   }
 
   const Functor: Functor<THkt> = {
-    map: flow(option.map, M.map),
+    map: flow(Option.map, M.map),
   }
 
-  const Applicative = applicative.create<THkt>(Functor, {
+  const Applicative = Applicative_.create<THkt>(Functor, {
     of: some,
     ap:
       <In, Collectable1, Fixed>(fma: Kind<THkt, In, Collectable1, Fixed>) =>
@@ -169,27 +169,27 @@ export const transform = <F extends Hkt>(M: monad.Monad<F>) => {
       ): Kind<THkt, Out, Collectable1 | Collectable2, Fixed> =>
         pipe(
           self,
-          M.map(mf => (mg: option.Option<In>) => option.ap(mg)(mf)),
+          M.map(mf => (mg: Option.Option<In>) => Option.ap(mg)(mf)),
           M.ap(fma),
         ),
   })
 
-  const Monad = monad.create<THkt>(Applicative, {
+  const Monad = Monad_.create<THkt>(Applicative, {
     flat: M.flatMap(
-      option.match({
-        onNone: () => M.of(option.none),
+      Option.match({
+        onNone: () => M.of(Option.none),
         onSome: identity,
       }),
-    ) as monad.Monad<THkt>['flat'],
+    ) as Monad_.Monad<THkt>['flat'],
   })
 
-  const Tappable = tappable.create(Monad)
+  const Tappable = Tappable_.create(Monad)
 
-  const Compactable = compactable.create<THkt>(Functor, {
-    compact: flow(M.map(option.flat)),
+  const Compactable = Compactable_.create<THkt>(Functor, {
+    compact: flow(M.map(Option.flat)),
   })
 
-  const Extendable = extendable.create<THkt>(Functor, {
+  const Extendable = Extendable_.create<THkt>(Functor, {
     extend: fab => self => Functor.map(() => fab(self))(self),
   })
 

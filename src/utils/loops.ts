@@ -1,18 +1,18 @@
-import * as option from '../modules/Option'
-import * as predicate from '../modules/Predicate'
+import * as Option from '../modules/Option'
+import * as Predicate from '../modules/Predicate'
 import { pipe } from './flow'
 
 export const doWhile =
-  <Out>(ab: (a: option.Option<Out>) => Out) =>
-  (p: (a: option.Option<Out>) => boolean): option.Option<Out> => {
-    let out: option.Option<Out> = option.none
-    do out = option.some(ab(out))
+  <Out>(ab: (a: Option.Option<Out>) => Out) =>
+  (p: (a: Option.Option<Out>) => boolean): Option.Option<Out> => {
+    let out: Option.Option<Out> = Option.none
+    do out = Option.some(ab(out))
     while (p(out))
     return out
   }
 
 export const doUntil: {
   <Out>(
-    ab: (a: option.Option<Out>) => Out,
-  ): (p: (a: option.Option<Out>) => boolean) => option.Option<Out>
-} = ab => p => doWhile(ab)(pipe(p, predicate.not))
+    ab: (a: Option.Option<Out>) => Out,
+  ): (p: (a: Option.Option<Out>) => boolean) => Option.Option<Out>
+} = ab => p => doWhile(ab)(pipe(p, Predicate.not))

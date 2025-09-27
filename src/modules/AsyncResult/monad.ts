@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as result from '../Result'
-import * as async from '../Async'
+import * as Result from '../Result'
+import * as Async from '../Async'
 import { identity } from '../Identity'
 import { create } from '../../typeclasses/Monad'
 import { Applicative } from './applicative'
@@ -14,7 +14,7 @@ export const Monad = create<AsyncResultHkt>(Applicative, {
     pipe(
       self,
       match({ onFailure: fail, onSuccess: identity }),
-      async.toPromise,
+      Async.toPromise,
       promise => promise.then(toPromise),
     ),
 })
@@ -91,7 +91,7 @@ export const parallel: {
   ) => AsyncResult<Failure1 | Failure2, DoObject<N, In, Out>>
 } = fb => self => () =>
   Promise.all([toPromise(self), toPromise(fb)]).then(([ma, mb]) =>
-    pipe(mb, result.flatMap(() => ma) as any),
+    pipe(mb, Result.flatMap(() => ma) as any),
   )
 
 export const parallelTo: {
@@ -103,5 +103,5 @@ export const parallelTo: {
   ) => AsyncResult<Failure1 | Failure2, DoObject<N, In, Out>>
 } = (name, fb) => self => () =>
   Promise.all([toPromise(self), toPromise(fb)]).then(([ma, mb]) =>
-    result.apS(name, mb)(ma),
+    Result.apS(name, mb)(ma),
   )

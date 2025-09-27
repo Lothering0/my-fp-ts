@@ -1,19 +1,19 @@
-import { option, pipe, raise, sync, syncOption } from '../../../src'
+import { Option, pipe, raise, Sync, SyncOption } from '../../../src'
 
 describe('fromSync', () => {
   it('should return `none` if function threw an error', () => {
     const a = 1
-    const fa: sync.Sync<never> = jest.fn(() => raise(a))
-    const result = pipe(fa, syncOption.fromSync, syncOption.execute)
-    expect(result).toEqual<option.Option<never>>(option.none)
+    const fa: Sync.Sync<never> = jest.fn(() => raise(a))
+    const result = pipe(fa, SyncOption.fromSync, SyncOption.execute)
+    expect(result).toEqual<Option.Option<never>>(Option.none)
     expect(fa).toHaveBeenCalledTimes(1)
   })
 
   it('should return `some` if function returned a value', () => {
     const a = 1
-    const fa: sync.Sync<typeof a> = jest.fn(() => a)
-    const result = pipe(fa, syncOption.fromSync, syncOption.execute)
-    expect(result).toEqual<option.Option<typeof a>>(option.some(a))
+    const fa: Sync.Sync<typeof a> = jest.fn(() => a)
+    const result = pipe(fa, SyncOption.fromSync, SyncOption.execute)
+    expect(result).toEqual<Option.Option<typeof a>>(Option.some(a))
     expect(fa).toHaveBeenCalledTimes(1)
   })
 })

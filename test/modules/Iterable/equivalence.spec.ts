@@ -1,7 +1,7 @@
-import { iterable, number, pipe } from '../../../src'
+import { Iterable, Number, pipe } from '../../../src'
 
 describe('getEquivalence', () => {
-  const Equivalence = iterable.getEquivalence(number.Equivalence)
+  const Equivalence = Iterable.getEquivalence(Number.Equivalence)
 
   it('should return `true` for empty iterables', () => {
     pipe([], Equivalence.equals([]), expect).toBe(true)

@@ -1,11 +1,11 @@
-import * as result from '../Result'
+import * as Result from '../Result'
 import { create } from '../../typeclasses/Bifunctor'
 import { SyncResultHkt, SyncResult, execute } from './sync-result'
 import { pipe } from '../../utils/flow'
 import { Functor } from './functor'
 
 export const Bifunctor = create<SyncResultHkt>(Functor, {
-  mapLeft: ed => self => () => pipe(self, execute, result.mapLeft(ed)),
+  mapLeft: ed => self => () => pipe(self, execute, Result.mapLeft(ed)),
 })
 
 export const mapLeft: {

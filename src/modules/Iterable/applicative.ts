@@ -1,9 +1,9 @@
-import * as applicative from '../../typeclasses/Applicative'
-import * as applicativeWithIndex from '../../typeclasses/ApplicativeWithIndex'
+import * as Applicative_ from '../../typeclasses/Applicative'
+import * as ApplicativeWithIndex_ from '../../typeclasses/ApplicativeWithIndex'
 import { Functor, FunctorWithIndex } from './functor'
 import { IterableHkt } from './iterable'
 
-export const Applicative = applicative.create<IterableHkt>(Functor, {
+export const Applicative = Applicative_.create<IterableHkt>(Functor, {
   ...Functor,
   of: a => ({
     *[Symbol.iterator]() {
@@ -21,7 +21,7 @@ export const Applicative = applicative.create<IterableHkt>(Functor, {
   }),
 })
 
-export const ApplicativeWithIndex = applicativeWithIndex.create<
+export const ApplicativeWithIndex = ApplicativeWithIndex_.create<
   IterableHkt,
   number
 >(FunctorWithIndex, Applicative, {

@@ -1,5 +1,5 @@
-import * as option from '../Option'
-import * as result from '../Result'
+import * as Option from '../Option'
+import * as Result from '../Result'
 import { create } from '../../typeclasses/Compactable'
 import { IterableHkt } from './iterable'
 import { Functor } from './functor'
@@ -8,8 +8,8 @@ export const Compactable = create<IterableHkt>(Functor, {
   compact: self => ({
     *[Symbol.iterator]() {
       for (const a of self) {
-        if (option.isSome(a)) {
-          yield option.value(a)
+        if (Option.isSome(a)) {
+          yield Option.value(a)
         }
       }
     },
@@ -17,15 +17,15 @@ export const Compactable = create<IterableHkt>(Functor, {
 })
 
 export const compact: {
-  <A>(self: Iterable<option.Option<A>>): Iterable<A>
+  <A>(self: Iterable<Option.Option<A>>): Iterable<A>
 } = Compactable.compact
 
 export const compactResults: {
-  <A>(self: Iterable<result.Result<unknown, A>>): Iterable<A>
+  <A>(self: Iterable<Result.Result<unknown, A>>): Iterable<A>
 } = Compactable.compactResults
 
 export const separate: {
   <E, A>(
-    self: Iterable<result.Result<E, A>>,
+    self: Iterable<Result.Result<E, A>>,
   ): readonly [Iterable<E>, Iterable<A>]
 } = Compactable.separate

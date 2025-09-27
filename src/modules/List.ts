@@ -1,4 +1,4 @@
-import * as array from './ReadonlyArray'
+import * as Array from './ReadonlyArray'
 import { LazyArg } from '../types/utils'
 import { pipe } from '../utils/flow'
 
@@ -47,5 +47,5 @@ export const match: {
 export const fromReadonlyArray = <A>(as: ReadonlyArray<A>): List<A> =>
   pipe(
     as,
-    array.reduceRight(nil as List<A>, (x, acc) => cons(x, acc)),
+    Array.reduceRight(nil as List<A>, (x, acc) => cons(x, acc)),
   )
