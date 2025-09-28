@@ -10,22 +10,18 @@ export const Applicative = Applicative_.create<ReaderHkt>(Functor, {
 })
 
 export const of: {
-  <Fixed, In>(a: In): Reader<Fixed, In>
+  <R, A>(a: A): Reader<R, A>
 } = Applicative.of
 
 export const ap: {
-  <Fixed, In>(
-    fa: Reader<Fixed, In>,
-  ): <Out>(self: Reader<Fixed, (a: In) => Out>) => Reader<Fixed, Out>
+  <R, A>(fa: Reader<R, A>): <B>(self: Reader<R, (a: A) => B>) => Reader<R, B>
 } = Applicative.ap
 
 /** Alias for `ap` */
 export const apply = ap
 
 export const flap: {
-  <Fixed, In, Out>(
-    fab: Reader<Fixed, (a: In) => Out>,
-  ): (self: Reader<Fixed, In>) => Reader<Fixed, Out>
+  <R, A, B>(fab: Reader<R, (a: A) => B>): (self: Reader<R, A>) => Reader<R, B>
 } = Applicative.flap
 
 /** Alias for `flap` */

@@ -8,6 +8,6 @@ export interface ReaderCollectableHkt extends Hkt {
   readonly Type: Reader<this['Collectable'], this['In']>
 }
 
-export interface Reader<Fixed, Out> {
-  (r: Fixed): Out
+export interface Reader<R, A> {
+  (r: R): A
 }

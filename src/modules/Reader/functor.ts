@@ -7,7 +7,5 @@ export const Functor: Functor_.Functor<ReaderHkt> = {
 }
 
 export const map: {
-  <Fixed, In, Out>(
-    ab: (a: In) => Out,
-  ): (self: Reader<Fixed, In>) => Reader<Fixed, Out>
+  <R, A, B>(ab: (a: A) => B): (self: Reader<R, A>) => Reader<R, B>
 } = Functor.map

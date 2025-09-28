@@ -6,11 +6,9 @@ import { Reader } from './reader'
 export const Tappable = create(Monad)
 
 export const tap: {
-  <Fixed, In>(
-    f: (a: In) => Reader<Fixed, unknown>,
-  ): (self: Reader<Fixed, In>) => Reader<Fixed, In>
+  <R, A>(f: (a: A) => Reader<R, unknown>): (self: Reader<R, A>) => Reader<R, A>
 } = Tappable.tap
 
 export const tapSync: {
-  <In>(f: (a: In) => Sync<unknown>): <R>(self: Reader<R, In>) => Reader<R, In>
+  <A>(f: (a: A) => Sync<unknown>): <R>(self: Reader<R, A>) => Reader<R, A>
 } = Tappable.tapSync
