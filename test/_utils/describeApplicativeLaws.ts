@@ -20,13 +20,13 @@ export const describeApplicativeLaws: {
   ): void
 } = (Applicative, Equivalence, fas, fabs) => {
   describe('applicative', () => {
-    describe('ap', () => {
+    describe('apply', () => {
       it('should satisfy identity law', () => {
         fas.forEach(fa => {
           pipe(
             identity,
             Applicative.of,
-            Applicative.ap(fa),
+            Applicative.apply(fa),
             Equivalence.equals(fa),
             expect,
           ).toBe(true)
@@ -40,7 +40,7 @@ export const describeApplicativeLaws: {
         pipe(
           ab,
           Applicative.of,
-          Applicative.ap(Applicative.of(x)),
+          Applicative.apply(Applicative.of(x)),
           Equivalence.equals(Applicative.of(ab(x))),
           expect,
         ).toBe(true)
@@ -52,9 +52,9 @@ export const describeApplicativeLaws: {
         fabs.forEach(fab => {
           pipe(
             fab,
-            Applicative.ap(Applicative.of(x)),
+            Applicative.apply(Applicative.of(x)),
             Equivalence.equals(
-              Applicative.ap(fab)(Applicative.of(ab => ab(x))),
+              Applicative.apply(fab)(Applicative.of(ab => ab(x))),
             ),
             expect,
           ).toBe(true)

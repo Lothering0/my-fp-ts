@@ -1,11 +1,24 @@
 import * as Monad_ from '../../typeclasses/Monad'
+import * as Iterable from '../Iterable'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
 import { Tree, TreeHkt } from './tree'
-import { Applicative, flat } from './applicative'
+import { Functor } from './functor'
+import { make, valueOf, forestOf } from './utils'
+import { pipe } from '../../utils/flow'
+import { FromIdentity } from './from-identity'
 
 export const Monad: Monad_.Monad<TreeHkt> = Monad_.create<TreeHkt>(
-  Applicative,
-  { flat },
+  FromIdentity,
+  Functor,
+  {
+    flat: self =>
+      make(
+        pipe(self, valueOf, valueOf),
+        Iterable.concat(pipe(self, forestOf, Iterable.map(Monad.flat)))(
+          pipe(self, valueOf, forestOf),
+        ),
+      ),
+  },
 )
 
 export const Do = Monad.Do
@@ -32,12 +45,12 @@ export const mapTo: {
   ): (self: Tree<A>) => Tree<DoObject<N, A, B>>
 } = Monad.mapTo
 
-export const flapTo: {
+export const flipApplyTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fab: Tree<(a: A) => B>,
   ): (self: Tree<A>) => Tree<DoObject<N, A, B>>
-} = Monad.flapTo
+} = Monad.flipApplyTo
 
 export const apS: {
   <N extends DoObjectKey, A, B>(

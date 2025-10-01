@@ -4,6 +4,7 @@ import * as Monad_ from '../../typeclasses/Monad'
 import * as Tappable_ from '../../typeclasses/Tappable'
 import { Hkt, Kind } from '../../typeclasses/Hkt'
 import { Functor } from '../../typeclasses/Functor'
+import { FromIdentity } from '../../typeclasses/FromIdentity'
 import { flow, pipe } from '../../utils/flow'
 
 export interface StateT<F extends Hkt, In, Collectable, Fixed, TFixed> {
@@ -83,6 +84,10 @@ export const transform = <F extends Hkt, TFixed>(F: Monad_.Monad<F>) => {
     ) => Kind<F, TFixed, Collectable, Fixed>
   } = s => ma => F.map(([, s]) => s)(run(s)(ma))
 
+  const FromIdentity: FromIdentity<THkt> = {
+    of: a => s => F.of([a, s]),
+  }
+
   const Functor: Functor<THkt> = {
     map: f => self =>
       flow(
@@ -91,18 +96,7 @@ export const transform = <F extends Hkt, TFixed>(F: Monad_.Monad<F>) => {
       ),
   }
 
-  const Applicative = Applicative_.create<THkt>(Functor, {
-    of: a => s => F.of([a, s]),
-    ap: fa => self => s =>
-      pipe(
-        self,
-        Functor.map(f => Functor.map(f)(fa)),
-        run(s),
-        F.flatMap(([mb, s]) => run(s)(mb)),
-      ),
-  })
-
-  const Monad = Monad_.create<THkt>(Applicative, {
+  const Monad = Monad_.create<THkt>(FromIdentity, Functor, {
     flat: self => s =>
       pipe(
         self,
@@ -110,6 +104,8 @@ export const transform = <F extends Hkt, TFixed>(F: Monad_.Monad<F>) => {
         F.flatMap(([mb, s]) => run(s)(mb)),
       ),
   })
+
+  const Applicative = Applicative_.create<THkt>(Monad)
 
   const Tappable = Tappable_.create(Monad)
 
@@ -123,6 +119,8 @@ export const transform = <F extends Hkt, TFixed>(F: Monad_.Monad<F>) => {
     run,
     evaluate,
     execute,
+    FromIdentity,
+    ...FromIdentity,
     Functor,
     ...Functor,
     Applicative,

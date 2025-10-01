@@ -1,7 +1,7 @@
 import { Async, identity, Number, pipe } from '../../../src'
 
 describe('applicative', () => {
-  describe('ap', () => {
+  describe('apply', () => {
     it('should satisfy identity law', async () => {
       const a = 1
       const fa: Async.Async<typeof a> = jest.fn(Async.of(a))
@@ -9,7 +9,7 @@ describe('applicative', () => {
       const result = await pipe(
         identity,
         Async.of,
-        Async.ap(fa),
+        Async.apply(fa),
         Async.toPromise,
       )
 
@@ -24,7 +24,7 @@ describe('applicative', () => {
       const fa: Async.Async<typeof a> = jest.fn(Async.of(a))
       const fab: Async.Async<typeof ab> = jest.fn(Async.of(ab))
 
-      const result1 = await pipe(fab, Async.ap(fa), Async.toPromise)
+      const result1 = await pipe(fab, Async.apply(fa), Async.toPromise)
       const result2 = await pipe(a, ab, Async.of, Async.toPromise)
 
       expect(result1).toEqual(result2)
@@ -39,9 +39,9 @@ describe('applicative', () => {
       const fa: Async.Async<typeof a> = jest.fn(Async.of(a))
       const fab: Async.Async<typeof ab> = jest.fn(Async.of(ab))
 
-      const result1 = await pipe(fab, Async.ap(fa), Async.toPromise)
+      const result1 = await pipe(fab, Async.apply(fa), Async.toPromise)
       const result2 = await pipe(
-        Async.ap(fab)(Async.of(ab => ab(a))),
+        Async.apply(fab)(Async.of(ab => ab(a))),
         Async.toPromise,
       )
 

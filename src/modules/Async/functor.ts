@@ -6,5 +6,5 @@ export const Functor: Functor_.Functor<AsyncHkt> = {
 }
 
 export const map: {
-  <In, Out>(ab: (a: In) => Out): (self: Async<In>) => Async<Out>
+  <A, B>(ab: (a: A) => B): (self: Async<A>) => Async<B>
 } = Functor.map

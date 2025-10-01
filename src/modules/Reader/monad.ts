@@ -1,9 +1,10 @@
 import * as Monad_ from '../../typeclasses/Monad'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
-import { Applicative } from './applicative'
+import { FromIdentity } from './from-identity'
+import { Functor } from './functor'
 import { Reader, ReaderHkt } from './reader'
 
-export const Monad = Monad_.create<ReaderHkt>(Applicative, {
+export const Monad = Monad_.create<ReaderHkt>(FromIdentity, Functor, {
   flat: self => reader => self(reader)(reader),
 })
 
@@ -38,12 +39,12 @@ export const mapTo: {
   ): <R>(self: Reader<R, A>) => Reader<R, DoObject<N, A, B>>
 } = Monad.mapTo
 
-export const flapTo: {
+export const flipApplyTo: {
   <N extends DoObjectKey, R, A, B>(
     name: Exclude<N, keyof A>,
     fab: Reader<R, (a: A) => B>,
   ): (self: Reader<R, A>) => Reader<R, DoObject<N, A, B>>
-} = Monad.flapTo
+} = Monad.flipApplyTo
 
 export const apS: {
   <N extends DoObjectKey, R, A, B>(

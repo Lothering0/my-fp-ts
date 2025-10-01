@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Applicative } from './Applicative'
+import { Functor } from './Functor'
 import { DoObject, DoObjectKey } from '../types/DoObject'
 import { Hkt, Kind } from './Hkt'
 import { flow, pipe } from '../utils/flow'
 import { constant } from '../utils/constant'
+import { FromIdentity } from './FromIdentity'
 
-export interface Monad<F extends Hkt> extends Applicative<F> {
+export interface Monad<F extends Hkt> extends FromIdentity<F>, Functor<F> {
   readonly Do: Kind<F, {}>
 
   readonly flat: <In, Collectable1, Collectable2, Fixed>(
@@ -37,7 +38,7 @@ export interface Monad<F extends Hkt> extends Applicative<F> {
     self: Kind<F, In, Collectable, Fixed>,
   ) => Kind<F, DoObject<N, In, Out>, Collectable, Fixed>
 
-  readonly flapTo: <N extends DoObjectKey, In, Out, Collectable1, Fixed>(
+  readonly flipApplyTo: <N extends DoObjectKey, In, Out, Collectable1, Fixed>(
     name: Exclude<N, keyof In>,
     fab: Kind<F, (a: In) => Out, Collectable1, Fixed>,
   ) => <Collectable2>(
@@ -60,10 +61,12 @@ export interface Monad<F extends Hkt> extends Applicative<F> {
 }
 
 export const create = <F extends Hkt>(
-  Applicative: Applicative<F>,
+  FromIdentity: FromIdentity<F>,
+  Functor: Functor<F>,
   Monad: Pick<Monad<F>, 'flat'>,
 ): Monad<F> => {
-  const { of, map } = Applicative
+  const { of } = FromIdentity
+  const { map } = Functor
   const { flat } = Monad
   const Do: Monad<F>['Do'] = of({})
 
@@ -87,7 +90,7 @@ export const create = <F extends Hkt>(
 
   const setTo: Monad<F>['setTo'] = (name, b) => mapTo(name, constant(b))
 
-  const flapTo: Monad<F>['flapTo'] = (name, fab) => self =>
+  const flipApplyTo: Monad<F>['flipApplyTo'] = (name, fab) => self =>
     pipe(
       Do,
       apS('a', self),
@@ -110,14 +113,15 @@ export const create = <F extends Hkt>(
     )
 
   return {
-    ...Applicative,
+    ...FromIdentity,
+    ...Functor,
     ...Monad,
     Do,
     flatMap,
     compose,
     setTo,
     mapTo,
-    flapTo,
+    flipApplyTo,
     apS,
     flatMapTo,
   }

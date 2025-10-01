@@ -3,13 +3,14 @@ import * as Result from '../Result'
 import * as Async from '../Async'
 import { identity } from '../Identity'
 import { create } from '../../typeclasses/Monad'
-import { Applicative } from './applicative'
+import { Functor } from './functor'
 import { AsyncResultHkt, AsyncResult, toPromise, fail } from './async-result'
 import { pipe } from '../../utils/flow'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
 import { match } from './matchers'
+import { FromIdentity } from './from-identity'
 
-export const Monad = create<AsyncResultHkt>(Applicative, {
+export const Monad = create<AsyncResultHkt>(FromIdentity, Functor, {
   flat: self => () =>
     pipe(
       self,
@@ -54,12 +55,12 @@ export const mapTo: {
   ): <E>(self: AsyncResult<A, E>) => AsyncResult<DoObject<N, A, B>, E>
 } = Monad.mapTo
 
-export const flapTo: {
+export const flipApplyTo: {
   <N extends DoObjectKey, A, B, E1>(
     name: Exclude<N, keyof A>,
     fab: AsyncResult<(a: A) => B, E1>,
   ): <E2>(self: AsyncResult<A, E2>) => AsyncResult<DoObject<N, A, B>, E1 | E2>
-} = Monad.flapTo
+} = Monad.flipApplyTo
 
 export const apS: {
   <N extends DoObjectKey, A, B, E1>(

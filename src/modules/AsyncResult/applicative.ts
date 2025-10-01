@@ -1,12 +1,11 @@
 import * as Result from '../Result'
 import { create } from '../../typeclasses/Applicative'
-import { AsyncResultHkt, succeed, toPromise, AsyncResult } from './async-result'
+import { AsyncResultHkt, toPromise, AsyncResult } from './async-result'
 import { pipe } from '../../utils/flow'
-import { Functor } from './functor'
+import { Monad } from './monad'
 
-export const Applicative = create<AsyncResultHkt>(Functor, {
-  of: succeed,
-  ap: fma => self => () =>
+export const Applicative = create<AsyncResultHkt>(Monad, {
+  apply: fma => self => () =>
     Promise.all([toPromise(self), toPromise(fma)]).then(([mab, ma]) =>
       pipe(
         Result.Do,
@@ -17,24 +16,14 @@ export const Applicative = create<AsyncResultHkt>(Functor, {
     ),
 })
 
-export const of: {
-  <A>(a: A): AsyncResult<A>
-} = Applicative.of
-
-export const ap: {
+export const apply: {
   <A, E1>(
     fa: AsyncResult<A, E1>,
   ): <B, E2>(self: AsyncResult<(a: A) => B, E2>) => AsyncResult<B, E1 | E2>
-} = Applicative.ap
+} = Applicative.apply
 
-/** Alias for `ap` */
-export const apply = ap
-
-export const flap: {
+export const flipApply: {
   <A, B, E1>(
     fab: AsyncResult<(a: A) => B, E1>,
   ): <E2>(self: AsyncResult<A, E2>) => AsyncResult<B, E1 | E2>
-} = Applicative.flap
-
-/** Alias for `flap` */
-export const flipApply = flap
+} = Applicative.flipApply

@@ -1,10 +1,11 @@
 import { flow } from '../../utils/flow'
 import { create } from '../../typeclasses/Monad'
-import { Applicative } from './applicative'
+import { Functor } from './functor'
 import { State, StateHkt } from './state'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
+import { FromIdentity } from './from-identity'
 
-export const Monad = create<StateHkt>(Applicative, {
+export const Monad = create<StateHkt>(FromIdentity, Functor, {
   flat: self => flow(self, ([ma, s1]) => ma(s1)),
 })
 
@@ -39,12 +40,12 @@ export const mapTo: {
   ): <S>(self: State<S, A>) => State<S, DoObject<N, A, B>>
 } = Monad.mapTo
 
-export const flapTo: {
+export const flipApplyTo: {
   <N extends DoObjectKey, S, A, B>(
     name: Exclude<N, keyof A>,
     fab: State<S, (a: A) => B>,
   ): (self: State<S, A>) => State<S, DoObject<N, A, B>>
-} = Monad.flapTo
+} = Monad.flipApplyTo
 
 export const apS: {
   <N extends DoObjectKey, S, A, B>(

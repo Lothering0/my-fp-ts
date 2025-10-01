@@ -1,6 +1,7 @@
 export * from './result'
 export * from './functor'
 export * from './bifunctor'
+export * from './from-identity'
 export * from './applicative'
 export * from './monad'
 export * from './tappable'

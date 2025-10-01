@@ -3,10 +3,11 @@ import * as AsyncResult from '../AsyncResult'
 import * as SyncResult from '../SyncResult'
 import { Effect, EffectHkt, fromAsyncResult, fromSyncResult } from './effect'
 import { pipe } from '../../utils/flow'
+import { isSync } from './refinements'
 
 export const Functor: Functor_.Functor<EffectHkt> = {
   map: ab => self => {
-    if (self._tag === 'Sync') {
+    if (isSync(self)) {
       return pipe(self.syncResult, SyncResult.map(ab), fromSyncResult)
     }
 

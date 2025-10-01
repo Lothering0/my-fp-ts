@@ -1,5 +1,6 @@
 export * from './tree'
 export * from './functor'
+export * from './from-identity'
 export * from './applicative'
 export * from './monad'
 export * from './tappable'

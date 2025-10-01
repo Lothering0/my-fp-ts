@@ -1,11 +1,12 @@
 import * as Option from '../Option'
 import { create } from '../../typeclasses/Monad'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
-import { Applicative } from './applicative'
+import { Functor } from './functor'
 import { pipe } from '../../utils/flow'
 import { SyncOptionHkt, execute, SyncOption } from './sync-option'
+import { FromIdentity } from './from-identity'
 
-export const Monad = create<SyncOptionHkt>(Applicative, {
+export const Monad = create<SyncOptionHkt>(FromIdentity, Functor, {
   flat: self => () =>
     pipe(self, execute, ma =>
       Option.isNone(ma) ? ma : pipe(ma, Option.value, execute),
@@ -43,12 +44,12 @@ export const mapTo: {
   ): (self: SyncOption<A>) => SyncOption<DoObject<N, A, B>>
 } = Monad.mapTo
 
-export const flapTo: {
+export const flipApplyTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fab: SyncOption<(a: A) => B>,
   ): (self: SyncOption<A>) => SyncOption<DoObject<N, A, B>>
-} = Monad.flapTo
+} = Monad.flipApplyTo
 
 export const apS: {
   <N extends DoObjectKey, A, B>(

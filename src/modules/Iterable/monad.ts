@@ -1,10 +1,11 @@
 import * as Monad_ from '../../typeclasses/Monad'
 import * as MonadWithIndex_ from '../../typeclasses/MonadWithIndex'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
-import { Applicative, ApplicativeWithIndex } from './applicative'
+import { Functor, FunctorWithIndex } from './functor'
+import { FromIdentity } from './from-identity'
 import { IterableHkt } from './iterable'
 
-export const Monad = Monad_.create<IterableHkt>(Applicative, {
+export const Monad = Monad_.create<IterableHkt>(FromIdentity, Functor, {
   flat: self => ({
     *[Symbol.iterator]() {
       for (const iterable of self) {
@@ -15,7 +16,7 @@ export const Monad = Monad_.create<IterableHkt>(Applicative, {
 })
 
 export const MonadWithIndex = MonadWithIndex_.create<IterableHkt, number>(
-  ApplicativeWithIndex,
+  FunctorWithIndex,
   Monad,
 )
 
@@ -52,12 +53,12 @@ export const mapTo: {
   ): (self: Iterable<A>) => Iterable<DoObject<N, A, B>>
 } = MonadWithIndex.mapToWithIndex
 
-export const flapTo: {
+export const flipApplyTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fab: Iterable<(a: A, i: number) => B>,
   ): (self: Iterable<A>) => Iterable<DoObject<N, A, B>>
-} = MonadWithIndex.flapToWithIndex
+} = MonadWithIndex.flipApplyToWithIndex
 
 export const apS: {
   <N extends DoObjectKey, A, B>(

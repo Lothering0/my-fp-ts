@@ -6,6 +6,7 @@ import * as AsyncResult from '../AsyncResult'
 import * as SyncResult from '../SyncResult'
 import { flow, pipe } from '../../utils/flow'
 import { Hkt } from '../../typeclasses/Hkt'
+import { isSync } from './refinements'
 
 export interface EffectHkt extends Hkt {
   readonly Type: Effect<this['In'], this['Collectable']>
@@ -13,14 +14,14 @@ export interface EffectHkt extends Hkt {
 
 export type Effect<A, E = never> = SyncEffect<A, E> | AsyncEffect<A, E>
 
-interface SyncEffect<A, E> {
+export interface SyncEffect<A, E> {
   readonly _id: 'Effect'
   readonly _tag: 'Sync'
   readonly syncResult: SyncResult.SyncResult<A, E>
   readonly [Symbol.iterator]: EffectGenerator<A, E>
 }
 
-interface AsyncEffect<A, E> {
+export interface AsyncEffect<A, E> {
   readonly _id: 'Effect'
   readonly _tag: 'Async'
   readonly asyncResult: AsyncResult.AsyncResult<A, E>
@@ -78,7 +79,7 @@ export const fail: {
 export const run: {
   (self: Effect<unknown, unknown>): void
 } = self => {
-  if (self._tag === 'Sync') {
+  if (isSync(self)) {
     pipe(self.syncResult, SyncResult.execute)
   } else {
     pipe(self.asyncResult, AsyncResult.toPromise)
@@ -88,7 +89,7 @@ export const run: {
 export const toPromise: {
   <A, E>(self: Effect<A, E>): Promise<Result.Result<A, E>>
 } = self => {
-  if (self._tag === 'Sync') {
+  if (isSync(self)) {
     return pipe(self.syncResult, SyncResult.execute, a => Promise.resolve(a))
   }
 

@@ -1,9 +1,10 @@
 import { create } from '../../typeclasses/Monad'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
-import { Applicative } from './applicative'
+import { FromIdentity } from './from-identity'
+import { Functor } from './functor'
 import { Identity, IdentityHkt, identity } from './identity'
 
-export const Monad = create<IdentityHkt>(Applicative, {
+export const Monad = create<IdentityHkt>(FromIdentity, Functor, {
   flat: identity,
 })
 
@@ -38,12 +39,12 @@ export const mapTo: {
   ): (self: Identity<A>) => Identity<DoObject<N, A, B>>
 } = Monad.mapTo
 
-export const flapTo: {
+export const flipApplyTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fab: Identity<(a: A) => B>,
   ): (self: Identity<A>) => Identity<DoObject<N, A, B>>
-} = Monad.flapTo
+} = Monad.flipApplyTo
 
 export const apS: {
   <N extends DoObjectKey, A, B>(

@@ -7,7 +7,7 @@ import { getRaceSemigroup } from './semigroup'
 export const empty: AsyncOption<never> = () => new Promise(() => some(_))
 
 export const getRaceMonoid: {
-  <Fixed>(): Monoid<AsyncOption<Fixed>>
+  <A>(): Monoid<AsyncOption<A>>
 } = () => ({
   ...getRaceSemigroup(),
   empty,

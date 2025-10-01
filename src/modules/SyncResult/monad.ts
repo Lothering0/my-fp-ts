@@ -2,10 +2,11 @@ import * as Result from '../Result'
 import { create } from '../../typeclasses/Monad'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
 import { SyncResultHkt, execute, SyncResult } from './sync-result'
-import { Applicative } from './applicative'
+import { Functor } from './functor'
 import { pipe } from '../../utils/flow'
+import { FromIdentity } from './from-identity'
 
-export const Monad = create<SyncResultHkt>(Applicative, {
+export const Monad = create<SyncResultHkt>(FromIdentity, Functor, {
   flat: self => () =>
     pipe(self, execute, ma =>
       Result.isFailure(ma) ? ma : pipe(ma, Result.successOf, execute),
@@ -45,12 +46,12 @@ export const mapTo: {
   ): <E>(self: SyncResult<A, E>) => SyncResult<DoObject<N, A, B>, E>
 } = Monad.mapTo
 
-export const flapTo: {
+export const flipApplyTo: {
   <N extends DoObjectKey, A, B, E1>(
     name: Exclude<N, keyof A>,
     fab: SyncResult<(a: A) => B, E1>,
   ): <E2>(self: SyncResult<A, E2>) => SyncResult<DoObject<N, A, B>, E1 | E2>
-} = Monad.flapTo
+} = Monad.flipApplyTo
 
 export const apS: {
   <N extends DoObjectKey, A, B, E1>(

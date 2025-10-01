@@ -2,11 +2,11 @@
 import { DoObject, DoObjectKey } from '../types/DoObject'
 import { Hkt, Kind } from './Hkt'
 import { flow, pipe } from '../utils/flow'
-import { ApplicativeWithIndex } from './ApplicativeWithIndex'
+import { FunctorWithIndex } from './FunctorWithIndex'
 import { Monad } from './Monad'
 
 export interface MonadWithIndex<F extends Hkt, Index>
-  extends ApplicativeWithIndex<F, Index>,
+  extends FunctorWithIndex<F, Index>,
     Monad<F> {
   readonly flatMapWithIndex: <In, Out, Collectable1, Fixed>(
     aimb: (a: In, i: Index) => Kind<F, Out, Collectable1, Fixed>,
@@ -33,7 +33,7 @@ export interface MonadWithIndex<F extends Hkt, Index>
     self: Kind<F, In, Collectable, Fixed>,
   ) => Kind<F, DoObject<N, In, Out>, Collectable, Fixed>
 
-  readonly flapToWithIndex: <
+  readonly flipApplyToWithIndex: <
     N extends DoObjectKey,
     In,
     Out,
@@ -61,11 +61,11 @@ export interface MonadWithIndex<F extends Hkt, Index>
 }
 
 export const create = <F extends Hkt, Index>(
-  ApplicativeWithIndex: ApplicativeWithIndex<F, Index>,
+  FunctorWithIndex: FunctorWithIndex<F, Index>,
   Monad: Monad<F>,
 ): MonadWithIndex<F, Index> => {
   const flatMapWithIndex: MonadWithIndex<F, Index>['flatMapWithIndex'] = aimb =>
-    flow(ApplicativeWithIndex.mapWithIndex(aimb), Monad.flat)
+    flow(FunctorWithIndex.mapWithIndex(aimb), Monad.flat)
 
   const composeWithIndex: MonadWithIndex<F, Index>['composeWithIndex'] = (
     bmc,
@@ -83,16 +83,18 @@ export const create = <F extends Hkt, Index>(
       } as any),
     )
 
-  const flapToWithIndex: MonadWithIndex<F, Index>['flapToWithIndex'] =
-    (name, faib) => self =>
-      pipe(
-        Monad.Do,
-        Monad.apS('a', self),
-        Monad.apS('aib', faib),
-        ApplicativeWithIndex.mapWithIndex(
-          ({ a, aib }, i) => ({ [name]: aib(a, i), ...a }) as any,
-        ),
-      )
+  const flipApplyToWithIndex: MonadWithIndex<
+    F,
+    Index
+  >['flipApplyToWithIndex'] = (name, faib) => self =>
+    pipe(
+      Monad.Do,
+      Monad.apS('a', self),
+      Monad.apS('aib', faib),
+      FunctorWithIndex.mapWithIndex(
+        ({ a, aib }, i) => ({ [name]: aib(a, i), ...a }) as any,
+      ),
+    )
 
   const flatMapToWithIndex: MonadWithIndex<F, Index>['flatMapToWithIndex'] = (
     name,
@@ -111,12 +113,12 @@ export const create = <F extends Hkt, Index>(
     )
 
   return {
-    ...ApplicativeWithIndex,
+    ...FunctorWithIndex,
     ...Monad,
     flatMapWithIndex,
     composeWithIndex,
     mapToWithIndex,
-    flapToWithIndex,
+    flipApplyToWithIndex,
     flatMapToWithIndex,
   }
 }

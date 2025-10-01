@@ -1,7 +1,7 @@
 import { AsyncResult, identity, Number, pipe, Result } from '../../../src'
 
 describe('applicative', () => {
-  describe('ap', () => {
+  describe('apply', () => {
     it('should satisfy identity law', async () => {
       const a = 1
       const fa: AsyncResult.AsyncResult<typeof a> = jest.fn(AsyncResult.of(a))
@@ -9,7 +9,7 @@ describe('applicative', () => {
       const result = await pipe(
         identity,
         AsyncResult.of,
-        AsyncResult.ap(fa),
+        AsyncResult.apply(fa),
         AsyncResult.toPromise,
       )
 
@@ -26,7 +26,11 @@ describe('applicative', () => {
         AsyncResult.of(ab),
       )
 
-      const result1 = await pipe(fab, AsyncResult.ap(fa), AsyncResult.toPromise)
+      const result1 = await pipe(
+        fab,
+        AsyncResult.apply(fa),
+        AsyncResult.toPromise,
+      )
       const result2 = await pipe(a, ab, AsyncResult.of, AsyncResult.toPromise)
 
       expect(result1).toEqual(result2)
@@ -43,9 +47,13 @@ describe('applicative', () => {
         AsyncResult.of(ab),
       )
 
-      const result1 = await pipe(fab, AsyncResult.ap(fa), AsyncResult.toPromise)
+      const result1 = await pipe(
+        fab,
+        AsyncResult.apply(fa),
+        AsyncResult.toPromise,
+      )
       const result2 = await pipe(
-        AsyncResult.ap(fab)(AsyncResult.of(ab => ab(a))),
+        AsyncResult.apply(fab)(AsyncResult.of(ab => ab(a))),
         AsyncResult.toPromise,
       )
 
@@ -65,7 +73,11 @@ describe('applicative', () => {
         AsyncResult.of(ab),
       )
 
-      const result = await pipe(fab, AsyncResult.ap(fa), AsyncResult.toPromise)
+      const result = await pipe(
+        fab,
+        AsyncResult.apply(fa),
+        AsyncResult.toPromise,
+      )
 
       expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
       expect(fa).toHaveBeenCalledTimes(1)
@@ -83,7 +95,11 @@ describe('applicative', () => {
         AsyncResult.fail(e),
       )
 
-      const result = await pipe(fab, AsyncResult.ap(fa), AsyncResult.toPromise)
+      const result = await pipe(
+        fab,
+        AsyncResult.apply(fa),
+        AsyncResult.toPromise,
+      )
 
       expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
       expect(fa).toHaveBeenCalledTimes(1)
@@ -102,7 +118,7 @@ describe('applicative', () => {
 
       const result: Result.Result<unknown, typeof e | typeof d> = await pipe(
         fab,
-        AsyncResult.ap(fa),
+        AsyncResult.apply(fa),
         AsyncResult.toPromise,
       )
 

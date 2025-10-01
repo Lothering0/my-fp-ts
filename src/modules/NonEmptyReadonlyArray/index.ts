@@ -1,6 +1,7 @@
 export * from './non-empty-readonly-array'
 export * from './foldable'
 export * from './functor'
+export * from './from-identity'
 export * from './applicative'
 export * from './monad'
 export * from './tappable'

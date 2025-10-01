@@ -54,14 +54,14 @@ export const mapTo: {
   ) => NonEmptyReadonlyArray<DoObject<N, A, B>>
 } = MonadWithIndex.mapToWithIndex
 
-export const flapTo: {
+export const flipApplyTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fab: NonEmptyReadonlyArray<(a: A, i: number) => B>,
   ): (
     self: NonEmptyReadonlyArray<A>,
   ) => NonEmptyReadonlyArray<DoObject<N, A, B>>
-} = MonadWithIndex.flapToWithIndex
+} = MonadWithIndex.flipApplyToWithIndex
 
 export const apS: {
   <N extends DoObjectKey, A, B>(

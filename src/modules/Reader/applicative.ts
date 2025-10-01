@@ -1,28 +1,13 @@
 import * as Applicative_ from '../../typeclasses/Applicative'
-import { constant } from '../../utils/constant'
-import { pipe } from '../../utils/flow'
-import { Functor } from './functor'
+import { Monad } from './monad'
 import { Reader, ReaderHkt } from './reader'
 
-export const Applicative = Applicative_.create<ReaderHkt>(Functor, {
-  of: constant,
-  ap: fa => self => r => pipe(r, fa, self(r)),
-})
+export const Applicative = Applicative_.create<ReaderHkt>(Monad)
 
-export const of: {
-  <R, A>(a: A): Reader<R, A>
-} = Applicative.of
-
-export const ap: {
+export const apply: {
   <R, A>(fa: Reader<R, A>): <B>(self: Reader<R, (a: A) => B>) => Reader<R, B>
-} = Applicative.ap
+} = Applicative.apply
 
-/** Alias for `ap` */
-export const apply = ap
-
-export const flap: {
+export const flipApply: {
   <R, A, B>(fab: Reader<R, (a: A) => B>): (self: Reader<R, A>) => Reader<R, B>
-} = Applicative.flap
-
-/** Alias for `flap` */
-export const flipApply = flap
+} = Applicative.flipApply

@@ -1,27 +1,13 @@
 import { create } from '../../typeclasses/Applicative'
-import { Functor } from './functor'
-import { Identity, IdentityHkt, identity } from './identity'
+import { Monad } from './monad'
+import { Identity, IdentityHkt } from './identity'
 
-export const Applicative = create<IdentityHkt>(Functor, {
-  ...Functor,
-  of: identity,
-  ap: a => ab => ab(a),
-})
+export const Applicative = create<IdentityHkt>(Monad)
 
-export const of: {
-  <A>(a: A): Identity<A>
-} = Applicative.of
-
-export const ap: {
+export const apply: {
   <A>(fa: Identity<A>): <B>(self: Identity<(a: A) => B>) => Identity<B>
-} = Applicative.ap
+} = Applicative.apply
 
-/** Alias for `ap` */
-export const apply = ap
-
-export const flap: {
+export const flipApply: {
   <A, B>(fab: Identity<(a: A) => B>): (self: Identity<A>) => Identity<B>
-} = Applicative.flap
-
-/** Alias for `flap` */
-export const flipApply = flap
+} = Applicative.flipApply

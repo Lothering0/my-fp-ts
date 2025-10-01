@@ -3,7 +3,7 @@ import { Alt } from './alt'
 import { ReadonlyArrayHkt } from './readonly-array'
 
 export const zero: {
-  <Out>(): ReadonlyArray<Out>
+  <A>(): ReadonlyArray<A>
 } = () => []
 
 export const Alternative: Alternative_.Alternative<ReadonlyArrayHkt> = {

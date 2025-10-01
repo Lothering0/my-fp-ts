@@ -1,5 +1,6 @@
 export * from './state'
 export * from './functor'
+export * from './from-identity'
 export * from './applicative'
 export * from './monad'
 export * from './tappable'

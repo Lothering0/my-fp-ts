@@ -2,11 +2,12 @@
 import * as Option from '../Option'
 import { create } from '../../typeclasses/Monad'
 import { AsyncOptionHkt, AsyncOption, toPromise } from './async-option'
-import { Applicative } from './applicative'
+import { Functor } from './functor'
 import { pipe } from '../../utils/flow'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
+import { FromIdentity } from './from-identity'
 
-export const Monad = create<AsyncOptionHkt>(Applicative, {
+export const Monad = create<AsyncOptionHkt>(FromIdentity, Functor, {
   flat: self => () =>
     toPromise(self).then(ma =>
       Option.isNone(ma) ? ma : pipe(ma, Option.value, toPromise),
@@ -16,61 +17,61 @@ export const Monad = create<AsyncOptionHkt>(Applicative, {
 export const Do = Monad.Do
 
 export const flat: {
-  <Out>(self: AsyncOption<AsyncOption<Out>>): AsyncOption<Out>
+  <A>(self: AsyncOption<AsyncOption<A>>): AsyncOption<A>
 } = Monad.flat
 
 export const flatMap: {
-  <In, Out>(
-    amb: (a: In) => AsyncOption<Out>,
-  ): (self: AsyncOption<In>) => AsyncOption<Out>
+  <A, B>(
+    amb: (a: A) => AsyncOption<B>,
+  ): (self: AsyncOption<A>) => AsyncOption<B>
 } = Monad.flatMap
 
 export const compose: {
-  <In, Out1, Out2>(
-    bmc: (b: Out1) => AsyncOption<Out2>,
-    amb: (a: In) => AsyncOption<Out1>,
-  ): (a: In) => AsyncOption<Out2>
+  <A, B, C>(
+    bmc: (b: B) => AsyncOption<C>,
+    amb: (a: A) => AsyncOption<B>,
+  ): (a: A) => AsyncOption<C>
 } = Monad.compose
 
 export const setTo: {
-  <N extends DoObjectKey, In, Out>(
-    name: Exclude<N, keyof In>,
-    b: Out,
-  ): (self: AsyncOption<In>) => AsyncOption<DoObject<N, In, Out>>
+  <N extends DoObjectKey, A, B>(
+    name: Exclude<N, keyof A>,
+    b: B,
+  ): (self: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
 } = Monad.setTo
 
 export const mapTo: {
-  <N extends DoObjectKey, In, Out>(
-    name: Exclude<N, keyof In>,
-    ab: (a: In) => Out,
-  ): (self: AsyncOption<In>) => AsyncOption<DoObject<N, In, Out>>
+  <N extends DoObjectKey, A, B>(
+    name: Exclude<N, keyof A>,
+    ab: (a: A) => B,
+  ): (self: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
 } = Monad.mapTo
 
-export const flapTo: {
-  <N extends DoObjectKey, In, Out>(
-    name: Exclude<N, keyof In>,
-    fab: AsyncOption<(a: In) => Out>,
-  ): (self: AsyncOption<In>) => AsyncOption<DoObject<N, In, Out>>
-} = Monad.flapTo
+export const flipApplyTo: {
+  <N extends DoObjectKey, A, B>(
+    name: Exclude<N, keyof A>,
+    fab: AsyncOption<(a: A) => B>,
+  ): (self: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
+} = Monad.flipApplyTo
 
 export const apS: {
-  <N extends DoObjectKey, In, Out>(
-    name: Exclude<N, keyof In>,
-    fb: AsyncOption<Out>,
-  ): (self: AsyncOption<In>) => AsyncOption<DoObject<N, In, Out>>
+  <N extends DoObjectKey, A, B>(
+    name: Exclude<N, keyof A>,
+    fb: AsyncOption<B>,
+  ): (self: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
 } = Monad.apS
 
 export const flatMapTo: {
-  <N extends DoObjectKey, In, Out>(
-    name: Exclude<N, keyof In>,
-    amb: (a: In) => AsyncOption<Out>,
-  ): (self: AsyncOption<In>) => AsyncOption<DoObject<N, In, Out>>
+  <N extends DoObjectKey, A, B>(
+    name: Exclude<N, keyof A>,
+    amb: (a: A) => AsyncOption<B>,
+  ): (self: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
 } = Monad.flatMapTo
 
 export const parallel: {
-  <N extends DoObjectKey, Out>(
-    fb: AsyncOption<Out>,
-  ): <In>(fa: AsyncOption<In>) => AsyncOption<DoObject<N, In, Out>>
+  <N extends DoObjectKey, B>(
+    fb: AsyncOption<B>,
+  ): <A>(fa: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
 } = fb => fa => () =>
   Promise.all([toPromise(fa), toPromise(fb)]).then(([ma, mb]) =>
     pipe(
@@ -80,10 +81,10 @@ export const parallel: {
   )
 
 export const parallelTo: {
-  <N extends DoObjectKey, In, Out>(
-    name: Exclude<N, keyof In>,
-    fb: AsyncOption<Out>,
-  ): (fa: AsyncOption<In>) => AsyncOption<DoObject<N, In, Out>>
+  <N extends DoObjectKey, A, B>(
+    name: Exclude<N, keyof A>,
+    fb: AsyncOption<B>,
+  ): (fa: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
 } = (name, fb) => fa => () =>
   Promise.all([toPromise(fa), toPromise(fb)]).then(([ma, mb]) =>
     Option.apS(name, mb)(ma),

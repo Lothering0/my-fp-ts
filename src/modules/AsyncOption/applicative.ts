@@ -1,12 +1,11 @@
 import * as Option from '../Option'
 import { create } from '../../typeclasses/Applicative'
-import { AsyncOptionHkt, some, toPromise, AsyncOption } from './async-option'
+import { AsyncOptionHkt, toPromise, AsyncOption } from './async-option'
 import { pipe } from '../../utils/flow'
-import { Functor } from './functor'
+import { Monad } from './monad'
 
-export const Applicative = create<AsyncOptionHkt>(Functor, {
-  of: some,
-  ap: fma => self => () =>
+export const Applicative = create<AsyncOptionHkt>(Monad, {
+  apply: fma => self => () =>
     Promise.all([toPromise(self), toPromise(fma)]).then(([mab, ma]) =>
       pipe(
         Option.Do,
@@ -17,24 +16,12 @@ export const Applicative = create<AsyncOptionHkt>(Functor, {
     ),
 })
 
-export const of: {
-  <Out>(a: Out): AsyncOption<Out>
-} = Applicative.of
+export const apply: {
+  <A>(fa: AsyncOption<A>): <B>(self: AsyncOption<(a: A) => B>) => AsyncOption<B>
+} = Applicative.apply
 
-export const ap: {
-  <In>(
-    fa: AsyncOption<In>,
-  ): <Out>(self: AsyncOption<(a: In) => Out>) => AsyncOption<Out>
-} = Applicative.ap
-
-/** Alias for `ap` */
-export const apply = ap
-
-export const flap: {
-  <In, Out>(
-    fab: AsyncOption<(a: In) => Out>,
-  ): (self: AsyncOption<In>) => AsyncOption<Out>
-} = Applicative.flap
-
-/** Alias for `flap` */
-export const flipApply = flap
+export const flipApply: {
+  <A, B>(
+    fab: AsyncOption<(a: A) => B>,
+  ): (self: AsyncOption<A>) => AsyncOption<B>
+} = Applicative.flipApply

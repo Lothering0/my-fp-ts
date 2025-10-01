@@ -1,43 +1,13 @@
-import * as Iterable from '../Iterable'
 import { Tree, TreeHkt } from './tree'
 import { create } from '../../typeclasses/Applicative'
-import { Functor, map } from './functor'
-import { make, valueOf, forestOf } from './utils'
-import { pipe, flow } from '../../utils/flow'
+import { Monad } from './monad'
 
-export const flat: {
-  <A>(self: Tree<Tree<A>>): Tree<A>
-} = self =>
-  make(
-    pipe(self, valueOf, valueOf),
-    Iterable.concat(pipe(self, forestOf, Iterable.map(flat)))(
-      pipe(self, valueOf, forestOf),
-    ),
-  )
+export const Applicative = create<TreeHkt>(Monad)
 
-export const Applicative = create<TreeHkt>(Functor, {
-  of: make,
-  ap: fa =>
-    flow(
-      map(ab => pipe(fa, map(ab))),
-      flat,
-    ),
-})
-
-export const of: {
-  <A>(a: A): Tree<A>
-} = Applicative.of
-
-export const ap: {
+export const apply: {
   <A>(fa: Tree<A>): <B>(self: Tree<(a: A) => B>) => Tree<B>
-} = Applicative.ap
+} = Applicative.apply
 
-/** Alias for `ap` */
-export const apply = ap
-
-export const flap: {
+export const flipApply: {
   <A, B>(fab: Tree<(a: A) => B>): (self: Tree<A>) => Tree<B>
-} = Applicative.flap
-
-/** Alias for `flap` */
-export const flipApply = flap
+} = Applicative.flipApply

@@ -16,15 +16,15 @@ export interface AsyncOption<A> extends Async.Async<Option.Option<A>> {}
 export const none: AsyncOption<never> = Async.of(Option.none)
 
 export const some: {
-  <Out>(a: Out): AsyncOption<Out>
+  <A>(a: A): AsyncOption<A>
 } = flow(Option.some, Async.of)
 
 export const toPromise: {
-  <Out>(ma: AsyncOption<Out>): Promise<Option.Option<Out>>
+  <A>(ma: AsyncOption<A>): Promise<Option.Option<A>>
 } = mma => mma().then(identity, constant(Option.none))
 
 export const fromAsync: {
-  <Out>(ma: Async.Async<Out>): AsyncOption<Out>
+  <A>(ma: Async.Async<A>): AsyncOption<A>
 } = ma => () => ma().then(Option.some, () => Option.none)
 
 export const fromAsyncResult: {

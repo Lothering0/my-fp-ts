@@ -1,11 +1,12 @@
-import { Applicative } from './applicative'
+import { Functor } from './functor'
 import { fail, Result, ResultHkt } from './result'
 import { match } from './matchers'
 import { create } from '../../typeclasses/Monad'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
 import { identity } from '../Identity'
+import { FromIdentity } from './from-identity'
 
-export const Monad = create<ResultHkt>(Applicative, {
+export const Monad = create<ResultHkt>(FromIdentity, Functor, {
   flat: match({
     onFailure: fail,
     onSuccess: identity,
@@ -45,12 +46,12 @@ export const mapTo: {
   ): <E>(self: Result<A, E>) => Result<DoObject<N, A, B>, E>
 } = Monad.mapTo
 
-export const flapTo: {
+export const flipApplyTo: {
   <N extends DoObjectKey, A, B, E1>(
     name: Exclude<N, keyof A>,
     fab: Result<(a: A) => B, E1>,
   ): <E2>(self: Result<A, E2>) => Result<DoObject<N, A, B>, E1 | E2>
-} = Monad.flapTo
+} = Monad.flipApplyTo
 
 export const apS: {
   <N extends DoObjectKey, A, B, E1>(

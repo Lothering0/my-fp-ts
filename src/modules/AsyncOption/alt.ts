@@ -8,27 +8,27 @@ import { match } from './matchers'
 import { constant } from '../../utils/constant'
 
 export const getOrElse: {
-  <Out>(
-    onNone: LazyArg<Out>,
-  ): <In>(self: AsyncOption.AsyncOption<In>) => Async.Async<In | Out>
+  <B>(
+    onNone: LazyArg<B>,
+  ): <A>(self: AsyncOption.AsyncOption<A>) => Async.Async<A | B>
 } = onNone => match({ onNone, onSome: identity })
 
 export const orElse =
-  <Out>(that: AsyncOption.AsyncOption<Out>) =>
-  <In>(self: AsyncOption.AsyncOption<In>): AsyncOption.AsyncOption<In | Out> =>
+  <B>(that: AsyncOption.AsyncOption<B>) =>
+  <A>(self: AsyncOption.AsyncOption<A>): AsyncOption.AsyncOption<A | B> =>
     Async.flatMap(
       Option.match({
         onNone: constant(that),
-        onSome: AsyncOption.some<In | Out>,
+        onSome: AsyncOption.some<A | B>,
       }),
     )(self)
 
 /** Lazy version of `orElse` */
 export const catchAll =
-  <Out>(that: LazyArg<AsyncOption.AsyncOption<Out>>) =>
-  <In>(self: AsyncOption.AsyncOption<In>): AsyncOption.AsyncOption<In | Out> =>
+  <B>(that: LazyArg<AsyncOption.AsyncOption<B>>) =>
+  <A>(self: AsyncOption.AsyncOption<A>): AsyncOption.AsyncOption<A | B> =>
     Async.flatMap(
-      Option.match({ onNone: that, onSome: AsyncOption.some<In | Out> }),
+      Option.match({ onNone: that, onSome: AsyncOption.some<A | B> }),
     )(self)
 
 export const Alt: Alt_.Alt<AsyncOption.AsyncOptionHkt> = {

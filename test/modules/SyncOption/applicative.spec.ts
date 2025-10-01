@@ -1,7 +1,7 @@
 import { identity, Number, Option, pipe, SyncOption } from '../../../src'
 
 describe('applicative', () => {
-  describe('ap', () => {
+  describe('apply', () => {
     it('should satisfy identity law', () => {
       const a = 1
       const fa: SyncOption.SyncOption<typeof a> = jest.fn(SyncOption.of(a))
@@ -9,7 +9,7 @@ describe('applicative', () => {
       const result = pipe(
         identity,
         SyncOption.of,
-        SyncOption.ap(fa),
+        SyncOption.apply(fa),
         SyncOption.execute,
       )
 
@@ -24,7 +24,7 @@ describe('applicative', () => {
       const fa: SyncOption.SyncOption<typeof a> = jest.fn(SyncOption.of(a))
       const fab: SyncOption.SyncOption<typeof ab> = jest.fn(SyncOption.of(ab))
 
-      const result1 = pipe(fab, SyncOption.ap(fa), SyncOption.execute)
+      const result1 = pipe(fab, SyncOption.apply(fa), SyncOption.execute)
       const result2 = pipe(a, ab, SyncOption.of, SyncOption.execute)
 
       expect(result1).toEqual(result2)
@@ -39,9 +39,9 @@ describe('applicative', () => {
       const fa: SyncOption.SyncOption<typeof a> = jest.fn(SyncOption.of(a))
       const fab: SyncOption.SyncOption<typeof ab> = jest.fn(SyncOption.of(ab))
 
-      const result1 = pipe(fab, SyncOption.ap(fa), SyncOption.execute)
+      const result1 = pipe(fab, SyncOption.apply(fa), SyncOption.execute)
       const result2 = pipe(
-        SyncOption.ap(fab)(SyncOption.of(ab => ab(a))),
+        SyncOption.apply(fab)(SyncOption.of(ab => ab(a))),
         SyncOption.execute,
       )
 
@@ -56,7 +56,7 @@ describe('applicative', () => {
       const fa: SyncOption.SyncOption<never> = jest.fn(SyncOption.none)
       const fab: SyncOption.SyncOption<typeof ab> = jest.fn(SyncOption.of(ab))
 
-      const result = pipe(fab, SyncOption.ap(fa), SyncOption.execute)
+      const result = pipe(fab, SyncOption.apply(fa), SyncOption.execute)
 
       expect(result).toEqual<Option.Option<never>>(Option.none)
       expect(fa).toHaveBeenCalledTimes(1)
@@ -69,10 +69,10 @@ describe('applicative', () => {
       const fa: SyncOption.SyncOption<typeof a> = jest.fn(SyncOption.of(a))
       const fab: SyncOption.SyncOption<never> = jest.fn(SyncOption.none)
 
-      const result = pipe(fab, SyncOption.ap(fa), SyncOption.execute)
+      const result = pipe(fab, SyncOption.apply(fa), SyncOption.execute)
 
       expect(result).toEqual<Option.Option<never>>(Option.none)
-      expect(fa).toHaveBeenCalledTimes(1)
+      expect(fa).toHaveBeenCalledTimes(0)
       expect(fab).toHaveBeenCalledTimes(1)
     })
 
@@ -80,10 +80,10 @@ describe('applicative', () => {
       const fa: SyncOption.SyncOption<never> = jest.fn(SyncOption.none)
       const fab: SyncOption.SyncOption<never> = jest.fn(SyncOption.none)
 
-      const result = pipe(fab, SyncOption.ap(fa), SyncOption.execute)
+      const result = pipe(fab, SyncOption.apply(fa), SyncOption.execute)
 
       expect(result).toEqual<Option.Option<never>>(Option.none)
-      expect(fa).toHaveBeenCalledTimes(1)
+      expect(fa).toHaveBeenCalledTimes(0)
       expect(fab).toHaveBeenCalledTimes(1)
     })
   })

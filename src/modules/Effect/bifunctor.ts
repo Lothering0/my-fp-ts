@@ -4,10 +4,11 @@ import { create } from '../../typeclasses/Bifunctor'
 import { pipe } from '../../utils/flow'
 import { Functor } from './functor'
 import { Effect, EffectHkt, fromAsyncResult, fromSyncResult } from './effect'
+import { isSync } from './refinements'
 
 export const Bifunctor = create<EffectHkt>(Functor, {
   mapLeft: ed => self => {
-    if (self._tag === 'Sync') {
+    if (isSync(self)) {
       return pipe(self.syncResult, SyncResult.mapLeft(ed), fromSyncResult)
     }
 

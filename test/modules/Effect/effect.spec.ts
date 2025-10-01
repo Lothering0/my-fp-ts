@@ -6,7 +6,7 @@ describe('gen', () => {
     Equivalence.EquivalenceStrict,
   )
 
-  it('should correctly run successful synchronous operations', async () => {
+  it('should correctly run successful synchronous operation', async () => {
     const ma = Effect.succeed(1)
 
     const effect = Effect.gen(function* () {
@@ -35,7 +35,7 @@ describe('gen', () => {
     pipe(result, ResultEquivalence.equals(Result.succeed(6)), expect).toBe(true)
   })
 
-  it('should correctly run failed synchronous operations', async () => {
+  it('should correctly run failed synchronous operation', async () => {
     const ma = Effect.fail('a')
 
     const effect = Effect.gen(function* () {

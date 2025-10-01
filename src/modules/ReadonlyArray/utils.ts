@@ -14,7 +14,7 @@ import { constant, constEmptyArray } from '../../utils/constant'
 import { flow, pipe } from '../../utils/flow'
 import { match } from './matchers'
 import { isEmpty, isNonEmpty } from './refinements'
-import { of } from './applicative'
+import { of } from './from-identity'
 import { Endomorphism } from '../../typeclasses/Endomorphism'
 
 export const fromNonEmpty: {

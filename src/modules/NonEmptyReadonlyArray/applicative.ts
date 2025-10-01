@@ -17,26 +17,16 @@ export const ApplicativeWithIndex = {
   number
 >
 
-export const of: {
-  <A>(a: A): NonEmptyReadonlyArray<A>
-} = Applicative.of
-
-export const ap: {
+export const apply: {
   <A>(
     fa: NonEmptyReadonlyArray<A>,
   ): <B>(
     self: NonEmptyReadonlyArray<(a: A, i: number) => B>,
   ) => NonEmptyReadonlyArray<B>
-} = ApplicativeWithIndex.apWithIndex
+} = ApplicativeWithIndex.applyWithIndex
 
-/** Alias for `ap` */
-export const apply = ap
-
-export const flap: {
+export const flipApply: {
   <A, B>(
     fab: NonEmptyReadonlyArray<(a: A, i: number) => B>,
   ): (self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<B>
-} = ApplicativeWithIndex.flapWithIndex
-
-/** Alias for `flap` */
-export const flipApply = flap
+} = ApplicativeWithIndex.flipApplyWithIndex

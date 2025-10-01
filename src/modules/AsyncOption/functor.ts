@@ -7,5 +7,5 @@ export const Functor: Functor_.Functor<AsyncOptionHkt> = {
 }
 
 export const map: {
-  <In, Out>(ab: (a: In) => Out): (self: AsyncOption<In>) => AsyncOption<Out>
+  <A, B>(ab: (a: A) => B): (self: AsyncOption<A>) => AsyncOption<B>
 } = Functor.map

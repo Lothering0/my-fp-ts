@@ -1,6 +1,6 @@
 import * as Magma from './Magma'
 
-/** Has associative operation */
+/** Has an associative operation */
 export interface Semigroup<Fixed> extends Magma.Magma<Fixed> {}
 
 export const reverse: {

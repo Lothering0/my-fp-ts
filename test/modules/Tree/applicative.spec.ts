@@ -25,7 +25,7 @@ describeApplicativeLaws(
 describe('applicative', () => {
   const Equivalence = Tree.getEquivalence(Number.Equivalence)
 
-  describe('ap', () => {
+  describe('apply', () => {
     it('should correctly build a tree', () => {
       const fa = Tree.make(1, [
         Tree.make(2, [Tree.make(4)]),
@@ -41,7 +41,7 @@ describe('applicative', () => {
 
       pipe(
         fab,
-        Tree.ap(fa),
+        Tree.apply(fa),
         Equivalence.equals(
           Tree.make(11, [
             Tree.make(12, [Tree.make(14)]),

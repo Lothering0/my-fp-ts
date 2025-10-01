@@ -2,14 +2,15 @@ import * as Monad_ from '../../typeclasses/Monad'
 import * as MonadWithIndex_ from '../../typeclasses/MonadWithIndex'
 import { ReadonlyArrayHkt } from './readonly-array'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
-import { Applicative, ApplicativeWithIndex } from './applicative'
+import { Functor, FunctorWithIndex } from './functor'
+import { FromIdentity } from './from-identity'
 
-export const Monad = Monad_.create<ReadonlyArrayHkt>(Applicative, {
+export const Monad = Monad_.create<ReadonlyArrayHkt>(FromIdentity, Functor, {
   flat: self => self.flat(),
 })
 
 export const MonadWithIndex = MonadWithIndex_.create<ReadonlyArrayHkt, number>(
-  ApplicativeWithIndex,
+  FunctorWithIndex,
   Monad,
 )
 
@@ -46,12 +47,12 @@ export const mapTo: {
   ): (self: ReadonlyArray<A>) => ReadonlyArray<DoObject<N, A, B>>
 } = MonadWithIndex.mapToWithIndex
 
-export const flapTo: {
+export const flipApplyToWithIndex: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fab: ReadonlyArray<(a: A, i: number) => B>,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<DoObject<N, A, B>>
-} = MonadWithIndex.flapToWithIndex
+} = MonadWithIndex.flipApplyToWithIndex
 
 export const apS: {
   <N extends DoObjectKey, A, B>(

@@ -1,12 +1,13 @@
 import * as Option from './option'
 import { create } from '../../typeclasses/Monad'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
-import { Applicative } from './applicative'
+import { FromIdentity } from './from-identity'
+import { Functor } from './functor'
 import { identity } from '../Identity'
 import { match } from './matchers'
 import { zero } from './alternative'
 
-export const Monad = create<Option.OptionHkt>(Applicative, {
+export const Monad = create<Option.OptionHkt>(FromIdentity, Functor, {
   flat: match({
     onNone: zero,
     onSome: identity,
@@ -46,12 +47,12 @@ export const mapTo: {
   ): (self: Option.Option<A>) => Option.Option<DoObject<N, A, B>>
 } = Monad.mapTo
 
-export const flapTo: {
+export const flipApplyTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fab: Option.Option<(a: A) => B>,
   ): (self: Option.Option<A>) => Option.Option<DoObject<N, A, B>>
-} = Monad.flapTo
+} = Monad.flipApplyTo
 
 export const apS: {
   <N extends DoObjectKey, A, B>(

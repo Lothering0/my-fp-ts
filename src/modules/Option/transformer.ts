@@ -6,6 +6,7 @@ import * as Compactable_ from '../../typeclasses/Compactable'
 import * as Extendable_ from '../../typeclasses/Extendable'
 import * as Tappable_ from '../../typeclasses/Tappable'
 import { Hkt, Kind } from '../../typeclasses/Hkt'
+import { FromIdentity } from '../../typeclasses/FromIdentity'
 import { Functor } from '../../typeclasses/Functor'
 import { flow, pipe } from '../../utils/flow'
 import { identity } from '../Identity'
@@ -160,21 +161,11 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
     map: flow(Option.map, M.map),
   }
 
-  const Applicative = Applicative_.create<THkt>(Functor, {
+  const FromIdentity: FromIdentity<THkt> = {
     of: some,
-    ap:
-      <In, Collectable1, Fixed>(fma: Kind<THkt, In, Collectable1, Fixed>) =>
-      <Collectable2, Out>(
-        self: Kind<THkt, (a: In) => Out, Collectable2, Fixed>,
-      ): Kind<THkt, Out, Collectable1 | Collectable2, Fixed> =>
-        pipe(
-          self,
-          M.map(mf => (mg: Option.Option<In>) => Option.ap(mg)(mf)),
-          M.ap(fma),
-        ),
-  })
+  }
 
-  const Monad = Monad_.create<THkt>(Applicative, {
+  const Monad = Monad_.create<THkt>(FromIdentity, Functor, {
     flat: M.flatMap(
       Option.match({
         onNone: () => M.of(Option.none),
@@ -182,6 +173,8 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
       }),
     ) as Monad_.Monad<THkt>['flat'],
   })
+
+  const Applicative = Applicative_.create<THkt>(Monad)
 
   const Tappable = Tappable_.create(Monad)
 
@@ -213,6 +206,8 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
     Alt,
     ...Alt,
     Alternative,
+    FromIdentity,
+    ...FromIdentity,
     Functor,
     ...Functor,
     Applicative,

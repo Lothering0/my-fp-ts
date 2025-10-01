@@ -1,27 +1,13 @@
-import { Functor, map } from './functor'
-import { SyncHkt, sync, execute, Sync } from './sync'
+import { SyncHkt, Sync } from './sync'
 import { create } from '../../typeclasses/Applicative'
-import { pipe } from '../../utils/flow'
+import { Monad } from './monad'
 
-export const Applicative = create<SyncHkt>(Functor, {
-  of: sync,
-  ap: fa => self => pipe(fa, map(execute(self))),
-})
+export const Applicative = create<SyncHkt>(Monad)
 
-export const of: {
-  <A>(a: A): Sync<A>
-} = Applicative.of
-
-export const ap: {
+export const apply: {
   <A>(fa: Sync<A>): <B>(self: Sync<(a: A) => B>) => Sync<B>
-} = Applicative.ap
+} = Applicative.apply
 
-/** Alias for `ap` */
-export const apply = ap
-
-export const flap: {
+export const flipApply: {
   <A, B>(fab: Sync<(a: A) => B>): (self: Sync<A>) => Sync<B>
-} = Applicative.flap
-
-/** Alias for `flap` */
-export const flipApply = flap
+} = Applicative.flipApply

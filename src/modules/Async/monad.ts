@@ -1,81 +1,82 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as Async from './async'
 import { create } from '../../typeclasses/Monad'
-import { Applicative } from './applicative'
+import { Functor } from './functor'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
+import { FromIdentity } from './from-identity'
 
-export const Monad = create<Async.AsyncHkt>(Applicative, {
+export const Monad = create<Async.AsyncHkt>(FromIdentity, Functor, {
   flat: self => () => Async.toPromise(self).then(Async.toPromise),
 })
 
 export const Do = Monad.Do
 
 export const flat: {
-  <In>(self: Async.Async<Async.Async<In>>): Async.Async<In>
+  <A>(self: Async.Async<Async.Async<A>>): Async.Async<A>
 } = Monad.flat
 
 export const flatMap: {
-  <In, Out>(
-    amb: (a: In) => Async.Async<Out>,
-  ): (self: Async.Async<In>) => Async.Async<Out>
+  <A, B>(
+    amb: (a: A) => Async.Async<B>,
+  ): (self: Async.Async<A>) => Async.Async<B>
 } = Monad.flatMap
 
 export const compose: {
-  <In, Out1, Out2>(
-    bmc: (b: Out1) => Async.Async<Out2>,
-    amb: (a: In) => Async.Async<Out1>,
-  ): (a: In) => Async.Async<Out2>
+  <A, B, C>(
+    bmc: (b: B) => Async.Async<C>,
+    amb: (a: A) => Async.Async<B>,
+  ): (a: A) => Async.Async<C>
 } = Monad.compose
 
 export const setTo: {
-  <N extends DoObjectKey, In, Out>(
-    name: Exclude<N, keyof In>,
-    b: Out,
-  ): (self: Async.Async<In>) => Async.Async<DoObject<N, In, Out>>
+  <N extends DoObjectKey, A, B>(
+    name: Exclude<N, keyof A>,
+    b: B,
+  ): (self: Async.Async<A>) => Async.Async<DoObject<N, A, B>>
 } = Monad.setTo
 
 export const mapTo: {
-  <N extends DoObjectKey, In, Out>(
-    name: Exclude<N, keyof In>,
-    ab: (a: In) => Out,
-  ): (self: Async.Async<In>) => Async.Async<DoObject<N, In, Out>>
+  <N extends DoObjectKey, A, B>(
+    name: Exclude<N, keyof A>,
+    ab: (a: A) => B,
+  ): (self: Async.Async<A>) => Async.Async<DoObject<N, A, B>>
 } = Monad.mapTo
 
-export const flapTo: {
-  <N extends DoObjectKey, In, Out>(
-    name: Exclude<N, keyof In>,
-    fab: Async.Async<(a: In) => Out>,
-  ): (self: Async.Async<In>) => Async.Async<DoObject<N, In, Out>>
-} = Monad.flapTo
+export const flipApplyTo: {
+  <N extends DoObjectKey, A, B>(
+    name: Exclude<N, keyof A>,
+    fab: Async.Async<(a: A) => B>,
+  ): (self: Async.Async<A>) => Async.Async<DoObject<N, A, B>>
+} = Monad.flipApplyTo
 
 export const apS: {
-  <N extends DoObjectKey, In, Out>(
-    name: Exclude<N, keyof In>,
-    fb: Async.Async<Out>,
-  ): (self: Async.Async<In>) => Async.Async<DoObject<N, In, Out>>
+  <N extends DoObjectKey, A, B>(
+    name: Exclude<N, keyof A>,
+    fb: Async.Async<B>,
+  ): (self: Async.Async<A>) => Async.Async<DoObject<N, A, B>>
 } = Monad.apS
 
 export const flatMapTo: {
-  <N extends DoObjectKey, In, Out>(
-    name: Exclude<N, keyof In>,
-    amb: (a: In) => Async.Async<Out>,
-  ): (self: Async.Async<In>) => Async.Async<DoObject<N, In, Out>>
+  <N extends DoObjectKey, A, B>(
+    name: Exclude<N, keyof A>,
+    amb: (a: A) => Async.Async<B>,
+  ): (self: Async.Async<A>) => Async.Async<DoObject<N, A, B>>
 } = Monad.flatMapTo
 
 export const parallel: {
-  <N extends DoObjectKey, In, Out>(
-    fb: Async.Async<Out>,
-  ): (fa: Async.Async<In>) => Async.Async<DoObject<N, In, Out>>
+  <N extends DoObjectKey, A, B>(
+    fb: Async.Async<B>,
+  ): (fa: Async.Async<A>) => Async.Async<DoObject<N, A, B>>
 } = fb => fa => () =>
   Promise.all([Async.toPromise(fa), Async.toPromise(fb)]).then(
     ([a]) => a as any,
   )
 
 export const parallelTo: {
-  <N extends DoObjectKey, In, Out>(
-    name: Exclude<N, keyof In>,
-    fb: Async.Async<Out>,
-  ): (fa: Async.Async<In>) => Async.Async<DoObject<N, In, Out>>
+  <N extends DoObjectKey, A, B>(
+    name: Exclude<N, keyof A>,
+    fb: Async.Async<B>,
+  ): (fa: Async.Async<A>) => Async.Async<DoObject<N, A, B>>
 } = (name, fb) => fa => () =>
   Promise.all([Async.toPromise(fa), Async.toPromise(fb)]).then(
     ([a, b]) => ({ [name]: b, ...a }) as any,

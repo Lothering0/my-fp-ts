@@ -6,6 +6,7 @@ import * as Extendable_ from '../../typeclasses/Extendable'
 import * as Tappable_ from '../../typeclasses/Tappable'
 import { identity } from '../Identity'
 import { Hkt, Kind } from '../../typeclasses/Hkt'
+import { FromIdentity } from '../../typeclasses/FromIdentity'
 import { Functor } from '../../typeclasses/Functor'
 import { flow, pipe } from '../../utils/flow'
 import { Alt } from '../../typeclasses/Alt'
@@ -130,6 +131,10 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
     orElse,
   }
 
+  const FromIdentity: FromIdentity<THkt> = {
+    of: succeed,
+  }
+
   const Functor: Functor<THkt> = {
     map: flow(Result.map, M.map),
   }
@@ -138,23 +143,7 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
     mapLeft: ed => flow(M.map(Result.mapLeft(ed))),
   })
 
-  const Applicative = Applicative_.create<THkt>(Functor, {
-    of: succeed,
-    ap:
-      <In, Collectable1, Fixed>(fma: Kind<THkt, In, Collectable1, Fixed>) =>
-      <Out, Collectable2>(
-        self: Kind<THkt, (a: In) => Out, Collectable2, Fixed>,
-      ) =>
-        pipe(
-          self,
-          M.map(
-            mf => (mg: Result.Result<In, Collectable1>) => Result.ap(mg)(mf),
-          ),
-          M.ap(fma),
-        ),
-  })
-
-  const Monad = Monad_.create<THkt>(Applicative, {
+  const Monad = Monad_.create<THkt>(FromIdentity, Functor, {
     flat: <In, Collectable1, Collectable2, Fixed>(
       self: Kind<
         THkt,
@@ -182,6 +171,8 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
       ),
   })
 
+  const Applicative = Applicative_.create<THkt>(Monad)
+
   const Tappable = Tappable_.create(Monad)
 
   const Extendable = Extendable_.create<THkt>(Functor, {
@@ -206,6 +197,8 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
     catchAll,
     Alt,
     ...Alt,
+    FromIdentity,
+    ...FromIdentity,
     Functor,
     ...Functor,
     Bifunctor,

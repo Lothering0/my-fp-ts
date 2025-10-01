@@ -1,7 +1,19 @@
-import { identity, Number, pipe, Result, SyncResult } from '../../../src'
+import {
+  identity,
+  Number,
+  pipe,
+  Result,
+  SyncResult,
+  Equivalence,
+} from '../../../src'
 
 describe('applicative', () => {
-  describe('ap', () => {
+  const ResultEquivalence = Result.getEquivalence(
+    Equivalence.EquivalenceStrict,
+    Equivalence.EquivalenceStrict,
+  )
+
+  describe('apply', () => {
     it('should satisfy identity law', () => {
       const a = 1
       const fa: SyncResult.SyncResult<typeof a> = jest.fn(SyncResult.of(a))
@@ -9,11 +21,13 @@ describe('applicative', () => {
       const result = pipe(
         identity,
         SyncResult.of,
-        SyncResult.ap(fa),
+        SyncResult.apply(fa),
         SyncResult.execute,
       )
 
-      expect(result).toEqual<Result.Result<typeof a>>(Result.succeed(a))
+      pipe(result, ResultEquivalence.equals(Result.succeed(a)), expect).toBe(
+        true,
+      )
       expect(fa).toHaveBeenCalledTimes(1)
     })
 
@@ -24,10 +38,10 @@ describe('applicative', () => {
       const fa: SyncResult.SyncResult<typeof a> = jest.fn(SyncResult.of(a))
       const fab: SyncResult.SyncResult<typeof ab> = jest.fn(SyncResult.of(ab))
 
-      const result1 = pipe(fab, SyncResult.ap(fa), SyncResult.execute)
+      const result1 = pipe(fab, SyncResult.apply(fa), SyncResult.execute)
       const result2 = pipe(a, ab, SyncResult.of, SyncResult.execute)
 
-      expect(result1).toEqual(result2)
+      pipe(result1, ResultEquivalence.equals(result2), expect).toBe(true)
       expect(fa).toHaveBeenCalledTimes(1)
       expect(fab).toHaveBeenCalledTimes(1)
     })
@@ -39,13 +53,13 @@ describe('applicative', () => {
       const fa: SyncResult.SyncResult<typeof a> = jest.fn(SyncResult.of(a))
       const fab: SyncResult.SyncResult<typeof ab> = jest.fn(SyncResult.of(ab))
 
-      const result1 = pipe(fab, SyncResult.ap(fa), SyncResult.execute)
+      const result1 = pipe(fab, SyncResult.apply(fa), SyncResult.execute)
       const result2 = pipe(
-        SyncResult.ap(fab)(SyncResult.of(ab => ab(a))),
+        SyncResult.apply(fab)(SyncResult.of(ab => ab(a))),
         SyncResult.execute,
       )
 
-      expect(result1).toEqual(result2)
+      pipe(result1, ResultEquivalence.equals(result2), expect).toBe(true)
       expect(fa).toHaveBeenCalledTimes(1)
       expect(fab).toHaveBeenCalledTimes(2)
     })
@@ -59,9 +73,9 @@ describe('applicative', () => {
       )
       const fab: SyncResult.SyncResult<typeof ab> = jest.fn(SyncResult.of(ab))
 
-      const result = pipe(fab, SyncResult.ap(fa), SyncResult.execute)
+      const result = pipe(fab, SyncResult.apply(fa), SyncResult.execute)
 
-      expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
+      pipe(result, ResultEquivalence.equals(Result.fail(e)), expect).toBe(true)
       expect(fa).toHaveBeenCalledTimes(1)
       expect(fab).toHaveBeenCalledTimes(1)
     })
@@ -77,10 +91,10 @@ describe('applicative', () => {
         SyncResult.fail(e),
       )
 
-      const result = pipe(fab, SyncResult.ap(fa), SyncResult.execute)
+      const result = pipe(fab, SyncResult.apply(fa), SyncResult.execute)
 
-      expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
-      expect(fa).toHaveBeenCalledTimes(1)
+      pipe(result, ResultEquivalence.equals(Result.fail(e)), expect).toBe(true)
+      expect(fa).toHaveBeenCalledTimes(0)
       expect(fab).toHaveBeenCalledTimes(1)
     })
 
@@ -96,12 +110,12 @@ describe('applicative', () => {
 
       const result: Result.Result<unknown, typeof e | typeof d> = pipe(
         fab,
-        SyncResult.ap(fa),
+        SyncResult.apply(fa),
         SyncResult.execute,
       )
 
-      expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
-      expect(fa).toHaveBeenCalledTimes(1)
+      pipe(result, ResultEquivalence.equals(Result.fail(d)), expect).toBe(true)
+      expect(fa).toHaveBeenCalledTimes(0)
       expect(fab).toHaveBeenCalledTimes(1)
     })
   })

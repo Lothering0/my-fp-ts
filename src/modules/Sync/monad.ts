@@ -1,9 +1,10 @@
 import { create } from '../../typeclasses/Monad'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
-import { Applicative } from './applicative'
+import { FromIdentity } from './from-identity'
+import { Functor } from './functor'
 import { SyncHkt, Sync, execute } from './sync'
 
-export const Monad = create<SyncHkt>(Applicative, {
+export const Monad = create<SyncHkt>(FromIdentity, Functor, {
   flat: execute,
 })
 
@@ -35,12 +36,12 @@ export const mapTo: {
   ): (self: Sync<A>) => Sync<DoObject<N, A, B>>
 } = Monad.mapTo
 
-export const flapTo: {
+export const flipApplyTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fab: Sync<(a: A) => B>,
   ): (self: Sync<A>) => Sync<DoObject<N, A, B>>
-} = Monad.flapTo
+} = Monad.flipApplyTo
 
 export const apS: {
   <N extends DoObjectKey, A, B>(

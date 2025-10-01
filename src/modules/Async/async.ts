@@ -5,12 +5,12 @@ export interface AsyncHkt extends Hkt {
   readonly Type: Async<this['In']>
 }
 
-export interface Async<In> extends Sync.Sync<Promise<In>> {}
+export interface Async<A> extends Sync.Sync<Promise<A>> {}
 
 export const async: {
-  <In>(a: In): Async<In>
+  <A>(a: A): Async<A>
 } = a => () => Promise.resolve(a)
 
 export const toPromise: {
-  <In>(ma: Async<In>): Promise<In>
+  <A>(ma: Async<A>): Promise<A>
 } = ma => ma()

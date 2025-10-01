@@ -4,6 +4,7 @@ import * as Monad_ from '../../typeclasses/Monad'
 import * as Tappable_ from '../../typeclasses/Tappable'
 import { Hkt, Kind } from '../../typeclasses/Hkt'
 import { Functor } from '../../typeclasses/Functor'
+import { FromIdentity } from '../../typeclasses/FromIdentity'
 import { Profunctor } from '../../typeclasses/Profunctor'
 import { flow, pipe } from '../../utils/flow'
 
@@ -86,24 +87,19 @@ export const transform = <F extends Hkt, TFixed>(F: Monad_.Monad<F>) => {
     promap: (de, ab) => self => flow(de, self, F.map(ab)),
   })
 
-  const Applicative = Applicative_.create<THkt>(Functor, {
+  const FromIdentity: FromIdentity<THkt> = {
     of: a => () => F.of(a),
-    ap: fa => self => r =>
-      pipe(
-        self,
-        Functor.map(f => pipe(fa, Functor.map(f))),
-        a => a(r),
-        F.flatMap(f => f(r)),
-      ),
-  })
+  }
 
-  const Monad = Monad_.create<THkt>(Applicative, {
+  const Monad = Monad_.create<THkt>(FromIdentity, Functor, {
     flat: self => r =>
       pipe(
         self(r),
         F.flatMap(f => f(r)),
       ),
   })
+
+  const Applicative = Applicative_.create<THkt>(Monad)
 
   const Tappable = Tappable_.create(Monad)
 
@@ -113,6 +109,8 @@ export const transform = <F extends Hkt, TFixed>(F: Monad_.Monad<F>) => {
     asks,
     asksReader,
     local,
+    FromIdentity,
+    ...FromIdentity,
     Functor,
     ...Functor,
     getProfunctor,
