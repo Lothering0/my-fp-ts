@@ -31,10 +31,6 @@ export const fromSync: {
   <A, E>(ma: Sync.Sync<A>): SyncResult<A, E>
 } = ma => () => tryDo(ma)
 
-export const fromResult: {
-  <A, E>(result: Result.Result<A, E>): SyncResult<A, E>
-} = Sync.of
-
 export const execute: {
   <A, E>(ma: SyncResult<A, E>): Result.Result<A, E>
 } = ma => {

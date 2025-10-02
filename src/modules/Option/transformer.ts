@@ -7,6 +7,8 @@ import * as Extendable_ from '../../typeclasses/Extendable'
 import * as Tappable_ from '../../typeclasses/Tappable'
 import { Hkt, Kind } from '../../typeclasses/Hkt'
 import { FromIdentity } from '../../typeclasses/FromIdentity'
+import { FromOption } from '../../typeclasses/FromOption'
+import { FromResult } from '../../typeclasses/FromResult'
 import { Functor } from '../../typeclasses/Functor'
 import { flow, pipe } from '../../utils/flow'
 import { identity } from '../Identity'
@@ -98,7 +100,7 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
     ): Kind<F, In | void, Collectable, Fixed>
   } = M.map(Option.toVoid)
 
-  const fromResult: {
+  const fromKindResult: {
     <In, Collectable, Fixed>(
       ma: Kind<F, Result.Result<In, unknown>, Collectable, Fixed>,
     ): Kind<THkt, In, Collectable, Fixed>
@@ -148,6 +150,18 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
       ),
     )
 
+  const FromIdentity: FromIdentity<THkt> = {
+    of: some,
+  }
+
+  const FromOption: FromOption<THkt> = {
+    fromOption: M.of,
+  }
+
+  const FromResult: FromResult<THkt> = {
+    fromResult: flow(Option.fromResult, M.of),
+  }
+
   const Alt: Alt<THkt> = {
     orElse,
   }
@@ -159,10 +173,6 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
 
   const Functor: Functor<THkt> = {
     map: flow(Option.map, M.map),
-  }
-
-  const FromIdentity: FromIdentity<THkt> = {
-    of: some,
   }
 
   const Monad = Monad_.create<THkt>(FromIdentity, Functor, {
@@ -199,15 +209,19 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
     toUndefined,
     fromVoid,
     toVoid,
-    fromResult,
+    fromKindResult,
     toResult,
     getOrElse,
     catchAll,
+    FromIdentity,
+    ...FromIdentity,
+    FromOption,
+    ...FromOption,
+    FromResult,
+    ...FromResult,
     Alt,
     ...Alt,
     Alternative,
-    FromIdentity,
-    ...FromIdentity,
     Functor,
     ...Functor,
     Applicative,

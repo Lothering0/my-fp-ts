@@ -1,8 +1,4 @@
-import * as Result from '../Result'
 import { none, Option, some, Some } from './option'
-import { LazyArg } from '../../types/utils'
-import { flow } from '../../utils/flow'
-import { zero } from './alternative'
 import { constNull, constUndefined, constVoid } from '../../utils/constant'
 import { identity } from '../Identity'
 import { isNull, isUndefined } from '../../utils/typeChecks'
@@ -45,15 +41,3 @@ export const toVoid: {
   onNone: constVoid,
   onSome: identity,
 })
-
-export const fromResult: {
-  <A, E>(ma: Result.Result<A, E>): Option<A>
-} = Result.match({ onFailure: zero, onSuccess: some })
-
-export const toResult: {
-  <E>(onNone: LazyArg<E>): <A>(self: Option<A>) => Result.Result<A, E>
-} = onNone =>
-  match({
-    onNone: flow(onNone, Result.fail),
-    onSome: Result.succeed,
-  })

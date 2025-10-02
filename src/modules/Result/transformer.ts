@@ -7,6 +7,7 @@ import * as Tappable_ from '../../typeclasses/Tappable'
 import { identity } from '../Identity'
 import { Hkt, Kind } from '../../typeclasses/Hkt'
 import { FromIdentity } from '../../typeclasses/FromIdentity'
+import { FromResult } from '../../typeclasses/FromResult'
 import { Functor } from '../../typeclasses/Functor'
 import { flow, pipe } from '../../utils/flow'
 import { Alt } from '../../typeclasses/Alt'
@@ -127,12 +128,16 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
         ),
       )
 
-  const Alt: Alt<THkt> = {
-    orElse,
-  }
-
   const FromIdentity: FromIdentity<THkt> = {
     of: succeed,
+  }
+
+  const FromResult: FromResult<THkt> = {
+    fromResult: M.of,
+  }
+
+  const Alt: Alt<THkt> = {
+    orElse,
   }
 
   const Functor: Functor<THkt> = {
@@ -195,10 +200,12 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
     successOf,
     getOrElse,
     catchAll,
-    Alt,
-    ...Alt,
     FromIdentity,
     ...FromIdentity,
+    FromResult,
+    ...FromResult,
+    Alt,
+    ...Alt,
     Functor,
     ...Functor,
     Bifunctor,

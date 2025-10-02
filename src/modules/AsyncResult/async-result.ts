@@ -41,10 +41,6 @@ export const fromAsync: {
   <A, E>(ma: Async.Async<A>): AsyncResult<A, E>
 } = ma => () => ma().then(Result.succeed, Result.fail)
 
-export const fromResult: {
-  <A, E>(ma: Result.Result<A, E>): AsyncResult<A, E>
-} = Async.of
-
 export const fromSyncResult: {
   <A, E>(mma: SyncResult.SyncResult<A, E>): AsyncResult<A, E>
 } = mma => () => pipe(mma, SyncResult.execute, ma => Promise.resolve(ma))

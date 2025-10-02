@@ -64,10 +64,6 @@ export const fromAsync: {
   <A>(async: Async.Async<A>): Effect<A>
 } = flow(Async.map(Result.succeed), fromAsyncResult)
 
-export const fromResult: {
-  <A, E>(result: Result.Result<A, E>): Effect<A, E>
-} = result => fromSyncResult(() => result)
-
 export const succeed: {
   <A>(a: A): Effect<A>
 } = flow(SyncResult.succeed, fromSyncResult)
