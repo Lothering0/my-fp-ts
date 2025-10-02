@@ -4,7 +4,7 @@ import { isFailure } from './refinements'
 import { successOf } from './utils'
 import { pipe } from '../../utils/flow'
 
-export const getSemigroup: {
+export const getResultSemigroup: {
   <A, E>(Semigroup: Semigroup<A>): Semigroup<Result<A, E>>
 } = Semigroup => ({
   combine: my => mx => {

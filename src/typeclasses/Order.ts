@@ -92,7 +92,7 @@ export const Contravariant: Contravariant_.Contravariant<OrderHkt> = {
 export const { contramap } = Contravariant
 
 /** Returns `Semigroup` which orders elements by first `Order` and if the result is zero orders by second */
-export const getSemigroup: {
+export const getOrderSemigroup: {
   <A>(): Semigroup<Order<A>>
 } = () => ({
   combine: ordY => ordX => ({
@@ -110,10 +110,10 @@ export const getSemigroup: {
 })
 
 /** Returns `Monoid` which orders elements by first `Order` and if the result is zero orders by second */
-export const getMonoid: {
+export const getOrderMonoid: {
   <A>(): Monoid<Order<A>>
 } = () => ({
-  ...getSemigroup(),
+  ...getOrderSemigroup(),
   empty: {
     compare: () => constant(0),
   },

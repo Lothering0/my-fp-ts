@@ -1,10 +1,10 @@
 import { Monoid } from '../../typeclasses/Monoid'
 import { Duration } from './duration'
-import { SemigroupSum } from './semigroup'
+import { SumSemigroup } from './semigroup'
 
 export const empty: Duration = { milliseconds: 0 }
 
-export const MonoidSum: Monoid<Duration> = {
-  ...SemigroupSum,
+export const SumMonoid: Monoid<Duration> = {
+  ...SumSemigroup,
   empty,
 }

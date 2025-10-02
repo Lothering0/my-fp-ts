@@ -5,7 +5,7 @@ import { pipe } from '../../utils/flow'
 import { reduce } from './foldable'
 import { append, concat, elem } from './utils'
 
-export const getSemigroup = <A>(): Semigroup<ReadonlyArray<A>> => ({
+export const getConcatSemigroup = <A>(): Semigroup<ReadonlyArray<A>> => ({
   combine: concat,
 })
 

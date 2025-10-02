@@ -1,9 +1,9 @@
 import { Monoid } from '../../typeclasses/Monoid'
-import { getSemigroup } from './semigroup'
+import { getConcatSemigroup } from './semigroup'
 
 export const empty: ReadonlyArray<never> = []
 
-export const getMonoid = <A>(): Monoid<ReadonlyArray<A>> => ({
-  ...getSemigroup(),
+export const getConcatMonoid = <A>(): Monoid<ReadonlyArray<A>> => ({
+  ...getConcatSemigroup(),
   empty,
 })

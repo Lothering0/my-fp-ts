@@ -47,11 +47,11 @@ export const Equivalence: Equivalence_.Equivalence<Ordering> =
 
 export const { equals } = Equivalence
 
-export const Semigroup: Semigroup_.Semigroup<Ordering> = {
+export const OrderingSemigroup: Semigroup_.Semigroup<Ordering> = {
   combine: y => x => (y === 0 ? x : y),
 }
 
-export const Monoid: Monoid_.Monoid<Ordering> = {
-  ...Semigroup,
+export const OrderingMonoid: Monoid_.Monoid<Ordering> = {
+  ...OrderingSemigroup,
   empty: 0,
 }

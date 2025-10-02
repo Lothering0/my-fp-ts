@@ -1,9 +1,9 @@
 import { Group } from '../../typeclasses/Group'
 import { Duration } from './duration'
-import { MonoidSum } from './monoid'
+import { SumMonoid } from './monoid'
 import { multiply } from './utils'
 
-export const GroupSum: Group<Duration> = {
-  ...MonoidSum,
+export const SumGroup: Group<Duration> = {
+  ...SumMonoid,
   inverse: multiply(-1),
 }

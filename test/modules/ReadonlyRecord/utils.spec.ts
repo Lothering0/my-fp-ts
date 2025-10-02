@@ -1,7 +1,7 @@
 import { Number, pipe, Record, String } from '../../../src'
 
 describe('getUnion', () => {
-  const union = Record.getUnion(Number.GroupSum)
+  const union = Record.getUnion(Number.SumGroup)
 
   it('should return union of first and second record combined by provided magma', () => {
     pipe({ a: 1, b: 2, c: 3 }, union({ b: 1, c: 2, d: 3 }), expect).toEqual({

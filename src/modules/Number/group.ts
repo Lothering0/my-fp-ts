@@ -1,12 +1,12 @@
 import { Group } from '../../typeclasses/Group'
-import { MonoidProduct, MonoidSum } from './monoid'
+import { ProductMonoid, SumMonoid } from './monoid'
 
-export const GroupSum: Group<number> = {
-  ...MonoidSum,
+export const SumGroup: Group<number> = {
+  ...SumMonoid,
   inverse: x => -x,
 }
 
-export const GroupProduct: Group<number> = {
-  ...MonoidProduct,
+export const ProductGroup: Group<number> = {
+  ...ProductMonoid,
   inverse: x => 1 / x,
 }

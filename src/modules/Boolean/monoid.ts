@@ -1,12 +1,12 @@
 import { Monoid } from '../../typeclasses/Monoid'
-import { SemigroupAll, SemigroupAny } from './semigroup'
+import { AllSemigroup, AnySemigroup } from './semigroup'
 
-export const MonoidAny: Monoid<boolean> = {
-  ...SemigroupAny,
+export const AnyMonoid: Monoid<boolean> = {
+  ...AnySemigroup,
   empty: false,
 }
 
-export const MonoidAll: Monoid<boolean> = {
-  ...SemigroupAll,
+export const AllMonoid: Monoid<boolean> = {
+  ...AllSemigroup,
   empty: true,
 }

@@ -32,7 +32,7 @@ export const contramap: {
   <In, Out>(ba: (b: Out) => In): (self: Equivalence<In>) => Equivalence<Out>
 } = Contravariant.contramap
 
-export const getSemigroup: {
+export const getEquivalenceSemigroup: {
   <In>(): Semigroup<Equivalence<In>>
 } = () => ({
   combine: Eq1 => Eq2 => ({
@@ -45,9 +45,9 @@ export const empty: Equivalence<never> = {
   equals: constant(constTrue),
 }
 
-export const getMonoid: {
+export const getEquivalenceMonoid: {
   <In>(): Monoid<Equivalence<In>>
 } = () => ({
-  ...getSemigroup(),
+  ...getEquivalenceSemigroup(),
   empty,
 })

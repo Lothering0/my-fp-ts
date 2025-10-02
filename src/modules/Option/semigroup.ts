@@ -4,7 +4,7 @@ import { Semigroup } from '../../typeclasses/Semigroup'
 import { isNone } from './refinements'
 import { pipe } from '../../utils/flow'
 
-export const getSemigroup: {
+export const getOptionSemigroup: {
   <A>(Semigroup: Semigroup<A>): Semigroup<Option<A>>
 } = Semigroup => ({
   combine: mx => my => {

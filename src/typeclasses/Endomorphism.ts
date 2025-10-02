@@ -9,11 +9,11 @@ export interface Endomorphism<In> {
 
 export const empty = identity
 
-export const getSemigroup = <In>(): Semigroup<Endomorphism<In>> => ({
+export const getComposeSemigroup = <In>(): Semigroup<Endomorphism<In>> => ({
   combine: curry(compose),
 })
 
-export const getMonoid = <In>(): Monoid<Endomorphism<In>> => ({
-  ...getSemigroup(),
+export const getComposeMonoid = <In>(): Monoid<Endomorphism<In>> => ({
+  ...getComposeSemigroup(),
   empty,
 })

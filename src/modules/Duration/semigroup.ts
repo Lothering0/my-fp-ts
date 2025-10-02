@@ -2,6 +2,6 @@ import { Semigroup } from '../../typeclasses/Semigroup'
 import { Duration } from './duration'
 import { add } from './utils'
 
-export const SemigroupSum: Semigroup<Duration> = {
+export const SumSemigroup: Semigroup<Duration> = {
   combine: add,
 }
