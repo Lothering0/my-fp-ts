@@ -42,6 +42,10 @@ const try_: {
 
 export { try_ as try }
 
+export const toUnion: {
+  <A, E>(self: Effect.Effect<A, E>): Effect.Effect<A | E>
+} = mapResult(flow(Result.toUnion, Result.succeed))
+
 export const swap: {
   <A, E>(self: Effect.Effect<A, E>): Effect.Effect<E, A>
 } = mapResult(Result.swap)

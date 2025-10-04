@@ -1,11 +1,16 @@
 import * as Option from '../Option'
 import * as Result from '../Result'
 import { create } from '../../typeclasses/Compactable'
-import { AsyncOption, AsyncOptionHkt, some, toPromise } from './async-option'
+import {
+  AsyncOption,
+  AsyncOptionHkt,
+  some,
+  none,
+  toPromise,
+} from './async-option'
 import { Functor } from './functor'
 import { pipe } from '../../utils/flow'
 import { flatMap } from './monad'
-import { zero } from './alternative'
 
 export const Compactable = create<AsyncOptionHkt>(Functor, {
   compact: self => () => toPromise(self).then(Option.compact),
@@ -15,8 +20,8 @@ export const Compactable = create<AsyncOptionHkt>(Functor, {
       toPromise,
       ma => () => ma,
       mma => [
-        pipe(mma, flatMap(Result.match({ onFailure: zero, onSuccess: some }))),
-        pipe(mma, flatMap(Result.match({ onFailure: some, onSuccess: zero }))),
+        pipe(mma, flatMap(Result.match({ onFailure: none, onSuccess: some }))),
+        pipe(mma, flatMap(Result.match({ onFailure: some, onSuccess: none }))),
       ],
     ),
 })

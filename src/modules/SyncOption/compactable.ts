@@ -4,7 +4,6 @@ import { create } from '../../typeclasses/Compactable'
 import { SyncOption, SyncOptionHkt, execute, none, some } from './sync-option'
 import { pipe } from '../../utils/flow'
 import { Functor } from './functor'
-import { zero } from './alternative'
 
 export const Compactable = create<SyncOptionHkt>(Functor, {
   compact: self => () => pipe(self, execute, Option.compact),
@@ -13,10 +12,10 @@ export const Compactable = create<SyncOptionHkt>(Functor, {
       self,
       execute,
       Option.match({
-        onNone: () => [none, none],
+        onNone: () => [none(), none()],
         onSome: ma => [
-          pipe(ma, Result.match({ onFailure: zero, onSuccess: some })),
-          pipe(ma, Result.match({ onFailure: some, onSuccess: zero })),
+          pipe(ma, Result.match({ onFailure: none, onSuccess: some })),
+          pipe(ma, Result.match({ onFailure: some, onSuccess: none })),
         ],
       }),
     ),

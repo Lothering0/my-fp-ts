@@ -56,13 +56,13 @@ describe('monad', () => {
     })
 
     it('should return function containing `none` if the same was provided', async () => {
-      const fa: AsyncOption.AsyncOption<number> = jest.fn(AsyncOption.none)
+      const fa: AsyncOption.AsyncOption<number> = jest.fn(AsyncOption.none())
       const result = await pipe(
         fa,
         AsyncOption.flatMap(a => AsyncOption.some(a + 2)),
         AsyncOption.toPromise,
       )
-      expect(result).toEqual<Option.Option<never>>(Option.none)
+      expect(result).toEqual<Option.Option<never>>(Option.none())
       expect(fa).toHaveBeenCalledTimes(1)
     })
 
@@ -71,10 +71,10 @@ describe('monad', () => {
       const fa: AsyncOption.AsyncOption<number> = jest.fn(AsyncOption.some(a))
       const result = await pipe(
         fa,
-        AsyncOption.flatMap(AsyncOption.zero),
+        AsyncOption.flatMap(AsyncOption.none),
         AsyncOption.toPromise,
       )
-      expect(result).toEqual<Option.Option<never>>(Option.none)
+      expect(result).toEqual<Option.Option<never>>(Option.none())
       expect(fa).toHaveBeenCalledTimes(1)
     })
   })

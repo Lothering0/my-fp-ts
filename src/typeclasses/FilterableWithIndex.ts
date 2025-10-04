@@ -66,7 +66,7 @@ export const create = <F extends Hkt, Index>(
     In,
   >(
     p: PredicateWithIndex<In, Index>,
-  ) => filterMapWithIndex<In, In>((a, i) => (p(a, i) ? some(a) : none))
+  ) => filterMapWithIndex<In, In>((a, i) => (p(a, i) ? some(a) : none()))
 
   const partitionMapWithIndex: FilterableWithIndex<
     F,

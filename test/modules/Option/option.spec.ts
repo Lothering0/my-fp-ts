@@ -13,10 +13,10 @@ describe('gen', () => {
 
   it('should return none', () => {
     const ma = Option.gen(function* () {
-      const a = yield* Option.none
+      const a = yield* Option.none()
       return a
     })
-    pipe(ma, Equivalence.equals(Option.none), expect).toBe(true)
+    pipe(ma, Equivalence.equals(Option.none()), expect).toBe(true)
   })
 
   it('should work correctly with several successful generators', () => {
@@ -32,12 +32,12 @@ describe('gen', () => {
 
   it('should work correctly with several generators', () => {
     const ma: Option.Option<number> = Option.some(1)
-    const mb: Option.Option<number> = Option.none
+    const mb: Option.Option<number> = Option.none()
     const mc = Option.gen(function* () {
       const a = yield* ma
       const b = yield* mb
       return a + b
     })
-    pipe(mc, Equivalence.equals(Option.none), expect).toBe(true)
+    pipe(mc, Equivalence.equals(Option.none()), expect).toBe(true)
   })
 })

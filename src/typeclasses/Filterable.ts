@@ -58,7 +58,7 @@ export const create = <F extends Hkt>(
   const filterMap: Filterable<F>['filterMap'] = p => flow(map(p), compact)
 
   const filter: Filterable<F>['filter'] = <In>(p: Predicate<In>) =>
-    filterMap<In, In>(a => (p(a) ? some(a) : none))
+    filterMap<In, In>(a => (p(a) ? some(a) : none()))
 
   const partitionMap: Filterable<F>['partitionMap'] = p =>
     flow(map(p), separate)

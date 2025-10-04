@@ -26,14 +26,16 @@ export interface Some<A> {
   readonly [Symbol.iterator]: OptionGenerator<A>
 }
 
-export const none: Option<never> = {
+export const none: {
+  <A = never>(): Option<A>
+} = (): None => ({
   _id: 'Option',
   _tag: 'None',
   *[Symbol.iterator]() {
     yield
     return hole()
   },
-}
+})
 
 export const some: {
   <A>(a: A): Option<A>
@@ -51,7 +53,7 @@ export const gen: {
 } = generator => {
   const { value, done } = generator().next()
   if (!done) {
-    return none
+    return none()
   }
   return some(value)
 }

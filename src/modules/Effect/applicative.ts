@@ -1,12 +1,12 @@
 import * as Result from '../Result'
 import { create } from '../../typeclasses/Applicative'
-import { EffectHkt, Effect, toEffect } from './effect'
+import { EffectHkt, Effect, fromOperation } from './effect'
 import { pipe } from '../../utils/flow'
 import { Monad } from './monad'
 
 export const Applicative = create<EffectHkt>(Monad, {
   apply: fma => self =>
-    toEffect(() => {
+    fromOperation(() => {
       const resultAb = self.effect()
 
       if (!(resultAb instanceof Promise) && Result.isFailure(resultAb)) {

@@ -53,12 +53,12 @@ describe('applicative', () => {
     it('should return function containing `none` if `none` was applied to function', () => {
       const ab = Number.add(5)
 
-      const fa: SyncOption.SyncOption<never> = jest.fn(SyncOption.none)
+      const fa: SyncOption.SyncOption<never> = jest.fn(SyncOption.none())
       const fab: SyncOption.SyncOption<typeof ab> = jest.fn(SyncOption.of(ab))
 
       const result = pipe(fab, SyncOption.apply(fa), SyncOption.execute)
 
-      expect(result).toEqual<Option.Option<never>>(Option.none)
+      expect(result).toEqual<Option.Option<never>>(Option.none())
       expect(fa).toHaveBeenCalledTimes(1)
       expect(fab).toHaveBeenCalledTimes(1)
     })
@@ -67,22 +67,22 @@ describe('applicative', () => {
       const a = 1
 
       const fa: SyncOption.SyncOption<typeof a> = jest.fn(SyncOption.of(a))
-      const fab: SyncOption.SyncOption<never> = jest.fn(SyncOption.none)
+      const fab: SyncOption.SyncOption<never> = jest.fn(SyncOption.none())
 
       const result = pipe(fab, SyncOption.apply(fa), SyncOption.execute)
 
-      expect(result).toEqual<Option.Option<never>>(Option.none)
+      expect(result).toEqual<Option.Option<never>>(Option.none())
       expect(fa).toHaveBeenCalledTimes(0)
       expect(fab).toHaveBeenCalledTimes(1)
     })
 
     it('should return function containing `none` if `none` was applied to `none`', () => {
-      const fa: SyncOption.SyncOption<never> = jest.fn(SyncOption.none)
-      const fab: SyncOption.SyncOption<never> = jest.fn(SyncOption.none)
+      const fa: SyncOption.SyncOption<never> = jest.fn(SyncOption.none())
+      const fab: SyncOption.SyncOption<never> = jest.fn(SyncOption.none())
 
       const result = pipe(fab, SyncOption.apply(fa), SyncOption.execute)
 
-      expect(result).toEqual<Option.Option<never>>(Option.none)
+      expect(result).toEqual<Option.Option<never>>(Option.none())
       expect(fa).toHaveBeenCalledTimes(0)
       expect(fab).toHaveBeenCalledTimes(1)
     })

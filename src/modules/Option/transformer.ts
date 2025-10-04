@@ -34,9 +34,9 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
     <In, Collectable, Fixed>(a: In): Kind<THkt, In, Collectable, Fixed>
   } = flow(Option.some, M.of)
 
-  const zero: {
+  const none: {
     <Collectable, Fixed>(): Kind<THkt, never, Collectable, Fixed>
-  } = () => M.of(Option.none)
+  } = () => M.of(Option.none())
 
   const fromKind: {
     <In, Collectable, Fixed>(
@@ -168,7 +168,7 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
 
   const Alternative: Alternative<THkt> = {
     ...Alt,
-    zero,
+    zero: none,
   }
 
   const Functor: Functor<THkt> = {
@@ -178,7 +178,7 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
   const Monad = Monad_.create<THkt>(FromIdentity, Functor, {
     flat: M.flatMap(
       Option.match({
-        onNone: () => M.of(Option.none),
+        onNone: () => M.of(Option.none()),
         onSome: identity,
       }),
     ) as Monad_.Monad<THkt>['flat'],
@@ -198,7 +198,7 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
 
   return {
     some,
-    zero,
+    none,
     fromKind,
     match,
     value,
@@ -222,6 +222,7 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
     Alt,
     ...Alt,
     Alternative,
+    ...Alternative,
     Functor,
     ...Functor,
     Applicative,

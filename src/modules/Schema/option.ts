@@ -14,7 +14,7 @@ export const Option = <A>(schema: Schema<A>): Schema<Option_.Option<A>> =>
       x,
       Option_.match({
         onSome: flow(schema.proceed, Result.map(Option_.some)),
-        onNone: () => Result.succeed(Option_.none),
+        onNone: () => Result.succeed(Option_.none()),
       }),
     )
   })

@@ -14,7 +14,7 @@ export const Compactable = create<ReadonlyRecordHkt>(Functor, {
       pipe(
         ma,
         Option.match({
-          onNone: Option.zero,
+          onNone: Option.none,
           onSome: a => Option.some([k, a] as const),
         }),
       ),

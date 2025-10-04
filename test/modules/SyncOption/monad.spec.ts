@@ -52,13 +52,13 @@ describe('monad', () => {
     })
 
     it('should return function containing `none` if the same was provided', () => {
-      const fa: SyncOption.SyncOption<number> = jest.fn(SyncOption.none)
+      const fa: SyncOption.SyncOption<number> = jest.fn(SyncOption.none())
       const result = pipe(
         fa,
         SyncOption.flatMap(a => SyncOption.some(a + 2)),
         SyncOption.execute,
       )
-      expect(result).toEqual<Option.Option<never>>(Option.none)
+      expect(result).toEqual<Option.Option<never>>(Option.none())
       expect(fa).toHaveBeenCalledTimes(1)
     })
 
@@ -67,10 +67,10 @@ describe('monad', () => {
       const fa: SyncOption.SyncOption<number> = jest.fn(SyncOption.some(a))
       const result = pipe(
         fa,
-        SyncOption.flatMap(SyncOption.zero),
+        SyncOption.flatMap(SyncOption.none),
         SyncOption.execute,
       )
-      expect(result).toEqual<Option.Option<never>>(Option.none)
+      expect(result).toEqual<Option.Option<never>>(Option.none())
       expect(fa).toHaveBeenCalledTimes(1)
     })
   })

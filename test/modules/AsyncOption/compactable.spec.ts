@@ -6,7 +6,7 @@ describe('separate', () => {
       () =>
         new Promise(resolve => {
           setTimeout(() => {
-            resolve(Option.none)
+            resolve(Option.none())
           })
         }),
     )

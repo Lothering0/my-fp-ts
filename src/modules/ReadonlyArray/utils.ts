@@ -34,28 +34,28 @@ export const copy: {
 export const head: {
   <A>(self: ReadonlyArray<A>): Option.Option<A>
 } = match({
-  onEmpty: Option.zero,
+  onEmpty: Option.none,
   onNonEmpty: flow(NonEmptyArray.head, Option.some),
 })
 
 export const init: {
   <A>(self: ReadonlyArray<A>): Option.Option<ReadonlyArray<A>>
 } = match({
-  onEmpty: Option.zero,
+  onEmpty: Option.none,
   onNonEmpty: flow(NonEmptyArray.init, Option.some),
 })
 
 export const last: {
   <A>(self: ReadonlyArray<A>): Option.Option<A>
 } = match({
-  onEmpty: Option.zero,
+  onEmpty: Option.none,
   onNonEmpty: flow(NonEmptyArray.last, Option.some),
 })
 
 export const tail: {
   <A>(self: ReadonlyArray<A>): Option.Option<ReadonlyArray<A>>
 } = match({
-  onEmpty: Option.zero,
+  onEmpty: Option.none,
   onNonEmpty: flow(NonEmptyArray.tail, Option.some),
 })
 
@@ -70,7 +70,7 @@ export const isOutOfBounds: {
 export const lookup: {
   <A>(i: number): (self: ReadonlyArray<A>) => Option.Option<A>
 } = i => self =>
-  pipe(self, has(i)) ? pipe(self.at(i)!, Option.some) : Option.none
+  pipe(self, has(i)) ? pipe(self.at(i)!, Option.some) : Option.none()
 
 /** Like `lookup` but accepts also negative integers where -1 is index of the last element, -2 of the pre-last and so on. */
 export const at: {
@@ -78,7 +78,7 @@ export const at: {
 } = i => self =>
   i < length(self) && i >= -length(self)
     ? pipe(self.at(i)!, Option.some)
-    : Option.none
+    : Option.none()
 
 export const lastIndex: {
   <A>(self: ReadonlyArray<A>): number
@@ -98,7 +98,7 @@ export const findMap: {
     }
   }
 
-  return Option.none
+  return Option.none()
 }
 
 export const find: {
@@ -113,7 +113,7 @@ export const find: {
     pipe(
       p(a, i),
       Boolean.match({
-        onFalse: Option.zero,
+        onFalse: Option.none,
         onTrue: () => Option.some(a),
       }),
     ),
@@ -126,7 +126,7 @@ export const findIndex: {
 } = p => self =>
   pipe(
     self.findIndex((a, i) => p(a, i)),
-    i => (i > -1 ? Option.some(i) : Option.none),
+    i => (i > -1 ? Option.some(i) : Option.none()),
   )
 
 export const findLastMap: {
@@ -143,7 +143,7 @@ export const findLastMap: {
     }
   }
 
-  return Option.none
+  return Option.none()
 }
 
 export const findLast: {
@@ -158,7 +158,7 @@ export const findLast: {
     pipe(
       p(a, i),
       Boolean.match({
-        onFalse: Option.zero,
+        onFalse: Option.none,
         onTrue: () => Option.some(a),
       }),
     ),
@@ -172,7 +172,7 @@ export const findLastIndex: {
   pipe(
     self.findLastIndex((a, i) => p(a, i)),
     Number.matchNegative({
-      onNegative: Option.zero,
+      onNegative: Option.none,
       onNonNegative: Option.some,
     }),
   )
@@ -566,9 +566,9 @@ export function comprehension(
       isNonEmpty(args)
         ? p(...args)
           ? pipe(f(...args), Option.some)
-          : Option.none
+          : Option.none()
         : // If some of input arrays is empty, then whole result should be an empty array
-          Option.none,
+          Option.none(),
     ),
   )
 }

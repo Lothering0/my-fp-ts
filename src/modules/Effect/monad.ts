@@ -4,11 +4,11 @@ import { Functor } from './functor'
 import { pipe } from '../../utils/flow'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
 import { FromIdentity } from './from-identity'
-import { Effect, EffectHkt, toEffect } from './effect'
+import { Effect, EffectHkt, fromOperation } from './effect'
 
 export const Monad = create<EffectHkt>(FromIdentity, Functor, {
   flat: self =>
-    toEffect(() => {
+    fromOperation(() => {
       const mma = self.effect()
 
       if (mma instanceof Promise) {
@@ -89,7 +89,7 @@ export const parallel: {
     fb: Effect<A, E1>,
   ): <A, E2>(self: Effect<A, E2>) => Effect<DoObject<N, A, A>, E1 | E2>
 } = fb => self =>
-  toEffect(() =>
+  fromOperation(() =>
     Promise.all([
       Promise.resolve(fb.effect()),
       Promise.resolve(self.effect()),
@@ -103,7 +103,7 @@ export const parallelTo: {
     fb: Effect<B, E1>,
   ): <E2>(self: Effect<A, E1>) => Effect<DoObject<N, A, B>, E1 | E2>
 } = (name, fb) => self =>
-  toEffect(() =>
+  fromOperation(() =>
     Promise.all([
       Promise.resolve(self.effect()),
       Promise.resolve(fb.effect()),

@@ -87,7 +87,7 @@ export const lookup: {
     has(i),
     Boolean.match({
       onTrue: () => pipe(self[i]!, Option.some),
-      onFalse: Option.zero,
+      onFalse: Option.none,
     }),
   )
 
@@ -100,7 +100,7 @@ export const at: {
     Boolean.and(i >= -length(self)),
     Boolean.match({
       onTrue: () => pipe(self.at(i)!, Option.some),
-      onFalse: Option.zero,
+      onFalse: Option.none,
     }),
   )
 
@@ -112,7 +112,7 @@ export const lookupCharCode: {
     has(i),
     Boolean.match({
       onTrue: () => pipe(self.charCodeAt(i), Option.some),
-      onFalse: Option.zero,
+      onFalse: Option.none,
     }),
   )
 

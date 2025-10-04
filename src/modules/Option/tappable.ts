@@ -3,7 +3,6 @@ import * as Result from '../Result'
 import { Sync } from '../Sync'
 import { Monad, flatMap } from './monad'
 import { map } from './functor'
-import { zero } from './alternative'
 import { pipe } from '../../utils/flow'
 import { constant } from '../../utils/constant'
 import { create } from '../../typeclasses/Tappable'
@@ -30,7 +29,7 @@ export const tapResult: {
     map(afe),
     flatMap(
       Result.match({
-        onFailure: zero,
+        onFailure: Option.none,
         onSuccess: constant(self),
       }),
     ),

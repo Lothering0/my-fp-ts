@@ -12,14 +12,14 @@ import {
 
 describe('head', () => {
   it('should return `some` of first element of an array', () => {
-    expect(Array.head([])).toEqual(Option.none)
+    expect(Array.head([])).toEqual(Option.none())
     expect(Array.head([1, 2, 3])).toEqual(Option.some(1))
   })
 })
 
 describe('init', () => {
   it('should return `some` of all elements except last', () => {
-    expect(Array.init([])).toEqual(Option.none)
+    expect(Array.init([])).toEqual(Option.none())
     expect(Array.init([1])).toEqual(Option.some([]))
     expect(Array.init([1, 2, 3])).toEqual(Option.some([1, 2]))
   })
@@ -27,14 +27,14 @@ describe('init', () => {
 
 describe('last', () => {
   it('should return `some` of last element of an array', () => {
-    expect(Array.last([])).toEqual(Option.none)
+    expect(Array.last([])).toEqual(Option.none())
     expect(Array.last([1, 2, 3])).toEqual(Option.some(3))
   })
 })
 
 describe('tail', () => {
   it('should return `some` of all elements except first', () => {
-    expect(Array.tail([])).toEqual(Option.none)
+    expect(Array.tail([])).toEqual(Option.none())
     expect(Array.tail([1])).toEqual(Option.some([]))
     expect(Array.tail([1, 2, 3])).toEqual(Option.some([2, 3]))
   })
@@ -42,27 +42,27 @@ describe('tail', () => {
 
 describe('lookup', () => {
   it('should return `some` of element by index', () => {
-    expect(Array.lookup(-1)([])).toEqual(Option.none)
-    expect(Array.lookup(0)([])).toEqual(Option.none)
-    expect(Array.lookup(1)([])).toEqual(Option.none)
-    expect(Array.lookup(-1)([1, 2, 3])).toEqual(Option.none)
+    expect(Array.lookup(-1)([])).toEqual(Option.none())
+    expect(Array.lookup(0)([])).toEqual(Option.none())
+    expect(Array.lookup(1)([])).toEqual(Option.none())
+    expect(Array.lookup(-1)([1, 2, 3])).toEqual(Option.none())
     expect(Array.lookup(0)([1, 2, 3])).toEqual(Option.some(1))
     expect(Array.lookup(2)([1, 2, 3])).toEqual(Option.some(3))
-    expect(Array.lookup(3)([1, 2, 3])).toEqual(Option.none)
+    expect(Array.lookup(3)([1, 2, 3])).toEqual(Option.none())
   })
 })
 
 describe('at', () => {
   it('should return `some` of element by positive or negative index', () => {
-    expect(Array.at(-1)([])).toEqual(Option.none)
-    expect(Array.at(0)([])).toEqual(Option.none)
-    expect(Array.at(1)([])).toEqual(Option.none)
-    expect(Array.at(-4)([1, 2, 3])).toEqual(Option.none)
+    expect(Array.at(-1)([])).toEqual(Option.none())
+    expect(Array.at(0)([])).toEqual(Option.none())
+    expect(Array.at(1)([])).toEqual(Option.none())
+    expect(Array.at(-4)([1, 2, 3])).toEqual(Option.none())
     expect(Array.at(-2)([1, 2, 3])).toEqual(Option.some(2))
     expect(Array.at(-1)([1, 2, 3])).toEqual(Option.some(3))
     expect(Array.at(0)([1, 2, 3])).toEqual(Option.some(1))
     expect(Array.at(2)([1, 2, 3])).toEqual(Option.some(3))
-    expect(Array.at(3)([1, 2, 3])).toEqual(Option.none)
+    expect(Array.at(3)([1, 2, 3])).toEqual(Option.none())
   })
 })
 
@@ -80,13 +80,13 @@ describe('isOutOfBounds', () => {
 describe('findMap', () => {
   it('should return `some` of found mapped element', () => {
     const p = Number.matchOdd({
-      onOdd: Option.zero,
+      onOdd: Option.none,
       onEven: flow(Number.add(10), Option.some),
     })
     const f = Array.findMap(p)
 
-    pipe([], f, expect).toEqual(Option.none)
-    pipe([1], f, expect).toEqual(Option.none)
+    pipe([], f, expect).toEqual(Option.none())
+    pipe([1], f, expect).toEqual(Option.none())
     pipe([1, 2], f, expect).toEqual(Option.some(12))
     pipe([1, 2, 3, 4], f, expect).toEqual(Option.some(12))
   })
@@ -98,15 +98,15 @@ describe('findMap', () => {
         Number.isEven,
         Boolean.and(a > 1),
         Boolean.match({
-          onFalse: Option.zero,
+          onFalse: Option.none,
           onTrue: () => Option.some(`${a}-${i}`),
         }),
       ),
     )
 
-    pipe([], f, expect).toEqual(Option.none)
-    pipe([1], f, expect).toEqual(Option.none)
-    pipe([1, 2], f, expect).toEqual(Option.none)
+    pipe([], f, expect).toEqual(Option.none())
+    pipe([1], f, expect).toEqual(Option.none())
+    pipe([1, 2], f, expect).toEqual(Option.none())
     pipe([1, 2, 3, 4], f, expect).toEqual(Option.some('3-2'))
   })
 })
@@ -115,8 +115,8 @@ describe('find', () => {
   it('should return `some` of found element', () => {
     const f = Array.find(Number.isEven)
 
-    pipe([], f, expect).toEqual(Option.none)
-    pipe([1], f, expect).toEqual(Option.none)
+    pipe([], f, expect).toEqual(Option.none())
+    pipe([1], f, expect).toEqual(Option.none())
     pipe([1, 2], f, expect).toEqual(Option.some(2))
     pipe([1, 2, 3, 4], f, expect).toEqual(Option.some(2))
   })
@@ -126,9 +126,9 @@ describe('find', () => {
       pipe(i, Number.isEven, Boolean.and(a > 1)),
     )
 
-    pipe([], f, expect).toEqual(Option.none)
-    pipe([1], f, expect).toEqual(Option.none)
-    pipe([1, 2], f, expect).toEqual(Option.none)
+    pipe([], f, expect).toEqual(Option.none())
+    pipe([1], f, expect).toEqual(Option.none())
+    pipe([1, 2], f, expect).toEqual(Option.none())
     pipe([1, 2, 3, 4], f, expect).toEqual(Option.some(3))
   })
 })
@@ -137,8 +137,8 @@ describe('findIndex', () => {
   it('should return `some` of found element', () => {
     const f = Array.findIndex(Number.isEven)
 
-    pipe([], f, expect).toEqual(Option.none)
-    pipe([1], f, expect).toEqual(Option.none)
+    pipe([], f, expect).toEqual(Option.none())
+    pipe([1], f, expect).toEqual(Option.none())
     pipe([1, 2], f, expect).toEqual(Option.some(1))
     pipe([1, 2, 3, 4], f, expect).toEqual(Option.some(1))
   })
@@ -148,9 +148,9 @@ describe('findIndex', () => {
       pipe(i, Number.isEven, Boolean.and(a > 1)),
     )
 
-    pipe([], f, expect).toEqual(Option.none)
-    pipe([1], f, expect).toEqual(Option.none)
-    pipe([1, 2], f, expect).toEqual(Option.none)
+    pipe([], f, expect).toEqual(Option.none())
+    pipe([1], f, expect).toEqual(Option.none())
+    pipe([1, 2], f, expect).toEqual(Option.none())
     pipe([1, 2, 3, 4], f, expect).toEqual(Option.some(2))
   })
 })
@@ -158,13 +158,13 @@ describe('findIndex', () => {
 describe('findLastMap', () => {
   it('should return `some` of last found mapped element', () => {
     const p = Number.matchOdd({
-      onOdd: Option.zero,
+      onOdd: Option.none,
       onEven: flow(Number.add(10), Option.some),
     })
     const f = Array.findLastMap(p)
 
-    pipe([], f, expect).toEqual(Option.none)
-    pipe([1], f, expect).toEqual(Option.none)
+    pipe([], f, expect).toEqual(Option.none())
+    pipe([1], f, expect).toEqual(Option.none())
     pipe([1, 2], f, expect).toEqual(Option.some(12))
     pipe([1, 2, 3, 4], f, expect).toEqual(Option.some(14))
   })
@@ -176,14 +176,14 @@ describe('findLastMap', () => {
         Number.isOdd,
         Boolean.and(a > 1),
         Boolean.match({
-          onFalse: Option.zero,
+          onFalse: Option.none,
           onTrue: () => Option.some(`${a}-${i}`),
         }),
       ),
     )
 
-    pipe([], f, expect).toEqual(Option.none)
-    pipe([1], f, expect).toEqual(Option.none)
+    pipe([], f, expect).toEqual(Option.none())
+    pipe([1], f, expect).toEqual(Option.none())
     pipe([1, 2, 3], f, expect).toEqual(Option.some('2-1'))
     pipe([1, 2, 3, 4, 5], f, expect).toEqual(Option.some('4-3'))
   })
@@ -193,8 +193,8 @@ describe('findLast', () => {
   it('should return `some` of last found element', () => {
     const f = Array.findLast(Number.isEven)
 
-    pipe([], f, expect).toEqual(Option.none)
-    pipe([1], f, expect).toEqual(Option.none)
+    pipe([], f, expect).toEqual(Option.none())
+    pipe([1], f, expect).toEqual(Option.none())
     pipe([1, 2], f, expect).toEqual(Option.some(2))
     pipe([1, 2, 3, 4], f, expect).toEqual(Option.some(4))
   })
@@ -204,8 +204,8 @@ describe('findLast', () => {
       pipe(i, Number.isOdd, Boolean.and(a > 1)),
     )
 
-    pipe([], f, expect).toEqual(Option.none)
-    pipe([1], f, expect).toEqual(Option.none)
+    pipe([], f, expect).toEqual(Option.none())
+    pipe([1], f, expect).toEqual(Option.none())
     pipe([1, 2, 3], f, expect).toEqual(Option.some(2))
     pipe([1, 2, 3, 4, 5], f, expect).toEqual(Option.some(4))
   })
@@ -215,8 +215,8 @@ describe('findLastIndex', () => {
   it('should return `some` of found element', () => {
     const f = Array.findLastIndex(Number.isEven)
 
-    pipe([], f, expect).toEqual(Option.none)
-    pipe([1], f, expect).toEqual(Option.none)
+    pipe([], f, expect).toEqual(Option.none())
+    pipe([1], f, expect).toEqual(Option.none())
     pipe([1, 2], f, expect).toEqual(Option.some(1))
     pipe([1, 2, 3, 4], f, expect).toEqual(Option.some(3))
   })
@@ -226,8 +226,8 @@ describe('findLastIndex', () => {
       pipe(i, Number.isOdd, Boolean.and(a > 1)),
     )
 
-    pipe([], f, expect).toEqual(Option.none)
-    pipe([1], f, expect).toEqual(Option.none)
+    pipe([], f, expect).toEqual(Option.none())
+    pipe([1], f, expect).toEqual(Option.none())
     pipe([1, 2, 3], f, expect).toEqual(Option.some(1))
     pipe([1, 2, 3, 4, 5], f, expect).toEqual(Option.some(3))
   })

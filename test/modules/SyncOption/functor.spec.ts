@@ -40,9 +40,9 @@ describe('functor', () => {
 
     it('should return function containing `none` if the same was provided', () => {
       const n = 1
-      const fa: SyncOption.SyncOption<never> = jest.fn(SyncOption.none)
+      const fa: SyncOption.SyncOption<never> = jest.fn(SyncOption.none())
       const result = pipe(fa, SyncOption.map(Number.add(n)), SyncOption.execute)
-      expect(result).toEqual<Option.Option<never>>(Option.none)
+      expect(result).toEqual<Option.Option<never>>(Option.none())
       expect(fa).toHaveBeenCalledTimes(1)
     })
 

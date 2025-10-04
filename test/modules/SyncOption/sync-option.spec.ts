@@ -5,7 +5,7 @@ describe('fromSync', () => {
     const a = 1
     const fa: Sync.Sync<never> = jest.fn(() => raise(a))
     const result = pipe(fa, SyncOption.fromSync, SyncOption.execute)
-    expect(result).toEqual<Option.Option<never>>(Option.none)
+    expect(result).toEqual<Option.Option<never>>(Option.none())
     expect(fa).toHaveBeenCalledTimes(1)
   })
 

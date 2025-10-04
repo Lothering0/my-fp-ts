@@ -72,7 +72,7 @@ export const tapAsyncResult: {
         a,
         f,
         AsyncResult.match({
-          onFailure: () => Option.none,
+          onFailure: () => Option.none(),
           onSuccess: () => Option.some(a),
         }),
       ),

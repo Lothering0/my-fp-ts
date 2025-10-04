@@ -13,15 +13,15 @@ describe('getEquivalence', () => {
   const testCases: TestCase[] = [
     {
       description: 'should return `true` for nones',
-      option1: Option.none,
-      option2: Option.none,
+      option1: Option.none(),
+      option2: Option.none(),
       expected: true,
     },
     {
       description:
         'should return `false` if first is `none` and second is `some`',
       option1: Option.some(1),
-      option2: Option.none,
+      option2: Option.none(),
       expected: false,
     },
     {

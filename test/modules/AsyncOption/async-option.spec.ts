@@ -5,7 +5,7 @@ describe('fromAsync', () => {
     const a = 1
     const fa: Async.Async<never> = jest.fn(() => Promise.reject(a))
     const result = await pipe(fa, AsyncOption.fromAsync, AsyncOption.toPromise)
-    expect(result).toEqual<Option.Option<never>>(Option.none)
+    expect(result).toEqual<Option.Option<never>>(Option.none())
     expect(fa).toHaveBeenCalledTimes(1)
   })
 

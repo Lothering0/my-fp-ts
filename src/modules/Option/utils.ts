@@ -10,10 +10,10 @@ export const value: {
 
 export const fromNullable: {
   <A>(a: A): Option<NonNullable<A>>
-} = a => (a == null ? none : some(a))
+} = a => (a == null ? none() : some(a))
 
 export const fromNull = <A>(a: A): Option<Exclude<A, null>> =>
-  isNull(a) ? none : some(a as Exclude<A, null>)
+  isNull(a) ? none() : some(a as Exclude<A, null>)
 
 export const toNull: {
   <A>(self: Option<A>): A | null
@@ -23,7 +23,7 @@ export const toNull: {
 })
 
 export const fromUndefined = <A>(a: A): Option<Exclude<A, undefined>> =>
-  isUndefined(a) ? none : some(a as Exclude<A, undefined>)
+  isUndefined(a) ? none() : some(a as Exclude<A, undefined>)
 
 export const toUndefined: {
   <A>(self: Option<A>): A | undefined

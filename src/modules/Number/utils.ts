@@ -24,7 +24,7 @@ export const divide: {
 
 export const divideSafe: {
   (y: number): (x: number) => Option.Option<number>
-} = y => x => (y === 0 ? Option.none : Option.some(x / y))
+} = y => x => (y === 0 ? Option.none() : Option.some(x / y))
 
 export const lessThan: {
   (y: number): (x: number) => boolean

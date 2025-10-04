@@ -5,11 +5,10 @@ import { FromIdentity } from './from-identity'
 import { Functor } from './functor'
 import { identity } from '../Identity'
 import { match } from './matchers'
-import { zero } from './alternative'
 
 export const Monad = create<Option.OptionHkt>(FromIdentity, Functor, {
   flat: match({
-    onNone: zero,
+    onNone: Option.none,
     onSome: identity,
   }),
 })

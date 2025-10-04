@@ -21,7 +21,7 @@ export interface EffectGenerator<A, E> {
   (): Generator<E, A>
 }
 
-export const toEffect: {
+export const fromOperation: {
   <A, E>(
     operation: () => Result.Result<A, E> | Promise<Result.Result<A, E>>,
   ): Effect<A, E>
@@ -45,7 +45,7 @@ export const toEffect: {
 
 export const fromSyncResult: {
   <A, E>(syncResult: SyncResult.SyncResult<A, E>): Effect<A, E>
-} = toEffect
+} = fromOperation
 
 export const fromSync: {
   <A>(sync: Sync.Sync<A>): Effect<A>
@@ -53,7 +53,7 @@ export const fromSync: {
 
 export const fromAsyncResult: {
   <A, E>(asyncResult: AsyncResult.AsyncResult<A, E>): Effect<A, E>
-} = toEffect
+} = fromOperation
 
 export const fromAsync: {
   <A>(async: Async.Async<A>): Effect<A>

@@ -42,7 +42,7 @@ describe('Matching', () => {
   describe('getOption', () => {
     it('should return `none` of unexpectned number', () => {
       const result = pipe(1, Matching.match, Matching.getOption)
-      expect<Option.Option<string>>(result).toEqual(Option.none)
+      expect<Option.Option<string>>(result).toEqual(Option.none())
     })
 
     it('should return `some` of first matching found', () => {
@@ -138,7 +138,7 @@ describe('Matching', () => {
         Matching.when(3, () => 'c'),
         Matching.getOptions,
       )
-      expect(result).toEqual([Option.none, Option.some('b'), Option.none])
+      expect(result).toEqual([Option.none(), Option.some('b'), Option.none()])
     })
   })
 

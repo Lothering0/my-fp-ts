@@ -10,7 +10,9 @@ export interface SyncOptionHkt extends Hkt {
 
 export interface SyncOption<A> extends Sync.Sync<Option.Option<A>> {}
 
-export const none: SyncOption<never> = Option.zero
+export const none: {
+  <A = never>(): SyncOption<A>
+} = () => Option.none
 
 export const some: {
   <A>(a: A): SyncOption<A>
@@ -26,6 +28,6 @@ export const execute: {
   try {
     return ma()
   } catch {
-    return Option.none
+    return Option.none()
   }
 }

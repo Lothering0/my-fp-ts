@@ -1,5 +1,5 @@
 import { Result, match } from '../modules/Result'
-import { Option, fromResult, zero, some } from '../modules/Option'
+import { Option, fromResult, none, some } from '../modules/Option'
 import { Hkt, Kind } from './Hkt'
 import { TypeClass } from './TypeClass'
 import { Functor } from './Functor'
@@ -30,12 +30,12 @@ export const create: {
   separate: self => [
     pipe(
       self,
-      Functor.map(match({ onFailure: zero, onSuccess: some })),
+      Functor.map(match({ onFailure: none, onSuccess: some })),
       Compactable.compact,
     ),
     pipe(
       self,
-      Functor.map(match({ onFailure: some, onSuccess: zero })),
+      Functor.map(match({ onFailure: some, onSuccess: none })),
       Compactable.compact,
     ),
   ],

@@ -5,8 +5,8 @@ import { pipe } from './flow'
 export const doWhile =
   <Out>(ab: (a: Option.Option<Out>) => Out) =>
   (p: (a: Option.Option<Out>) => boolean): Option.Option<Out> => {
-    let out: Option.Option<Out> = Option.none
-    do out = Option.some(ab(out))
+    let out: Option.Option<Out> = Option.none()
+    do out = pipe(out, ab, Option.some)
     while (p(out))
     return out
   }

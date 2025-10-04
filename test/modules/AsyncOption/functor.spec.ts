@@ -44,13 +44,13 @@ describe('functor', () => {
 
     it('should return function containing promise of `none` if the same was provided', async () => {
       const n = 1
-      const fa: AsyncOption.AsyncOption<never> = jest.fn(AsyncOption.none)
+      const fa: AsyncOption.AsyncOption<never> = jest.fn(AsyncOption.none())
       const result = await pipe(
         fa,
         AsyncOption.map(Number.add(n)),
         AsyncOption.toPromise,
       )
-      expect(result).toEqual<Option.Option<never>>(Option.none)
+      expect(result).toEqual<Option.Option<never>>(Option.none())
       expect(fa).toHaveBeenCalledTimes(1)
     })
 

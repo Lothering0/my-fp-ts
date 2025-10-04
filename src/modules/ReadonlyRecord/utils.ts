@@ -49,7 +49,7 @@ export const lookup: {
     self,
     has(k),
     Boolean.match({
-      onFalse: Option.zero,
+      onFalse: Option.none,
       onTrue: () => Option.some(self[k as keyof typeof self]),
     }),
   )
