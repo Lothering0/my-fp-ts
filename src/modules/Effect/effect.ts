@@ -77,32 +77,33 @@ export const toPromise: {
   <A, E>(self: Effect<A, E>): Promise<Result.Result<A, E>>
 } = self => Promise.resolve(self.effect())
 
-export const gen = <A, E>(generator: EffectGenerator<A, E>): Effect<A, E> => {
-  const iterator = generator()
-  let { value, done } = iterator.next()
+export const gen = <A, E>(generator: EffectGenerator<A, E>): Effect<A, E> =>
+  fromOperation(() => {
+    const iterator = generator()
+    let { value, done } = iterator.next()
 
-  if (!(value instanceof Promise)) {
-    return done ? succeed(value as A) : fail(value as E)
-  }
-
-  const promise: Promise<Result.Result<A, E>> = value
-
-  const nextIteration = async (promise: Promise<Result.Result<A, E>>) => {
-    const ma = await promise
-
-    if (Result.isFailure(ma)) {
-      return ma
+    if (!(value instanceof Promise)) {
+      return done ? Result.succeed(value as A) : Result.fail(value as E)
     }
 
-    if (!done) {
-      const iterationResult = iterator.next(Result.successOf(ma))
-      value = iterationResult.value
-      done = iterationResult.done
-      return nextIteration(Promise.resolve(value) as any)
+    const promise: Promise<Result.Result<A, E>> = value
+
+    const nextIteration = async (promise: Promise<Result.Result<A, E>>) => {
+      const ma = await promise
+
+      if (Result.isFailure(ma)) {
+        return ma
+      }
+
+      if (!done) {
+        const iterationResult = iterator.next(Result.successOf(ma))
+        value = iterationResult.value
+        done = iterationResult.done
+        return nextIteration(Promise.resolve(value) as any)
+      }
+
+      return Result.succeed(value as A)
     }
 
-    return Result.succeed(value)
-  }
-
-  return pipe(() => nextIteration(promise), fromAsyncResult<A, E>)
-}
+    return nextIteration(promise)
+  })

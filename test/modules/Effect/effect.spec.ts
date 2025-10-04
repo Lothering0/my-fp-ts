@@ -6,6 +6,14 @@ describe('gen', () => {
     Equivalence.EquivalenceStrict,
   )
 
+  it('should not run an effect until it was explicitly called', () => {
+    const f = jest.fn()
+    Effect.gen(function* () {
+      f()
+    })
+    expect(f).toHaveBeenCalledTimes(0)
+  })
+
   it('should correctly run successful synchronous operation', async () => {
     const ma = Effect.succeed(1)
 
