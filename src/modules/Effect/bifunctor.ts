@@ -1,19 +1,11 @@
-import * as SyncResult from '../SyncResult'
-import * as AsyncResult from '../AsyncResult'
+import * as Result from '../Result'
 import { create } from '../../typeclasses/Bifunctor'
-import { pipe } from '../../utils/flow'
-import { Functor } from './functor'
-import { Effect, EffectHkt, fromAsyncResult, fromSyncResult } from './effect'
-import { isSync } from './refinements'
+import { Functor, mapResult } from './functor'
+import { Effect, EffectHkt } from './effect'
+import { identity } from '../Identity'
 
 export const Bifunctor = create<EffectHkt>(Functor, {
-  mapLeft: ed => self => {
-    if (isSync(self)) {
-      return pipe(self.syncResult, SyncResult.mapLeft(ed), fromSyncResult)
-    }
-
-    return pipe(self.asyncResult, AsyncResult.mapLeft(ed), fromAsyncResult)
-  },
+  mapLeft: ed => mapResult(Result.bimap(ed, identity)),
 })
 
 export const mapLeft: {

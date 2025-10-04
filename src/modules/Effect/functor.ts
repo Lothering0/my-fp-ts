@@ -1,18 +1,26 @@
+import * as Result from '../Result'
 import * as Functor_ from '../../typeclasses/Functor'
-import * as AsyncResult from '../AsyncResult'
-import * as SyncResult from '../SyncResult'
-import { Effect, EffectHkt, fromAsyncResult, fromSyncResult } from './effect'
+import { Effect, EffectHkt, toEffect } from './effect'
 import { pipe } from '../../utils/flow'
-import { isSync } from './refinements'
+import { identity } from '../Identity'
+
+export const mapResult: {
+  <A, E, B, D>(
+    f: (
+      result: Result.Result<A, E>,
+    ) => Result.Result<B, D> | Promise<Result.Result<B, D>>,
+  ): (self: Effect<A, E>) => Effect<B, D>
+} = f => self =>
+  toEffect(() => {
+    const result = self.effect()
+    if (result instanceof Promise) {
+      return result.then(f)
+    }
+    return pipe(result, f)
+  })
 
 export const Functor: Functor_.Functor<EffectHkt> = {
-  map: ab => self => {
-    if (isSync(self)) {
-      return pipe(self.syncResult, SyncResult.map(ab), fromSyncResult)
-    }
-
-    return pipe(self.asyncResult, AsyncResult.map(ab), fromAsyncResult)
-  },
+  map: ab => mapResult(Result.bimap(identity, ab)),
 }
 
 export const map: {

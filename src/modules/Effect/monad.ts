@@ -1,0 +1,111 @@
+import * as Result from '../Result'
+import { create } from '../../typeclasses/Monad'
+import { Functor } from './functor'
+import { pipe } from '../../utils/flow'
+import { DoObject, DoObjectKey } from '../../types/DoObject'
+import { FromIdentity } from './from-identity'
+import { Effect, EffectHkt, toEffect } from './effect'
+
+export const Monad = create<EffectHkt>(FromIdentity, Functor, {
+  flat: self =>
+    toEffect(() => {
+      const mma = self.effect()
+
+      if (mma instanceof Promise) {
+        return mma.then(
+          Result.match({
+            onSuccess: ma => ma.effect(),
+            onFailure: Result.fail,
+          }),
+        )
+      }
+
+      return pipe(
+        mma,
+        Result.match({
+          onSuccess: ma => ma.effect(),
+          onFailure: Result.fail,
+        }),
+      )
+    }),
+})
+
+export const Do = Monad.Do
+
+export const flat: {
+  <A, E1, E2>(self: Effect<Effect<A, E2>, E1>): Effect<A, E1 | E2>
+} = Monad.flat
+
+export const flatMap: {
+  <A, B, E1>(
+    amb: (a: A) => Effect<B, E1>,
+  ): <E2>(self: Effect<A, E2>) => Effect<B, E1 | E2>
+} = Monad.flatMap
+
+export const compose: {
+  <E1, E2, A, B, C>(
+    bmc: (b: B) => Effect<C, E2>,
+    amb: (a: A) => Effect<B, E1>,
+  ): (a: A) => Effect<C, E1 | E2>
+} = Monad.compose
+
+export const setTo: {
+  <N extends DoObjectKey, A, B>(
+    name: Exclude<N, keyof A>,
+    b: B,
+  ): <E>(self: Effect<A, E>) => Effect<DoObject<N, A, B>, E>
+} = Monad.setTo
+
+export const mapTo: {
+  <N extends DoObjectKey, A, B>(
+    name: Exclude<N, keyof A>,
+    ab: (a: A) => B,
+  ): <E>(self: Effect<A, E>) => Effect<DoObject<N, A, B>, E>
+} = Monad.mapTo
+
+export const flipApplyTo: {
+  <N extends DoObjectKey, A, B, E1>(
+    name: Exclude<N, keyof A>,
+    fab: Effect<(a: A) => B, E1>,
+  ): <E2>(self: Effect<A, E2>) => Effect<DoObject<N, A, B>, E1 | E2>
+} = Monad.flipApplyTo
+
+export const apS: {
+  <N extends DoObjectKey, A, B, E1>(
+    name: Exclude<N, keyof A>,
+    fb: Effect<B, E1>,
+  ): <E2>(self: Effect<A, E2>) => Effect<DoObject<N, A, B>, E1 | E2>
+} = Monad.apS
+
+export const flatMapTo: {
+  <N extends DoObjectKey, A, B, E1>(
+    name: Exclude<N, keyof A>,
+    amb: (a: A) => Effect<B, E1>,
+  ): <E2>(self: Effect<A, E2>) => Effect<DoObject<N, A, B>, E1 | E2>
+} = Monad.flatMapTo
+
+export const parallel: {
+  <N extends DoObjectKey, A, E1>(
+    fb: Effect<A, E1>,
+  ): <A, E2>(self: Effect<A, E2>) => Effect<DoObject<N, A, A>, E1 | E2>
+} = fb => self =>
+  toEffect(() =>
+    Promise.all([
+      Promise.resolve(fb.effect()),
+      Promise.resolve(self.effect()),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ]).then(([ma, mb]) => pipe(mb, Result.flatMap(() => ma) as any)),
+  )
+
+export const parallelTo: {
+  <N extends DoObjectKey, A, B, E1>(
+    name: Exclude<N, keyof A>,
+    fb: Effect<B, E1>,
+  ): <E2>(self: Effect<A, E1>) => Effect<DoObject<N, A, B>, E1 | E2>
+} = (name, fb) => self =>
+  toEffect(() =>
+    Promise.all([
+      Promise.resolve(self.effect()),
+      Promise.resolve(fb.effect()),
+    ]).then(([ma, mb]) => Result.apS(name, mb)(ma)),
+  )

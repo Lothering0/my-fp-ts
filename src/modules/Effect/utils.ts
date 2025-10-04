@@ -3,6 +3,7 @@ import * as Effect from './effect'
 import { isFunction } from '../../utils/typeChecks'
 import { identity } from '../Identity'
 import { flow, pipe } from '../../utils/flow'
+import { mapResult } from './functor'
 
 export interface TryCatch<A, E> {
   readonly try: () => A
@@ -40,3 +41,7 @@ const try_: {
 }
 
 export { try_ as try }
+
+export const swap: {
+  <A, E>(self: Effect.Effect<A, E>): Effect.Effect<E, A>
+} = mapResult(Result.swap)

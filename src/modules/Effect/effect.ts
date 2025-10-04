@@ -6,25 +6,14 @@ import * as AsyncResult from '../AsyncResult'
 import * as SyncResult from '../SyncResult'
 import { flow, pipe } from '../../utils/flow'
 import { Hkt } from '../../typeclasses/Hkt'
-import { isSync } from './refinements'
 
 export interface EffectHkt extends Hkt {
   readonly Type: Effect<this['In'], this['Collectable']>
 }
 
-export type Effect<A, E = never> = SyncEffect<A, E> | AsyncEffect<A, E>
-
-export interface SyncEffect<A, E> {
+export interface Effect<A, E = never> {
   readonly _id: 'Effect'
-  readonly _tag: 'Sync'
-  readonly syncResult: SyncResult.SyncResult<A, E>
-  readonly [Symbol.iterator]: EffectGenerator<A, E>
-}
-
-export interface AsyncEffect<A, E> {
-  readonly _id: 'Effect'
-  readonly _tag: 'Async'
-  readonly asyncResult: AsyncResult.AsyncResult<A, E>
+  readonly effect: () => Result.Result<A, E> | Promise<Result.Result<A, E>>
   readonly [Symbol.iterator]: EffectGenerator<A, E>
 }
 
@@ -32,17 +21,31 @@ export interface EffectGenerator<A, E> {
   (): Generator<E, A>
 }
 
-export const fromSyncResult: {
-  <A, E>(syncResult: SyncResult.SyncResult<A, E>): Effect<A, E>
-} = syncResult => ({
+export const toEffect: {
+  <A, E>(
+    operation: () => Result.Result<A, E> | Promise<Result.Result<A, E>>,
+  ): Effect<A, E>
+} = operation => ({
   _id: 'Effect',
-  _tag: 'Sync',
-  syncResult,
+  effect: operation,
   *[Symbol.iterator]() {
-    const result = yield* pipe(syncResult, SyncResult.execute)
-    return result
+    try {
+      const value = operation()
+      if (value instanceof Promise) {
+        const result = yield value as any
+        return result as any
+      }
+      const result = yield* pipe(operation, SyncResult.execute)
+      return result
+    } catch (exception) {
+      yield* Result.fail(exception)
+    }
   },
 })
+
+export const fromSyncResult: {
+  <A, E>(syncResult: SyncResult.SyncResult<A, E>): Effect<A, E>
+} = toEffect
 
 export const fromSync: {
   <A>(sync: Sync.Sync<A>): Effect<A>
@@ -50,15 +53,7 @@ export const fromSync: {
 
 export const fromAsyncResult: {
   <A, E>(asyncResult: AsyncResult.AsyncResult<A, E>): Effect<A, E>
-} = asyncResult => ({
-  _id: 'Effect',
-  _tag: 'Async',
-  asyncResult,
-  *[Symbol.iterator]() {
-    const result = yield pipe(asyncResult, AsyncResult.toPromise) as any
-    return result as any
-  },
-})
+} = toEffect
 
 export const fromAsync: {
   <A>(async: Async.Async<A>): Effect<A>
@@ -75,22 +70,12 @@ export const fail: {
 export const run: {
   (self: Effect<unknown, unknown>): void
 } = self => {
-  if (isSync(self)) {
-    pipe(self.syncResult, SyncResult.execute)
-  } else {
-    pipe(self.asyncResult, AsyncResult.toPromise)
-  }
+  self.effect()
 }
 
 export const toPromise: {
   <A, E>(self: Effect<A, E>): Promise<Result.Result<A, E>>
-} = self => {
-  if (isSync(self)) {
-    return pipe(self.syncResult, SyncResult.execute, a => Promise.resolve(a))
-  }
-
-  return pipe(self.asyncResult, AsyncResult.toPromise)
-}
+} = self => Promise.resolve(self.effect())
 
 export const gen = <A, E>(generator: EffectGenerator<A, E>): Effect<A, E> => {
   const iterator = generator()
