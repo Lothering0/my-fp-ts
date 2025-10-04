@@ -7,13 +7,13 @@ import { Monad } from './monad'
 export const Applicative = create<EffectHkt>(Monad, {
   apply: fma => self =>
     fromOperation(() => {
-      const resultAb = self.effect()
+      const resultAb = self.run()
 
       if (!(resultAb instanceof Promise) && Result.isFailure(resultAb)) {
         return resultAb
       }
 
-      const resultA = fma.effect()
+      const resultA = fma.run()
 
       if (!(resultA instanceof Promise) && Result.isFailure(resultA)) {
         return resultA

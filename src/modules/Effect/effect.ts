@@ -13,7 +13,7 @@ export interface EffectHkt extends Hkt {
 
 export interface Effect<A, E = never> {
   readonly _id: 'Effect'
-  readonly effect: () => Result.Result<A, E> | Promise<Result.Result<A, E>>
+  readonly run: () => Result.Result<A, E> | Promise<Result.Result<A, E>>
   readonly [Symbol.iterator]: EffectGenerator<A, E>
 }
 
@@ -27,7 +27,7 @@ export const fromOperation: {
   ): Effect<A, E>
 } = operation => ({
   _id: 'Effect',
-  effect: operation,
+  run: operation,
   *[Symbol.iterator]() {
     try {
       const value = operation()
@@ -70,12 +70,12 @@ export const fail: {
 export const run: {
   (self: Effect<unknown, unknown>): void
 } = self => {
-  self.effect()
+  self.run()
 }
 
 export const toPromise: {
   <A, E>(self: Effect<A, E>): Promise<Result.Result<A, E>>
-} = self => Promise.resolve(self.effect())
+} = self => Promise.resolve(self.run())
 
 export const gen = <A, E>(generator: EffectGenerator<A, E>): Effect<A, E> =>
   fromOperation(() => {

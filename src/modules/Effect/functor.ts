@@ -12,7 +12,7 @@ export const mapResult: {
   ): (self: Effect<A, E>) => Effect<B, D>
 } = f => self =>
   fromOperation(() => {
-    const result = self.effect()
+    const result = self.run()
     if (result instanceof Promise) {
       return result.then(f)
     }

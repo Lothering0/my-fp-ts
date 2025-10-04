@@ -32,7 +32,7 @@ export const TappableBoth: TappableBoth_.TappableBoth<Effect.EffectHkt> = {
           onFailure: e => e,
         }),
         swap,
-        effect => effect.effect(),
+        effect => effect.run(),
       )
     }),
   tapLeftSync: f =>

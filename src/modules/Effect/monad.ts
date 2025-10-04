@@ -9,12 +9,12 @@ import { Effect, EffectHkt, fromOperation } from './effect'
 export const Monad = create<EffectHkt>(FromIdentity, Functor, {
   flat: self =>
     fromOperation(() => {
-      const mma = self.effect()
+      const mma = self.run()
 
       if (mma instanceof Promise) {
         return mma.then(
           Result.match({
-            onSuccess: ma => ma.effect(),
+            onSuccess: ma => ma.run(),
             onFailure: Result.fail,
           }),
         )
@@ -23,7 +23,7 @@ export const Monad = create<EffectHkt>(FromIdentity, Functor, {
       return pipe(
         mma,
         Result.match({
-          onSuccess: ma => ma.effect(),
+          onSuccess: ma => ma.run(),
           onFailure: Result.fail,
         }),
       )
@@ -91,8 +91,8 @@ export const parallel: {
 } = fb => self =>
   fromOperation(() =>
     Promise.all([
-      Promise.resolve(fb.effect()),
-      Promise.resolve(self.effect()),
+      Promise.resolve(fb.run()),
+      Promise.resolve(self.run()),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ]).then(([ma, mb]) => pipe(mb, Result.flatMap(() => ma) as any)),
   )
@@ -104,8 +104,7 @@ export const parallelTo: {
   ): <E2>(self: Effect<A, E1>) => Effect<DoObject<N, A, B>, E1 | E2>
 } = (name, fb) => self =>
   fromOperation(() =>
-    Promise.all([
-      Promise.resolve(self.effect()),
-      Promise.resolve(fb.effect()),
-    ]).then(([ma, mb]) => Result.apS(name, mb)(ma)),
+    Promise.all([Promise.resolve(self.run()), Promise.resolve(fb.run())]).then(
+      ([ma, mb]) => Result.apS(name, mb)(ma),
+    ),
   )
