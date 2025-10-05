@@ -1,13 +1,14 @@
+import * as Effect from '../modules/Effect'
 import * as Async from '../modules/Async'
 import * as Sync from '../modules/Sync'
 import * as Duration_ from '../modules/Duration'
 import { Predicate } from '../modules/Predicate'
-import { pipe } from './flow'
+import { pipe, flow } from './flow'
 import { _ } from './underscore'
 import { doWhile } from './loops'
-import { now } from './time'
+import { nowSync } from './time'
 
-export const wait: {
+export const waitAsync: {
   (duration: Duration_.DurationInput): Async.Async<void>
 } = duration => () =>
   new Promise(f =>
@@ -17,13 +18,17 @@ export const wait: {
     ),
   )
 
+export const wait: {
+  (duration: Duration_.DurationInput): Effect.Effect<void>
+} = flow(waitAsync, Effect.fromAsync)
+
 export const waitSync: {
   (duration: Duration_.DurationInput): Sync.Sync<void>
 } = duration => {
-  const start = Sync.execute(now)
+  const start = Sync.execute(nowSync)
   const milliseconds = pipe(duration, Duration_.make, Duration_.toMilliseconds)
   const predicate: Predicate<never> = () =>
-    Sync.execute(now) - start < milliseconds
+    Sync.execute(nowSync) - start < milliseconds
 
   return () =>
     pipe(

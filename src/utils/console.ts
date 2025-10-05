@@ -1,21 +1,21 @@
-import { Sync } from '../modules/Sync'
+import * as Effect from '../modules/Effect'
 
 export const log: {
-  <In>(message: In): Sync<void>
-} = message => () => console.log(message)
+  <In>(message: In): Effect.Effect<void>
+} = message => Effect.fromSync(() => console.log(message))
 
 export const info: {
-  <In>(message: In): Sync<void>
-} = message => () => console.info(message)
+  <In>(message: In): Effect.Effect<void>
+} = message => Effect.fromSync(() => console.info(message))
 
 export const warn: {
-  <In>(message: In): Sync<void>
-} = message => () => console.warn(message)
+  <In>(message: In): Effect.Effect<void>
+} = message => Effect.fromSync(() => console.warn(message))
 
 export const error: {
-  <In>(message: In): Sync<void>
-} = message => () => console.error(message)
+  <In>(message: In): Effect.Effect<void>
+} = message => Effect.fromSync(() => console.error(message))
 
 export const writeToStdout: {
-  (string: string): Sync<void>
-} = string => () => process.stdout.write(string)
+  (string: string): Effect.Effect<boolean>
+} = string => Effect.fromSync(() => process.stdout.write(string))

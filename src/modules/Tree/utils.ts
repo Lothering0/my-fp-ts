@@ -1,7 +1,9 @@
 import * as Iterable from '../Iterable'
+import * as Array from '../ReadonlyArray'
+import { Show } from '../../typeclasses/Show'
 import { isNonEmpty } from '../ReadonlyArray'
 import { Forest, Tree } from './tree'
-import { pipe } from '../../utils/flow'
+import { pipe, flow } from '../../utils/flow'
 
 export const valueOf: {
   <A>(tree: Tree<A>): A
@@ -26,3 +28,34 @@ export const make: {
 
 export const hasForest = <A>(tree: Tree<A>): boolean =>
   pipe(tree, forestOf, Iterable.toReadonlyArray, isNonEmpty)
+
+const draw: {
+  <A>(Show: Show<A>): (tree: Tree<A>) => (level: number) => string
+} = Show => tree => level => {
+  let out = `${Show.show(tree.value)}`
+  const forestArray = [...tree.forest]
+
+  for (let i = 0; i < forestArray.length; i++) {
+    const tree = forestArray[i]!
+    const isLastElement = i === Array.lastIndex(forestArray)
+    const hasTreeForest = hasForest(tree)
+    const chars = hasTreeForest || isLastElement ? '└─' : '├─'
+
+    const indentation = '   '.repeat(level)
+    const value = hasTreeForest
+      ? draw(Show)(tree)(level + 1)
+      : Show.show(tree.value)
+    out = `${out}\n${indentation}${chars} ${value}`
+  }
+
+  return out
+}
+
+export const drawTree: {
+  <A>(Show: Show<A>): (tree: Tree<A>) => string
+} = Show => tree => draw(Show)(tree)(0)
+
+export const drawForest: {
+  <A>(Show: Show<A>): (forest: Forest<A>) => string
+} = Show =>
+  flow(Iterable.map(drawTree(Show)), Iterable.toReadonlyArray, Array.join('\n'))
