@@ -42,10 +42,10 @@ describe('applicative', () => {
       const a = 1
       const ab = Number.add(5)
 
-      const fa: AsyncOption.AsyncOption<typeof a> = jest.fn(AsyncOption.of(a))
       const fab: AsyncOption.AsyncOption<typeof ab> = jest.fn(
         AsyncOption.of(ab),
       )
+      const fa: AsyncOption.AsyncOption<typeof a> = jest.fn(AsyncOption.of(a))
 
       const result1 = await pipe(
         fab,
@@ -65,10 +65,10 @@ describe('applicative', () => {
     it('should return promise containing `none` if `none` was applied to function', async () => {
       const ab = Number.add(5)
 
-      const fa: AsyncOption.AsyncOption<never> = jest.fn(AsyncOption.none())
       const fab: AsyncOption.AsyncOption<typeof ab> = jest.fn(
         AsyncOption.of(ab),
       )
+      const fa: AsyncOption.AsyncOption<never> = jest.fn(AsyncOption.none())
 
       const result = await pipe(
         fab,
@@ -77,15 +77,15 @@ describe('applicative', () => {
       )
 
       expect(result).toEqual<Option.Option<never>>(Option.none())
-      expect(fa).toHaveBeenCalledTimes(1)
       expect(fab).toHaveBeenCalledTimes(1)
+      expect(fa).toHaveBeenCalledTimes(1)
     })
 
     it('should return promise containing `none` if value was applied to `none`', async () => {
       const a = 1
 
-      const fa: AsyncOption.AsyncOption<typeof a> = jest.fn(AsyncOption.of(a))
       const fab: AsyncOption.AsyncOption<never> = jest.fn(AsyncOption.none())
+      const fa: AsyncOption.AsyncOption<typeof a> = jest.fn(AsyncOption.of(a))
 
       const result = await pipe(
         fab,
@@ -94,13 +94,13 @@ describe('applicative', () => {
       )
 
       expect(result).toEqual<Option.Option<never>>(Option.none())
-      expect(fa).toHaveBeenCalledTimes(1)
       expect(fab).toHaveBeenCalledTimes(1)
+      expect(fa).toHaveBeenCalledTimes(0)
     })
 
     it('should return promise containing `none` if `none` was applied to `none`', async () => {
-      const fa: AsyncOption.AsyncOption<never> = jest.fn(AsyncOption.none())
       const fab: AsyncOption.AsyncOption<never> = jest.fn(AsyncOption.none())
+      const fa: AsyncOption.AsyncOption<never> = jest.fn(AsyncOption.none())
 
       const result = await pipe(
         fab,
@@ -109,8 +109,8 @@ describe('applicative', () => {
       )
 
       expect(result).toEqual<Option.Option<never>>(Option.none())
-      expect(fa).toHaveBeenCalledTimes(1)
       expect(fab).toHaveBeenCalledTimes(1)
+      expect(fa).toHaveBeenCalledTimes(0)
     })
   })
 })

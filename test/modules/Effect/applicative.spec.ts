@@ -1,0 +1,115 @@
+import { Effect, identity, Number, pipe, Result } from '../../../src'
+
+describe('applicative', () => {
+  describe('apply', () => {
+    it('should satisfy identity law', async () => {
+      const a = 1 as const
+      const f = jest.fn(() => a)
+      const fa: Effect.Effect<typeof a> = Effect.fromSync(f)
+
+      const result = await pipe(
+        identity,
+        Effect.of,
+        Effect.apply(fa),
+        Effect.toPromise,
+      )
+
+      expect(result).toEqual<Result.Result<typeof a>>(Result.succeed(a))
+      expect(f).toHaveBeenCalledTimes(1)
+    })
+
+    it('should satisfy homomorphism law', async () => {
+      const a = 1 as const
+      const ab = Number.add(5)
+
+      const f1 = jest.fn(() => a)
+      const f2 = jest.fn(() => ab)
+
+      const fa: Effect.Effect<typeof a> = Effect.fromSync(f1)
+      const fab: Effect.Effect<typeof ab> = Effect.fromSync(f2)
+
+      const result1 = await pipe(fab, Effect.apply(fa), Effect.toPromise)
+      const result2 = await pipe(a, ab, Effect.of, Effect.toPromise)
+
+      expect(result1).toEqual(result2)
+      expect(f1).toHaveBeenCalledTimes(1)
+      expect(f2).toHaveBeenCalledTimes(1)
+    })
+
+    it('should satisfy interchange law', async () => {
+      const a = 1 as const
+      const ab = Number.add(5)
+
+      const f1 = jest.fn(() => a)
+      const f2 = jest.fn(() => ab)
+
+      const fa: Effect.Effect<typeof a> = Effect.fromSync(f1)
+      const fab: Effect.Effect<typeof ab> = Effect.fromSync(f2)
+
+      const result1 = await pipe(fab, Effect.apply(fa), Effect.toPromise)
+      const result2 = await pipe(
+        Effect.apply(fab)(Effect.of(ab => ab(a))),
+        Effect.toPromise,
+      )
+
+      expect(result1).toEqual(result2)
+      expect(f1).toHaveBeenCalledTimes(1)
+      expect(f2).toHaveBeenCalledTimes(2)
+    })
+
+    it('should return an effect which contains `failure` if `failure` was applied to function', async () => {
+      const e = 'e' as const
+      const ab = Number.add(5)
+
+      const f1 = jest.fn(() => ab)
+      const f2 = jest.fn(() => Result.fail(e))
+
+      const fab: Effect.Effect<typeof ab> = Effect.fromSync(f1)
+      const fa: Effect.Effect<never, typeof e> = Effect.fromSyncResult(f2)
+
+      const result = await pipe(fab, Effect.apply(fa), Effect.toPromise)
+
+      expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
+      expect(f1).toHaveBeenCalledTimes(1)
+      expect(f2).toHaveBeenCalledTimes(1)
+    })
+
+    it('should return an effect which contains `failure` if value was applied to `failure`', async () => {
+      const e = 'e' as const
+      const a = 1 as const
+
+      const f1 = jest.fn(() => Result.fail(e))
+      const f2 = jest.fn(() => a)
+
+      const fab: Effect.Effect<never, typeof e> = Effect.fromSyncResult(f1)
+      const fa: Effect.Effect<typeof a, typeof e> = Effect.fromSync(f2)
+
+      const result = await pipe(fab, Effect.apply(fa), Effect.toPromise)
+
+      expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
+      expect(f1).toHaveBeenCalledTimes(1)
+      expect(f2).toHaveBeenCalledTimes(0)
+    })
+
+    it('should return an effect which contains `failure` if `failure` is applying to `failure`', async () => {
+      const e = 'e' as const
+      const d = 'd' as const
+
+      const f1 = jest.fn(() => Result.fail(e))
+      const f2 = jest.fn(() => Result.fail(d))
+
+      const fab: Effect.Effect<never, typeof e> = Effect.fromSyncResult(f1)
+      const fa: Effect.Effect<never, typeof d> = Effect.fromSyncResult(f2)
+
+      const result: Result.Result<unknown, typeof e | typeof d> = await pipe(
+        fab,
+        Effect.apply(fa),
+        Effect.toPromise,
+      )
+
+      expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
+      expect(f1).toHaveBeenCalledTimes(1)
+      expect(f2).toHaveBeenCalledTimes(0)
+    })
+  })
+})

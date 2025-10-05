@@ -1,16 +1,23 @@
 import { create } from '../../typeclasses/Applicative'
+import { flip } from '../../utils/flip'
 import { AsyncHkt, toPromise, Async } from './async'
 import { Monad } from './monad'
 
-export const Applicative = create<AsyncHkt>(Monad, {
-  apply: fa => self => () =>
-    Promise.all([toPromise(self), toPromise(fa)]).then(([f, a]) => f(a)),
-})
+export const Applicative = create<AsyncHkt>(Monad)
 
 export const apply: {
-  <In>(fa: Async<In>): <Out>(self: Async<(a: In) => Out>) => Async<Out>
+  <A>(fa: Async<A>): <B>(self: Async<(a: A) => B>) => Async<B>
 } = Applicative.apply
 
+export const applyConcurrently: {
+  <A>(fa: Async<A>): <B>(self: Async<(a: A) => B>) => Async<B>
+} = fa => self => () =>
+  Promise.all([toPromise(self), toPromise(fa)]).then(([f, a]) => f(a))
+
 export const flipApply: {
-  <In, Out>(fab: Async<(a: In) => Out>): (self: Async<In>) => Async<Out>
+  <A, B>(fab: Async<(a: A) => B>): (self: Async<A>) => Async<B>
 } = Applicative.flipApply
+
+export const flipApplyConcurrently: {
+  <A, B>(fab: Async<(a: A) => B>): (self: Async<A>) => Async<B>
+} = flip(applyConcurrently) as typeof flipApplyConcurrently

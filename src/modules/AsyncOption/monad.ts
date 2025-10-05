@@ -68,7 +68,7 @@ export const flatMapTo: {
   ): (self: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
 } = Monad.flatMapTo
 
-export const parallel: {
+export const concurrently: {
   <N extends DoObjectKey, B>(
     fb: AsyncOption<B>,
   ): <A>(fa: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
@@ -80,7 +80,7 @@ export const parallel: {
     ),
   )
 
-export const parallelTo: {
+export const concurrentlyTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fb: AsyncOption<B>,

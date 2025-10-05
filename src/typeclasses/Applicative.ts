@@ -1,10 +1,8 @@
 import { Hkt, Kind } from './Hkt'
 import { Functor } from './Functor'
-import { flip } from '../utils/flip'
 import { FromIdentity } from './FromIdentity'
 import { Monad } from './Monad'
 import { pipe } from '../utils/flow'
-import { isFunction } from '../utils/typeChecks'
 import { Semigroup } from './Semigroup'
 import { Monoid } from './Monoid'
 
@@ -23,25 +21,22 @@ export interface Applicative<F extends Hkt>
   ) => Kind<F, Out, Collectable1 | Collectable2, Fixed>
 }
 
-export const create = <F extends Hkt>(
-  Monad: Monad<F>,
-  Applicative?: Pick<Applicative<F>, 'apply'>,
-): Applicative<F> => {
-  let apply: Applicative<F>['apply']
+export const create = <F extends Hkt>(Monad: Monad<F>): Applicative<F> => {
+  const apply: Applicative<F>['apply'] = fa => self =>
+    pipe(
+      Monad.Do,
+      Monad.apS('f', self),
+      Monad.apS('a', fa),
+      Monad.map(({ f, a }) => f(a)),
+    )
 
-  if (isFunction(Applicative?.apply)) {
-    apply = Applicative.apply
-  } else {
-    apply = fa => self =>
-      pipe(
-        Monad.Do,
-        Monad.apS('f', self),
-        Monad.apS('a', fa),
-        Monad.map(({ f, a }) => f(a)),
-      )
-  }
-
-  const flipApply: Applicative<F>['flipApply'] = flip(apply) as typeof flipApply
+  const flipApply: Applicative<F>['flipApply'] = self => fa =>
+    pipe(
+      Monad.Do,
+      Monad.apS('a', fa),
+      Monad.apS('f', self),
+      Monad.map(({ f, a }) => f(a)),
+    )
 
   return {
     of: Monad.of,

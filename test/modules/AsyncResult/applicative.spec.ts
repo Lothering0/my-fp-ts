@@ -21,10 +21,10 @@ describe('applicative', () => {
       const a = 1
       const ab = Number.add(5)
 
-      const fa: AsyncResult.AsyncResult<typeof a> = jest.fn(AsyncResult.of(a))
       const fab: AsyncResult.AsyncResult<typeof ab> = jest.fn(
         AsyncResult.of(ab),
       )
+      const fa: AsyncResult.AsyncResult<typeof a> = jest.fn(AsyncResult.of(a))
 
       const result1 = await pipe(
         fab,
@@ -34,18 +34,18 @@ describe('applicative', () => {
       const result2 = await pipe(a, ab, AsyncResult.of, AsyncResult.toPromise)
 
       expect(result1).toEqual(result2)
-      expect(fa).toHaveBeenCalledTimes(1)
       expect(fab).toHaveBeenCalledTimes(1)
+      expect(fa).toHaveBeenCalledTimes(1)
     })
 
     it('should satisfy interchange law', async () => {
       const a = 1
       const ab = Number.add(5)
 
-      const fa: AsyncResult.AsyncResult<typeof a> = jest.fn(AsyncResult.of(a))
       const fab: AsyncResult.AsyncResult<typeof ab> = jest.fn(
         AsyncResult.of(ab),
       )
+      const fa: AsyncResult.AsyncResult<typeof a> = jest.fn(AsyncResult.of(a))
 
       const result1 = await pipe(
         fab,
@@ -58,62 +58,62 @@ describe('applicative', () => {
       )
 
       expect(result1).toEqual(result2)
-      expect(fa).toHaveBeenCalledTimes(1)
       expect(fab).toHaveBeenCalledTimes(2)
+      expect(fa).toHaveBeenCalledTimes(1)
     })
 
-    it('should return promise containing `failure` if `failure` was applied to function', async () => {
+    it('should return a promise containing `failure` if `failure` was applied to function', async () => {
       const e = 'e'
       const ab = Number.add(5)
 
-      const fa: AsyncResult.AsyncResult<never, typeof e> = jest.fn(
-        AsyncResult.fail(e),
-      )
       const fab: AsyncResult.AsyncResult<typeof ab> = jest.fn(
         AsyncResult.of(ab),
       )
-
-      const result = await pipe(
-        fab,
-        AsyncResult.apply(fa),
-        AsyncResult.toPromise,
-      )
-
-      expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
-      expect(fa).toHaveBeenCalledTimes(1)
-      expect(fab).toHaveBeenCalledTimes(1)
-    })
-
-    it('should return promise containing `failure` if value was applied to `failure`', async () => {
-      const e = 'e'
-      const a = 1
-
-      const fa: AsyncResult.AsyncResult<typeof a, typeof e> = jest.fn(
-        AsyncResult.of(a),
-      )
-      const fab: AsyncResult.AsyncResult<never, typeof e> = jest.fn(
-        AsyncResult.fail(e),
-      )
-
-      const result = await pipe(
-        fab,
-        AsyncResult.apply(fa),
-        AsyncResult.toPromise,
-      )
-
-      expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
-      expect(fa).toHaveBeenCalledTimes(1)
-      expect(fab).toHaveBeenCalledTimes(1)
-    })
-
-    it('should return promise containing `failure` if `failure` is applying to `failure`', async () => {
-      const e = 'e'
-      const d = 'd'
       const fa: AsyncResult.AsyncResult<never, typeof e> = jest.fn(
         AsyncResult.fail(e),
       )
+
+      const result = await pipe(
+        fab,
+        AsyncResult.apply(fa),
+        AsyncResult.toPromise,
+      )
+
+      expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
+      expect(fab).toHaveBeenCalledTimes(1)
+      expect(fa).toHaveBeenCalledTimes(1)
+    })
+
+    it('should return a promise containing `failure` if value was applied to `failure`', async () => {
+      const e = 'e'
+      const a = 1
+
+      const fab: AsyncResult.AsyncResult<never, typeof e> = jest.fn(
+        AsyncResult.fail(e),
+      )
+      const fa: AsyncResult.AsyncResult<typeof a, typeof e> = jest.fn(
+        AsyncResult.of(a),
+      )
+
+      const result = await pipe(
+        fab,
+        AsyncResult.apply(fa),
+        AsyncResult.toPromise,
+      )
+
+      expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
+      expect(fab).toHaveBeenCalledTimes(1)
+      expect(fa).toHaveBeenCalledTimes(0)
+    })
+
+    it('should return a promise containing `failure` if `failure` is applying to `failure`', async () => {
+      const e = 'e'
+      const d = 'd'
       const fab: AsyncResult.AsyncResult<never, typeof d> = jest.fn(
         AsyncResult.fail(d),
+      )
+      const fa: AsyncResult.AsyncResult<never, typeof e> = jest.fn(
+        AsyncResult.fail(e),
       )
 
       const result: Result.Result<unknown, typeof e | typeof d> = await pipe(
@@ -122,9 +122,9 @@ describe('applicative', () => {
         AsyncResult.toPromise,
       )
 
-      expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
-      expect(fa).toHaveBeenCalledTimes(1)
+      expect(result).toEqual<Result.Result<never, typeof d>>(Result.fail(d))
       expect(fab).toHaveBeenCalledTimes(1)
+      expect(fa).toHaveBeenCalledTimes(0)
     })
   })
 })

@@ -68,10 +68,8 @@ export const fail: {
 } = flow(SyncResult.fail, fromSyncResult)
 
 export const run: {
-  (self: Effect<unknown, unknown>): void
-} = self => {
-  self.run()
-}
+  <A, E>(self: Effect<A, E>): Result.Result<A, E> | Promise<Result.Result<A, E>>
+} = self => self.run()
 
 export const toPromise: {
   <A, E>(self: Effect<A, E>): Promise<Result.Result<A, E>>
