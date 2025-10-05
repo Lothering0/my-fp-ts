@@ -14,8 +14,8 @@ export const getOrElse: {
 } = onFailure => match({ onFailure, onSuccess: identity })
 
 export const orElse =
-  <B, E1>(onFailure: AsyncResult<B, E1>) =>
-  <A, E2>(self: AsyncResult<A, E2>): AsyncResult<A | B, E1 | E2> =>
+  <B, E>(onFailure: AsyncResult<B, E>) =>
+  <A>(self: AsyncResult<A, unknown>): AsyncResult<A | B, E> =>
     pipe(
       self,
       Async.flatMap(

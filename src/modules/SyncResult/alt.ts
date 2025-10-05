@@ -12,9 +12,9 @@ export const getOrElse: {
 } = onFailure => match({ onFailure, onSuccess: identity })
 
 export const orElse: {
-  <B, E1>(
-    onFailure: SyncResult<B, E1>,
-  ): <A, E2>(self: SyncResult<A, E2>) => SyncResult<A | B, E1 | E2>
+  <B, E>(
+    onFailure: SyncResult<B, E>,
+  ): <A>(self: SyncResult<A>) => SyncResult<A | B, E>
 } = onFailure =>
   flow(
     execute,
