@@ -45,7 +45,7 @@ export interface Monad<F extends Hkt> extends FromIdentity<F>, Functor<F> {
     self: Kind<F, In, Collectable2, Fixed>,
   ) => Kind<F, DoObject<N, In, Out>, Collectable1 | Collectable2, Fixed>
 
-  readonly apS: <N extends DoObjectKey, In, Out, Collectable1, Fixed>(
+  readonly bind: <N extends DoObjectKey, In, Out, Collectable1, Fixed>(
     name: Exclude<N, keyof In>,
     fb: Kind<F, Out, Collectable1, Fixed>,
   ) => <Collectable2>(
@@ -70,7 +70,7 @@ export const create = <F extends Hkt>(
   const { flat } = Monad
   const Do: Monad<F>['Do'] = of({})
 
-  const apS: Monad<F>['apS'] = (name, fb) =>
+  const bind: Monad<F>['bind'] = (name, fb) =>
     flow(
       map(a => map(b => ({ [name]: b, ...a }) as any)(fb)),
       flat,
@@ -93,8 +93,8 @@ export const create = <F extends Hkt>(
   const flipApplyTo: Monad<F>['flipApplyTo'] = (name, fab) => self =>
     pipe(
       Do,
-      apS('a', self),
-      apS('ab', fab),
+      bind('a', self),
+      bind('ab', fab),
       map(({ a, ab }) => ({ [name]: ab(a), ...a }) as any),
     )
 
@@ -122,7 +122,7 @@ export const create = <F extends Hkt>(
     setTo,
     mapTo,
     flipApplyTo,
-    apS,
+    bind,
     flatMapTo,
   }
 }

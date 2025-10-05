@@ -54,12 +54,12 @@ export const flipApplyTo: {
   ): (self: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
 } = Monad.flipApplyTo
 
-export const apS: {
+export const bind: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fb: AsyncOption<B>,
   ): (self: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
-} = Monad.apS
+} = Monad.bind
 
 export const flatMapTo: {
   <N extends DoObjectKey, A, B>(
@@ -87,5 +87,5 @@ export const concurrentlyTo: {
   ): (fa: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
 } = (name, fb) => fa => () =>
   Promise.all([toPromise(fa), toPromise(fb)]).then(([ma, mb]) =>
-    Option.apS(name, mb)(ma),
+    Option.bind(name, mb)(ma),
   )

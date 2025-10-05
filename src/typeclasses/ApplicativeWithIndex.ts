@@ -27,8 +27,8 @@ export const create = <F extends Hkt, Index>(
     fa => self =>
       pipe(
         MonadWithIndex.Do,
-        MonadWithIndex.apS('a', fa),
-        MonadWithIndex.apS('f', self),
+        MonadWithIndex.bind('a', fa),
+        MonadWithIndex.bind('f', self),
         MonadWithIndex.mapWithIndex(({ f, a }, i) => f(a, i)),
       )
 
@@ -38,8 +38,8 @@ export const create = <F extends Hkt, Index>(
   >['flipApplyWithIndex'] = fa => self =>
     pipe(
       MonadWithIndex.Do,
-      MonadWithIndex.apS('f', fa),
-      MonadWithIndex.apS('a', self),
+      MonadWithIndex.bind('f', fa),
+      MonadWithIndex.bind('a', self),
       MonadWithIndex.mapWithIndex(({ f, a }, i) => f(a, i)),
     )
 

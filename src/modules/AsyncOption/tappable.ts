@@ -5,7 +5,7 @@ import * as SyncOption from '../SyncOption'
 import * as SyncResult from '../SyncResult'
 import * as Option from '../Option'
 import { create } from '../../typeclasses/Tappable'
-import { Do, Monad, apS } from './monad'
+import { Do, Monad, bind } from './monad'
 import { AsyncOption, fromAsync } from './async-option'
 import { Sync } from '../Sync'
 import { map } from './functor'
@@ -30,7 +30,7 @@ export const tapOption: {
 } = f => self =>
   pipe(
     Do,
-    apS('a', self),
+    bind('a', self),
     tap(({ a }) => pipe(a, f, Async.of)),
     map(({ a }) => a),
   )
@@ -42,7 +42,7 @@ export const tapResult: {
 } = f => self =>
   pipe(
     Do,
-    apS('a', self),
+    bind('a', self),
     tap(({ a }) => pipe(a, f, Option.fromResult, Async.of)),
     map(({ a }) => a),
   )
@@ -54,7 +54,7 @@ export const tapAsync: {
 } = f => self =>
   pipe(
     Do,
-    apS('a', self),
+    bind('a', self),
     tap(({ a }) => pipe(a, f, fromAsync)),
     map(({ a }) => a),
   )
@@ -66,7 +66,7 @@ export const tapAsyncResult: {
 } = f => self =>
   pipe(
     Do,
-    apS('a', self),
+    bind('a', self),
     tap(({ a }) =>
       pipe(
         a,
@@ -87,7 +87,7 @@ export const tapSyncOption: {
 } = f => self =>
   pipe(
     Do,
-    apS('a', self),
+    bind('a', self),
     tapOption(({ a }) => pipe(a, f, SyncOption.execute)),
     map(({ a }) => a),
   )
@@ -99,7 +99,7 @@ export const tapSyncResult: {
 } = f => self =>
   pipe(
     Do,
-    apS('a', self),
+    bind('a', self),
     tapResult(({ a }) => pipe(a, f, SyncResult.execute)),
     map(({ a }) => a),
   )

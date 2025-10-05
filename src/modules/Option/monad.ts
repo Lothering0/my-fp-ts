@@ -53,12 +53,12 @@ export const flipApplyTo: {
   ): (self: Option.Option<A>) => Option.Option<DoObject<N, A, B>>
 } = Monad.flipApplyTo
 
-export const apS: {
+export const bind: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fb: Option.Option<B>,
   ): (self: Option.Option<A>) => Option.Option<DoObject<N, A, B>>
-} = Monad.apS
+} = Monad.bind
 
 export const flatMapTo: {
   <N extends DoObjectKey, A, B>(

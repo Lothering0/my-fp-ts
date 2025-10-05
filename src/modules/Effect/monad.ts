@@ -70,12 +70,12 @@ export const flipApplyTo: {
   ): <E2>(self: Effect<A, E2>) => Effect<DoObject<N, A, B>, E1 | E2>
 } = Monad.flipApplyTo
 
-export const apS: {
+export const bind: {
   <N extends DoObjectKey, A, B, E1>(
     name: Exclude<N, keyof A>,
     fb: Effect<B, E1>,
   ): <E2>(self: Effect<A, E2>) => Effect<DoObject<N, A, B>, E1 | E2>
-} = Monad.apS
+} = Monad.bind
 
 export const flatMapTo: {
   <N extends DoObjectKey, A, B, E1>(
@@ -84,7 +84,7 @@ export const flatMapTo: {
   ): <E2>(self: Effect<A, E2>) => Effect<DoObject<N, A, B>, E1 | E2>
 } = Monad.flatMapTo
 
-export const parallel: {
+export const concurrently: {
   <N extends DoObjectKey, A, E1>(
     fb: Effect<A, E1>,
   ): <A, E2>(self: Effect<A, E2>) => Effect<DoObject<N, A, A>, E1 | E2>
@@ -97,7 +97,7 @@ export const parallel: {
     ]).then(([ma, mb]) => pipe(mb, Result.flatMap(() => ma) as any)),
   )
 
-export const parallelTo: {
+export const concurrentlyTo: {
   <N extends DoObjectKey, A, B, E1>(
     name: Exclude<N, keyof A>,
     fb: Effect<B, E1>,
@@ -105,6 +105,6 @@ export const parallelTo: {
 } = (name, fb) => self =>
   fromOperation(() =>
     Promise.all([Promise.resolve(self.run()), Promise.resolve(fb.run())]).then(
-      ([ma, mb]) => Result.apS(name, mb)(ma),
+      ([ma, mb]) => Result.bind(name, mb)(ma),
     ),
   )

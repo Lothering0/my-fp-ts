@@ -60,12 +60,12 @@ export const flipApplyTo: {
   ): (self: Iterable<A>) => Iterable<DoObject<N, A, B>>
 } = MonadWithIndex.flipApplyToWithIndex
 
-export const apS: {
+export const bind: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fb: Iterable<B>,
   ): (self: Iterable<A>) => Iterable<DoObject<N, A, B>>
-} = Monad.apS
+} = Monad.bind
 
 export const flatMapTo: {
   <N extends DoObjectKey, A, B>(

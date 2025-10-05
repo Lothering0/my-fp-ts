@@ -49,12 +49,12 @@ export const flipApplyTo: {
   ): (self: Async.Async<A>) => Async.Async<DoObject<N, A, B>>
 } = Monad.flipApplyTo
 
-export const apS: {
+export const bind: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fb: Async.Async<B>,
   ): (self: Async.Async<A>) => Async.Async<DoObject<N, A, B>>
-} = Monad.apS
+} = Monad.bind
 
 export const flatMapTo: {
   <N extends DoObjectKey, A, B>(

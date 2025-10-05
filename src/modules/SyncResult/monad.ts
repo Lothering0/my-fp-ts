@@ -53,12 +53,12 @@ export const flipApplyTo: {
   ): <E2>(self: SyncResult<A, E2>) => SyncResult<DoObject<N, A, B>, E1 | E2>
 } = Monad.flipApplyTo
 
-export const apS: {
+export const bind: {
   <N extends DoObjectKey, A, B, E1>(
     name: Exclude<N, keyof A>,
     fb: SyncResult<B, E1>,
   ): <E2>(self: SyncResult<A, E2>) => SyncResult<DoObject<N, A, B>, E1 | E2>
-} = Monad.apS
+} = Monad.bind
 
 export const flatMapTo: {
   <N extends DoObjectKey, A, B, E1>(

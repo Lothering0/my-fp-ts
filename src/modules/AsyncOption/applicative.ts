@@ -17,8 +17,8 @@ export const applyConcurrently: {
   Promise.all([toPromise(self), toPromise(fma)]).then(([mab, ma]) =>
     pipe(
       Option.Do,
-      Option.apS('a', ma),
-      Option.apS('ab', mab),
+      Option.bind('a', ma),
+      Option.bind('ab', mab),
       Option.map(({ ab, a }) => ab(a)),
     ),
   )

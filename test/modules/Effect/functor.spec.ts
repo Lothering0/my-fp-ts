@@ -2,7 +2,7 @@ import { Effect, identity, Number, pipe, Result } from '../../../src'
 
 describe('functor', () => {
   describe('map', () => {
-    it('should not run an effect until it was explicitly called', () => {
+    it('should not run an effect until it will be explicitly called', () => {
       const f = jest.fn()
       pipe(
         Effect.succeed(1),
@@ -49,7 +49,7 @@ describe('functor', () => {
       expect(f2).toHaveBeenCalledTimes(1)
     })
 
-    it('should return function containing promise of `failure` if the same was provided', async () => {
+    it('should return an effect which contains a `failure` if the same was provided', async () => {
       const a = 1 as const
       const n = 1
       const f = jest.fn(() => Result.fail(a))
@@ -59,7 +59,7 @@ describe('functor', () => {
       expect(f).toHaveBeenCalledTimes(1)
     })
 
-    it('should return function containing promise of `success` if it was provided', async () => {
+    it('should return an effect which contains a `success` if it was provided', async () => {
       const a = 1 as const
       const n = 1
       const f = jest.fn(() => Result.succeed(a))

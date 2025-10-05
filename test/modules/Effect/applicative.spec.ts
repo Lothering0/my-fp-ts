@@ -2,6 +2,15 @@ import { Effect, identity, Number, pipe, Result } from '../../../src'
 
 describe('applicative', () => {
   describe('apply', () => {
+    it('should not run an effect until it will be explicitly called', () => {
+      const f = jest.fn()
+      pipe(
+        Effect.succeed(() => f()),
+        Effect.apply(Effect.succeed(1)),
+      )
+      expect(f).toHaveBeenCalledTimes(0)
+    })
+
     it('should satisfy identity law', async () => {
       const a = 1 as const
       const f = jest.fn(() => a)
@@ -57,7 +66,7 @@ describe('applicative', () => {
       expect(f2).toHaveBeenCalledTimes(2)
     })
 
-    it('should return an effect which contains `failure` if `failure` was applied to function', async () => {
+    it('should return an effect which contains a `failure` if a `failure` was applied to function', async () => {
       const e = 'e' as const
       const ab = Number.add(5)
 
@@ -74,7 +83,7 @@ describe('applicative', () => {
       expect(f2).toHaveBeenCalledTimes(1)
     })
 
-    it('should return an effect which contains `failure` if value was applied to `failure`', async () => {
+    it('should return an effect which contains a `failure` if value was applied to a `failure`', async () => {
       const e = 'e' as const
       const a = 1 as const
 
@@ -91,7 +100,7 @@ describe('applicative', () => {
       expect(f2).toHaveBeenCalledTimes(0)
     })
 
-    it('should return an effect which contains `failure` if `failure` is applying to `failure`', async () => {
+    it('should return an effect which contains a `failure` if a `failure` is applying to a `failure`', async () => {
       const e = 'e' as const
       const d = 'd' as const
 

@@ -43,7 +43,7 @@ const durationProceed: {
   create((x: Duration_.Duration) =>
     pipe(
       Result.Do,
-      Result.apS('durationX', Schema.proceed(x)),
+      Result.bind('durationX', Schema.proceed(x)),
       Result.setTo('durationY', Duration_.make(input)),
       Result.flatMap(({ durationX, durationY }) =>
         pipe(

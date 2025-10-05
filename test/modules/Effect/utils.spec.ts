@@ -6,7 +6,7 @@ describe('try', () => {
     Equivalence.EquivalenceStrict,
   )
 
-  it('should return failure if synchronous operation threw an error', async () => {
+  it('should return a `failure` if synchronous operation threw an error', async () => {
     const result1 = await pipe(
       Effect.try(() => raise('a')),
       Effect.toPromise,
@@ -25,7 +25,7 @@ describe('try', () => {
     )
   })
 
-  it('should return success if synchronous operation returned a value', async () => {
+  it('should return a `success` if synchronous operation returned a value', async () => {
     const result1 = await pipe(
       Effect.try(() => 1),
       Effect.toPromise,
@@ -46,7 +46,7 @@ describe('try', () => {
     )
   })
 
-  it('should return failure if asynchronous operation rejected an error', async () => {
+  it('should return a `failure` if asynchronous operation rejected an error', async () => {
     const result1 = await pipe(
       Effect.try(() => Promise.reject('a')),
       Effect.toPromise,
@@ -65,7 +65,7 @@ describe('try', () => {
     )
   })
 
-  it('should return success if asynchronous operation resolved a value', async () => {
+  it('should return a `success` if asynchronous operation resolved a value', async () => {
     const result1 = await pipe(
       Effect.try(() => Promise.resolve(1)),
       Effect.toPromise,

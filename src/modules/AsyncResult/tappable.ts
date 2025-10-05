@@ -12,7 +12,7 @@ import {
   toPromise,
 } from './async-result'
 import { pipe } from '../../utils/flow'
-import { Monad, Do, apS } from './monad'
+import { Monad, Do, bind } from './monad'
 
 export const Tappable = create(Monad)
 
@@ -65,7 +65,7 @@ export const tapResult: {
 } = f => self =>
   pipe(
     Do,
-    apS('a', self),
+    bind('a', self),
     tap(({ a }) => pipe(a, f, Async.of)),
     map(({ a }) => a),
   )
@@ -77,7 +77,7 @@ export const tapSyncResult: {
 } = f => self =>
   pipe(
     Do,
-    apS('a', self),
+    bind('a', self),
     tap(({ a }) => pipe(a, f, SyncResult.execute, Async.of)),
     map(({ a }) => a),
   )
@@ -89,7 +89,7 @@ export const tapAsync: {
 } = f => self =>
   pipe(
     Do,
-    apS('a', self),
+    bind('a', self),
     tap(({ a }) => pipe(a, f, fromAsync<never, never>)),
     map(({ a }) => a),
   )

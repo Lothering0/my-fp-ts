@@ -89,8 +89,8 @@ export const create = <F extends Hkt, Index>(
   >['flipApplyToWithIndex'] = (name, faib) => self =>
     pipe(
       Monad.Do,
-      Monad.apS('a', self),
-      Monad.apS('aib', faib),
+      Monad.bind('a', self),
+      Monad.bind('aib', faib),
       FunctorWithIndex.mapWithIndex(
         ({ a, aib }, i) => ({ [name]: aib(a, i), ...a }) as any,
       ),

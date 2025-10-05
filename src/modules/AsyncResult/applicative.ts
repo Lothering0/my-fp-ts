@@ -21,8 +21,8 @@ export const applyConcurrenty: {
   Promise.all([toPromise(self), toPromise(fma)]).then(([mab, ma]) =>
     pipe(
       Result.Do,
-      Result.apS('a', ma),
-      Result.apS('ab', mab),
+      Result.bind('a', ma),
+      Result.bind('ab', mab),
       Result.map(({ ab, a }) => ab(a)),
     ),
   )

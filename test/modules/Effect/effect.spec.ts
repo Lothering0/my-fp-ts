@@ -6,7 +6,7 @@ describe('gen', () => {
     Equivalence.EquivalenceStrict,
   )
 
-  it('should not run an effect until it was explicitly called', () => {
+  it('should not run an effect until it will be explicitly called', () => {
     const f = jest.fn()
     Effect.gen(function* () {
       f()

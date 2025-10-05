@@ -47,12 +47,12 @@ export const flipApplyTo: {
   ): (self: State<S, A>) => State<S, DoObject<N, A, B>>
 } = Monad.flipApplyTo
 
-export const apS: {
+export const bind: {
   <N extends DoObjectKey, S, A, B>(
     name: Exclude<N, keyof A>,
     fb: State<S, B>,
   ): (self: State<S, A>) => State<S, DoObject<N, A, B>>
-} = Monad.apS
+} = Monad.bind
 
 export const flatMapTo: {
   <N extends DoObjectKey, S, A, B>(

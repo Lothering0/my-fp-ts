@@ -8,7 +8,7 @@ import * as Effect from './effect'
 import { create } from '../../typeclasses/Tappable'
 import { map, mapResult } from './functor'
 import { pipe } from '../../utils/flow'
-import { Monad, Do, apS } from './monad'
+import { Monad, Do, bind } from './monad'
 import { fromResult } from './from-result'
 import { match } from './matchers'
 import { swap } from './utils'
@@ -64,7 +64,7 @@ export const tapResult: {
 } = f => self =>
   pipe(
     Do,
-    apS('a', self),
+    bind('a', self),
     tap(({ a }) => pipe(a, f, fromResult)),
     map(({ a }) => a),
   )
@@ -76,7 +76,7 @@ export const tapSyncResult: {
 } = f => self =>
   pipe(
     Do,
-    apS('a', self),
+    bind('a', self),
     tap(({ a }) => pipe(a, f, Effect.fromSyncResult)),
     map(({ a }) => a),
   )
@@ -88,7 +88,7 @@ export const tapAsync: {
 } = f => self =>
   pipe(
     Do,
-    apS('a', self),
+    bind('a', self),
     tap(({ a }) => pipe(a, f, Effect.fromAsync)),
     map(({ a }) => a),
   )
@@ -100,7 +100,7 @@ export const tapAsyncResult: {
 } = f => self =>
   pipe(
     Do,
-    apS('a', self),
+    bind('a', self),
     tap(({ a }) => pipe(a, f, Effect.fromAsyncResult)),
     map(({ a }) => a),
   )

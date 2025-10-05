@@ -46,12 +46,12 @@ export const flipApplyTo: {
   ): (self: Reader<R, A>) => Reader<R, DoObject<N, A, B>>
 } = Monad.flipApplyTo
 
-export const apS: {
+export const bind: {
   <N extends DoObjectKey, R, A, B>(
     name: Exclude<N, keyof A>,
     fb: Reader<R, B>,
   ): (self: Reader<R, A>) => Reader<R, DoObject<N, A, B>>
-} = Monad.apS
+} = Monad.bind
 
 export const flatMapTo: {
   <N extends DoObjectKey, R, A, B>(

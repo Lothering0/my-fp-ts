@@ -18,8 +18,8 @@ export const getOptionSemigroup: {
 
     return pipe(
       Monad.Do,
-      Monad.apS('x', mx),
-      Monad.apS('y', my),
+      Monad.bind('x', mx),
+      Monad.bind('y', my),
       Monad.map(({ x, y }) => Semigroup.combine(y)(x)),
     )
   },

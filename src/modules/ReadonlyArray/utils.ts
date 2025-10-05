@@ -472,8 +472,8 @@ export const insertAt: {
         Option.orElse(pipe(i === length(self), Option.some)),
       ),
     ),
-    Option.apS('start', pipe(self, slice(0, i), Option.some)),
-    Option.apS('end', pipe(self, slice(i), Option.some)),
+    Option.bind('start', pipe(self, slice(0, i), Option.some)),
+    Option.bind('end', pipe(self, slice(i), Option.some)),
     Option.map(({ start, end }) =>
       pipe(start, append(a), NonEmptyArray.concat(end)),
     ),
@@ -486,11 +486,13 @@ export const modifyAt: {
   ): (self: ReadonlyArray<A>) => Option.Option<ReadonlyArray<A>>
 } = (i, f) => self =>
   pipe(
-    Option.Do,
-    Option.apS('a', pipe(self, lookup(i))),
-    Option.apS('start', pipe(self, slice(0, i), Option.some)),
-    Option.apS('end', pipe(self, slice(i + 1), Option.some)),
-    Option.map(({ start, a, end }) => pipe(start, append(f(a)), concat(end))),
+    self,
+    lookup(i),
+    Option.map(x => {
+      const clone = pipe(self, copy, toArray)
+      clone[i] = f(x)
+      return clone
+    }),
   )
 
 export const updateAt: {
@@ -506,8 +508,8 @@ export const removeAt: {
   pipe(
     Option.Do,
     Option.tap(() => pipe(self, lookup(i))),
-    Option.apS('start', pipe(self, slice(0, i), Option.some)),
-    Option.apS('end', pipe(self, slice(i + 2), Option.some)),
+    Option.bind('start', pipe(self, slice(0, i), Option.some)),
+    Option.bind('end', pipe(self, slice(i + 2), Option.some)),
     Option.map(({ start, end }) => pipe(start, concat(end))),
   )
 

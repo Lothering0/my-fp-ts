@@ -15,6 +15,9 @@
 | `TaskEither`                  | `AsyncResult`                   |
 | `let`                         | `setTo`                         |
 | `flatten`                     | `flat`                          |
+| `apS`                         | `bind`                          |
+| `ap`                          | `apply`                         |
+| `flap`                        | `flipApply`                     |
 | `Semigroup.concat`            | `Semigroup.combine`             |
 | `Eq`                          | `Equivalence`                   |
 | `Ord`                         | `Order`                         |

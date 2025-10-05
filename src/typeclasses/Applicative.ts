@@ -25,16 +25,16 @@ export const create = <F extends Hkt>(Monad: Monad<F>): Applicative<F> => {
   const apply: Applicative<F>['apply'] = fa => self =>
     pipe(
       Monad.Do,
-      Monad.apS('f', self),
-      Monad.apS('a', fa),
+      Monad.bind('f', self),
+      Monad.bind('a', fa),
       Monad.map(({ f, a }) => f(a)),
     )
 
   const flipApply: Applicative<F>['flipApply'] = self => fa =>
     pipe(
       Monad.Do,
-      Monad.apS('a', fa),
-      Monad.apS('f', self),
+      Monad.bind('a', fa),
+      Monad.bind('f', self),
       Monad.map(({ f, a }) => f(a)),
     )
 

@@ -24,7 +24,7 @@ export const create: {
   tap: f => self =>
     pipe(
       Monad.Do,
-      Monad.apS('a', self),
+      Monad.bind('a', self),
       Monad.flatMap(({ a }) =>
         pipe(
           a,
@@ -36,7 +36,7 @@ export const create: {
   tapSync: f => self =>
     pipe(
       Monad.Do,
-      Monad.apS('a', self),
+      Monad.bind('a', self),
       Monad.map(({ a }) =>
         pipe(
           a,
