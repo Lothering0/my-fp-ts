@@ -117,10 +117,9 @@ export const all: {
           pipe(
             results,
             Array.find(Result.isFailure),
-            Option.match({
-              onSome: identity,
-              onNone: () => pipe(results, Array.successes, Result.succeed),
-            }),
+            Option.getOrElse(() =>
+              pipe(results, Array.successes, Result.succeed),
+            ),
           ),
         )
         .catch(e => Result.fail(e))

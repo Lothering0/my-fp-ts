@@ -293,3 +293,28 @@ export const moreThanOrEquals: {
   (durationY: Duration): (durationX: Duration) => boolean
 } = durationY =>
   flow(toMilliseconds, Number.moreThanOrEquals(toMilliseconds(durationY)))
+
+/**
+ * Returns duration reduced to the start of an interval
+ * @example
+ * ```ts
+ * import { Duration } from 'src'
+ *
+ * pipe(Duration.make({ seconds: 7 }), Duration.toStartOf({ seconds: 5 }))
+ * // -> ({ seconds: 5 })
+ *
+ * pipe(Duration.make({ seconds: 5 }), Duration.toStartOf({ seconds: 5 }))
+ * // -> ({ seconds: 5 })
+ *
+ * pipe(Duration.make({ seconds: 4 }), Duration.toStartOf({ seconds: 5 }))
+ * // -> ({ seconds: 0 })
+ * ```
+ */
+export const toStartOf: {
+  (interval: Duration): (self: Duration) => Duration
+} = interval => self => {
+  const intervalMs = toMilliseconds(interval)
+  const selfMs = toMilliseconds(self)
+  const startOfInterval = selfMs - (selfMs % intervalMs)
+  return fromMilliseconds(startOfInterval)
+}

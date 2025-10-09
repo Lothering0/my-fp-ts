@@ -1,4 +1,4 @@
-import { Duration } from '../../../src'
+import { Duration, pipe } from '../../../src'
 
 describe('isTemplateValid', () => {
   it('should determine invalid templates', () => {
@@ -65,5 +65,34 @@ describe('prettify', () => {
       milliseconds: 500,
     })
     expect(Duration.prettify({ months: 24 })).toEqual({ years: 2 })
+  })
+})
+
+describe('toStartOf', () => {
+  it('should return duration reduced to the start of an interval', () => {
+    pipe(
+      Duration.make({ seconds: 7 }),
+      Duration.toStartOf({ seconds: 5 }),
+      Duration.equals({ seconds: 5 }),
+      expect,
+    ).toBe(true)
+    pipe(
+      Duration.make({ seconds: 5 }),
+      Duration.toStartOf({ seconds: 5 }),
+      Duration.equals({ seconds: 5 }),
+      expect,
+    ).toBe(true)
+    pipe(
+      Duration.make({ seconds: 4 }),
+      Duration.toStartOf({ seconds: 5 }),
+      Duration.equals({ seconds: 0 }),
+      expect,
+    ).toBe(true)
+    pipe(
+      Duration.make({ seconds: 130 }),
+      Duration.toStartOf({ minutes: 2 }),
+      Duration.equals({ seconds: 120 }),
+      expect,
+    ).toBe(true)
   })
 })
