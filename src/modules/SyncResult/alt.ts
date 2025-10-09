@@ -14,7 +14,7 @@ export const getOrElse: {
 export const orElse: {
   <B, E>(
     onFailure: SyncResult<B, E>,
-  ): <A>(self: SyncResult<A>) => SyncResult<A | B, E>
+  ): <A>(self: SyncResult<A, unknown>) => SyncResult<A | B, E>
 } = onFailure =>
   flow(
     execute,

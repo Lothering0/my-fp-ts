@@ -23,13 +23,17 @@ export const fromNonEmpty: {
 
 export const toArray = <A>(self: ReadonlyArray<A>): A[] => self as A[]
 
+export const fromIterable: {
+  <A>(as: Iterable<A>): ReadonlyArray<A>
+} = as => [...as]
+
 export const length: {
   <A>(self: ReadonlyArray<A>): number
 } = self => self.length
 
 export const copy: {
   <A>(self: ReadonlyArray<A>): ReadonlyArray<A>
-} = self => [...self]
+} = fromIterable
 
 export const head: {
   <A>(self: ReadonlyArray<A>): Option.Option<A>
