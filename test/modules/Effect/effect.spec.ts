@@ -101,7 +101,15 @@ describe('gen', () => {
     })
     const result = await pipe(effect, Effect.toPromise)
 
-    pipe(result, ResultEquivalence.equals(Result.fail('a')), expect).toBe(true)
+    const f = jest.fn()
+    pipe(
+      result,
+      Result.mapLeft(e => {
+        f()
+        expect(e.exception).toBe('a')
+      }),
+    )
+    expect(f).toHaveBeenCalledTimes(1)
   })
 
   it('should correctly run failed asynchronous operations', async () => {
@@ -118,7 +126,15 @@ describe('gen', () => {
     })
     const result = await pipe(effect, Effect.toPromise)
 
-    pipe(result, ResultEquivalence.equals(Result.fail('a')), expect).toBe(true)
+    const f = jest.fn()
+    pipe(
+      result,
+      Result.mapLeft(e => {
+        f()
+        expect(e.exception).toBe('a')
+      }),
+    )
+    expect(f).toHaveBeenCalledTimes(1)
     expect(ma).toHaveBeenCalledTimes(1)
     expect(mb).toHaveBeenCalledTimes(1)
     expect(mc).toHaveBeenCalledTimes(0)

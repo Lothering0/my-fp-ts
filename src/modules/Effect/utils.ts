@@ -3,9 +3,9 @@ import * as Option from '../Option'
 import * as Result from '../Result'
 import * as Effect from './effect'
 import { isFunction } from '../../utils/typeChecks'
-import { identity } from '../Identity'
 import { flow, pipe } from '../../utils/flow'
 import { mapResult, map } from './functor'
+import { UnknownException } from '../Exception'
 
 export interface TryCatch<A, E> {
   readonly try: () => A
@@ -14,7 +14,7 @@ export interface TryCatch<A, E> {
 
 const try_: {
   <A, E>(tryCatch: TryCatch<A, E>): Effect.Effect<Awaited<A>, E>
-  <A>(operation: () => A): Effect.Effect<Awaited<A>, unknown>
+  <A>(operation: () => A): Effect.Effect<Awaited<A>, UnknownException>
 } = <A, E>(
   operationOrTryCatch: TryCatch<A, E> | (() => A),
 ): Effect.Effect<A, E> => {
@@ -23,7 +23,7 @@ const try_: {
   if (isFunction(operationOrTryCatch)) {
     tryCatch = {
       try: operationOrTryCatch,
-      catch: identity<E>,
+      catch: e => new UnknownException(e) as E,
     }
   } else {
     tryCatch = operationOrTryCatch

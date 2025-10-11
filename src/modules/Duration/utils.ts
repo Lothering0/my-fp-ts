@@ -16,6 +16,7 @@ import {
 } from './duration'
 import { constant, constFalse } from '../../utils/constant'
 import { empty } from './monoid'
+import { TaggedSyntaxError } from '../Exception'
 
 export const fromMilliseconds: {
   (milliseconds: number): Duration
@@ -75,12 +76,9 @@ export const isTemplateValid: {
       ),
   )
 
-export class DurationTemplateParseError extends SyntaxError {
-  constructor(message: string) {
-    super(message)
-    this.name = 'DurationTemplateParseError'
-  }
-}
+export class DurationTemplateParseError extends TaggedSyntaxError(
+  'DurationTemplateParseError',
+) {}
 
 export const fromTemplate: {
   (template: string): Result.Result<Duration, DurationTemplateParseError>

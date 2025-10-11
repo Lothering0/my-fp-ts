@@ -7,6 +7,7 @@ import * as Predicate from './Predicate'
 import * as Schema_ from './Schema'
 import { flow, pipe } from '../utils/flow'
 import { Refinement } from './Refinement'
+import { Tagged, Tag } from '../types/Tag'
 
 export interface Matching<E, A> {
   readonly Equivalence: Equivalence_.Equivalence<E>
@@ -94,6 +95,22 @@ export const whenNot =
         ea,
       ),
     )
+
+export const whenTag: {
+  <E extends Tagged, A, T extends Tag<E>>(
+    tag: T,
+    // Passing to callback exactly tagged object
+    ea: (e: E extends Tagged<T> ? E : never) => A,
+  ): <B>(self: Matching<E, B>) => Matching<E, A | B>
+} = (tag, ea) => on(e => e._tag === tag, ea)
+
+export const whenNotTag: {
+  <E extends Tagged, A, T extends Tag<E>>(
+    tag: T,
+    // Passing to callback only those objects which is not tagged with provided tag
+    ea: (e: E extends Tagged<T> ? never : E) => A,
+  ): <B>(self: Matching<E, B>) => Matching<E, A | B>
+} = (tag, ea) => on(e => e._tag !== tag, ea)
 
 export const whenInstance: {
   <E, D extends E, A>(

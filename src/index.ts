@@ -37,6 +37,8 @@ export * as List from './modules/List'
 export * as Matching from './modules/Matching'
 export * as Ordering from './modules/Ordering'
 export { Refinement, RefinementWithIndex } from './modules/Refinement'
+export * as Exception from './modules/Exception'
+export { UnknownException } from './modules/Exception'
 
 // transformers
 export const OptionOption = Option.transform(Option.Monad)
@@ -100,6 +102,7 @@ export { TypeClass } from './typeclasses/TypeClass'
 
 // types
 export { DoObject, DoObjectKey } from './types/DoObject'
+export { Tag, Tagged } from './types/Tag'
 export {
   LazyArg,
   Prettify,

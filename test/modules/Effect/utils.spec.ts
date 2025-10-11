@@ -11,7 +11,15 @@ describe('try', () => {
       Effect.try(() => raise('a')),
       Effect.toPromise,
     )
-    pipe(result1, ResultEquivalence.equals(Result.fail('a')), expect).toBe(true)
+    const f = jest.fn()
+    pipe(
+      result1,
+      Result.mapLeft(e => {
+        f()
+        expect(e.exception).toBe('a')
+      }),
+    )
+    expect(f).toHaveBeenCalledTimes(1)
 
     const result2 = await pipe(
       Effect.try({
@@ -51,7 +59,15 @@ describe('try', () => {
       Effect.try(() => Promise.reject('a')),
       Effect.toPromise,
     )
-    pipe(result1, ResultEquivalence.equals(Result.fail('a')), expect).toBe(true)
+    const f = jest.fn()
+    pipe(
+      result1,
+      Result.mapLeft(e => {
+        f()
+        expect(e.exception).toBe('a')
+      }),
+    )
+    expect(f).toHaveBeenCalledTimes(1)
 
     const result2 = await pipe(
       Effect.try({

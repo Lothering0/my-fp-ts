@@ -8,7 +8,7 @@ export interface ResultSchemas<A, E> {
   readonly failure: Schema<E>
 }
 
-export const ResultFn = <A, E>(
+const ResultFn = <A, E>(
   schemas: ResultSchemas<A, E>,
 ): Schema<Result_.Result<A, E>> =>
   create(x => {
@@ -30,11 +30,13 @@ export const ResultFn = <A, E>(
 
 export const Result: {
   <A, E>(schemas: ResultSchemas<A, E>): Schema<Result_.Result<A, E>>
+
   readonly orElse: <B, D>(
     mb: Result_.Result<B, D>,
   ) => <In, A>(
     Schema: Schema<In, Result_.Result<A, unknown>>,
   ) => Schema<In, Result_.Result<A | B, D>>
+
   readonly getOrElse: <E, B>(
     f: (e: E) => B,
   ) => <In, A>(Schema: Schema<In, Result_.Result<A, E>>) => Schema<In, A | B>

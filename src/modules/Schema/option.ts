@@ -23,11 +23,13 @@ const OptionFn: {
 
 export const Option: {
   <A>(schema: Schema<A>): Schema<Option_.Option<A>>
+
   readonly orElse: <B>(
     mb: Option_.Option<B>,
   ) => <In, A>(
     Schema: Schema<In, Option_.Option<A>>,
   ) => Schema<In, Option_.Option<A | B>>
+
   readonly getOrElse: <B>(
     f: () => B,
   ) => <In, A>(Schema: Schema<In, Option_.Option<A>>) => Schema<In, A | B>
