@@ -5,14 +5,15 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "tsc": "tsc -noEmit",
     "build": "node ./esbuild.config.mjs",
     "start": "npm run build && clear && node ./dist/index.cjs",
     "start:tsc": "clear && npm run tsc && npm run build && clear && node ./dist/index.cjs",
     "watch": "nodemon dist/index.cjs",
     "nodemon": "nodemon",
+    "jest:clear-cache": "jest --clearCache",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "tsc": "tsc -noEmit",
     "lint": "eslint --fix",
     "prettier": "prettier . --write",
     "prepare": "husky"
