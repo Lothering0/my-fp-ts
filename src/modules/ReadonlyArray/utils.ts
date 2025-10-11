@@ -28,7 +28,7 @@ export const fromIterable: {
 } = as => [...as]
 
 export const length: {
-  <A>(self: ReadonlyArray<A>): number
+  (self: ReadonlyArray<unknown>): number
 } = self => self.length
 
 export const copy: {
@@ -85,7 +85,7 @@ export const at: {
     : Option.none()
 
 export const lastIndex: {
-  <A>(self: ReadonlyArray<A>): number
+  (self: ReadonlyArray<unknown>): number
 } = self => length(self) - 1
 
 export const findMap: {
@@ -181,15 +181,12 @@ export const findLastIndex: {
     }),
   )
 
-/** Is `a` element of an array by `Equivalence` instance */
+/** Is `a` an element of array by `Equivalence` instance */
 export const elem =
-  <A>(
-    Equivalence: Equivalence.Equivalence<A>,
-  ): {
-    (a: A): (self: ReadonlyArray<A>) => boolean
-  } =>
-  a =>
-    flow(find(Equivalence.equals(a)), Option.isSome)
+  <A>(Equivalence: Equivalence.Equivalence<A>) =>
+  (a: A) =>
+  (self: ReadonlyArray<A>): boolean =>
+    pipe(self, find(Equivalence.equals(a)), Option.isSome)
 
 export const every: {
   <A, B extends A>(
@@ -315,7 +312,7 @@ export const zip: {
   <B>(
     as: ReadonlyArray<B>,
   ): <A>(self: ReadonlyArray<A>) => ReadonlyArray<readonly [A, B]>
-} = as => zipWith(as, (b, a) => [b, a])
+} = as => zipWith(as, (a, b) => [a, b])
 
 export const takeLeftWhile: {
   <A>(
