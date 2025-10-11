@@ -8,7 +8,7 @@ export interface ResultSchemas<A, E> {
   readonly failure: Schema<E>
 }
 
-export const Result = <A, E>(
+export const ResultFn = <A, E>(
   schemas: ResultSchemas<A, E>,
 ): Schema<Result_.Result<A, E>> =>
   create(x => {
@@ -27,3 +27,23 @@ export const Result = <A, E>(
       }),
     )
   })
+
+export const Result: {
+  <A, E>(schemas: ResultSchemas<A, E>): Schema<Result_.Result<A, E>>
+  readonly orElse: <B, D>(
+    mb: Result_.Result<B, D>,
+  ) => <In, A>(
+    Schema: Schema<In, Result_.Result<A, unknown>>,
+  ) => Schema<In, Result_.Result<A | B, D>>
+  readonly getOrElse: <E, B>(
+    f: (e: E) => B,
+  ) => <In, A>(Schema: Schema<In, Result_.Result<A, E>>) => Schema<In, A | B>
+} = ResultFn as typeof Result
+
+type WritableResult = {
+  -readonly [K in keyof typeof Result]: (typeof Result)[K]
+}
+;(Result as WritableResult).orElse = mb => schema =>
+  create(flow(schema.proceed, Result_.map(Result_.orElse(mb))))
+;(Result as WritableResult).getOrElse = f => schema =>
+  create(flow(schema.proceed, Result_.map(Result_.getOrElse(f))))
