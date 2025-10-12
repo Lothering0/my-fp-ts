@@ -5,6 +5,7 @@ import * as Monad_ from '../../typeclasses/Monad'
 import * as Compactable_ from '../../typeclasses/Compactable'
 import * as Extendable_ from '../../typeclasses/Extendable'
 import * as Tappable_ from '../../typeclasses/Tappable'
+import * as Zippable_ from '../../typeclasses/Zippable'
 import { Hkt, Kind } from '../../typeclasses/Hkt'
 import { FromIdentity } from '../../typeclasses/FromIdentity'
 import { FromOption } from '../../typeclasses/FromOption'
@@ -196,6 +197,8 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
     extend: fab => self => Functor.map(() => fab(self))(self),
   })
 
+  const Zippable = Zippable_.create(Applicative)
+
   return {
     some,
     none,
@@ -235,5 +238,7 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
     ...Compactable,
     Extendable,
     ...Extendable,
+    Zippable,
+    ...Zippable,
   }
 }

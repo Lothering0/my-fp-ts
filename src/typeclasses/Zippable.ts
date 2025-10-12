@@ -1,8 +1,9 @@
 import { Hkt, Kind } from './Hkt'
 import { Applicative } from './Applicative'
 import { flow, pipe } from '../utils/flow'
+import { TypeClass } from './TypeClass'
 
-export interface Zippable<F extends Hkt> {
+export interface Zippable<F extends Hkt> extends TypeClass<F> {
   readonly zipWith: <In1, In2, Out, Collectable2, Fixed>(
     that: Kind<F, In2, Collectable2, Fixed>,
     f: (a: In1, b: In2) => Out,

@@ -4,6 +4,7 @@ import * as Applicative_ from '../../typeclasses/Applicative'
 import * as Monad_ from '../../typeclasses/Monad'
 import * as Extendable_ from '../../typeclasses/Extendable'
 import * as Tappable_ from '../../typeclasses/Tappable'
+import * as Zippable_ from '../../typeclasses/Zippable'
 import { identity } from '../Identity'
 import { Hkt, Kind } from '../../typeclasses/Hkt'
 import { FromIdentity } from '../../typeclasses/FromIdentity'
@@ -188,6 +189,8 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
       ),
   })
 
+  const Zippable = Zippable_.create(Applicative)
+
   return {
     succeed,
     succeedKind,
@@ -218,5 +221,7 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
     ...Tappable,
     Extendable,
     ...Extendable,
+    Zippable,
+    ...Zippable,
   }
 }

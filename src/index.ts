@@ -6,6 +6,7 @@ import * as Result from './modules/Result'
 import * as State from './modules/State'
 import * as Reader from './modules/Reader'
 import * as Tree from './modules/Tree'
+import * as Effect from './modules/Effect'
 
 // modules
 export * as Async from './modules/Async'
@@ -49,6 +50,7 @@ export const ResultOption = Option.transform(Result.Monad)
 export const StateOption = Option.transform(State.Monad)
 export const ReaderOption = Option.transform(Reader.Monad)
 export const TreeOfOptions = Option.transform(Tree.Monad)
+export const EffectOption = Option.transform(Effect.Monad)
 
 export const OptionResult = Result.transform(Option.Monad)
 export const ArrayOfResults = Result.transform(Array.Monad)
@@ -58,6 +60,7 @@ export const ResultResult = Result.transform(Result.Monad)
 export const StateResult = Result.transform(State.Monad)
 export const ReaderResult = Result.transform(Reader.Monad)
 export const TreeOfResults = Result.transform(Tree.Monad)
+export const EffectResult = Result.transform(Effect.Monad)
 
 export const OptionState = State.transform(Option.Monad)
 export const ArrayOfStates = State.transform(Array.Monad)
@@ -67,6 +70,7 @@ export const ResultState = State.transform(Result.Monad)
 export const StateState = State.transform(State.Monad)
 export const ReaderState = State.transform(Reader.Monad)
 export const TreeOfStates = State.transform(Tree.Monad)
+export const EffectState = State.transform(Effect.Monad)
 
 // typeclasses
 export * as Alt from './typeclasses/Alt'

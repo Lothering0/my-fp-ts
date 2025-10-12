@@ -2,6 +2,7 @@ import * as State from '../State'
 import * as Applicative_ from '../../typeclasses/Applicative'
 import * as Monad_ from '../../typeclasses/Monad'
 import * as Tappable_ from '../../typeclasses/Tappable'
+import * as Zippable_ from '../../typeclasses/Zippable'
 import { Hkt, Kind } from '../../typeclasses/Hkt'
 import { Functor } from '../../typeclasses/Functor'
 import { FromIdentity } from '../../typeclasses/FromIdentity'
@@ -109,6 +110,8 @@ export const transform = <F extends Hkt, TFixed>(F: Monad_.Monad<F>) => {
 
   const Tappable = Tappable_.create(Monad)
 
+  const Zippable = Zippable_.create(Applicative)
+
   return {
     fromState,
     fromKind,
@@ -129,5 +132,7 @@ export const transform = <F extends Hkt, TFixed>(F: Monad_.Monad<F>) => {
     ...Monad,
     Tappable,
     ...Tappable,
+    Zippable,
+    ...Zippable,
   }
 }

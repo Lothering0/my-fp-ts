@@ -21,8 +21,8 @@ type ExtractTupleTypes<A extends ReadonlyArray<Schema<unknown>>> = A extends [
 
 export const Tuple = <A extends ReadonlyArray<Schema<unknown>>>(
   ...schemas: A
-): Schema<ExtractTupleTypes<A>, ExtractTupleTypes<A>> =>
-  create(xs => {
+): Schema<ExtractTupleTypes<A>> =>
+  create<ExtractTupleTypes<A>>(xs => {
     const isArray = Array.Array.isArray(xs)
 
     if (!isArray) {

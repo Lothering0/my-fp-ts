@@ -10,7 +10,6 @@
     "start:tsc": "clear && npm run tsc && npm run build && clear && node ./dist/index.cjs",
     "watch": "nodemon dist/index.cjs",
     "nodemon": "nodemon",
-    "jest:clear-cache": "jest --clearCache",
     "test": "jest",
     "test:watch": "jest --watch",
     "tsc": "tsc -noEmit",
