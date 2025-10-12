@@ -99,6 +99,7 @@ export * as Show from './typeclasses/Show'
 export * as Tappable from './typeclasses/Tappable'
 export * as TappableBoth from './typeclasses/TappableBoth'
 export { TypeClass } from './typeclasses/TypeClass'
+export * as Zippable from './typeclasses/Zippable'
 
 // types
 export { DoObject, DoObjectKey } from './types/DoObject'

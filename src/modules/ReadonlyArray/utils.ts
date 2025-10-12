@@ -290,30 +290,6 @@ export const slice: {
   (start: number, end?: number): <A>(self: ReadonlyArray<A>) => ReadonlyArray<A>
 } = (start, end) => self => self.slice(start, end)
 
-export const zipWith: {
-  <A, B, C>(
-    bs: ReadonlyArray<B>,
-    abic: (a: A, b: B, i: number) => C,
-  ): (self: ReadonlyArray<A>) => ReadonlyArray<C>
-} = (bs, abic) => self => {
-  const minLength = Math.min(self.length, bs.length)
-  const out = []
-
-  for (let i = 0; i < minLength; i++) {
-    const a = self[i]!
-    const b = bs[i]!
-    out.push(abic(a, b, i))
-  }
-
-  return out
-}
-
-export const zip: {
-  <B>(
-    as: ReadonlyArray<B>,
-  ): <A>(self: ReadonlyArray<A>) => ReadonlyArray<readonly [A, B]>
-} = as => zipWith(as, (a, b) => [a, b])
-
 export const takeLeftWhile: {
   <A>(
     p: PredicateWithIndex<A, number>,

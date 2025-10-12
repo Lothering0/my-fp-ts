@@ -264,31 +264,6 @@ export const includes: {
   <A>(a: A): (self: Iterable<A>) => boolean
 } = a => some(x => x === a)
 
-export const zipWith: {
-  <A, B, C>(
-    bs: Iterable<B>,
-    abic: (a: A, b: B, i: number) => C,
-  ): (self: Iterable<A>) => Iterable<C>
-} = (bs, abic) => self => ({
-  *[Symbol.iterator]() {
-    const firstIterator = self[Symbol.iterator]()
-    const secondIterator = bs[Symbol.iterator]()
-
-    const first = firstIterator.next()
-    const second = secondIterator.next()
-
-    let i = -1
-    while (!first.done && !second.done) {
-      i++
-      yield abic(first.value, second.value, i)
-    }
-  },
-})
-
-export const zip: {
-  <B>(as: Iterable<B>): <A>(self: Iterable<A>) => Iterable<readonly [A, B]>
-} = as => zipWith(as, (a, b) => [a, b])
-
 export const takeWhile: {
   <A>(p: PredicateWithIndex<A, number>): (self: Iterable<A>) => Iterable<A>
 } = p => self => ({
