@@ -1,12 +1,12 @@
 import * as Result from '../Result'
 import * as TappableBoth_ from '../../typeclasses/TappableBoth'
 import { Sync } from '../Sync'
-import { Monad } from './monad'
 import { execute, fromSync, SyncResult, SyncResultHkt } from './sync-result'
 import { pipe } from '../../utils/flow'
-import { create } from '../../typeclasses/Tappable'
+import { Tappable as Tappable_ } from '../../typeclasses/Tappable'
+import { _SyncResult } from './internal'
 
-export const Tappable = create(Monad)
+export const Tappable: Tappable_<SyncResultHkt> = _SyncResult.Tappable
 
 export const TappableBoth: TappableBoth_.TappableBoth<SyncResultHkt> = {
   ...Tappable,

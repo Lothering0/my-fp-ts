@@ -1,9 +1,9 @@
 import { FromIdentity as FromIdentity_ } from '../../typeclasses/FromIdentity'
-import { succeed, SyncResult, SyncResultHkt } from './sync-result'
+import { _SyncResult } from './internal'
+import { SyncResult, SyncResultHkt } from './sync-result'
 
-export const FromIdentity: FromIdentity_<SyncResultHkt> = {
-  of: succeed,
-}
+export const FromIdentity: FromIdentity_<SyncResultHkt> =
+  _SyncResult.FromIdentity
 
 export const of: {
   <A>(success: A): SyncResult<A>

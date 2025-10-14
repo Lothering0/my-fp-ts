@@ -1,11 +1,12 @@
 import * as Result from '../Result'
-import { create } from '../../typeclasses/Applicative'
+import { Applicative as Applicative_ } from '../../typeclasses/Applicative'
 import { AsyncResultHkt, toPromise, AsyncResult } from './async-result'
 import { pipe } from '../../utils/flow'
-import { Monad } from './monad'
 import { flip } from '../../utils/flip'
+import { _AsyncResult } from './internal'
 
-export const Applicative = create<AsyncResultHkt>(Monad)
+export const Applicative: Applicative_<AsyncResultHkt> =
+  _AsyncResult.Applicative
 
 export const apply: {
   <A, E1>(

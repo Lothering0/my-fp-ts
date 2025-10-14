@@ -1,9 +1,9 @@
 import { FromIdentity as FromIdentity_ } from '../../typeclasses/FromIdentity'
-import { AsyncOption, AsyncOptionHkt, some } from './async-option'
+import { AsyncOption, AsyncOptionHkt } from './async-option'
+import { _AsyncOption } from './internal'
 
-export const FromIdentity: FromIdentity_<AsyncOptionHkt> = {
-  of: some,
-}
+export const FromIdentity: FromIdentity_<AsyncOptionHkt> =
+  _AsyncOption.FromIdentity
 
 export const of: {
   <A>(a: A): AsyncOption<A>

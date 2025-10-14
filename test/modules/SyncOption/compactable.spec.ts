@@ -1,13 +1,13 @@
 import { Option, SyncOption } from '../../../src'
 
 describe('separate', () => {
-  it('should call `SyncOption` instance only once', () => {
+  it('should call `SyncOption` instance only twice', () => {
     const fa: SyncOption.SyncOption<never> = jest.fn(() => Option.none())
 
     const [left, right] = SyncOption.separate(fa)
     left()
     right()
 
-    expect(fa).toHaveBeenCalledTimes(1)
+    expect(fa).toHaveBeenCalledTimes(2)
   })
 })

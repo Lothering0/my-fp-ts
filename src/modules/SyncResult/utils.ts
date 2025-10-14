@@ -1,8 +1,7 @@
-import * as Result from '../Result'
 import * as Sync from '../Sync'
-import { pipe } from '../../utils/flow'
-import { execute, SyncResult } from './sync-result'
+import { SyncResult } from './sync-result'
+import { _SyncResult } from './internal'
 
 export const toUnion: {
   <A, E>(self: SyncResult<A, E>): Sync.Sync<A | E>
-} = self => () => pipe(self, execute, Result.toUnion)
+} = _SyncResult.toUnion

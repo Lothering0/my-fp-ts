@@ -22,6 +22,7 @@ type ExtractTupleTypes<A extends ReadonlyArray<Schema<unknown>>> = A extends [
 export const Tuple = <A extends ReadonlyArray<Schema<unknown>>>(
   ...schemas: A
 ): Schema<ExtractTupleTypes<A>> =>
+  // Explicitly define generic. Without it Jest sometimes fail tests at this place
   create<ExtractTupleTypes<A>>(xs => {
     const isArray = Array.Array.isArray(xs)
 

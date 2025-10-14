@@ -1,11 +1,8 @@
-import * as Result from '../Result'
 import * as Functor_ from '../../typeclasses/Functor'
-import { SyncResultHkt, SyncResult, execute } from './sync-result'
-import { pipe } from '../../utils/flow'
+import { SyncResultHkt, SyncResult } from './sync-result'
+import { _SyncResult } from './internal'
 
-export const Functor: Functor_.Functor<SyncResultHkt> = {
-  map: ab => self => () => pipe(self, execute, Result.map(ab)),
-}
+export const Functor: Functor_.Functor<SyncResultHkt> = _SyncResult.Functor
 
 export const map: {
   <A, B>(ab: (a: A) => B): <E>(self: SyncResult<A, E>) => SyncResult<B, E>

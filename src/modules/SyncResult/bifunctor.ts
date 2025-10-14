@@ -1,12 +1,8 @@
-import * as Result from '../Result'
-import { create } from '../../typeclasses/Bifunctor'
-import { SyncResultHkt, SyncResult, execute } from './sync-result'
-import { pipe } from '../../utils/flow'
-import { Functor } from './functor'
+import { Bifunctor as Bifunctor_ } from '../../typeclasses/Bifunctor'
+import { SyncResultHkt, SyncResult } from './sync-result'
+import { _SyncResult } from './internal'
 
-export const Bifunctor = create<SyncResultHkt>(Functor, {
-  mapLeft: ed => self => () => pipe(self, execute, Result.mapLeft(ed)),
-})
+export const Bifunctor: Bifunctor_<SyncResultHkt> = _SyncResult.Bifunctor
 
 export const mapLeft: {
   <E, D>(ed: (failure: E) => D): <A>(self: SyncResult<A, E>) => SyncResult<A, D>

@@ -1,8 +1,7 @@
 import * as Sync from '../Sync'
 import * as Option from '../Option'
-import { tryDo } from '../../utils/exceptions'
-import { pipe } from '../../utils/flow'
 import { Hkt } from '../../typeclasses/Hkt'
+import { _SyncOption } from './internal'
 
 export interface SyncOptionHkt extends Hkt {
   readonly Type: SyncOption<this['In']>
@@ -12,22 +11,28 @@ export interface SyncOption<A> extends Sync.Sync<Option.Option<A>> {}
 
 export const none: {
   <A = never>(): SyncOption<A>
-} = () => Option.none
+} = _SyncOption.none
 
 export const some: {
   <A>(a: A): SyncOption<A>
-} = a => () => Option.some(a)
+} = _SyncOption.some
 
-export const fromSync: {
-  <A>(ma: Sync.Sync<A>): SyncOption<A>
-} = ma => () => pipe(ma, tryDo, Option.fromResult)
-
-export const execute: {
-  <A>(ma: SyncOption<A>): Option.Option<A>
-} = <A>(ma: SyncOption<A>) => {
+const try_: {
+  <A>(operation: () => A): SyncOption<A>
+} = operation => () => {
   try {
-    return ma()
+    return Option.some(operation())
   } catch {
     return Option.none()
   }
 }
+
+export { try_ as try }
+
+export const fromSync: {
+  <A>(ma: Sync.Sync<A>): SyncOption<A>
+} = ma => () => Option.some(ma())
+
+export const execute: {
+  <A>(ma: SyncOption<A>): Option.Option<A>
+} = <A>(ma: SyncOption<A>) => ma()

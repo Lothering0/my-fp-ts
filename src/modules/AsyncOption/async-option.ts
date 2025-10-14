@@ -3,9 +3,8 @@ import * as AsyncResult from '../AsyncResult'
 import * as Result from '../Result'
 import * as Option from '../Option'
 import { Hkt } from '../../typeclasses/Hkt'
-import { identity } from '../Identity'
 import { constant } from '../../utils/constant'
-import { flow } from '../../utils/flow'
+import { _AsyncOption } from './internal'
 
 export interface AsyncOptionHkt extends Hkt {
   readonly Type: AsyncOption<this['In']>
@@ -15,19 +14,31 @@ export interface AsyncOption<A> extends Async.Async<Option.Option<A>> {}
 
 export const none: {
   <A = never>(): AsyncOption<A>
-} = () => Async.of(Option.none())
+} = _AsyncOption.none
 
 export const some: {
   <A>(a: A): AsyncOption<A>
-} = flow(Option.some, Async.of)
+} = _AsyncOption.some
+
+const try_: {
+  <A>(operation: () => Promise<A>): AsyncOption<A>
+} = operation => () => {
+  try {
+    return operation().then(Option.some, Option.none)
+  } catch {
+    return Promise.resolve(Option.none())
+  }
+}
+
+export { try_ as try }
 
 export const toPromise: {
   <A>(ma: AsyncOption<A>): Promise<Option.Option<A>>
-} = mma => mma().then(identity, constant(Option.none()))
+} = mma => mma()
 
 export const fromAsync: {
   <A>(ma: Async.Async<A>): AsyncOption<A>
-} = ma => () => ma().then(Option.some, () => Option.none())
+} = ma => () => ma().then(Option.some)
 
 export const fromAsyncResult: {
   <A, E>(ma: AsyncResult.AsyncResult<A, E>): AsyncOption<A>
@@ -37,5 +48,4 @@ export const fromAsyncResult: {
       onFailure: constant(Option.none()),
       onSuccess: Option.some,
     }),
-    constant(Option.none()),
   )

@@ -1,17 +1,9 @@
-import * as Option from '../Option'
-import { create } from '../../typeclasses/Monad'
+import { Monad as Monad_ } from '../../typeclasses/Monad'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
-import { Functor } from './functor'
-import { pipe } from '../../utils/flow'
-import { SyncOptionHkt, execute, SyncOption } from './sync-option'
-import { FromIdentity } from './from-identity'
+import { SyncOptionHkt, SyncOption } from './sync-option'
+import { _SyncOption } from './internal'
 
-export const Monad = create<SyncOptionHkt>(FromIdentity, Functor, {
-  flat: self => () =>
-    pipe(self, execute, ma =>
-      Option.isNone(ma) ? ma : pipe(ma, Option.value, execute),
-    ),
-})
+export const Monad: Monad_<SyncOptionHkt> = _SyncOption.Monad
 
 export const Do = Monad.Do
 

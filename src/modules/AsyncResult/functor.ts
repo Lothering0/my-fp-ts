@@ -1,10 +1,8 @@
-import * as Result from '../Result'
 import * as Functor_ from '../../typeclasses/Functor'
-import { AsyncResultHkt, toPromise, AsyncResult } from './async-result'
+import { AsyncResultHkt, AsyncResult } from './async-result'
+import { _AsyncResult } from './internal'
 
-export const Functor: Functor_.Functor<AsyncResultHkt> = {
-  map: ab => self => () => toPromise(self).then(Result.map(ab)),
-}
+export const Functor: Functor_.Functor<AsyncResultHkt> = _AsyncResult.Functor
 
 export const map: {
   <A, B>(ab: (a: A) => B): <E>(self: AsyncResult<A, E>) => AsyncResult<B, E>

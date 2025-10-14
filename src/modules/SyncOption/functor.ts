@@ -1,11 +1,8 @@
-import * as Option from '../Option'
 import * as Functor_ from '../../typeclasses/Functor'
-import { SyncOptionHkt, execute, SyncOption } from './sync-option'
-import { pipe } from '../../utils/flow'
+import { SyncOptionHkt, SyncOption } from './sync-option'
+import { _SyncOption } from './internal'
 
-export const Functor: Functor_.Functor<SyncOptionHkt> = {
-  map: ab => self => () => pipe(self, execute, Option.map(ab)),
-}
+export const Functor: Functor_.Functor<SyncOptionHkt> = _SyncOption.Functor
 
 export const map: {
   <A, B>(ab: (a: A) => B): (self: SyncOption<A>) => SyncOption<B>

@@ -1,12 +1,10 @@
 import * as Alternative_ from '../../typeclasses/Alternative'
-import { none, SyncOption, SyncOptionHkt } from './sync-option'
-import { Alt } from './alt'
+import { SyncOption, SyncOptionHkt } from './sync-option'
+import { _SyncOption } from './internal'
 
 export const zero: {
   <A = never>(): SyncOption<A>
-} = none
+} = _SyncOption.zero
 
-export const Alternative: Alternative_.Alternative<SyncOptionHkt> = {
-  ...Alt,
-  zero,
-}
+export const Alternative: Alternative_.Alternative<SyncOptionHkt> =
+  _SyncOption.Alternative

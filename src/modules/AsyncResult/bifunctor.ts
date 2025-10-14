@@ -1,11 +1,8 @@
-import * as Result from '../Result'
-import { create } from '../../typeclasses/Bifunctor'
-import { AsyncResultHkt, toPromise, AsyncResult } from './async-result'
-import { Functor } from './functor'
+import { Bifunctor as Bifunctor_ } from '../../typeclasses/Bifunctor'
+import { AsyncResultHkt, AsyncResult } from './async-result'
+import { _AsyncResult } from './internal'
 
-export const Bifunctor = create<AsyncResultHkt>(Functor, {
-  mapLeft: ed => self => () => toPromise(self).then(Result.mapLeft(ed)),
-})
+export const Bifunctor: Bifunctor_<AsyncResultHkt> = _AsyncResult.Bifunctor
 
 export const mapLeft: {
   <E, D>(

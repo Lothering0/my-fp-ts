@@ -2,12 +2,12 @@ import * as SyncResult from '../SyncResult'
 import * as Option from '../Option'
 import { Sync } from '../Sync'
 import { Result } from '../Result'
-import { Monad } from './monad'
 import { pipe } from '../../utils/flow'
-import { execute, SyncOption } from './sync-option'
-import { create } from '../../typeclasses/Tappable'
+import { execute, SyncOption, SyncOptionHkt } from './sync-option'
+import { Tappable as Tappable_ } from '../../typeclasses/Tappable'
+import { _SyncOption } from './internal'
 
-export const Tappable = create(Monad)
+export const Tappable: Tappable_<SyncOptionHkt> = _SyncOption.Tappable
 
 export const tap: {
   <A>(f: (a: A) => SyncOption<unknown>): (self: SyncOption<A>) => SyncOption<A>

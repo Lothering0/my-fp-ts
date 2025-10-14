@@ -6,11 +6,7 @@ import { isFunction } from '../../utils/typeChecks'
 import { flow, pipe } from '../../utils/flow'
 import { mapResult, map } from './functor'
 import { UnknownException } from '../Exception'
-
-export interface TryCatch<A, E> {
-  readonly try: () => A
-  readonly catch: (e: unknown) => E
-}
+import { TryCatch } from '../../types/TryCatch'
 
 const try_: {
   <A, E>(tryCatch: TryCatch<A, E>): Effect.Effect<Awaited<A>, E>
@@ -33,7 +29,7 @@ const try_: {
     const result = tryCatch.try()
     if (result instanceof Promise) {
       return Effect.fromAsyncResult(() =>
-        result.then(Result.succeed, flow(tryCatch.catch, Result.fail)),
+        result.then(Result.succeed).catch(flow(tryCatch.catch, Result.fail)),
       )
     }
     return Effect.succeed(result)

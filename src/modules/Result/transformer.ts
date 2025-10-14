@@ -113,17 +113,17 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
     ) =>
     <In>(
       self: Kind<THkt, In, Collectable1, Fixed>,
-    ): Kind<THkt, In | Out, Collectable1 | Collectable2, Fixed> =>
+    ): Kind<THkt, In | Out, Collectable2, Fixed> =>
       pipe(
         self,
         M.flatMap<
           Result.Result<In, Collectable1>,
-          Result.Result<In | Out, Collectable1 | Collectable2>,
+          Result.Result<In | Out, Collectable2>,
           TCollectable,
           Fixed
         >(
           Result.match({
-            onSuccess: succeed<In, Collectable1, Fixed>,
+            onSuccess: succeed<In, Collectable2, Fixed>,
             onFailure,
           }),
         ),

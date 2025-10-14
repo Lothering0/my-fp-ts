@@ -91,6 +91,7 @@ export * as Functor from './typeclasses/Functor'
 export * as FunctorWithIndex from './typeclasses/FunctorWithIndex'
 export * as Group from './typeclasses/Group'
 export { Hkt, Kind } from './typeclasses/Hkt'
+export * as Invariant from './typeclasses/Invariant'
 export * as Magma from './typeclasses/Magma'
 export * as Monad from './typeclasses/Monad'
 export * as MonadWithIndex from './typeclasses/MonadWithIndex'
@@ -108,6 +109,7 @@ export * as Zippable from './typeclasses/Zippable'
 // types
 export { DoObject, DoObjectKey } from './types/DoObject'
 export { Tag, Tagged } from './types/Tag'
+export { TryCatch } from './types/TryCatch'
 export {
   LazyArg,
   Prettify,

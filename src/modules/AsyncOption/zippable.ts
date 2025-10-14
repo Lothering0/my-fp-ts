@@ -1,8 +1,9 @@
 import * as Zippable_ from '../../typeclasses/Zippable'
-import { Applicative } from './applicative'
-import { AsyncOption } from './async-option'
+import { AsyncOption, AsyncOptionHkt } from './async-option'
+import { _AsyncOption } from './internal'
 
-export const Zippable = Zippable_.create(Applicative)
+export const Zippable: Zippable_.Zippable<AsyncOptionHkt> =
+  _AsyncOption.Zippable
 
 export const zipWith: {
   <A, B, C>(

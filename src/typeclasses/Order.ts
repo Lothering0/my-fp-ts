@@ -89,7 +89,9 @@ export const Contravariant: Contravariant_.Contravariant<OrderHkt> = {
   }),
 }
 
-export const { contramap } = Contravariant
+export const contramap: {
+  <A, B>(ba: (b: B) => A): (self: Order<A>) => Order<B>
+} = Contravariant.contramap
 
 /** Returns `Semigroup` which orders elements by first `Order` and if the result is zero orders by second */
 export const getOrderSemigroup: {

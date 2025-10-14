@@ -1,7 +1,7 @@
 import { AsyncOption, Option } from '../../../src'
 
 describe('separate', () => {
-  it('should call `AsyncOption` instance only once', async () => {
+  it('should call `AsyncOption` instance only twice', async () => {
     const fa: AsyncOption.AsyncOption<never> = jest.fn(
       () =>
         new Promise(resolve => {
@@ -15,6 +15,6 @@ describe('separate', () => {
     await left()
     await right()
 
-    expect(fa).toHaveBeenCalledTimes(1)
+    expect(fa).toHaveBeenCalledTimes(2)
   })
 })

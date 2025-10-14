@@ -15,3 +15,7 @@ export const Contravariant: Contravariant_.Contravariant<ShowHkt> = {
     show: flow(ba, self.show),
   }),
 }
+
+export const contramap: {
+  <A, B>(ba: (b: B) => A): (self: Show<A>) => Show<B>
+} = Contravariant.contramap

@@ -2,7 +2,10 @@ import * as Result from '../Result'
 import * as Sync from '../Sync'
 import { Hkt } from '../../typeclasses/Hkt'
 import { pipe } from '../../utils/flow'
-import { tryDo } from '../../utils/exceptions'
+import { TryCatch } from '../../types/TryCatch'
+import { UnknownException } from '../Exception'
+import { isFunction } from '../../utils/typeChecks'
+import { _SyncResult } from './internal'
 
 export interface SyncResultHkt extends Hkt {
   readonly Type: SyncResult<this['In'], this['Collectable']>
@@ -13,30 +16,50 @@ export interface SyncResult<A, E = never>
 
 export const fail: {
   <E>(e: E): SyncResult<never, E>
-} = e => () => Result.fail(e)
+} = _SyncResult.fail
 
 export const failSync: {
   <E>(me: Sync.Sync<E>): SyncResult<never, E>
-} = me => () => pipe(me, Sync.execute, Result.fail)
+} = _SyncResult.failKind
 
 export const succeed: {
   <A>(a: A): SyncResult<A>
-} = a => () => Result.succeed(a)
+} = _SyncResult.succeed
 
 export const succeedSync: {
   <A>(ma: Sync.Sync<A>): SyncResult<A>
-} = ma => () => pipe(ma, Sync.execute, Result.succeed)
+} = _SyncResult.succeedKind
 
 export const fromSync: {
   <A, E>(ma: Sync.Sync<A>): SyncResult<A, E>
-} = ma => () => tryDo(ma)
+} = ma => () => Result.succeed(ma())
+
+const try_: {
+  <A, E>(tryCatch: TryCatch<A, E>): SyncResult<A, E>
+  <A>(operation: () => A): SyncResult<A, UnknownException>
+} =
+  <A, E>(operationOrTryCatch: TryCatch<A, E> | (() => A)): SyncResult<A, E> =>
+  () => {
+    let tryCatch: TryCatch<A, E>
+
+    if (isFunction(operationOrTryCatch)) {
+      tryCatch = {
+        try: operationOrTryCatch,
+        catch: e => new UnknownException(e) as E,
+      }
+    } else {
+      tryCatch = operationOrTryCatch
+    }
+
+    try {
+      return Result.succeed(tryCatch.try())
+    } catch (e) {
+      return pipe(e, tryCatch.catch, Result.fail)
+    }
+  }
+
+export { try_ as try }
 
 export const execute: {
   <A, E>(ma: SyncResult<A, E>): Result.Result<A, E>
-} = ma => {
-  try {
-    return ma()
-  } catch (exception) {
-    return Result.fail(exception)
-  }
-}
+} = ma => ma()

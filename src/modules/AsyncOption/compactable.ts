@@ -1,30 +1,11 @@
 import * as Option from '../Option'
 import * as Result from '../Result'
-import { create } from '../../typeclasses/Compactable'
-import {
-  AsyncOption,
-  AsyncOptionHkt,
-  some,
-  none,
-  toPromise,
-} from './async-option'
-import { Functor } from './functor'
-import { pipe } from '../../utils/flow'
-import { flatMap } from './monad'
+import { Compactable as Compactable_ } from '../../typeclasses/Compactable'
+import { AsyncOption, AsyncOptionHkt } from './async-option'
+import { _AsyncOption } from './internal'
 
-export const Compactable = create<AsyncOptionHkt>(Functor, {
-  compact: self => () => toPromise(self).then(Option.compact),
-  separate: self =>
-    pipe(
-      self,
-      toPromise,
-      ma => () => ma,
-      mma => [
-        pipe(mma, flatMap(Result.match({ onFailure: none, onSuccess: some }))),
-        pipe(mma, flatMap(Result.match({ onFailure: some, onSuccess: none }))),
-      ],
-    ),
-})
+export const Compactable: Compactable_<AsyncOptionHkt> =
+  _AsyncOption.Compactable
 
 export const compact: {
   <A>(self: AsyncOption<Option.Option<A>>): AsyncOption<A>

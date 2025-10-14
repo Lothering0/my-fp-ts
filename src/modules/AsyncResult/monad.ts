@@ -1,24 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as Result from '../Result'
-import * as Async from '../Async'
-import { identity } from '../Identity'
-import { create } from '../../typeclasses/Monad'
-import { Functor } from './functor'
-import { AsyncResultHkt, AsyncResult, toPromise, fail } from './async-result'
+import { Monad as Monad_ } from '../../typeclasses/Monad'
+import { AsyncResultHkt, AsyncResult, toPromise } from './async-result'
 import { pipe } from '../../utils/flow'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
-import { match } from './matchers'
-import { FromIdentity } from './from-identity'
+import { _AsyncResult } from './internal'
 
-export const Monad = create<AsyncResultHkt>(FromIdentity, Functor, {
-  flat: self => () =>
-    pipe(
-      self,
-      match({ onFailure: fail, onSuccess: identity }),
-      Async.toPromise,
-      promise => promise.then(toPromise),
-    ),
-})
+export const Monad: Monad_<AsyncResultHkt> = _AsyncResult.Monad
 
 export const Do = Monad.Do
 

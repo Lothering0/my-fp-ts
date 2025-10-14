@@ -1,17 +1,9 @@
-import * as Result from '../Result'
-import { create } from '../../typeclasses/Monad'
+import { Monad as Monad_ } from '../../typeclasses/Monad'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
-import { SyncResultHkt, execute, SyncResult } from './sync-result'
-import { Functor } from './functor'
-import { pipe } from '../../utils/flow'
-import { FromIdentity } from './from-identity'
+import { SyncResultHkt, SyncResult } from './sync-result'
+import { _SyncResult } from './internal'
 
-export const Monad = create<SyncResultHkt>(FromIdentity, Functor, {
-  flat: self => () =>
-    pipe(self, execute, ma =>
-      Result.isFailure(ma) ? ma : pipe(ma, Result.successOf, execute),
-    ),
-})
+export const Monad: Monad_<SyncResultHkt> = _SyncResult.Monad
 
 export const Do = Monad.Do
 

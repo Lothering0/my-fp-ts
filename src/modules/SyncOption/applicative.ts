@@ -1,8 +1,8 @@
-import { create } from '../../typeclasses/Applicative'
+import { Applicative as Applicative_ } from '../../typeclasses/Applicative'
 import { SyncOptionHkt, SyncOption } from './sync-option'
-import { Monad } from './monad'
+import { _SyncOption } from './internal'
 
-export const Applicative = create<SyncOptionHkt>(Monad)
+export const Applicative: Applicative_<SyncOptionHkt> = _SyncOption.Applicative
 
 export const apply: {
   <A>(fa: SyncOption<A>): <B>(self: SyncOption<(a: A) => B>) => SyncOption<B>
