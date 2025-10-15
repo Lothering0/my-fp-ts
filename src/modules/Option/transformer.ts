@@ -194,7 +194,7 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
     <In>(
       f: (a: In) => Option.Option<unknown>,
     ): <Collectable, Fixed>(
-      self: Kind<F, Option.Option<In>, Collectable, Fixed>,
+      self: Kind<THkt, In, Collectable, Fixed>,
     ) => Kind<THkt, In, Collectable, Fixed>
   } = f =>
     Monad.flatMap(a =>
@@ -210,7 +210,7 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
     <In>(
       f: (a: In) => Sync.Sync<Option.Option<unknown>>,
     ): <Collectable, Fixed>(
-      self: Kind<F, Option.Option<In>, Collectable, Fixed>,
+      self: Kind<THkt, In, Collectable, Fixed>,
     ) => Kind<THkt, In, Collectable, Fixed>
   } = f =>
     Monad.flatMap(a =>
@@ -226,7 +226,7 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
   const tapResult =
     <In>(f: (a: In) => Result.Result<unknown, unknown>) =>
     <Collectable, Fixed>(
-      self: Kind<F, Option.Option<In>, Collectable, Fixed>,
+      self: Kind<THkt, In, Collectable, Fixed>,
     ): Kind<THkt, In, Collectable, Fixed> =>
       pipe(
         self,
@@ -243,7 +243,7 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
   const tapSyncResult =
     <In>(f: (a: In) => Sync.Sync<Result.Result<unknown, unknown>>) =>
     <Collectable, Fixed>(
-      self: Kind<F, Option.Option<In>, Collectable, Fixed>,
+      self: Kind<THkt, In, Collectable, Fixed>,
     ): Kind<THkt, In, Collectable, Fixed> =>
       pipe(
         self,

@@ -186,7 +186,7 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
     <In, Collectable2>(
       f: (a: In) => Result.Result<unknown, Collectable2>,
     ): <Collectable1, Fixed>(
-      self: Kind<F, Result.Result<In, Collectable1>, TCollectable, Fixed>,
+      self: Kind<THkt, In, Collectable1, Fixed>,
     ) => Kind<THkt, In, Collectable1 | Collectable2, Fixed>
   } = f =>
     Monad.flatMap(a =>
@@ -202,7 +202,7 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
     <In, Collectable2>(
       f: (a: In) => Sync.Sync<Result.Result<unknown, Collectable2>>,
     ): <Collectable1, Fixed>(
-      self: Kind<F, Result.Result<In, Collectable1>, TCollectable, Fixed>,
+      self: Kind<THkt, In, Collectable1, Fixed>,
     ) => Kind<THkt, In, Collectable1 | Collectable2, Fixed>
   } = f =>
     Monad.flatMap(a =>
