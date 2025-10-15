@@ -55,7 +55,7 @@ export const tapResult: {
   <A, E1>(
     f: (a: A) => Result.Result<unknown, E1>,
   ): <E2>(self: SyncResult<A, E2>) => SyncResult<A, E1 | E2>
-} = f => self => () => pipe(self, execute, Result.tap(f))
+} = _SyncResult.tapResult
 
 export const tapLeft: {
   <E1, E2>(

@@ -4,8 +4,8 @@ import { Sync } from '../Sync'
 import { Monad, flatMap } from './monad'
 import { map } from './functor'
 import { pipe } from '../../utils/flow'
-import { constant } from '../../utils/constant'
 import { create } from '../../typeclasses/Tappable'
+import { fromResult } from './from-result'
 
 export const Tappable = create(Monad)
 
@@ -19,18 +19,38 @@ export const tapSync: {
   <A>(f: (a: A) => Sync<unknown>): (self: Option.Option<A>) => Option.Option<A>
 } = Tappable.tapSync
 
-export const tapResult: {
-  <E, A>(
-    afe: (a: A) => Result.Result<E, unknown>,
+export const tapSyncOption: {
+  <A>(
+    f: (a: A) => Sync<Option.Option<unknown>>,
   ): (self: Option.Option<A>) => Option.Option<A>
 } = afe => self =>
   pipe(
     self,
     map(afe),
-    flatMap(
-      Result.match({
-        onFailure: Option.none,
-        onSuccess: constant(self),
-      }),
-    ),
+    flatMap(f => f()),
+    flatMap(() => self),
+  )
+
+export const tapResult: {
+  <A>(
+    afe: (a: A) => Result.Result<unknown, unknown>,
+  ): (self: Option.Option<A>) => Option.Option<A>
+} = afe => self =>
+  pipe(
+    self,
+    map(afe),
+    flatMap(fromResult),
+    flatMap(() => self),
+  )
+
+export const tapSyncResult: {
+  <A>(
+    afe: (a: A) => Sync<Result.Result<unknown, unknown>>,
+  ): (self: Option.Option<A>) => Option.Option<A>
+} = afe => self =>
+  pipe(
+    self,
+    map(afe),
+    flatMap(f => fromResult(f())),
+    flatMap(() => self),
   )

@@ -2,7 +2,7 @@ import { Result } from '../modules/Result'
 import { Hkt, Kind } from './Hkt'
 
 export interface FromResult<F extends Hkt> {
-  readonly fromResult: <Out, Collectable>(
+  readonly fromResult: <Out, Collectable, Fixed>(
     ma: Result<Out, Collectable>,
-  ) => Kind<F, Out, Collectable>
+  ) => Kind<F, Out, Collectable, Fixed>
 }

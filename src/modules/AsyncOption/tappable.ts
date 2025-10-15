@@ -28,25 +28,13 @@ export const tapOption: {
   <A>(
     f: (a: A) => Option.Option<unknown>,
   ): (self: AsyncOption<A>) => AsyncOption<A>
-} = f => self =>
-  pipe(
-    Do,
-    bind('a', self),
-    tap(({ a }) => pipe(a, f, Async.of)),
-    map(({ a }) => a),
-  )
+} = _AsyncOption.tapOption
 
 export const tapResult: {
   <A>(
     f: (a: A) => Result.Result<unknown, unknown>,
   ): (self: AsyncOption<A>) => AsyncOption<A>
-} = f => self =>
-  pipe(
-    Do,
-    bind('a', self),
-    tap(({ a }) => pipe(a, f, Option.fromResult, Async.of)),
-    map(({ a }) => a),
-  )
+} = _AsyncOption.tapResult
 
 export const tapAsync: {
   <A>(
@@ -85,22 +73,10 @@ export const tapSyncOption: {
   <A>(
     f: (a: A) => SyncOption.SyncOption<unknown>,
   ): (self: AsyncOption<A>) => AsyncOption<A>
-} = f => self =>
-  pipe(
-    Do,
-    bind('a', self),
-    tapOption(({ a }) => pipe(a, f, SyncOption.execute)),
-    map(({ a }) => a),
-  )
+} = _AsyncOption.tapSyncOption
 
 export const tapSyncResult: {
   <A>(
     f: (a: A) => SyncResult.SyncResult<unknown, unknown>,
   ): (self: AsyncOption<A>) => AsyncOption<A>
-} = f => self =>
-  pipe(
-    Do,
-    bind('a', self),
-    tapResult(({ a }) => pipe(a, f, SyncResult.execute)),
-    map(({ a }) => a),
-  )
+} = _AsyncOption.tapSyncResult

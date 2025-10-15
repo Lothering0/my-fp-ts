@@ -1,5 +1,6 @@
 import * as Option from '../Option'
 import * as Result from '../Result'
+import * as Sync from '../Sync'
 import * as Applicative_ from '../../typeclasses/Applicative'
 import * as Monad_ from '../../typeclasses/Monad'
 import * as Compactable_ from '../../typeclasses/Compactable'
@@ -189,6 +190,74 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
 
   const Tappable = Tappable_.create(Monad)
 
+  const tapOption: {
+    <In>(
+      f: (a: In) => Option.Option<unknown>,
+    ): <Collectable, Fixed>(
+      self: Kind<F, Option.Option<In>, Collectable, Fixed>,
+    ) => Kind<THkt, In, Collectable, Fixed>
+  } = f =>
+    Monad.flatMap(a =>
+      pipe(
+        a,
+        f,
+        FromOption.fromOption,
+        Monad.flatMap(() => Monad.of(a)),
+      ),
+    )
+
+  const tapSyncOption: {
+    <In>(
+      f: (a: In) => Sync.Sync<Option.Option<unknown>>,
+    ): <Collectable, Fixed>(
+      self: Kind<F, Option.Option<In>, Collectable, Fixed>,
+    ) => Kind<THkt, In, Collectable, Fixed>
+  } = f =>
+    Monad.flatMap(a =>
+      pipe(
+        a,
+        f,
+        Sync.execute,
+        FromOption.fromOption,
+        Monad.flatMap(() => Monad.of(a)),
+      ),
+    )
+
+  const tapResult =
+    <In>(f: (a: In) => Result.Result<unknown, unknown>) =>
+    <Collectable, Fixed>(
+      self: Kind<F, Option.Option<In>, Collectable, Fixed>,
+    ): Kind<THkt, In, Collectable, Fixed> =>
+      pipe(
+        self,
+        Monad.flatMap(a =>
+          pipe(
+            a,
+            f,
+            FromResult.fromResult<In, Collectable, Fixed>,
+            Monad.flatMap(() => Monad.of(a)),
+          ),
+        ),
+      )
+
+  const tapSyncResult =
+    <In>(f: (a: In) => Sync.Sync<Result.Result<unknown, unknown>>) =>
+    <Collectable, Fixed>(
+      self: Kind<F, Option.Option<In>, Collectable, Fixed>,
+    ): Kind<THkt, In, Collectable, Fixed> =>
+      pipe(
+        self,
+        Monad.flatMap(a =>
+          pipe(
+            a,
+            f,
+            Sync.execute,
+            FromResult.fromResult<In, Collectable, Fixed>,
+            Monad.flatMap(() => Monad.of(a)),
+          ),
+        ),
+      )
+
   const Compactable = Compactable_.create<THkt>(Functor, {
     compact: flow(M.map(Option.flat)),
   })
@@ -234,6 +303,10 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
     ...Monad,
     Tappable,
     ...Tappable,
+    tapOption,
+    tapSyncOption,
+    tapResult,
+    tapSyncResult,
     Compactable,
     ...Compactable,
     Extendable,

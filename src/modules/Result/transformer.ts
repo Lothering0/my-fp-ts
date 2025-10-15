@@ -1,4 +1,5 @@
 import * as Result from '../Result'
+import * as Sync from '../Sync'
 import * as Bifunctor_ from '../../typeclasses/Bifunctor'
 import * as Applicative_ from '../../typeclasses/Applicative'
 import * as Monad_ from '../../typeclasses/Monad'
@@ -181,6 +182,39 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
 
   const Tappable = Tappable_.create(Monad)
 
+  const tapResult: {
+    <In, Collectable2>(
+      f: (a: In) => Result.Result<unknown, Collectable2>,
+    ): <Collectable1, Fixed>(
+      self: Kind<F, Result.Result<In, Collectable1>, TCollectable, Fixed>,
+    ) => Kind<THkt, In, Collectable1 | Collectable2, Fixed>
+  } = f =>
+    Monad.flatMap(a =>
+      pipe(
+        a,
+        f,
+        FromResult.fromResult,
+        Monad.flatMap(() => Monad.of(a)),
+      ),
+    )
+
+  const tapSyncResult: {
+    <In, Collectable2>(
+      f: (a: In) => Sync.Sync<Result.Result<unknown, Collectable2>>,
+    ): <Collectable1, Fixed>(
+      self: Kind<F, Result.Result<In, Collectable1>, TCollectable, Fixed>,
+    ) => Kind<THkt, In, Collectable1 | Collectable2, Fixed>
+  } = f =>
+    Monad.flatMap(a =>
+      pipe(
+        a,
+        f,
+        Sync.execute,
+        FromResult.fromResult,
+        Monad.flatMap(() => Monad.of(a)),
+      ),
+    )
+
   const Extendable = Extendable_.create<THkt>(Functor, {
     extend: fab => self =>
       pipe(
@@ -219,6 +253,8 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
     ...Monad,
     Tappable,
     ...Tappable,
+    tapResult,
+    tapSyncResult,
     Extendable,
     ...Extendable,
     Zippable,

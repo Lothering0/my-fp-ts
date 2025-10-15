@@ -63,25 +63,13 @@ export const tapResult: {
   <A, E1>(
     f: (a: A) => Result.Result<unknown, E1>,
   ): <E2>(self: AsyncResult<A, E2>) => AsyncResult<A, E1 | E2>
-} = f => self =>
-  pipe(
-    Do,
-    bind('a', self),
-    tap(({ a }) => pipe(a, f, Async.of)),
-    map(({ a }) => a),
-  )
+} = _AsyncResult.tapResult
 
 export const tapSyncResult: {
   <A, E1>(
     f: (a: A) => SyncResult.SyncResult<unknown, E1>,
   ): <E2>(self: AsyncResult<A, E2>) => AsyncResult<A, E1 | E2>
-} = f => self =>
-  pipe(
-    Do,
-    bind('a', self),
-    tap(({ a }) => pipe(a, f, SyncResult.execute, Async.of)),
-    map(({ a }) => a),
-  )
+} = _AsyncResult.tapSyncResult
 
 export const tapAsync: {
   <A>(

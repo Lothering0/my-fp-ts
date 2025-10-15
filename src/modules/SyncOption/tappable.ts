@@ -2,8 +2,7 @@ import * as SyncResult from '../SyncResult'
 import * as Option from '../Option'
 import { Sync } from '../Sync'
 import { Result } from '../Result'
-import { pipe } from '../../utils/flow'
-import { execute, SyncOption, SyncOptionHkt } from './sync-option'
+import { SyncOption, SyncOptionHkt } from './sync-option'
 import { Tappable as Tappable_ } from '../../typeclasses/Tappable'
 import { _SyncOption } from './internal'
 
@@ -21,21 +20,16 @@ export const tapOption: {
   <A>(
     f: (a: A) => Option.Option<unknown>,
   ): (self: SyncOption<A>) => SyncOption<A>
-} = f => self => () => pipe(self, execute, Option.tap(f))
+} = _SyncOption.tapOption
 
 export const tapResult: {
   <E, A>(
     f: (a: A) => Result<E, unknown>,
   ): (self: SyncOption<A>) => SyncOption<A>
-} = f => self => () => pipe(self, execute, Option.tapResult(f))
+} = _SyncOption.tapResult
 
 export const tapSyncResult: {
   <E, A>(
     f: (a: A) => SyncResult.SyncResult<E, unknown>,
   ): (self: SyncOption<A>) => SyncOption<A>
-} = f => self => () =>
-  pipe(
-    self,
-    execute,
-    Option.tap(a => pipe(a, f, SyncResult.execute, Option.fromResult)),
-  )
+} = _SyncOption.tapSyncResult
