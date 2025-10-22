@@ -8,9 +8,13 @@ const getTaggedError: {
     ErrorConstructor: E,
   ): <A extends string>(
     tag: A,
-  ) => new (...args: ConstructorParameters<E>) => InstanceType<E> & Tagged<A>
+  ) => new (...args: ConstructorParameters<E>) => InstanceType<E> &
+    Tagged<A> & {
+      readonly _id: 'Error'
+    }
 } = ErrorConstructor => tag =>
   class extends ErrorConstructor {
+    readonly _id = 'Error'
     readonly _tag = tag
     constructor(...args: any[]) {
       super(...args)

@@ -29,17 +29,13 @@ export const fromOperation: {
   _id: 'Effect',
   run: operation,
   *[Symbol.iterator]() {
-    try {
-      const value = operation()
-      if (value instanceof Promise) {
-        const result = yield value as any
-        return result as any
-      }
-      const result = yield* pipe(operation, SyncResult.execute)
-      return result
-    } catch (exception) {
-      yield* Result.fail(exception)
+    const value = operation()
+    if (value instanceof Promise) {
+      const result = yield value as any
+      return result as any
     }
+    const result = yield* pipe(operation, SyncResult.execute)
+    return result
   },
 })
 

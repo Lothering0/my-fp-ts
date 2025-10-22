@@ -2,10 +2,9 @@ import * as Result from '../Result'
 import { create } from '../../typeclasses/Bifunctor'
 import { Functor, mapResult } from './functor'
 import { Effect, EffectHkt } from './effect'
-import { identity } from '../Identity'
 
 export const Bifunctor = create<EffectHkt>(Functor, {
-  mapLeft: ed => mapResult(Result.bimap(ed, identity)),
+  mapLeft: ed => mapResult(Result.mapLeft(ed)),
 })
 
 export const mapLeft: {

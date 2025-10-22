@@ -2,7 +2,6 @@ import * as Result from '../Result'
 import * as Functor_ from '../../typeclasses/Functor'
 import { Effect, EffectHkt, fromOperation } from './effect'
 import { pipe } from '../../utils/flow'
-import { identity } from '../Identity'
 
 export const mapResult: {
   <A, E, B, D>(
@@ -20,7 +19,7 @@ export const mapResult: {
   })
 
 export const Functor: Functor_.Functor<EffectHkt> = {
-  map: ab => mapResult(Result.bimap(identity, ab)),
+  map: ab => mapResult(Result.map(ab)),
 }
 
 export const map: {
