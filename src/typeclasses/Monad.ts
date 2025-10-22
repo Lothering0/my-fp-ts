@@ -70,12 +70,6 @@ export const create = <F extends Hkt>(
   const { flat } = Monad
   const Do: Monad<F>['Do'] = of({})
 
-  const bind: Monad<F>['bind'] = (name, fb) =>
-    flow(
-      map(a => map(b => ({ [name]: b, ...a }) as any)(fb)),
-      flat,
-    )
-
   const flatMap: Monad<F>['flatMap'] = amb => flow(map(amb), flat)
 
   const compose: Monad<F>['compose'] = (bmc, amb) => flow(amb, flatMap(bmc))
@@ -86,16 +80,6 @@ export const create = <F extends Hkt>(
         [name]: ab(a),
         ...a,
       } as any),
-    )
-
-  const setTo: Monad<F>['setTo'] = (name, b) => mapTo(name, constant(b))
-
-  const flipApplyTo: Monad<F>['flipApplyTo'] = (name, fab) => self =>
-    pipe(
-      Do,
-      bind('a', self),
-      bind('ab', fab),
-      map(({ a, ab }) => ({ [name]: ab(a), ...a }) as any),
     )
 
   const flatMapTo: Monad<F>['flatMapTo'] = (name, amb) =>
@@ -110,6 +94,18 @@ export const create = <F extends Hkt>(
           } as any),
         ),
       ),
+    )
+
+  const bind: Monad<F>['bind'] = (name, fb) => flatMapTo(name, constant(fb))
+
+  const setTo: Monad<F>['setTo'] = (name, b) => mapTo(name, constant(b))
+
+  const flipApplyTo: Monad<F>['flipApplyTo'] = (name, fab) => self =>
+    pipe(
+      Do,
+      bind('a', self),
+      bind('ab', fab),
+      map(({ a, ab }) => ({ [name]: ab(a), ...a }) as any),
     )
 
   return {

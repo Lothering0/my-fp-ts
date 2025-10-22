@@ -1,8 +1,11 @@
 import * as Alt_ from '../../typeclasses/Alt'
 import { identity } from '../Identity'
-import { Result, ResultHkt, succeed } from './result'
+import { fail, Result, ResultHkt, succeed } from './result'
 import { match } from './matchers'
 import { constant } from '../../utils/constant'
+import { Tag, Tagged } from '../../types/Tag'
+import { pipe } from '../../utils/flow'
+import { flatMapLeft } from './bimonad'
 
 export const getOrElse: {
   <B, E>(onFailure: (failure: E) => B): <A>(self: Result<A, E>) => A | B
@@ -31,6 +34,25 @@ export const catchAll: {
     onFailure,
     onSuccess: succeed,
   })
+
+export const catchTag =
+  <A, B, E1 extends Tagged, E2, T extends Tag<E1>>(
+    tag: T,
+    // Passing to callback exactly tagged object
+    onFailure: (failure: E1 extends Tagged<T> ? E1 : never) => Result<B, E2>,
+  ) =>
+  (
+    self: Result<A, E1>,
+    // Removing catched tag from result. Leave only uncatched
+  ): Result<A | B, (E1 extends Tagged<T> ? never : E1) | E2> =>
+    pipe(
+      self,
+      flatMapLeft<A | B, E1, E2>(e =>
+        e._tag === tag
+          ? onFailure(e as E1 extends Tagged<T> ? E1 : never)
+          : fail(e as E1 & E2),
+      ),
+    )
 
 export const Alt: Alt_.Alt<ResultHkt> = {
   orElse,

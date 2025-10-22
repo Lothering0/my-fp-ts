@@ -1,3 +1,1 @@
-import { _ } from './underscore'
-
-export const hole = <Out>() => _ as Out
+export const hole = <A>(x?: unknown) => x as A

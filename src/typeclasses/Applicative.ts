@@ -14,6 +14,7 @@ export interface Applicative<F extends Hkt>
   ) => <Out, Collectable2>(
     self: Kind<F, (a: In) => Out, Collectable2, Fixed>,
   ) => Kind<F, Out, Collectable1 | Collectable2, Fixed>
+
   readonly flipApply: <In, Out, Collectable1, Fixed>(
     fab: Kind<F, (a: In) => Out, Collectable1, Fixed>,
   ) => <Collectable2>(

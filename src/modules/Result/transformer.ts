@@ -1,6 +1,7 @@
 import * as Result from '../Result'
 import * as Sync from '../Sync'
 import * as Bifunctor_ from '../../typeclasses/Bifunctor'
+import * as Bimonad_ from '../../typeclasses/Bimonad'
 import * as Applicative_ from '../../typeclasses/Applicative'
 import * as Monad_ from '../../typeclasses/Monad'
 import * as Extendable_ from '../../typeclasses/Extendable'
@@ -13,6 +14,8 @@ import { FromResult } from '../../typeclasses/FromResult'
 import { Functor } from '../../typeclasses/Functor'
 import { flow, pipe } from '../../utils/flow'
 import { Alt } from '../../typeclasses/Alt'
+import { FromIdentityLeft } from '../../typeclasses/FromIdentityLeft'
+import { Tag, Tagged } from '../../types/Tag'
 
 export type ResultT<F extends Hkt, In, Collectable, Fixed, TCollectable> = Kind<
   F,
@@ -130,8 +133,61 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
         ),
       )
 
+  const catchTag =
+    <
+      In,
+      Out,
+      Collectable1 extends Tagged,
+      Collectable2,
+      Fixed,
+      T extends Tag<Collectable1>,
+    >(
+      tag: T,
+      onFailure: (
+        // Passing to callback exactly tagged object
+        failure: Collectable1 extends Tagged<T> ? Collectable1 : never,
+      ) => Kind<THkt, Out, Collectable2, Fixed>,
+    ) =>
+    (
+      self: Kind<THkt, In, Collectable1, Fixed>,
+    ): Kind<
+      THkt,
+      In | Out,
+      // Removing catched tag from result. Leave only uncatched
+      (Collectable1 extends Tagged<T> ? never : Collectable1) | Collectable2,
+      Fixed
+    > =>
+      pipe(
+        self,
+        M.flatMap<
+          Result.Result<In, Collectable1>,
+          Result.Result<In | Out, Collectable2>,
+          TCollectable,
+          Fixed
+        >(me =>
+          pipe(
+            me,
+            Result.match({
+              onSuccess: succeed<In, Collectable2, Fixed>,
+              onFailure: e =>
+                e._tag === tag
+                  ? onFailure(
+                      e as Collectable1 extends Tagged<T>
+                        ? Collectable1
+                        : never,
+                    )
+                  : fail(e as Collectable1 & Collectable2),
+            }),
+          ),
+        ),
+      )
+
   const FromIdentity: FromIdentity<THkt> = {
     of: succeed,
+  }
+
+  const FromIdentityLeft: FromIdentityLeft<THkt> = {
+    ofLeft: fail,
   }
 
   const FromResult: FromResult<THkt> = {
@@ -173,6 +229,29 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
           Result.match({
             onFailure: flow(Result.fail, M.of),
             onSuccess: identity,
+          }),
+        ),
+      ),
+  })
+
+  const Bimonad = Bimonad_.create<THkt>(FromIdentityLeft, Bifunctor, Monad, {
+    flatLeft: <In1, In2, Collectable, Fixed>(
+      self: Kind<THkt, In1, Kind<THkt, In2, Collectable, Fixed>, Fixed>,
+    ) =>
+      pipe(
+        self,
+        M.flatMap<
+          Result.Result<
+            In1,
+            Kind<F, Result.Result<In2, Collectable>, TCollectable, Fixed>
+          >,
+          Result.Result<In1 | In2, Collectable>,
+          TCollectable,
+          Fixed
+        >(
+          Result.match({
+            onSuccess: flow(Result.succeed, M.of),
+            onFailure: identity,
           }),
         ),
       ),
@@ -237,8 +316,11 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
     successOf,
     getOrElse,
     catchAll,
+    catchTag,
     FromIdentity,
     ...FromIdentity,
+    FromIdentityLeft,
+    ...FromIdentityLeft,
     FromResult,
     ...FromResult,
     Alt,
@@ -251,6 +333,8 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
     ...Applicative,
     Monad,
     ...Monad,
+    Bimonad,
+    ...Bimonad,
     Tappable,
     ...Tappable,
     tapResult,

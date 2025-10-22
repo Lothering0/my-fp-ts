@@ -1,11 +1,10 @@
 import * as Result from '../Result'
 import { create } from '../../typeclasses/Monad'
 import { Functor } from './functor'
-import { flow, pipe } from '../../utils/flow'
+import { pipe } from '../../utils/flow'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
 import { FromIdentity } from './from-identity'
 import { Effect, EffectHkt, fromOperation } from './effect'
-import { mapLeft } from './bifunctor'
 
 export const Monad = create<EffectHkt>(FromIdentity, Functor, {
   flat: self =>
@@ -30,36 +29,6 @@ export const Monad = create<EffectHkt>(FromIdentity, Functor, {
       )
     }),
 })
-
-export const flatLeft: {
-  <A, B, E>(self: Effect<A, Effect<B, E>>): Effect<A | B, E>
-} = self =>
-  fromOperation(() => {
-    const mma = self.run()
-
-    if (mma instanceof Promise) {
-      return mma.then(
-        Result.match({
-          onSuccess: Result.succeed,
-          onFailure: ma => ma.run(),
-        }),
-      )
-    }
-
-    return pipe(
-      mma,
-      Result.match({
-        onSuccess: Result.succeed,
-        onFailure: ma => ma.run(),
-      }),
-    )
-  })
-
-export const flatMapLeft: {
-  <A, E, D>(
-    emd: (e: E) => Effect<A, D>,
-  ): <B>(self: Effect<B, E>) => Effect<A | B, D>
-} = emd => flow(mapLeft(emd), flatLeft)
 
 export const Do = Monad.Do
 
