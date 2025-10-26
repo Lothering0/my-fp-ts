@@ -1,8 +1,9 @@
 import * as Functor_ from '../../typeclasses/Functor'
-import { AsyncHkt, Async, toPromise } from './async'
+import { AsyncHkt, Async } from './async'
 
 export const Functor: Functor_.Functor<AsyncHkt> = {
-  map: ab => self => () => toPromise(self).then(ab),
+  // `Promise.resolve` for recursion optimization
+  map: ab => self => () => Promise.resolve().then(self).then(ab),
 }
 
 export const map: {

@@ -1,6 +1,6 @@
 import * as Result from '../Result'
 import { create } from '../../typeclasses/Applicative'
-import { EffectHkt, Effect, fromOperation } from './effect'
+import { EffectHkt, Effect, fromOperation, run } from './effect'
 import { pipe } from '../../utils/flow'
 import { Monad } from './monad'
 import { flip } from '../../utils/flip'
@@ -19,8 +19,8 @@ export const applyConcurrently: {
   ): <B, E2>(self: Effect<(a: A) => B, E2>) => Effect<B, E1 | E2>
 } = fma => self =>
   fromOperation(() => {
-    const resultAb = self.run()
-    const resultA = fma.run()
+    const resultAb = run(self)
+    const resultA = run(fma)
 
     if (!(resultAb instanceof Promise) && Result.isFailure(resultAb)) {
       return resultAb

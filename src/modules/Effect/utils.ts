@@ -83,7 +83,7 @@ export const all: {
     let includesPromise = false
 
     for (const effect of effects) {
-      const result = effect.run()
+      const result = Effect.run(effect)
       if (result instanceof Promise) {
         includesPromise = true
       } else if (Result.isFailure(result)) {
@@ -161,7 +161,7 @@ export const allResults: {
       let includesPromise = false
 
       for (const effect of effects) {
-        const result = effect.run()
+        const result = Effect.run(effect)
         if (result instanceof Promise) {
           includesPromise = true
         }

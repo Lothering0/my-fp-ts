@@ -1,22 +1,13 @@
 import * as Result from '../Result'
 import * as Functor_ from '../../typeclasses/Functor'
-import { Effect, EffectHkt, fromOperation } from './effect'
-import { pipe } from '../../utils/flow'
+import { Effect, EffectHkt, EffectValue } from './effect'
+import { create } from './_internal'
 
 export const mapResult: {
   <A, E, B, D>(
-    f: (
-      result: Result.Result<A, E>,
-    ) => Result.Result<B, D> | Promise<Result.Result<B, D>>,
+    f: (result: Result.Result<A, E>) => EffectValue<B, D>,
   ): (self: Effect<A, E>) => Effect<B, D>
-} = f => self =>
-  fromOperation(() => {
-    const result = self.run()
-    if (result instanceof Promise) {
-      return result.then(f)
-    }
-    return pipe(result, f)
-  })
+} = f => self => create(f, self)
 
 export const Functor: Functor_.Functor<EffectHkt> = {
   map: ab => mapResult(Result.map(ab)),

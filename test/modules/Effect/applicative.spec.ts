@@ -11,23 +11,18 @@ describe('applicative', () => {
       expect(f).toHaveBeenCalledTimes(0)
     })
 
-    it('should satisfy identity law', async () => {
+    it('should satisfy identity law', () => {
       const a = 1 as const
       const f = jest.fn(() => a)
       const fa: Effect.Effect<typeof a> = Effect.fromSync(f)
 
-      const result = await pipe(
-        identity,
-        Effect.of,
-        Effect.apply(fa),
-        Effect.toPromise,
-      )
+      const result = pipe(identity, Effect.of, Effect.apply(fa), Effect.runSync)
 
       expect(result).toEqual<Result.Result<typeof a>>(Result.succeed(a))
       expect(f).toHaveBeenCalledTimes(1)
     })
 
-    it('should satisfy homomorphism law', async () => {
+    it('should satisfy homomorphism law', () => {
       const a = 1 as const
       const ab = Number.add(5)
 
@@ -37,15 +32,15 @@ describe('applicative', () => {
       const fa: Effect.Effect<typeof a> = Effect.fromSync(f1)
       const fab: Effect.Effect<typeof ab> = Effect.fromSync(f2)
 
-      const result1 = await pipe(fab, Effect.apply(fa), Effect.toPromise)
-      const result2 = await pipe(a, ab, Effect.of, Effect.toPromise)
+      const result1 = pipe(fab, Effect.apply(fa), Effect.runSync)
+      const result2 = pipe(a, ab, Effect.of, Effect.runSync)
 
       expect(result1).toEqual(result2)
       expect(f1).toHaveBeenCalledTimes(1)
       expect(f2).toHaveBeenCalledTimes(1)
     })
 
-    it('should satisfy interchange law', async () => {
+    it('should satisfy interchange law', () => {
       const a = 1 as const
       const ab = Number.add(5)
 
@@ -55,10 +50,10 @@ describe('applicative', () => {
       const fa: Effect.Effect<typeof a> = Effect.fromSync(f1)
       const fab: Effect.Effect<typeof ab> = Effect.fromSync(f2)
 
-      const result1 = await pipe(fab, Effect.apply(fa), Effect.toPromise)
-      const result2 = await pipe(
+      const result1 = pipe(fab, Effect.apply(fa), Effect.runSync)
+      const result2 = pipe(
         Effect.apply(fab)(Effect.of(ab => ab(a))),
-        Effect.toPromise,
+        Effect.runSync,
       )
 
       expect(result1).toEqual(result2)
@@ -66,7 +61,7 @@ describe('applicative', () => {
       expect(f2).toHaveBeenCalledTimes(2)
     })
 
-    it('should return an effect which contains a `failure` if a `failure` was applied to function', async () => {
+    it('should return an effect which contains a `failure` if a `failure` was applied to function', () => {
       const e = 'e' as const
       const ab = Number.add(5)
 
@@ -76,14 +71,14 @@ describe('applicative', () => {
       const fab: Effect.Effect<typeof ab> = Effect.fromSync(f1)
       const fa: Effect.Effect<never, typeof e> = Effect.fromSyncResult(f2)
 
-      const result = await pipe(fab, Effect.apply(fa), Effect.toPromise)
+      const result = pipe(fab, Effect.apply(fa), Effect.runSync)
 
       expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
       expect(f1).toHaveBeenCalledTimes(1)
       expect(f2).toHaveBeenCalledTimes(1)
     })
 
-    it('should return an effect which contains a `failure` if value was applied to a `failure`', async () => {
+    it('should return an effect which contains a `failure` if value was applied to a `failure`', () => {
       const e = 'e' as const
       const a = 1 as const
 
@@ -93,14 +88,14 @@ describe('applicative', () => {
       const fab: Effect.Effect<never, typeof e> = Effect.fromSyncResult(f1)
       const fa: Effect.Effect<typeof a, typeof e> = Effect.fromSync(f2)
 
-      const result = await pipe(fab, Effect.apply(fa), Effect.toPromise)
+      const result = pipe(fab, Effect.apply(fa), Effect.runSync)
 
       expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
       expect(f1).toHaveBeenCalledTimes(1)
       expect(f2).toHaveBeenCalledTimes(0)
     })
 
-    it('should return an effect which contains a `failure` if a `failure` is applying to a `failure`', async () => {
+    it('should return an effect which contains a `failure` if a `failure` is applying to a `failure`', () => {
       const e = 'e' as const
       const d = 'd' as const
 
@@ -110,10 +105,10 @@ describe('applicative', () => {
       const fab: Effect.Effect<never, typeof e> = Effect.fromSyncResult(f1)
       const fa: Effect.Effect<never, typeof d> = Effect.fromSyncResult(f2)
 
-      const result: Result.Result<unknown, typeof e | typeof d> = await pipe(
+      const result: Result.Result<unknown, typeof e | typeof d> = pipe(
         fab,
         Effect.apply(fa),
-        Effect.toPromise,
+        Effect.runSync,
       )
 
       expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))

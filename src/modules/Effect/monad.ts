@@ -1,33 +1,18 @@
 import * as Result from '../Result'
-import { create } from '../../typeclasses/Monad'
+import * as Monad_ from '../../typeclasses/Monad'
 import { Functor } from './functor'
 import { pipe } from '../../utils/flow'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
 import { FromIdentity } from './from-identity'
-import { Effect, EffectHkt, fromOperation } from './effect'
+import { Effect, EffectHkt, fromOperation, run } from './effect'
+import { create } from './_internal'
 
-export const Monad = create<EffectHkt>(FromIdentity, Functor, {
-  flat: self =>
-    fromOperation(() => {
-      const mma = self.run()
-
-      if (mma instanceof Promise) {
-        return mma.then(
-          Result.match({
-            onSuccess: ma => ma.run(),
-            onFailure: Result.fail,
-          }),
-        )
-      }
-
-      return pipe(
-        mma,
-        Result.match({
-          onSuccess: ma => ma.run(),
-          onFailure: Result.fail,
-        }),
-      )
-    }),
+export const Monad = Monad_.create<EffectHkt>(FromIdentity, Functor, {
+  flat: <A, E1, E2>(self: Effect<Effect<A, E1>, E2>) =>
+    create<Effect<A, E1>, E2, A, E1 | E2>(
+      ma => (Result.isSuccess(ma) ? run(ma.success) : ma),
+      self,
+    ),
 })
 
 export const Do = Monad.Do
@@ -91,8 +76,8 @@ export const concurrently: {
 } = fb => self =>
   fromOperation(() =>
     Promise.all([
-      Promise.resolve(fb.run()),
-      Promise.resolve(self.run()),
+      Promise.resolve(run(fb)),
+      Promise.resolve(run(self)),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ]).then(([ma, mb]) => pipe(mb, Result.flatMap(() => ma) as any)),
   )
@@ -104,7 +89,7 @@ export const concurrentlyTo: {
   ): <E2>(self: Effect<A, E1>) => Effect<DoObject<N, A, B>, E1 | E2>
 } = (name, fb) => self =>
   fromOperation(() =>
-    Promise.all([Promise.resolve(self.run()), Promise.resolve(fb.run())]).then(
+    Promise.all([Promise.resolve(run(self)), Promise.resolve(run(fb))]).then(
       ([ma, mb]) => Result.bind(name, mb)(ma),
     ),
   )

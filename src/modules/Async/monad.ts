@@ -6,7 +6,8 @@ import { DoObject, DoObjectKey } from '../../types/DoObject'
 import { FromIdentity } from './from-identity'
 
 export const Monad = create<Async.AsyncHkt>(FromIdentity, Functor, {
-  flat: self => () => Async.toPromise(self).then(Async.toPromise),
+  // `Promise.resolve` for recursion optimization
+  flat: self => () => Promise.resolve().then(self).then(Async.toPromise),
 })
 
 export const Do = Monad.Do

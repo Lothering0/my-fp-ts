@@ -4,8 +4,10 @@ import * as Sync from '../Sync'
 import * as Async from '../Async'
 import * as AsyncResult from '../AsyncResult'
 import * as SyncResult from '../SyncResult'
-import { flow, pipe } from '../../utils/flow'
+import { flow } from '../../utils/flow'
 import { Hkt } from '../../typeclasses/Hkt'
+import { TaggedTypeError } from '../Exception'
+import { _run, create } from './_internal'
 
 export interface EffectHkt extends Hkt {
   readonly Type: Effect<this['In'], this['Collectable']>
@@ -13,31 +15,63 @@ export interface EffectHkt extends Hkt {
 
 export interface Effect<A, E = never> {
   readonly _id: 'Effect'
-  readonly run: () => Result.Result<A, E> | Promise<Result.Result<A, E>>
+  readonly mapper: (
+    result?: Result.Result<unknown, unknown>,
+  ) => EffectValue<A, E>
+  // Using chain of effects to avoid potential call stack overflows
+  readonly previous: Effect<unknown, unknown> | undefined
   readonly [Symbol.iterator]: EffectGenerator<A, E>
 }
 
-export interface EffectGenerator<A, E> {
+export interface EffectGenerator<A, E = never> {
   (): Generator<E, A>
 }
 
+export type EffectValue<A, E = never> =
+  | Result.Result<A, E>
+  | Promise<Result.Result<A, E>>
+
+export interface EffectOperation<A, E = never> {
+  (): EffectValue<A, E>
+}
+
+export class AsyncEffectException extends TaggedTypeError(
+  'AsyncEffectException',
+) {}
+
+export class SyncEffectException extends TaggedTypeError(
+  'SyncEffectException',
+) {}
+
+export const run: {
+  <A, E>(effect: Effect<A, E>): EffectValue<A, E>
+} = effect => _run(effect)
+
+/** Throws an error when `Effect` instance starts to run asynchronously */
+export const runSync: {
+  <A, E>(effect: Effect<A, E>): Result.Result<A, E>
+} = effect => _run(effect, 'sync')
+
+/** Throws an error if `Effect` instance don't returned a `Promise` */
+export const runAsync: {
+  <A, E>(effect: Effect<A, E>): Promise<Result.Result<A, E>>
+} = effect => _run(effect, 'async')
+
+export const toPromise: {
+  <A, E>(effect: Effect<A, E>): Promise<Result.Result<A, E>>
+} = effect => Promise.resolve(_run(effect))
+
 export const fromOperation: {
-  <A, E>(
-    operation: () => Result.Result<A, E> | Promise<Result.Result<A, E>>,
-  ): Effect<A, E>
-} = operation => ({
-  _id: 'Effect',
-  run: operation,
-  *[Symbol.iterator]() {
-    const value = operation()
-    if (value instanceof Promise) {
-      const result = yield value as any
-      return result as any
-    }
-    const result = yield* pipe(operation, SyncResult.execute)
-    return result
-  },
-})
+  <A, E>(operation: () => EffectValue<A, E>): Effect<A, E>
+} = operation => create(operation)
+
+export const succeed: {
+  <A>(a: A): Effect<A>
+} = a => create(() => Result.succeed(a))
+
+export const fail: {
+  <E>(e: E): Effect<never, E>
+} = e => create(() => Result.fail(e))
 
 export const fromSyncResult: {
   <A, E>(syncResult: SyncResult.SyncResult<A, E>): Effect<A, E>
@@ -54,22 +88,6 @@ export const fromAsyncResult: {
 export const fromAsync: {
   <A>(async: Async.Async<A>): Effect<A>
 } = flow(Async.map(Result.succeed), fromAsyncResult)
-
-export const succeed: {
-  <A>(a: A): Effect<A>
-} = flow(SyncResult.succeed, fromSyncResult)
-
-export const fail: {
-  <E>(e: E): Effect<never, E>
-} = flow(SyncResult.fail, fromSyncResult)
-
-export const run: {
-  <A, E>(self: Effect<A, E>): Result.Result<A, E> | Promise<Result.Result<A, E>>
-} = self => self.run()
-
-export const toPromise: {
-  <A, E>(self: Effect<A, E>): Promise<Result.Result<A, E>>
-} = self => Promise.resolve(self.run())
 
 export const gen = <A, E>(generator: EffectGenerator<A, E>): Effect<A, E> =>
   fromOperation(() => {

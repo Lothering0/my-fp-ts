@@ -38,80 +38,76 @@ describe('monad', () => {
   })
 
   describe('flatMap', () => {
-    it('should satisfy left identity law', async () => {
+    it('should satisfy left identity law', () => {
       const a = 1 as const
       const f = jest.fn(() => a)
       const fa: Effect.Effect<typeof a> = Effect.fromSync(f)
       const afb = (x: number) => Effect.of(x + 1)
 
-      const result1 = await pipe(fa, Effect.flatMap(afb), Effect.toPromise)
-      const result2 = await pipe(a, afb, Effect.toPromise)
+      const result1 = pipe(fa, Effect.flatMap(afb), Effect.runSync)
+      const result2 = pipe(a, afb, Effect.runSync)
 
       expect(result1).toEqual(result2)
       expect(f).toHaveBeenCalledTimes(1)
     })
 
-    it('should satisfy right identity law', async () => {
+    it('should satisfy right identity law', () => {
       const a = 1 as const
       const f = jest.fn(() => a)
       const fa: Effect.Effect<typeof a> = Effect.fromSync(f)
 
-      const result1 = await pipe(
-        fa,
-        Effect.flatMap(Effect.of),
-        Effect.toPromise,
-      )
-      const result2 = await pipe(fa, Effect.toPromise)
+      const result1 = pipe(fa, Effect.flatMap(Effect.of), Effect.runSync)
+      const result2 = pipe(fa, Effect.runSync)
 
       expect(result1).toEqual(result2)
       expect(f).toHaveBeenCalledTimes(2)
     })
 
-    it('should satisfy associativity law', async () => {
+    it('should satisfy associativity law', () => {
       const a = 1 as const
       const f = jest.fn(() => a)
       const fa: Effect.Effect<typeof a> = Effect.fromSync(f)
       const afb = (x: number) => Effect.of(x + 1)
       const bfc = (x: number) => Effect.of(x / 2)
 
-      const result1 = await pipe(
+      const result1 = pipe(
         fa,
         Effect.flatMap(afb),
         Effect.flatMap(bfc),
-        Effect.toPromise,
+        Effect.runSync,
       )
-      const result2 = await pipe(
+      const result2 = pipe(
         fa,
         Effect.flatMap(flow(afb, Effect.flatMap(bfc))),
-        Effect.toPromise,
+        Effect.runSync,
       )
 
       expect(result1).toEqual(result2)
       expect(f).toHaveBeenCalledTimes(2)
     })
 
-    it('should return an effect which contains a `failure` if the same was provided', async () => {
+    it('should return an effect which contains a `failure` if the same was provided', () => {
       const e = 'e' as const
       const f = jest.fn(() => Result.fail(e))
       const fa: Effect.Effect<never, typeof e> = Effect.fromSyncResult(f)
-      const result = await pipe(
+      const result = pipe(
         fa,
         Effect.flatMap(a => Effect.succeed(a + 2)),
-        Effect.toPromise,
+        Effect.runSync,
       )
       expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
       expect(f).toHaveBeenCalledTimes(1)
     })
 
-    it('should return an effect which contains a `failure` if the same was returned by callback function', async () => {
+    it('should return an effect which contains a `failure` if the same was returned by callback function', () => {
       const e = 'e' as const
       const a = 1 as const
       const f = jest.fn(() => a)
       const fa: Effect.Effect<typeof a, typeof e> = Effect.fromSync(f)
-      const result = await pipe(
+      const result = pipe(
         fa,
         Effect.flatMap(() => Effect.fail(e)),
-        Effect.toPromise,
+        Effect.runSync,
       )
       expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
       expect(f).toHaveBeenCalledTimes(1)
