@@ -1,7 +1,7 @@
 import { FromResult as FromResult_ } from '../../typeclasses/FromResult'
 import { Result } from '../Result'
 import { AsyncResult, AsyncResultHkt } from './async-result'
-import { _AsyncResult } from './internal'
+import { _AsyncResult } from './_internal'
 
 export const FromResult: FromResult_<AsyncResultHkt> = _AsyncResult.FromResult
 

@@ -1,5 +1,5 @@
 import * as Bimonad_ from '../../typeclasses/Bimonad'
-import { _AsyncResult } from './internal'
+import { _AsyncResult } from './_internal'
 import { AsyncResult, AsyncResultHkt } from './async-result'
 
 export const Bimonad: Bimonad_.Bimonad<AsyncResultHkt> = _AsyncResult.Bimonad

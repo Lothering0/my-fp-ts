@@ -1,6 +1,6 @@
 import * as Functor_ from '../../typeclasses/Functor'
 import { SyncOptionHkt, SyncOption } from './sync-option'
-import { _SyncOption } from './internal'
+import { _SyncOption } from './_internal'
 
 export const Functor: Functor_.Functor<SyncOptionHkt> = _SyncOption.Functor
 

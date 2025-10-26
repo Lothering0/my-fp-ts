@@ -4,7 +4,7 @@ import { Sync } from '../Sync'
 import { Result } from '../Result'
 import { SyncOption, SyncOptionHkt } from './sync-option'
 import { Tappable as Tappable_ } from '../../typeclasses/Tappable'
-import { _SyncOption } from './internal'
+import { _SyncOption } from './_internal'
 
 export const Tappable: Tappable_<SyncOptionHkt> = _SyncOption.Tappable
 

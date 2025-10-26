@@ -4,7 +4,7 @@ import { Monad as Monad_ } from '../../typeclasses/Monad'
 import { AsyncResultHkt, AsyncResult, toPromise } from './async-result'
 import { pipe } from '../../utils/flow'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
-import { _AsyncResult } from './internal'
+import { _AsyncResult } from './_internal'
 
 export const Monad: Monad_<AsyncResultHkt> = _AsyncResult.Monad
 

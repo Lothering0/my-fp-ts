@@ -1,6 +1,6 @@
 import * as Alternative_ from '../../typeclasses/Alternative'
 import { SyncOption, SyncOptionHkt } from './sync-option'
-import { _SyncOption } from './internal'
+import { _SyncOption } from './_internal'
 
 export const zero: {
   <A = never>(): SyncOption<A>

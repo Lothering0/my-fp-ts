@@ -4,7 +4,7 @@ import { Sync } from '../Sync'
 import { execute, fromSync, SyncResult, SyncResultHkt } from './sync-result'
 import { pipe } from '../../utils/flow'
 import { Tappable as Tappable_ } from '../../typeclasses/Tappable'
-import { _SyncResult } from './internal'
+import { _SyncResult } from './_internal'
 
 export const Tappable: Tappable_<SyncResultHkt> = _SyncResult.Tappable
 

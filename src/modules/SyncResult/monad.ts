@@ -1,7 +1,7 @@
 import { Monad as Monad_ } from '../../typeclasses/Monad'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
 import { SyncResultHkt, SyncResult } from './sync-result'
-import { _SyncResult } from './internal'
+import { _SyncResult } from './_internal'
 
 export const Monad: Monad_<SyncResultHkt> = _SyncResult.Monad
 

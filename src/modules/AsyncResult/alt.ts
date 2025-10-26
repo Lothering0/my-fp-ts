@@ -1,7 +1,7 @@
 import * as Alt_ from '../../typeclasses/Alt'
 import * as Async from '../Async'
 import { AsyncResult, AsyncResultHkt } from './async-result'
-import { _AsyncResult } from './internal'
+import { _AsyncResult } from './_internal'
 import { Tag, Tagged } from '../../types/Tag'
 import { pipe } from '../../utils/flow'
 

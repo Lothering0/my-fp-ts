@@ -1,5 +1,5 @@
 import * as Zippable_ from '../../typeclasses/Zippable'
-import { _SyncResult } from './internal'
+import { _SyncResult } from './_internal'
 import { SyncResult, SyncResultHkt } from './sync-result'
 
 export const Zippable: Zippable_.Zippable<SyncResultHkt> = _SyncResult.Zippable

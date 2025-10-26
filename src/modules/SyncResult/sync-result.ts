@@ -5,7 +5,7 @@ import { pipe } from '../../utils/flow'
 import { TryCatch } from '../../types/TryCatch'
 import { UnknownException } from '../Exception'
 import { isFunction } from '../../utils/typeChecks'
-import { _SyncResult } from './internal'
+import { _SyncResult } from './_internal'
 
 export interface SyncResultHkt extends Hkt {
   readonly Type: SyncResult<this['In'], this['Collectable']>

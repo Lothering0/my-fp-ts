@@ -1,6 +1,6 @@
 import * as Functor_ from '../../typeclasses/Functor'
 import { SyncResultHkt, SyncResult } from './sync-result'
-import { _SyncResult } from './internal'
+import { _SyncResult } from './_internal'
 
 export const Functor: Functor_.Functor<SyncResultHkt> = _SyncResult.Functor
 

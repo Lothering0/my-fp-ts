@@ -1,7 +1,7 @@
 import * as Result from '../Result'
 import { Async } from '../Async'
 import { AsyncResult } from './async-result'
-import { _AsyncResult } from './internal'
+import { _AsyncResult } from './_internal'
 
 export const match: {
   <A, B, E, C = B>(

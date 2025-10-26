@@ -1,6 +1,6 @@
 import * as Alternative_ from '../../typeclasses/Alternative'
 import { AsyncOption, AsyncOptionHkt } from './async-option'
-import { _AsyncOption } from './internal'
+import { _AsyncOption } from './_internal'
 
 export const zero: {
   <A = never>(): AsyncOption<A>

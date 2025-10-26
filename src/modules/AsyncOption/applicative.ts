@@ -3,7 +3,7 @@ import { Applicative as Applicative_ } from '../../typeclasses/Applicative'
 import { AsyncOptionHkt, toPromise, AsyncOption } from './async-option'
 import { pipe } from '../../utils/flow'
 import { flip } from '../../utils/flip'
-import { _AsyncOption } from './internal'
+import { _AsyncOption } from './_internal'
 
 export const Applicative: Applicative_<AsyncOptionHkt> =
   _AsyncOption.Applicative

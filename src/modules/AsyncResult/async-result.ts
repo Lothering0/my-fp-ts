@@ -8,7 +8,7 @@ import { Hkt } from '../../typeclasses/Hkt'
 import { TryCatch } from '../../types/TryCatch'
 import { UnknownException } from '../Exception'
 import { isFunction } from '../../utils/typeChecks'
-import { _AsyncResult } from './internal'
+import { _AsyncResult } from './_internal'
 
 export interface AsyncResultHkt extends Hkt {
   readonly Type: AsyncResult<this['In'], this['Collectable']>

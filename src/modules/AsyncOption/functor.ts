@@ -1,6 +1,6 @@
 import * as Functor_ from '../../typeclasses/Functor'
 import { AsyncOptionHkt, AsyncOption } from './async-option'
-import { _AsyncOption } from './internal'
+import { _AsyncOption } from './_internal'
 
 export const Functor: Functor_.Functor<AsyncOptionHkt> = _AsyncOption.Functor
 

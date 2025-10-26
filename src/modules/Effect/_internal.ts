@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { hole } from '../../utils/hole'
 import * as Result from '../Result'
+import { hole } from '../../utils/hole'
 import {
   AsyncEffectException,
   Effect,
@@ -25,9 +25,7 @@ export function _run<A, E>(effect: Effect<A, E>, type?: 'sync' | 'async') {
   ) => EffectValue<unknown, unknown>)[] = [effect.mapper]
 
   while (previous !== undefined) {
-    if (typeof previous.mapper === 'function') {
-      fs.unshift(previous.mapper)
-    }
+    fs.unshift(previous.mapper)
     previous = previous.previous
   }
 
@@ -56,7 +54,7 @@ export function _run<A, E>(effect: Effect<A, E>, type?: 'sync' | 'async') {
   return value
 }
 
-export const getEffectGenerator: {
+const getEffectGenerator: {
   <A, E>(effect: Effect<A, E>): EffectGenerator<A, E>
 } = effect =>
   function* effectGenerator() {

@@ -1,6 +1,6 @@
 import { Applicative as Applicative_ } from '../../typeclasses/Applicative'
 import { SyncOptionHkt, SyncOption } from './sync-option'
-import { _SyncOption } from './internal'
+import { _SyncOption } from './_internal'
 
 export const Applicative: Applicative_<SyncOptionHkt> = _SyncOption.Applicative
 

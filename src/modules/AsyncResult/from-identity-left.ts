@@ -1,5 +1,5 @@
 import { FromIdentityLeft as FromIdentityLeft_ } from '../../typeclasses/FromIdentityLeft'
-import { _AsyncResult } from './internal'
+import { _AsyncResult } from './_internal'
 import { AsyncResult, AsyncResultHkt } from './async-result'
 
 export const FromIdentityLeft: FromIdentityLeft_<AsyncResultHkt> =

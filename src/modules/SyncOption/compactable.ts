@@ -2,7 +2,7 @@ import * as Option from '../Option'
 import * as Result from '../Result'
 import { Compactable as Compactable_ } from '../../typeclasses/Compactable'
 import { SyncOption, SyncOptionHkt } from './sync-option'
-import { _SyncOption } from './internal'
+import { _SyncOption } from './_internal'
 
 export const Compactable: Compactable_<SyncOptionHkt> = _SyncOption.Compactable
 

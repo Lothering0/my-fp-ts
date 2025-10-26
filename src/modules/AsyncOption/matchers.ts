@@ -1,7 +1,7 @@
 import * as Option from '../Option'
 import { Async } from '../Async'
 import { AsyncOption } from './async-option'
-import { _AsyncOption } from './internal'
+import { _AsyncOption } from './_internal'
 
 export const match: {
   <A, B, C = B>(

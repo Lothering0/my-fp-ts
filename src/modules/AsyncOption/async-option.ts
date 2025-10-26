@@ -4,7 +4,7 @@ import * as Result from '../Result'
 import * as Option from '../Option'
 import { Hkt } from '../../typeclasses/Hkt'
 import { constant } from '../../utils/constant'
-import { _AsyncOption } from './internal'
+import { _AsyncOption } from './_internal'
 
 export interface AsyncOptionHkt extends Hkt {
   readonly Type: AsyncOption<this['In']>

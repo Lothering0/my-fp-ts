@@ -3,7 +3,7 @@ import { SyncOption, SyncOptionHkt } from './sync-option'
 import { identity } from '../Identity'
 import { LazyArg } from '../../types/utils'
 import { match } from './matchers'
-import { _SyncOption } from './internal'
+import { _SyncOption } from './_internal'
 
 export const getOrElse: {
   <B>(onNone: LazyArg<B>): <A>(self: SyncOption<A>) => A | B

@@ -1,7 +1,7 @@
 import * as Alt_ from '../../typeclasses/Alt'
 import { Sync } from '../Sync'
 import { SyncResult, SyncResultHkt } from './sync-result'
-import { _SyncResult } from './internal'
+import { _SyncResult } from './_internal'
 import { Tag, Tagged } from '../../types/Tag'
 import { pipe } from '../../utils/flow'
 

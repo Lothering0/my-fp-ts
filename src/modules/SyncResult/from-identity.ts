@@ -1,5 +1,5 @@
 import { FromIdentity as FromIdentity_ } from '../../typeclasses/FromIdentity'
-import { _SyncResult } from './internal'
+import { _SyncResult } from './_internal'
 import { SyncResult, SyncResultHkt } from './sync-result'
 
 export const FromIdentity: FromIdentity_<SyncResultHkt> =

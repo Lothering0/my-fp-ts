@@ -1,6 +1,6 @@
 import { Bifunctor as Bifunctor_ } from '../../typeclasses/Bifunctor'
 import { SyncResultHkt, SyncResult } from './sync-result'
-import { _SyncResult } from './internal'
+import { _SyncResult } from './_internal'
 
 export const Bifunctor: Bifunctor_<SyncResultHkt> = _SyncResult.Bifunctor
 

@@ -13,7 +13,7 @@ import {
 } from './async-result'
 import { pipe } from '../../utils/flow'
 import { Do, bind } from './monad'
-import { _AsyncResult } from './internal'
+import { _AsyncResult } from './_internal'
 
 export const Tappable: Tappable_<AsyncResultHkt> = _AsyncResult.Tappable
 

@@ -1,7 +1,7 @@
 import * as Alt_ from '../../typeclasses/Alt'
 import * as Async from '../Async'
 import { AsyncOption, AsyncOptionHkt } from './async-option'
-import { _AsyncOption } from './internal'
+import { _AsyncOption } from './_internal'
 import { LazyArg } from '../../types/utils'
 
 export const getOrElse: {
