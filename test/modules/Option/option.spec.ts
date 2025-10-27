@@ -12,11 +12,14 @@ describe('gen', () => {
   })
 
   it('should return none', () => {
+    const f = jest.fn()
     const ma = Option.gen(function* () {
       const a = yield* Option.none()
+      f()
       return a
     })
     pipe(ma, Equivalence.equals(Option.none()), expect).toBe(true)
+    expect(f).toHaveBeenCalledTimes(0)
   })
 
   it('should work correctly with several successful generators', () => {
@@ -31,13 +34,16 @@ describe('gen', () => {
   })
 
   it('should work correctly with several generators', () => {
+    const f = jest.fn()
     const ma: Option.Option<number> = Option.some(1)
     const mb: Option.Option<number> = Option.none()
     const mc = Option.gen(function* () {
       const a = yield* ma
       const b = yield* mb
+      f()
       return a + b
     })
     pipe(mc, Equivalence.equals(Option.none()), expect).toBe(true)
+    expect(f).toHaveBeenCalledTimes(0)
   })
 })

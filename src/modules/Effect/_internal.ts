@@ -25,11 +25,12 @@ export function _run<A, E>(effect: Effect<A, E>, type?: 'sync' | 'async') {
   ) => EffectValue<unknown, unknown>)[] = [effect.mapper]
 
   while (previous !== undefined) {
-    fs.unshift(previous.mapper)
+    fs.push(previous.mapper)
     previous = previous.previous
   }
 
-  for (const f of fs) {
+  for (let i = fs.length - 1; i >= 0; i--) {
+    const f = fs[i]!
     if (value instanceof Promise) {
       if (type === 'sync') {
         throw new AsyncEffectException()

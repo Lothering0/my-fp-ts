@@ -9,6 +9,16 @@ export interface SyncOptionHkt extends Hkt {
 
 export interface SyncOption<A> extends Sync.Sync<Option.Option<A>> {}
 
+export interface SyncOptionGenerator<A> {
+  (
+    make: <B>(self: SyncOption<B>) => SyncOptionIterable<B>,
+  ): Generator<unknown, A>
+}
+
+export interface SyncOptionIterable<A> {
+  readonly [Symbol.iterator]: Option.OptionGenerator<A>
+}
+
 export const none: {
   <A = never>(): SyncOption<A>
 } = _SyncOption.none
@@ -36,3 +46,22 @@ export const fromSync: {
 export const execute: {
   <A>(ma: SyncOption<A>): Option.Option<A>
 } = <A>(ma: SyncOption<A>) => ma()
+
+const makeIterable: {
+  <A>(self: SyncOption<A>): SyncOptionIterable<A>
+} = self => ({
+  *[Symbol.iterator]() {
+    const a = yield* self()
+    return a
+  },
+})
+
+export const gen: {
+  <A>(generator: SyncOptionGenerator<A>): SyncOption<A>
+} = generator => () => {
+  const { value, done } = generator(makeIterable).next()
+  if (!done) {
+    return Option.none()
+  }
+  return Option.some(value)
+}
