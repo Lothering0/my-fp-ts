@@ -12,6 +12,16 @@ export interface AsyncOptionHkt extends Hkt {
 
 export interface AsyncOption<A> extends Async.Async<Option.Option<A>> {}
 
+export interface AsyncOptionGenerator<A> {
+  (
+    make: <B>(self: AsyncOption<B>) => AsyncOptionIterable<B>,
+  ): Generator<unknown, A>
+}
+
+export interface AsyncOptionIterable<A> {
+  readonly [Symbol.iterator]: Option.OptionGenerator<A>
+}
+
 export const none: {
   <A = never>(): AsyncOption<A>
 } = _AsyncOption.none
@@ -49,3 +59,41 @@ export const fromAsyncResult: {
       onSuccess: Option.some,
     }),
   )
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const makeIterable: {
+  <A>(self: AsyncOption<A>): AsyncOptionIterable<A>
+} = self => ({
+  *[Symbol.iterator]() {
+    const option = yield self() as any
+    return option as any
+  },
+})
+
+export const gen =
+  <A>(generator: AsyncOptionGenerator<A>): AsyncOption<A> =>
+  () => {
+    const iterator = generator(makeIterable)
+    let { value, done } = iterator.next()
+
+    const promise = value as Promise<Option.Option<A>>
+
+    const nextIteration = async (promise: Promise<Option.Option<A>>) => {
+      const ma = await promise
+
+      if (Option.isNone(ma)) {
+        return Option.none()
+      }
+
+      if (!done) {
+        const iterationResult = iterator.next(Option.value(ma))
+        value = iterationResult.value
+        done = iterationResult.done
+        return nextIteration(Promise.resolve(value) as any)
+      }
+
+      return Option.some(value as A)
+    }
+
+    return nextIteration(promise)
+  }

@@ -17,6 +17,16 @@ export interface AsyncResultHkt extends Hkt {
 export interface AsyncResult<A, E = never>
   extends Async.Async<Result.Result<A, E>> {}
 
+export interface AsyncResultGenerator<A, E = never> {
+  (
+    make: <B, D>(self: AsyncResult<B, D>) => AsyncResultIterable<B, D>,
+  ): Generator<E, A>
+}
+
+export interface AsyncResultIterable<A, E = never> {
+  readonly [Symbol.iterator]: Result.ResultGenerator<A, E>
+}
+
 export const fail: {
   <E>(e: E): AsyncResult<never, E>
 } = _AsyncResult.fail
@@ -83,3 +93,41 @@ export { try_ as try }
 export const toPromise: {
   <A, E>(ma: AsyncResult<A, E>): Promise<Result.Result<A, E>>
 } = mma => mma().then(identity)
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const makeIterable: {
+  <A, E>(self: AsyncResult<A, E>): AsyncResultIterable<A, E>
+} = self => ({
+  *[Symbol.iterator]() {
+    const result = yield self() as any
+    return result as any
+  },
+})
+
+export const gen =
+  <A, E>(generator: AsyncResultGenerator<A, E>): AsyncResult<A, E> =>
+  () => {
+    const iterator = generator(makeIterable)
+    let { value, done } = iterator.next()
+
+    const promise = value as Promise<Result.Result<A, E>>
+
+    const nextIteration = async (promise: Promise<Result.Result<A, E>>) => {
+      const ma = await promise
+
+      if (Result.isFailure(ma)) {
+        return ma
+      }
+
+      if (!done) {
+        const iterationResult = iterator.next(Result.successOf(ma))
+        value = iterationResult.value
+        done = iterationResult.done
+        return nextIteration(Promise.resolve(value) as any)
+      }
+
+      return Result.succeed(value as A)
+    }
+
+    return nextIteration(promise)
+  }
