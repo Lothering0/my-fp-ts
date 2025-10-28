@@ -13,7 +13,7 @@ describe('try', () => {
   it('should return `failure` if function threw an error', () => {
     const a = 1
     const fa: Sync.Sync<never> = jest.fn(() => raise(a))
-    const result = pipe(fa, SyncResult.try, SyncResult.execute)
+    const result = pipe(fa, SyncResult.try, SyncResult.run)
     expect(result).toEqual<Result.Result<never, UnknownException>>(
       Result.fail(new UnknownException(a)),
     )
@@ -23,7 +23,7 @@ describe('try', () => {
   it('should return `success` if function returned a value', () => {
     const a = 1
     const fa: Sync.Sync<typeof a> = jest.fn(() => a)
-    const result = pipe(fa, SyncResult.try, SyncResult.execute)
+    const result = pipe(fa, SyncResult.try, SyncResult.run)
     expect(result).toEqual<Result.Result<typeof a>>(Result.succeed(a))
     expect(fa).toHaveBeenCalledTimes(1)
   })
@@ -43,7 +43,7 @@ describe('gen', () => {
     })
     pipe(
       ma,
-      SyncResult.execute,
+      SyncResult.run,
       Equivalence.equals(Result.succeed(1)),
       expect,
     ).toBe(true)
@@ -57,12 +57,9 @@ describe('gen', () => {
       f()
       return a
     })
-    pipe(
-      ma,
-      SyncResult.execute,
-      Equivalence.equals(Result.fail('a')),
-      expect,
-    ).toBe(true)
+    pipe(ma, SyncResult.run, Equivalence.equals(Result.fail('a')), expect).toBe(
+      true,
+    )
     expect(f).toHaveBeenCalledTimes(0)
   })
 
@@ -76,7 +73,7 @@ describe('gen', () => {
     })
     pipe(
       mc,
-      SyncResult.execute,
+      SyncResult.run,
       Equivalence.equals(Result.succeed(3)),
       expect,
     ).toBe(true)
@@ -92,12 +89,9 @@ describe('gen', () => {
       f()
       return a + b
     })
-    pipe(
-      mc,
-      SyncResult.execute,
-      Equivalence.equals(Result.fail('a')),
-      expect,
-    ).toBe(true)
+    pipe(mc, SyncResult.run, Equivalence.equals(Result.fail('a')), expect).toBe(
+      true,
+    )
     expect(f).toHaveBeenCalledTimes(0)
   })
 })

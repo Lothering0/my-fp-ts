@@ -7,8 +7,8 @@ describe('monad', () => {
       const fa: SyncResult.SyncResult<typeof a> = jest.fn(SyncResult.of(a))
       const afb = (x: number) => SyncResult.of(x + 1)
 
-      const result1 = pipe(fa, SyncResult.flatMap(afb), SyncResult.execute)
-      const result2 = pipe(a, afb, SyncResult.execute)
+      const result1 = pipe(fa, SyncResult.flatMap(afb), SyncResult.run)
+      const result2 = pipe(a, afb, SyncResult.run)
 
       expect(result1).toEqual(result2)
       expect(fa).toHaveBeenCalledTimes(1)
@@ -21,9 +21,9 @@ describe('monad', () => {
       const result1 = pipe(
         fa,
         SyncResult.flatMap(SyncResult.of),
-        SyncResult.execute,
+        SyncResult.run,
       )
-      const result2 = pipe(fa, SyncResult.execute)
+      const result2 = pipe(fa, SyncResult.run)
 
       expect(result1).toEqual(result2)
       expect(fa).toHaveBeenCalledTimes(2)
@@ -39,12 +39,12 @@ describe('monad', () => {
         fa,
         SyncResult.flatMap(afb),
         SyncResult.flatMap(bfc),
-        SyncResult.execute,
+        SyncResult.run,
       )
       const result2 = pipe(
         fa,
         SyncResult.flatMap(flow(afb, SyncResult.flatMap(bfc))),
-        SyncResult.execute,
+        SyncResult.run,
       )
 
       expect(result1).toEqual(result2)
@@ -59,7 +59,7 @@ describe('monad', () => {
       const result = pipe(
         fa,
         SyncResult.flatMap(a => SyncResult.succeed(a + 2)),
-        SyncResult.execute,
+        SyncResult.run,
       )
       expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
       expect(fa).toHaveBeenCalledTimes(1)
@@ -74,7 +74,7 @@ describe('monad', () => {
       const result = pipe(
         fa,
         SyncResult.flatMap(() => SyncResult.fail(e)),
-        SyncResult.execute,
+        SyncResult.run,
       )
       expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
       expect(fa).toHaveBeenCalledTimes(1)

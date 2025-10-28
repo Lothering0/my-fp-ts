@@ -9,7 +9,7 @@ export const Compactable = create<IterableHkt>(Functor, {
     *[Symbol.iterator]() {
       for (const a of self) {
         if (Option.isSome(a)) {
-          yield Option.value(a)
+          yield Option.valueOf(a)
         }
       }
     },

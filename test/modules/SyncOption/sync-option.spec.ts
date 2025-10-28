@@ -4,7 +4,7 @@ describe('try', () => {
   it('should return `none` if function threw an error', () => {
     const a = 1
     const fa: Sync.Sync<never> = jest.fn(() => raise(a))
-    const result = pipe(fa, SyncOption.try, SyncOption.execute)
+    const result = pipe(fa, SyncOption.try, SyncOption.run)
     expect(result).toEqual<Option.Option<never>>(Option.none())
     expect(fa).toHaveBeenCalledTimes(1)
   })
@@ -12,7 +12,7 @@ describe('try', () => {
   it('should return `some` if function returned a value', () => {
     const a = 1
     const fa: Sync.Sync<typeof a> = jest.fn(() => a)
-    const result = pipe(fa, SyncOption.try, SyncOption.execute)
+    const result = pipe(fa, SyncOption.try, SyncOption.run)
     expect(result).toEqual<Option.Option<typeof a>>(Option.some(a))
     expect(fa).toHaveBeenCalledTimes(1)
   })
@@ -27,12 +27,9 @@ describe('gen', () => {
       const a = yield* $(maybeNumber)
       return a
     })
-    pipe(
-      ma,
-      SyncOption.execute,
-      Equivalence.equals(Option.some(1)),
-      expect,
-    ).toBe(true)
+    pipe(ma, SyncOption.run, Equivalence.equals(Option.some(1)), expect).toBe(
+      true,
+    )
   })
 
   it('should return none', () => {
@@ -43,12 +40,9 @@ describe('gen', () => {
       f()
       return a
     })
-    pipe(
-      ma,
-      SyncOption.execute,
-      Equivalence.equals(Option.none()),
-      expect,
-    ).toBe(true)
+    pipe(ma, SyncOption.run, Equivalence.equals(Option.none()), expect).toBe(
+      true,
+    )
     expect(f).toHaveBeenCalledTimes(0)
   })
 
@@ -60,12 +54,9 @@ describe('gen', () => {
       const b = yield* $(mb)
       return a + b
     })
-    pipe(
-      mc,
-      SyncOption.execute,
-      Equivalence.equals(Option.some(3)),
-      expect,
-    ).toBe(true)
+    pipe(mc, SyncOption.run, Equivalence.equals(Option.some(3)), expect).toBe(
+      true,
+    )
   })
 
   it('should work correctly with several generators', () => {
@@ -75,14 +66,12 @@ describe('gen', () => {
     const mc = SyncOption.gen(function* ($) {
       const a = yield* $(ma)
       const b = yield* $(mb)
+      f()
       return a + b
     })
-    pipe(
-      mc,
-      SyncOption.execute,
-      Equivalence.equals(Option.none()),
-      expect,
-    ).toBe(true)
+    pipe(mc, SyncOption.run, Equivalence.equals(Option.none()), expect).toBe(
+      true,
+    )
     expect(f).toHaveBeenCalledTimes(0)
   })
 })

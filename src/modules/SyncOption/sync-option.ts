@@ -43,7 +43,7 @@ export const fromSync: {
   <A>(ma: Sync.Sync<A>): SyncOption<A>
 } = ma => () => Option.some(ma())
 
-export const execute: {
+export const run: {
   <A>(ma: SyncOption<A>): Option.Option<A>
 } = <A>(ma: SyncOption<A>) => ma()
 

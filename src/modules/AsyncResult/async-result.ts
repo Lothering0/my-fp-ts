@@ -33,7 +33,7 @@ export const fail: {
 
 export const failSync: {
   <E>(me: Sync.Sync<E>): AsyncResult<never, E>
-} = flow(Sync.execute, fail)
+} = flow(Sync.run, fail)
 
 export const failAsync: {
   <E>(me: Async.Async<E>): AsyncResult<never, E>
@@ -45,7 +45,7 @@ export const succeed: {
 
 export const succeedSync: {
   <A>(ma: Sync.Sync<A>): AsyncResult<A>
-} = flow(Sync.execute, succeed)
+} = flow(Sync.run, succeed)
 
 export const succeedAsync: {
   <A>(me: Async.Async<A>): AsyncResult<A>
@@ -57,7 +57,7 @@ export const fromAsync: {
 
 export const fromSyncResult: {
   <A, E>(mma: SyncResult.SyncResult<A, E>): AsyncResult<A, E>
-} = mma => () => pipe(mma, SyncResult.execute, ma => Promise.resolve(ma))
+} = mma => () => pipe(mma, SyncResult.run, ma => Promise.resolve(ma))
 
 const try_: {
   <A, E>(tryCatch: TryCatch<Promise<A>, E>): AsyncResult<A, E>
@@ -93,6 +93,9 @@ export { try_ as try }
 export const toPromise: {
   <A, E>(ma: AsyncResult<A, E>): Promise<Result.Result<A, E>>
 } = mma => mma().then(identity)
+
+/** Alias for `toPromise` */
+export const run = toPromise
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const makeIterable: {

@@ -40,7 +40,7 @@ export const TappableBoth: TappableBoth_.TappableBoth<AsyncResultHkt> = {
     pipe(self, toPromise, promise =>
       promise.then(
         Result.match({
-          onFailure: e => pipe(e, f, Sync.execute, () => Result.fail(e)),
+          onFailure: e => pipe(e, f, Sync.run, () => Result.fail(e)),
           onSuccess: Result.succeed,
         }),
       ),
@@ -129,7 +129,7 @@ export const tapLeftSyncResult: {
           pipe(
             e,
             f,
-            SyncResult.execute,
+            SyncResult.run,
             Result.match({
               onFailure: Result.fail,
               onSuccess: () => Result.fail(e),

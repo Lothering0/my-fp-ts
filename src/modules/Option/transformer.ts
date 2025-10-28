@@ -54,11 +54,11 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
     ) => Kind<F, Out1 | Out2, Collectable, Fixed>
   } = flow(Option.match, M.map)
 
-  const value: {
+  const valueOf: {
     <In, Collectable, Fixed>(
       self: Kind<F, Option.Some<In>, Collectable, Fixed>,
     ): Kind<F, In, Collectable, Fixed>
-  } = M.map(Option.value)
+  } = M.map(Option.valueOf)
 
   const fromNullable: {
     <In, Collectable, Fixed>(
@@ -217,7 +217,7 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
       pipe(
         a,
         f,
-        Sync.execute,
+        Sync.run,
         FromOption.fromOption,
         Monad.flatMap(() => Monad.of(a)),
       ),
@@ -251,7 +251,7 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
           pipe(
             a,
             f,
-            Sync.execute,
+            Sync.run,
             FromResult.fromResult<In, Collectable, Fixed>,
             Monad.flatMap(() => Monad.of(a)),
           ),
@@ -273,7 +273,7 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
     none,
     fromKind,
     match,
-    value,
+    valueOf,
     fromNullable,
     fromNull,
     toNull,

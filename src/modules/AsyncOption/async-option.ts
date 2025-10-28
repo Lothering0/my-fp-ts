@@ -46,6 +46,9 @@ export const toPromise: {
   <A>(ma: AsyncOption<A>): Promise<Option.Option<A>>
 } = mma => mma()
 
+/** Alias for `toPromise` */
+export const run = toPromise
+
 export const fromAsync: {
   <A>(ma: Async.Async<A>): AsyncOption<A>
 } = ma => () => ma().then(Option.some)
@@ -86,7 +89,7 @@ export const gen =
       }
 
       if (!done) {
-        const iterationResult = iterator.next(Option.value(ma))
+        const iterationResult = iterator.next(Option.valueOf(ma))
         value = iterationResult.value
         done = iterationResult.done
         return nextIteration(Promise.resolve(value) as any)

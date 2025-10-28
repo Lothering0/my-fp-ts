@@ -7,8 +7,8 @@ describe('monad', () => {
       const fa: SyncOption.SyncOption<typeof a> = jest.fn(SyncOption.of(a))
       const afb = (x: number) => SyncOption.of(x + 1)
 
-      const result1 = pipe(fa, SyncOption.flatMap(afb), SyncOption.execute)
-      const result2 = pipe(a, afb, SyncOption.execute)
+      const result1 = pipe(fa, SyncOption.flatMap(afb), SyncOption.run)
+      const result2 = pipe(a, afb, SyncOption.run)
 
       expect(result1).toEqual(result2)
       expect(fa).toHaveBeenCalledTimes(1)
@@ -21,9 +21,9 @@ describe('monad', () => {
       const result1 = pipe(
         fa,
         SyncOption.flatMap(SyncOption.of),
-        SyncOption.execute,
+        SyncOption.run,
       )
-      const result2 = pipe(fa, SyncOption.execute)
+      const result2 = pipe(fa, SyncOption.run)
 
       expect(result1).toEqual(result2)
       expect(fa).toHaveBeenCalledTimes(2)
@@ -39,12 +39,12 @@ describe('monad', () => {
         fa,
         SyncOption.flatMap(afb),
         SyncOption.flatMap(bfc),
-        SyncOption.execute,
+        SyncOption.run,
       )
       const result2 = pipe(
         fa,
         SyncOption.flatMap(flow(afb, SyncOption.flatMap(bfc))),
-        SyncOption.execute,
+        SyncOption.run,
       )
 
       expect(result1).toEqual(result2)
@@ -56,7 +56,7 @@ describe('monad', () => {
       const result = pipe(
         fa,
         SyncOption.flatMap(a => SyncOption.some(a + 2)),
-        SyncOption.execute,
+        SyncOption.run,
       )
       expect(result).toEqual<Option.Option<never>>(Option.none())
       expect(fa).toHaveBeenCalledTimes(1)
@@ -68,7 +68,7 @@ describe('monad', () => {
       const result = pipe(
         fa,
         SyncOption.flatMap(SyncOption.none),
-        SyncOption.execute,
+        SyncOption.run,
       )
       expect(result).toEqual<Option.Option<never>>(Option.none())
       expect(fa).toHaveBeenCalledTimes(1)

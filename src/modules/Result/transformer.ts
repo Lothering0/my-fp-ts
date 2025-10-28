@@ -288,7 +288,7 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
       pipe(
         a,
         f,
-        Sync.execute,
+        Sync.run,
         FromResult.fromResult,
         Monad.flatMap(() => Monad.of(a)),
       ),

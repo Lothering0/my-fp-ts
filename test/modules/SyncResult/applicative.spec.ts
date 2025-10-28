@@ -22,7 +22,7 @@ describe('applicative', () => {
         identity,
         SyncResult.of,
         SyncResult.apply(fa),
-        SyncResult.execute,
+        SyncResult.run,
       )
 
       pipe(result, ResultEquivalence.equals(Result.succeed(a)), expect).toBe(
@@ -38,8 +38,8 @@ describe('applicative', () => {
       const fa: SyncResult.SyncResult<typeof a> = jest.fn(SyncResult.of(a))
       const fab: SyncResult.SyncResult<typeof ab> = jest.fn(SyncResult.of(ab))
 
-      const result1 = pipe(fab, SyncResult.apply(fa), SyncResult.execute)
-      const result2 = pipe(a, ab, SyncResult.of, SyncResult.execute)
+      const result1 = pipe(fab, SyncResult.apply(fa), SyncResult.run)
+      const result2 = pipe(a, ab, SyncResult.of, SyncResult.run)
 
       pipe(result1, ResultEquivalence.equals(result2), expect).toBe(true)
       expect(fa).toHaveBeenCalledTimes(1)
@@ -53,10 +53,10 @@ describe('applicative', () => {
       const fa: SyncResult.SyncResult<typeof a> = jest.fn(SyncResult.of(a))
       const fab: SyncResult.SyncResult<typeof ab> = jest.fn(SyncResult.of(ab))
 
-      const result1 = pipe(fab, SyncResult.apply(fa), SyncResult.execute)
+      const result1 = pipe(fab, SyncResult.apply(fa), SyncResult.run)
       const result2 = pipe(
         SyncResult.apply(fab)(SyncResult.of(ab => ab(a))),
-        SyncResult.execute,
+        SyncResult.run,
       )
 
       pipe(result1, ResultEquivalence.equals(result2), expect).toBe(true)
@@ -73,7 +73,7 @@ describe('applicative', () => {
       )
       const fab: SyncResult.SyncResult<typeof ab> = jest.fn(SyncResult.of(ab))
 
-      const result = pipe(fab, SyncResult.apply(fa), SyncResult.execute)
+      const result = pipe(fab, SyncResult.apply(fa), SyncResult.run)
 
       pipe(result, ResultEquivalence.equals(Result.fail(e)), expect).toBe(true)
       expect(fa).toHaveBeenCalledTimes(1)
@@ -91,7 +91,7 @@ describe('applicative', () => {
         SyncResult.fail(e),
       )
 
-      const result = pipe(fab, SyncResult.apply(fa), SyncResult.execute)
+      const result = pipe(fab, SyncResult.apply(fa), SyncResult.run)
 
       pipe(result, ResultEquivalence.equals(Result.fail(e)), expect).toBe(true)
       expect(fa).toHaveBeenCalledTimes(0)
@@ -111,7 +111,7 @@ describe('applicative', () => {
       const result: Result.Result<unknown, typeof e | typeof d> = pipe(
         fab,
         SyncResult.apply(fa),
-        SyncResult.execute,
+        SyncResult.run,
       )
 
       pipe(result, ResultEquivalence.equals(Result.fail(d)), expect).toBe(true)

@@ -40,7 +40,7 @@ export const TappableBoth: TappableBoth_.TappableBoth<Effect.EffectHkt> = {
       if (Result.isSuccess(ma)) {
         return ma
       }
-      pipe(ma, Result.failureOf, f, Sync.execute)
+      pipe(ma, Result.failureOf, f, Sync.run)
       return ma
     }),
 }
@@ -151,7 +151,7 @@ export const tapLeftSyncResult: {
       ma,
       Result.failureOf,
       f,
-      SyncResult.execute,
+      SyncResult.run,
       Result.match({
         onSuccess: () => Result.failureOf(ma),
         onFailure: identity,

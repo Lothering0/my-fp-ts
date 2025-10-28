@@ -1,9 +1,9 @@
 import * as Functor_ from '../../typeclasses/Functor'
-import { SyncHkt, Sync, execute } from './sync'
+import { SyncHkt, Sync, run } from './sync'
 import { pipe } from '../../utils/flow'
 
 export const Functor: Functor_.Functor<SyncHkt> = {
-  map: ab => self => () => pipe(self, execute, ab),
+  map: ab => self => () => pipe(self, run, ab),
 }
 
 export const map: {

@@ -7,8 +7,8 @@ describe('monad', () => {
       const fa: Sync.Sync<typeof a> = jest.fn(Sync.of(a))
       const afb = (x: number) => Sync.of(x + 1)
 
-      const result1 = pipe(fa, Sync.flatMap(afb), Sync.execute)
-      const result2 = pipe(a, afb, Sync.execute)
+      const result1 = pipe(fa, Sync.flatMap(afb), Sync.run)
+      const result2 = pipe(a, afb, Sync.run)
 
       expect(result1).toEqual(result2)
       expect(fa).toHaveBeenCalledTimes(1)
@@ -18,8 +18,8 @@ describe('monad', () => {
       const a = 1
       const fa: Sync.Sync<typeof a> = jest.fn(Sync.of(a))
 
-      const result1 = pipe(fa, Sync.flatMap(Sync.of), Sync.execute)
-      const result2 = pipe(fa, Sync.execute)
+      const result1 = pipe(fa, Sync.flatMap(Sync.of), Sync.run)
+      const result2 = pipe(fa, Sync.run)
 
       expect(result1).toEqual(result2)
       expect(fa).toHaveBeenCalledTimes(2)
@@ -31,16 +31,11 @@ describe('monad', () => {
       const afb = (x: number) => Sync.of(x + 1)
       const bfc = (x: number) => Sync.of(x / 2)
 
-      const result1 = pipe(
-        fa,
-        Sync.flatMap(afb),
-        Sync.flatMap(bfc),
-        Sync.execute,
-      )
+      const result1 = pipe(fa, Sync.flatMap(afb), Sync.flatMap(bfc), Sync.run)
       const result2 = pipe(
         fa,
         Sync.flatMap(flow(afb, Sync.flatMap(bfc))),
-        Sync.execute,
+        Sync.run,
       )
 
       expect(result1).toEqual(result2)

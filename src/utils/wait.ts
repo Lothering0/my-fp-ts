@@ -25,10 +25,10 @@ export const wait: {
 export const waitSync: {
   (duration: Duration_.DurationInput): Sync.Sync<void>
 } = duration => {
-  const start = Sync.execute(nowSync)
+  const start = Sync.run(nowSync)
   const milliseconds = pipe(duration, Duration_.make, Duration_.toMilliseconds)
   const predicate: Predicate<never> = () =>
-    Sync.execute(nowSync) - start < milliseconds
+    Sync.run(nowSync) - start < milliseconds
 
   return () =>
     pipe(

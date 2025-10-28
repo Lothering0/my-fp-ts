@@ -25,7 +25,7 @@ export const TappableBoth: TappableBoth_.TappableBoth<ResultHkt> = {
     }),
   tapLeftSync: f =>
     match({
-      onFailure: e => pipe(e, f, Sync.execute, () => fail(e)),
+      onFailure: e => pipe(e, f, Sync.run, () => fail(e)),
       onSuccess: succeed,
     }),
 }

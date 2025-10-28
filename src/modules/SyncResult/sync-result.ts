@@ -70,7 +70,7 @@ const try_: {
 
 export { try_ as try }
 
-export const execute: {
+export const run: {
   <A, E>(ma: SyncResult<A, E>): Result.Result<A, E>
 } = ma => ma()
 

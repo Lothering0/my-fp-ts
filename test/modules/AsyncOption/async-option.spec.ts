@@ -63,6 +63,7 @@ describe('gen', () => {
     const mc = AsyncOption.gen(function* ($) {
       const a = yield* $(ma)
       const b = yield* $(mb)
+      f()
       return a + b
     })
     const c = await mc()

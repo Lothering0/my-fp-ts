@@ -4,7 +4,7 @@ import { identity } from '../Identity'
 import { isNull, isUndefined } from '../../utils/typeChecks'
 import { match } from './matchers'
 
-export const value: {
+export const valueOf: {
   <A>(self: Some<A>): A
 } = self => self.value
 

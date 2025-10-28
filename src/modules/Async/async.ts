@@ -14,3 +14,6 @@ export const async: {
 export const toPromise: {
   <A>(ma: Async<A>): Promise<A>
 } = ma => ma()
+
+/** Alias for `toPromise` */
+export const run = toPromise
