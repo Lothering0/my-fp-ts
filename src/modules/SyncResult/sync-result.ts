@@ -14,6 +14,16 @@ export interface SyncResultHkt extends Hkt {
 export interface SyncResult<A, E = never>
   extends Sync.Sync<Result.Result<A, E>> {}
 
+export interface SyncResultGenerator<A, E = never> {
+  (
+    make: <B, D>(self: SyncResult<B, D>) => SyncResultIterable<B, D>,
+  ): Generator<E, A>
+}
+
+export interface SyncResultIterable<A, E = never> {
+  readonly [Symbol.iterator]: Result.ResultGenerator<A, E>
+}
+
 export const fail: {
   <E>(e: E): SyncResult<never, E>
 } = _SyncResult.fail
@@ -63,3 +73,22 @@ export { try_ as try }
 export const execute: {
   <A, E>(ma: SyncResult<A, E>): Result.Result<A, E>
 } = ma => ma()
+
+const makeIterable: {
+  <A, E>(self: SyncResult<A, E>): SyncResultIterable<A, E>
+} = self => ({
+  *[Symbol.iterator]() {
+    const a = yield* self()
+    return a
+  },
+})
+
+export const gen: {
+  <A, E>(generator: SyncResultGenerator<A, E>): SyncResult<A, E>
+} = generator => () => {
+  const { value, done } = generator(makeIterable).next()
+  if (!done) {
+    return Result.fail(value)
+  }
+  return Result.succeed(value)
+}

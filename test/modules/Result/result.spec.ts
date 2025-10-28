@@ -15,11 +15,14 @@ describe('gen', () => {
   })
 
   it('should return failed value', () => {
+    const f = jest.fn()
     const ma = Result.gen(function* () {
       const a = yield* Result.fail('a')
+      f()
       return a
     })
     pipe(ma, Equivalence.equals(Result.fail('a')), expect).toBe(true)
+    expect(f).toHaveBeenCalledTimes(0)
   })
 
   it('should work correctly with several successful generators', () => {
@@ -34,13 +37,16 @@ describe('gen', () => {
   })
 
   it('should work correctly with several generators', () => {
+    const f = jest.fn()
     const ma: Result.Result<number, string> = Result.succeed(1)
     const mb: Result.Result<number, string> = Result.fail('a')
     const mc = Result.gen(function* () {
       const a = yield* ma
       const b = yield* mb
+      f()
       return a + b
     })
     pipe(mc, Equivalence.equals(Result.fail('a')), expect).toBe(true)
+    expect(f).toHaveBeenCalledTimes(0)
   })
 })
