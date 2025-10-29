@@ -137,25 +137,13 @@ describe('all', () => {
     const result = await pipe(
       Effect.all([
         Effect.fromAsyncResult(() =>
-          pipe(
-            wait({ ms: 10 }),
-            Effect.map(() => 1),
-            Effect.runAsync,
-          ),
+          pipe(wait({ ms: 10 }), Effect.as(1), Effect.runAsync),
         ),
         Effect.fromAsyncResult(() =>
-          pipe(
-            wait({ ms: 30 }),
-            Effect.map(() => 'a'),
-            Effect.runAsync,
-          ),
+          pipe(wait({ ms: 30 }), Effect.as('a'), Effect.runAsync),
         ),
         Effect.fromAsyncResult(() =>
-          pipe(
-            wait({ ms: 20 }),
-            Effect.map(() => true),
-            Effect.runAsync,
-          ),
+          pipe(wait({ ms: 20 }), Effect.as(true), Effect.runAsync),
         ),
       ]),
       Effect.runAsync,
@@ -167,23 +155,19 @@ describe('all', () => {
     const result = await pipe(
       Effect.all([
         Effect.fromAsyncResult(() =>
-          pipe(
-            wait({ ms: 10 }),
-            Effect.map(() => 1),
-            Effect.runAsync,
-          ),
+          pipe(wait({ ms: 10 }), Effect.as(1), Effect.runAsync),
         ),
         Effect.fromAsyncResult(() =>
           pipe(
             wait({ ms: 30 }),
-            Effect.mapResult(() => Result.fail('b')),
+            Effect.asResult(Result.fail('b')),
             Effect.runAsync,
           ),
         ),
         Effect.fromAsyncResult(() =>
           pipe(
             wait({ ms: 20 }),
-            Effect.mapResult(() => Result.fail('a')),
+            Effect.asResult(Result.fail('a')),
             Effect.runAsync,
           ),
         ),
@@ -217,25 +201,17 @@ describe('allResults', () => {
     await pipe(
       Effect.allResults([
         Effect.fromAsyncResult(() =>
-          pipe(
-            wait({ ms: 10 }),
-            Effect.map(() => 1),
-            Effect.runAsync,
-          ),
+          pipe(wait({ ms: 10 }), Effect.as(1), Effect.runAsync),
         ),
         Effect.fromAsyncResult(() =>
           pipe(
             wait({ ms: 20 }),
-            Effect.mapResult(() => Result.fail('a')),
+            Effect.asResult(Result.fail('a')),
             Effect.runAsync,
           ),
         ),
         Effect.fromAsyncResult(() =>
-          pipe(
-            wait({ ms: 20 }),
-            Effect.map(() => true),
-            Effect.runAsync,
-          ),
+          pipe(wait({ ms: 20 }), Effect.as(true), Effect.runAsync),
         ),
       ]),
       Effect.map(xs =>

@@ -29,6 +29,12 @@ export const flatMap: {
   ): (self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<B>
 } = MonadWithIndex.flatMapWithIndex
 
+export const andThen: {
+  <A>(
+    ma: NonEmptyReadonlyArray<A>,
+  ): (self: NonEmptyReadonlyArray<unknown>) => NonEmptyReadonlyArray<A>
+} = MonadWithIndex.andThen
+
 export const compose: {
   <A, B, C>(
     bmc: (b: B, i: number) => NonEmptyReadonlyArray<C>,

@@ -1,10 +1,10 @@
 import * as State from '../State'
+import * as Functor_ from '../../typeclasses/Functor'
 import * as Applicative_ from '../../typeclasses/Applicative'
 import * as Monad_ from '../../typeclasses/Monad'
 import * as Tappable_ from '../../typeclasses/Tappable'
 import * as Zippable_ from '../../typeclasses/Zippable'
 import { Hkt, Kind } from '../../typeclasses/Hkt'
-import { Functor } from '../../typeclasses/Functor'
 import { FromIdentity } from '../../typeclasses/FromIdentity'
 import { flow, pipe } from '../../utils/flow'
 
@@ -89,13 +89,13 @@ export const transform = <F extends Hkt, TFixed>(F: Monad_.Monad<F>) => {
     of: a => s => F.of([a, s]),
   }
 
-  const Functor: Functor<THkt> = {
+  const Functor = Functor_.create<THkt>({
     map: f => self =>
       flow(
         self,
         F.map(([a, s]) => [f(a), s]),
       ),
-  }
+  })
 
   const Monad = Monad_.create<THkt>(FromIdentity, Functor, {
     flat: self => s =>

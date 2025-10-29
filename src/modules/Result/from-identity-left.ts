@@ -6,5 +6,5 @@ export const FromIdentityLeft: FromIdentityLeft_<ResultHkt> = {
 }
 
 export const ofLeft: {
-  <E>(a: E): Result<never, E>
+  <E>(e: E): Result<never, E>
 } = FromIdentityLeft.ofLeft

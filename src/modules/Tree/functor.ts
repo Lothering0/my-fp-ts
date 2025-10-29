@@ -4,11 +4,15 @@ import { Tree, TreeHkt } from './tree'
 import { make, valueOf, forestOf } from './utils'
 import { pipe } from '../../utils/flow'
 
-export const Functor: Functor_.Functor<TreeHkt> = {
+export const Functor = Functor_.create<TreeHkt>({
   map: ab => self =>
     make(pipe(self, valueOf, ab), pipe(self, forestOf, Iterable.map(map(ab)))),
-}
+})
 
 export const map: {
   <A, B>(ab: (a: A) => B): (self: Tree<A>) => Tree<B>
 } = Functor.map
+
+export const as: {
+  <A>(a: A): (self: Tree<unknown>) => Tree<A>
+} = Functor.as

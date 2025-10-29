@@ -1,5 +1,6 @@
 import * as Result from '../Result'
 import * as Sync from '../Sync'
+import * as Functor_ from '../../typeclasses/Functor'
 import * as Bifunctor_ from '../../typeclasses/Bifunctor'
 import * as Bimonad_ from '../../typeclasses/Bimonad'
 import * as Applicative_ from '../../typeclasses/Applicative'
@@ -11,7 +12,6 @@ import { identity } from '../Identity'
 import { Hkt, Kind } from '../../typeclasses/Hkt'
 import { FromIdentity } from '../../typeclasses/FromIdentity'
 import { FromResult } from '../../typeclasses/FromResult'
-import { Functor } from '../../typeclasses/Functor'
 import { flow, pipe } from '../../utils/flow'
 import { Alt } from '../../typeclasses/Alt'
 import { FromIdentityLeft } from '../../typeclasses/FromIdentityLeft'
@@ -198,9 +198,9 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
     orElse,
   }
 
-  const Functor: Functor<THkt> = {
+  const Functor = Functor_.create<THkt>({
     map: flow(Result.map, M.map),
-  }
+  })
 
   const Bifunctor = Bifunctor_.create<THkt>(Functor, {
     mapLeft: ed => flow(M.map(Result.mapLeft(ed))),
@@ -269,12 +269,7 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
     ) => Kind<THkt, In, Collectable1 | Collectable2, Fixed>
   } = f =>
     Monad.flatMap(a =>
-      pipe(
-        a,
-        f,
-        FromResult.fromResult,
-        Monad.flatMap(() => Monad.of(a)),
-      ),
+      pipe(a, f, FromResult.fromResult, Monad.andThen(Monad.of(a))),
     )
 
   const tapSyncResult: {
@@ -285,21 +280,11 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
     ) => Kind<THkt, In, Collectable1 | Collectable2, Fixed>
   } = f =>
     Monad.flatMap(a =>
-      pipe(
-        a,
-        f,
-        Sync.run,
-        FromResult.fromResult,
-        Monad.flatMap(() => Monad.of(a)),
-      ),
+      pipe(a, f, Sync.run, FromResult.fromResult, Monad.andThen(Monad.of(a))),
     )
 
   const Extendable = Extendable_.create<THkt>(Functor, {
-    extend: fab => self =>
-      pipe(
-        self,
-        Functor.map(() => fab(self)),
-      ),
+    extend: fab => self => pipe(self, Functor.as(fab(self))),
   })
 
   const Zippable = Zippable_.create(Applicative)

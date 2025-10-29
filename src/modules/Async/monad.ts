@@ -22,6 +22,10 @@ export const flatMap: {
   ): (self: Async.Async<A>) => Async.Async<B>
 } = Monad.flatMap
 
+export const andThen: {
+  <A>(ma: Async.Async<A>): (self: Async.Async<unknown>) => Async.Async<A>
+} = Monad.andThen
+
 export const compose: {
   <A, B, C>(
     bmc: (b: B) => Async.Async<C>,

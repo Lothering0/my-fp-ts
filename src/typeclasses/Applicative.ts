@@ -42,6 +42,7 @@ export const create = <F extends Hkt>(Monad: Monad<F>): Applicative<F> => {
   return {
     of: Monad.of,
     map: Monad.map,
+    as: Monad.as,
     apply,
     flipApply,
   }

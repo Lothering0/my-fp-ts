@@ -1,9 +1,9 @@
 import { create } from '../../typeclasses/Extendable'
 import { Option, OptionHkt } from './option'
-import { Functor, map } from './functor'
+import { Functor, as } from './functor'
 
 export const Extendable = create<OptionHkt>(Functor, {
-  extend: fab => self => map(() => fab(self))(self),
+  extend: fab => self => as(fab(self))(self),
 })
 
 export const extend: {

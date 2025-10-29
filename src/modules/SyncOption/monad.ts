@@ -15,6 +15,10 @@ export const flatMap: {
   <A, B>(amb: (a: A) => SyncOption<B>): (self: SyncOption<A>) => SyncOption<B>
 } = Monad.flatMap
 
+export const andThen: {
+  <A>(ma: SyncOption<A>): (self: SyncOption<unknown>) => SyncOption<A>
+} = Monad.andThen
+
 export const compose: {
   <A, B, C>(
     bmc: (b: B) => SyncOption<C>,

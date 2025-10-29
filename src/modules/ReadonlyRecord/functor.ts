@@ -5,14 +5,14 @@ import { flow } from '../../utils/flow'
 import { ReadonlyRecord, ReadonlyRecordHkt } from './readonly-record'
 import { fromEntries, toEntries } from './utils'
 
-export const Functor: Functor_.Functor<ReadonlyRecordHkt> = {
+export const Functor = Functor_.create<ReadonlyRecordHkt>({
   map: ab =>
     flow(
       toEntries,
       Array.map(([k, a]) => [k, ab(a)] as const),
       fromEntries,
     ),
-}
+})
 
 export const FunctorWithIndex: FunctorWithIndex_.FunctorWithIndex<
   ReadonlyRecordHkt,
@@ -35,3 +35,11 @@ export const map: {
     akb: (a: A, k: string) => B,
   ): <K extends string>(self: ReadonlyRecord<K, A>) => ReadonlyRecord<K, B>
 } = FunctorWithIndex.mapWithIndex as typeof map
+
+export const as: {
+  <A>(
+    a: A,
+  ): <K extends string>(
+    self: ReadonlyRecord<K, unknown>,
+  ) => ReadonlyRecord<K, A>
+} = FunctorWithIndex.as

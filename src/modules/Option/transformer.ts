@@ -1,6 +1,7 @@
 import * as Option from '../Option'
 import * as Result from '../Result'
 import * as Sync from '../Sync'
+import * as Functor_ from '../../typeclasses/Functor'
 import * as Applicative_ from '../../typeclasses/Applicative'
 import * as Monad_ from '../../typeclasses/Monad'
 import * as Compactable_ from '../../typeclasses/Compactable'
@@ -11,7 +12,6 @@ import { Hkt, Kind } from '../../typeclasses/Hkt'
 import { FromIdentity } from '../../typeclasses/FromIdentity'
 import { FromOption } from '../../typeclasses/FromOption'
 import { FromResult } from '../../typeclasses/FromResult'
-import { Functor } from '../../typeclasses/Functor'
 import { flow, pipe } from '../../utils/flow'
 import { identity } from '../Identity'
 import { LazyArg } from '../../types/utils'
@@ -173,9 +173,9 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
     zero: none,
   }
 
-  const Functor: Functor<THkt> = {
+  const Functor = Functor_.create<THkt>({
     map: flow(Option.map, M.map),
-  }
+  })
 
   const Monad = Monad_.create<THkt>(FromIdentity, Functor, {
     flat: M.flatMap(
@@ -196,15 +196,7 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
     ): <Collectable, Fixed>(
       self: Kind<THkt, In, Collectable, Fixed>,
     ) => Kind<THkt, In, Collectable, Fixed>
-  } = f =>
-    Monad.flatMap(a =>
-      pipe(
-        a,
-        f,
-        FromOption.fromOption,
-        Monad.flatMap(() => Monad.of(a)),
-      ),
-    )
+  } = f => Monad.flatMap(a => pipe(a, f, FromOption.fromOption, Monad.as(a)))
 
   const tapSyncOption: {
     <In>(
@@ -213,15 +205,7 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
       self: Kind<THkt, In, Collectable, Fixed>,
     ) => Kind<THkt, In, Collectable, Fixed>
   } = f =>
-    Monad.flatMap(a =>
-      pipe(
-        a,
-        f,
-        Sync.run,
-        FromOption.fromOption,
-        Monad.flatMap(() => Monad.of(a)),
-      ),
-    )
+    Monad.flatMap(a => pipe(a, f, Sync.run, FromOption.fromOption, Monad.as(a)))
 
   const tapResult =
     <In>(f: (a: In) => Result.Result<unknown, unknown>) =>
@@ -235,7 +219,7 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
             a,
             f,
             FromResult.fromResult<In, Collectable, Fixed>,
-            Monad.flatMap(() => Monad.of(a)),
+            Monad.as(a),
           ),
         ),
       )
@@ -253,7 +237,7 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
             f,
             Sync.run,
             FromResult.fromResult<In, Collectable, Fixed>,
-            Monad.flatMap(() => Monad.of(a)),
+            Monad.as(a),
           ),
         ),
       )
@@ -263,7 +247,7 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
   })
 
   const Extendable = Extendable_.create<THkt>(Functor, {
-    extend: fab => self => Functor.map(() => fab(self))(self),
+    extend: fab => self => Functor.as(fab(self))(self),
   })
 
   const Zippable = Zippable_.create(Applicative)

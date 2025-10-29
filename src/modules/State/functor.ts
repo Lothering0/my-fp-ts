@@ -3,14 +3,18 @@ import { StateHkt, State } from './state'
 import { run } from './utils'
 import { flow } from '../../utils/flow'
 
-export const Functor: Functor_.Functor<StateHkt> = {
+export const Functor = Functor_.create<StateHkt>({
   map: ab => self =>
     flow(
       s => run(s)(self),
       ([a1, s1]) => [ab(a1), s1],
     ),
-}
+})
 
 export const map: {
   <A, B>(ab: (a: A) => B): <S>(self: State<S, A>) => State<S, B>
 } = Functor.map
+
+export const as: {
+  <A>(a: A): <S>(self: State<S, unknown>) => State<S, A>
+} = Functor.as

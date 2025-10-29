@@ -171,25 +171,3 @@ describe('intersection', () => {
     ).toEqual(Result.fail(['property "enabled" is required']))
   })
 })
-
-describe('intersection', () => {
-  it('should return intersection of two schemas', () => {
-    const User = Schema.Struct({
-      id: Schema.Number,
-      name: Schema.String,
-    })
-    const Status = Schema.Struct({
-      enabled: Schema.Boolean,
-    })
-    const UserWithStatus = pipe(User, Schema.intersection(Status))
-    pipe(Schema.validateUnknown(UserWithStatus)(undefined), expect).toBe(false)
-    pipe(
-      Schema.proceed(UserWithStatus)({ id: 1, name: 'John', enabled: true }),
-      expect,
-    ).toEqual(Result.succeed({ id: 1, name: 'John', enabled: true }))
-    pipe(
-      Schema.proceedUnknown(UserWithStatus)({ id: 1, name: 'John' }),
-      expect,
-    ).toEqual(Result.fail(['property "enabled" is required']))
-  })
-})

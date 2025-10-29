@@ -19,6 +19,10 @@ export const flatMap: {
   <S, A, B>(amb: (a: A) => State<S, B>): (self: State<S, A>) => State<S, B>
 } = Monad.flatMap
 
+export const andThen: {
+  <S, A>(ma: State<S, A>): (self: State<S, unknown>) => State<S, A>
+} = Monad.andThen
+
 export const compose: {
   <S, A, B, C>(
     bmc: (b: B) => State<S, C>,

@@ -18,6 +18,10 @@ export const flatMap: {
   <A, B>(amb: (a: A) => Sync<B>): (self: Sync<A>) => Sync<B>
 } = Monad.flatMap
 
+export const andThen: {
+  <A>(ma: Sync<A>): (self: Sync<unknown>) => Sync<A>
+} = Monad.andThen
+
 export const compose: {
   <A, B, C>(bmc: (b: B) => Sync<C>, amb: (a: A) => Sync<B>): (a: A) => Sync<C>
 } = Monad.compose

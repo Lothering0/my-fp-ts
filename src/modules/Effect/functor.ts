@@ -9,10 +9,20 @@ export const mapResult: {
   ): (self: Effect<A, E>) => Effect<B, D>
 } = f => self => create(f, self)
 
-export const Functor: Functor_.Functor<EffectHkt> = {
+export const asResult: {
+  <A, E>(
+    ma: EffectValue<A, E>,
+  ): (self: Effect<unknown, unknown>) => Effect<A, E>
+} = ma => mapResult(() => ma)
+
+export const Functor = Functor_.create<EffectHkt>({
   map: ab => mapResult(Result.map(ab)),
-}
+})
 
 export const map: {
   <A, B>(ab: (success: A) => B): <E>(self: Effect<A, E>) => Effect<B, E>
 } = Functor.map
+
+export const as: {
+  <A>(a: A): <E>(self: Effect<unknown, E>) => Effect<A, E>
+} = Functor.as

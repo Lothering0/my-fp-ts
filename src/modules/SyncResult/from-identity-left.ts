@@ -6,5 +6,5 @@ export const FromIdentityLeft: FromIdentityLeft_<SyncResultHkt> =
   _SyncResult.FromIdentityLeft
 
 export const ofLeft: {
-  <E>(a: E): SyncResult<never, E>
+  <E>(e: E): SyncResult<never, E>
 } = FromIdentityLeft.ofLeft

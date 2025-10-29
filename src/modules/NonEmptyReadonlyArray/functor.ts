@@ -19,3 +19,7 @@ export const map: {
     aib: (a: A, i: number) => B,
   ): (self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<B>
 } = FunctorWithIndex.mapWithIndex
+
+export const as: {
+  <A>(a: A): (self: NonEmptyReadonlyArray<unknown>) => NonEmptyReadonlyArray<A>
+} = FunctorWithIndex.as

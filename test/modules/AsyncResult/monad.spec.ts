@@ -77,7 +77,7 @@ describe('monad', () => {
       )
       const result = await pipe(
         fa,
-        AsyncResult.flatMap(() => AsyncResult.fail(e)),
+        AsyncResult.andThen(AsyncResult.fail(e)),
         AsyncResult.toPromise,
       )
       expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))

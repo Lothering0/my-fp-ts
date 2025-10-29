@@ -1,9 +1,9 @@
 import * as Reader from '../Reader'
+import * as Functor_ from '../../typeclasses/Functor'
 import * as Applicative_ from '../../typeclasses/Applicative'
 import * as Monad_ from '../../typeclasses/Monad'
 import * as Tappable_ from '../../typeclasses/Tappable'
 import { Hkt, Kind } from '../../typeclasses/Hkt'
-import { Functor } from '../../typeclasses/Functor'
 import { FromIdentity } from '../../typeclasses/FromIdentity'
 import { Profunctor } from '../../typeclasses/Profunctor'
 import { flow, pipe } from '../../utils/flow'
@@ -76,14 +76,14 @@ export const transform = <F extends Hkt, TFixed>(F: Monad_.Monad<F>) => {
     ) => Kind<ReaderTHkt<F, TFixed2>, In, Collectable, Fixed>
   } = f => self => flow(f, self)
 
-  const Functor: Functor<THkt> = {
+  const Functor = Functor_.create<THkt>({
     map: f => self => flow(self, F.map(f)),
-  }
+  })
 
   const getProfunctor = <TCollectable>(): Profunctor<
     ReaderCollectableTHkt<F, TCollectable>
   > => ({
-    ...(Functor as Functor<ReaderCollectableTHkt<F, TCollectable>>),
+    ...(Functor as Functor_.Functor<ReaderCollectableTHkt<F, TCollectable>>),
     promap: (de, ab) => self => flow(de, self, F.map(ab)),
   })
 

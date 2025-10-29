@@ -32,6 +32,10 @@ export const flatMap: {
   ): (self: Iterable<A>) => Iterable<B>
 } = MonadWithIndex.flatMapWithIndex
 
+export const andThen: {
+  <A>(ma: Iterable<A>): (self: Iterable<unknown>) => Iterable<A>
+} = MonadWithIndex.andThen
+
 export const compose: {
   <A, B, C>(
     bmc: (b: B, i: number) => Iterable<C>,

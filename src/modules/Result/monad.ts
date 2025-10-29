@@ -25,6 +25,12 @@ export const flatMap: {
   ): <E2>(self: Result<A, E2>) => Result<B, E1 | E2>
 } = Monad.flatMap
 
+export const andThen: {
+  <A, E1>(
+    ma: Result<A, E1>,
+  ): <E2>(self: Result<unknown, E2>) => Result<A, E1 | E2>
+} = Monad.andThen
+
 export const compose: {
   <E1, E2, A, B, C>(
     bmc: (b: B) => Result<C, E2>,

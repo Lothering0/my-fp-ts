@@ -1,5 +1,6 @@
 import * as TappableBoth_ from '../../typeclasses/TappableBoth'
 import * as Sync from '../Sync'
+import * as Functor from './functor'
 import { create } from '../../typeclasses/Tappable'
 import { Monad, flatMap } from './monad'
 import { fail, Result, ResultHkt, succeed } from './result'
@@ -44,15 +45,7 @@ export const tapSyncResult: {
   <A, E2>(
     f: (a: A) => Sync.Sync<Result<unknown, E2>>,
   ): <E1>(self: Result<A, E1>) => Result<A, E1 | E2>
-} = f =>
-  flatMap(a =>
-    pipe(
-      a,
-      f,
-      g => g(),
-      flatMap(() => succeed(a)),
-    ),
-  )
+} = f => flatMap(a => pipe(a, f, g => g(), Functor.as(a)))
 
 export const tapLeft: {
   <E1, E2>(

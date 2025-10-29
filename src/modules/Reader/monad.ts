@@ -18,6 +18,10 @@ export const flatMap: {
   <R, A, B>(amb: (a: A) => Reader<R, B>): (self: Reader<R, A>) => Reader<R, B>
 } = Monad.flatMap
 
+export const andThen: {
+  <R, A>(ma: Reader<R, A>): (self: Reader<R, unknown>) => Reader<R, A>
+} = Monad.andThen
+
 export const compose: {
   <R, A, Out1, Out2>(
     bmc: (b: Out1) => Reader<R, Out2>,

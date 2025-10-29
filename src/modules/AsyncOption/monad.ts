@@ -20,6 +20,10 @@ export const flatMap: {
   ): (self: AsyncOption<A>) => AsyncOption<B>
 } = Monad.flatMap
 
+export const andThen: {
+  <A>(ma: AsyncOption<A>): (self: AsyncOption<unknown>) => AsyncOption<A>
+} = Monad.andThen
+
 export const compose: {
   <A, B, C>(
     bmc: (b: B) => AsyncOption<C>,
@@ -68,10 +72,7 @@ export const concurrently: {
   ): <A>(fa: AsyncOption<A>) => AsyncOption<DoObject<N, A, B>>
 } = fb => fa => () =>
   Promise.all([toPromise(fa), toPromise(fb)]).then(([ma, mb]) =>
-    pipe(
-      mb,
-      Option.flatMap(() => ma as any),
-    ),
+    pipe(mb, Option.andThen(ma as any)),
   )
 
 export const concurrentlyTo: {

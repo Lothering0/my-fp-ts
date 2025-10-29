@@ -2,7 +2,7 @@ import * as Functor_ from '../../typeclasses/Functor'
 import * as FunctorWithIndex_ from '../../typeclasses/FunctorWithIndex'
 import { IterableHkt } from './iterable'
 
-export const Functor: Functor_.Functor<IterableHkt> = {
+export const Functor = Functor_.create<IterableHkt>({
   map: ab => self => ({
     *[Symbol.iterator]() {
       for (const a of self) {
@@ -10,7 +10,7 @@ export const Functor: Functor_.Functor<IterableHkt> = {
       }
     },
   }),
-}
+})
 
 export const FunctorWithIndex: FunctorWithIndex_.FunctorWithIndex<
   IterableHkt,
@@ -31,3 +31,7 @@ export const FunctorWithIndex: FunctorWithIndex_.FunctorWithIndex<
 export const map: {
   <A, B>(aib: (a: A, i: number) => B): (self: Iterable<A>) => Iterable<B>
 } = FunctorWithIndex.mapWithIndex
+
+export const as: {
+  <A>(a: A): (self: Iterable<unknown>) => Iterable<A>
+} = FunctorWithIndex.as

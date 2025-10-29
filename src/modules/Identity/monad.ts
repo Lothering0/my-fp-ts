@@ -18,6 +18,10 @@ export const flatMap: {
   <A, B>(amb: (a: A) => Identity<B>): (self: Identity<A>) => Identity<B>
 } = Monad.flatMap
 
+export const andThen: {
+  <A>(ma: Identity<A>): (self: Identity<unknown>) => Identity<A>
+} = Monad.andThen
+
 export const compose: {
   <A, B, C>(
     bmc: (b: B) => Identity<C>,

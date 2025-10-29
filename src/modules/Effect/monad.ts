@@ -27,6 +27,12 @@ export const flatMap: {
   ): <E2>(self: Effect<A, E2>) => Effect<B, E1 | E2>
 } = Monad.flatMap
 
+export const andThen: {
+  <A, E1>(
+    ma: Effect<A, E1>,
+  ): <E2>(self: Effect<unknown, E2>) => Effect<A, E1 | E2>
+} = Monad.andThen
+
 export const compose: {
   <E1, E2, A, B, C>(
     bmc: (b: B) => Effect<C, E2>,
@@ -79,7 +85,7 @@ export const concurrently: {
       Promise.resolve(run(fb)),
       Promise.resolve(run(self)),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ]).then(([ma, mb]) => pipe(mb, Result.flatMap(() => ma) as any)),
+    ]).then(([ma, mb]) => pipe(mb, Result.andThen(ma) as any)),
   )
 
 export const concurrentlyTo: {

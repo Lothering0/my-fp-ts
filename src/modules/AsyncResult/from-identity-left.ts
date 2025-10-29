@@ -6,5 +6,5 @@ export const FromIdentityLeft: FromIdentityLeft_<AsyncResultHkt> =
   _AsyncResult.FromIdentityLeft
 
 export const ofLeft: {
-  <E>(a: E): AsyncResult<never, E>
+  <E>(e: E): AsyncResult<never, E>
 } = FromIdentityLeft.ofLeft

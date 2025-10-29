@@ -73,7 +73,7 @@ describe('monad', () => {
       )
       const result = pipe(
         fa,
-        SyncResult.flatMap(() => SyncResult.fail(e)),
+        SyncResult.andThen(SyncResult.fail(e)),
         SyncResult.run,
       )
       expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))

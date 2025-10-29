@@ -21,14 +21,7 @@ export interface Tappable<F extends Hkt> extends TypeClass<F> {
 export const create: {
   <F extends Hkt>(Monad: Monad<F>): Tappable<F>
 } = Monad => ({
-  tap: f =>
-    Monad.flatMap(a =>
-      pipe(
-        a,
-        f,
-        Monad.flatMap(() => Monad.of(a)),
-      ),
-    ),
+  tap: f => Monad.flatMap(a => pipe(a, f, Monad.as(a))),
   tapSync: f =>
     Monad.map(a =>
       pipe(

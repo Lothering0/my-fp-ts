@@ -27,6 +27,10 @@ export const flatMap: {
   <A, B>(amb: (a: A) => Tree<B>): (self: Tree<A>) => Tree<B>
 } = Monad.flatMap
 
+export const andThen: {
+  <A>(ma: Tree<A>): (self: Tree<unknown>) => Tree<A>
+} = Monad.andThen
+
 export const compose: {
   <A, B, C>(bmc: (b: B) => Tree<C>, amb: (a: A) => Tree<B>): (a: A) => Tree<C>
 } = Monad.compose

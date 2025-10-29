@@ -19,6 +19,12 @@ export interface Monad<F extends Hkt> extends FromIdentity<F>, Functor<F> {
     self: Kind<F, In, Collectable2, Fixed>,
   ) => Kind<F, Out, Collectable1 | Collectable2, Fixed>
 
+  readonly andThen: <Out, Collectable1, Fixed>(
+    ma: Kind<F, Out, Collectable1, Fixed>,
+  ) => <Collectable2>(
+    self: Kind<F, unknown, Collectable2, Fixed>,
+  ) => Kind<F, Out, Collectable1 | Collectable2, Fixed>
+
   readonly compose: <In, Out1, Out2, Collectable1, Collectable2, Fixed>(
     bmc: (b: Out1) => Kind<F, Out2, Collectable2, Fixed>,
     amb: (a: In) => Kind<F, Out1, Collectable1, Fixed>,
@@ -72,6 +78,8 @@ export const create = <F extends Hkt>(
 
   const flatMap: Monad<F>['flatMap'] = amb => flow(map(amb), flat)
 
+  const andThen: Monad<F>['andThen'] = ma => flatMap(() => ma)
+
   const compose: Monad<F>['compose'] = (bmc, amb) => flow(amb, flatMap(bmc))
 
   const mapTo: Monad<F>['mapTo'] = (name, ab) =>
@@ -114,6 +122,7 @@ export const create = <F extends Hkt>(
     ...Monad,
     Do,
     flatMap,
+    andThen,
     compose,
     setTo,
     mapTo,

@@ -22,6 +22,12 @@ export const flatMap: {
   ): <E2>(self: AsyncResult<A, E2>) => AsyncResult<B, E1 | E2>
 } = Monad.flatMap
 
+export const andThen: {
+  <A, E1>(
+    ma: AsyncResult<A, E1>,
+  ): <E2>(self: AsyncResult<unknown, E2>) => AsyncResult<A, E1 | E2>
+} = Monad.andThen
+
 export const compose: {
   <E1, E2, A, B, C>(
     bmc: (b: B) => AsyncResult<C, E2>,
@@ -72,7 +78,7 @@ export const concurrently: {
   ) => AsyncResult<DoObject<N, A, A>, E1 | E2>
 } = fb => self => () =>
   Promise.all([toPromise(self), toPromise(fb)]).then(([ma, mb]) =>
-    pipe(mb, Result.flatMap(() => ma) as any),
+    pipe(mb, Result.andThen(ma) as any),
   )
 
 export const concurrentlyTo: {

@@ -25,6 +25,10 @@ export const flatMap: {
   ): (self: Option.Option<A>) => Option.Option<B>
 } = Monad.flatMap
 
+export const andThen: {
+  <A>(ma: Option.Option<A>): (self: Option.Option<unknown>) => Option.Option<A>
+} = Monad.andThen
+
 export const compose: {
   <A, B, C>(
     bmc: (b: B) => Option.Option<C>,

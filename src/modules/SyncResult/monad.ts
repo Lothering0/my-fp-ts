@@ -17,6 +17,12 @@ export const flatMap: {
   ): <E2>(self: SyncResult<A, E2>) => SyncResult<B, E1 | E2>
 } = Monad.flatMap
 
+export const andThen: {
+  <A, E1>(
+    ma: SyncResult<A, E1>,
+  ): <E2>(self: SyncResult<unknown, E2>) => SyncResult<A, E1 | E2>
+} = Monad.andThen
+
 export const compose: {
   <E1, E2, A, B, C>(
     bmc: (b: B) => SyncResult<C, E2>,
