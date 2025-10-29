@@ -1,4 +1,5 @@
 export * from './applicative'
+export * from './contravariant'
 export * from './from-identity'
 export * from './functor'
 export * from './monad'

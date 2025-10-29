@@ -11,41 +11,41 @@ import { identity } from '../modules/Identity'
 import { Monoid } from './Monoid'
 
 export interface OrderHkt extends Hkt {
-  readonly Type: Order<this['In']>
+  readonly Type: Order<this['Fixed']>
 }
 
-export interface Order<A> {
-  readonly compare: (y: A) => (x: A) => Ordering.Ordering
+export interface Order<S> {
+  readonly compare: (y: S) => (x: S) => Ordering.Ordering
 }
 
 export const reverse: {
-  <A>(Order: Order<A>): Order<A>
+  <S>(Order: Order<S>): Order<S>
 } = Order => ({
   compare: y => flow(Order.compare(y), Ordering.reverse),
 })
 
 export const equals: {
-  <A>(Order: Order<A>): (y: A) => (x: A) => boolean
+  <S>(Order: Order<S>): (y: S) => (x: S) => boolean
 } = Order => y => x => Order.compare(y)(x) === 0
 
 export const lessThan: {
-  <A>(Order: Order<A>): (y: A) => (x: A) => boolean
+  <S>(Order: Order<S>): (y: S) => (x: S) => boolean
 } = Order => y => x => Order.compare(y)(x) === -1
 
 export const lessThanOrEquals: {
-  <A>(Order: Order<A>): (y: A) => (x: A) => boolean
+  <S>(Order: Order<S>): (y: S) => (x: S) => boolean
 } = Order => y => x => Order.compare(y)(x) <= 0
 
 export const moreThan: {
-  <A>(Order: Order<A>): (y: A) => (x: A) => boolean
+  <S>(Order: Order<S>): (y: S) => (x: S) => boolean
 } = Order => y => x => Order.compare(y)(x) === 1
 
 export const moreThanOrEquals: {
-  <A>(Order: Order<A>): (y: A) => (x: A) => boolean
+  <S>(Order: Order<S>): (y: S) => (x: S) => boolean
 } = Order => y => x => Order.compare(y)(x) >= 0
 
 export const min: {
-  <A>(Order: Order<A>): (y: A) => (x: A) => A
+  <S>(Order: Order<S>): (y: S) => (x: S) => S
 } = Order => y => x =>
   pipe(
     x,
@@ -58,7 +58,7 @@ export const min: {
   )
 
 export const max: {
-  <A>(Order: Order<A>): (y: A) => (x: A) => A
+  <S>(Order: Order<S>): (y: S) => (x: S) => S
 } = Order => y => x =>
   pipe(
     x,
@@ -71,11 +71,11 @@ export const max: {
   )
 
 export const clamp: {
-  <A>(Order: Order<A>): (low: A, high: A) => Endomorphism<A>
+  <S>(Order: Order<S>): (low: S, high: S) => Endomorphism<S>
 } = Order => (low, high) => flow(min(Order)(high), max(Order)(low))
 
 export const between: {
-  <A>(Order: Order<A>): (low: A, high: A) => Predicate<A>
+  <S>(Order: Order<S>): (low: S, high: S) => Predicate<S>
 } = Order => (low, high) => a =>
   pipe(
     a,
@@ -84,18 +84,18 @@ export const between: {
   )
 
 export const Contravariant: Contravariant_.Contravariant<OrderHkt> = {
-  contramap: ba => Order => ({
-    compare: y => x => Order.compare(ba(y))(ba(x)),
+  contramap: ts => Order => ({
+    compare: y => x => Order.compare(ts(y))(ts(x)),
   }),
 }
 
 export const contramap: {
-  <A, B>(ba: (b: B) => A): (self: Order<A>) => Order<B>
+  <T, S>(ts: (t: T) => S): (self: Order<S>) => Order<T>
 } = Contravariant.contramap
 
 /** Returns `Semigroup` which orders elements by first `Order` and if the result is zero orders by second */
 export const getOrderSemigroup: {
-  <A>(): Semigroup<Order<A>>
+  <S>(): Semigroup<Order<S>>
 } = () => ({
   combine: ordY => ordX => ({
     compare: y => x =>
@@ -113,7 +113,7 @@ export const getOrderSemigroup: {
 
 /** Returns `Monoid` which orders elements by first `Order` and if the result is zero orders by second */
 export const getOrderMonoid: {
-  <A>(): Monoid<Order<A>>
+  <S>(): Monoid<Order<S>>
 } = () => ({
   ...getOrderSemigroup(),
   empty: {

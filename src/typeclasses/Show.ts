@@ -2,20 +2,20 @@ import * as Contravariant_ from './Contravariant'
 import { Hkt } from './Hkt'
 import { flow } from '../utils/flow'
 
-export interface Show<In> {
-  readonly show: (a: In) => string
+export interface Show<S> {
+  readonly show: (s: S) => string
 }
 
 export interface ShowHkt extends Hkt {
-  readonly Type: Show<this['In']>
+  readonly Type: Show<this['Fixed']>
 }
 
 export const Contravariant: Contravariant_.Contravariant<ShowHkt> = {
-  contramap: ba => self => ({
-    show: flow(ba, self.show),
+  contramap: ts => self => ({
+    show: flow(ts, self.show),
   }),
 }
 
 export const contramap: {
-  <A, B>(ba: (b: B) => A): (self: Show<A>) => Show<B>
+  <T, S>(ts: (t: T) => S): (self: Show<S>) => Show<T>
 } = Contravariant.contramap

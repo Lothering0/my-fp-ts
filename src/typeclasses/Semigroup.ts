@@ -4,32 +4,30 @@ import { Hkt } from './Hkt'
 import { flow } from '../utils/flow'
 
 /** Has an associative operation */
-export interface Semigroup<Fixed> extends Magma.Magma<Fixed> {}
+export interface Semigroup<S> extends Magma.Magma<S> {}
 
 export interface SemigroupHkt extends Hkt {
-  readonly Type: Semigroup<this['In']>
+  readonly Type: Semigroup<this['Fixed']>
 }
 
 export const reverse: {
-  <Fixed>(Semigroup: Semigroup<Fixed>): Semigroup<Fixed>
+  <S>(Semigroup: Semigroup<S>): Semigroup<S>
 } = Magma.reverse
 
 export const constant: {
-  <Fixed>(a: Fixed): Semigroup<Fixed>
+  <S>(a: S): Semigroup<S>
 } = Magma.constant
 
 export const combineAll: {
-  <Fixed>(
-    Semigroup: Semigroup<Fixed>,
-  ): (start: Fixed) => (as: Iterable<Fixed>) => Fixed
+  <S>(Semigroup: Semigroup<S>): (start: S) => (as: Iterable<S>) => S
 } = Magma.combineAll
 
 export const Invariant: Invariant_.Invariant<SemigroupHkt> = {
-  imap: (ab, ba) => self => ({
-    combine: y => flow(ba, self.combine(ba(y)), ab),
+  imap: (st, ts) => self => ({
+    combine: y => flow(ts, self.combine(ts(y)), st),
   }),
 }
 
 export const imap: {
-  <A, B>(ab: (a: A) => B, ba: (b: B) => A): (self: Semigroup<A>) => Semigroup<B>
+  <S, T>(st: (s: S) => T, ts: (t: T) => S): (self: Semigroup<S>) => Semigroup<T>
 } = Invariant.imap

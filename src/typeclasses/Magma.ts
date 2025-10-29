@@ -1,20 +1,20 @@
-export interface Magma<Fixed> {
-  readonly combine: (y: Fixed) => (x: Fixed) => Fixed
+export interface Magma<S> {
+  readonly combine: (y: S) => (x: S) => S
 }
 
 export const reverse: {
-  <Fixed>(Magma: Magma<Fixed>): Magma<Fixed>
+  <S>(Magma: Magma<S>): Magma<S>
 } = Magma => ({
   combine: y => x => Magma.combine(x)(y),
 })
 
 export const constant: {
-  <Fixed>(a: Fixed): Magma<Fixed>
+  <S>(a: S): Magma<S>
 } = a => ({
   combine: () => () => a,
 })
 
 export const combineAll: {
-  <Fixed>(Magma: Magma<Fixed>): (start: Fixed) => (as: Iterable<Fixed>) => Fixed
+  <S>(Magma: Magma<S>): (start: S) => (as: Iterable<S>) => S
 } = Magma => start => as =>
   [...as].reduce((out, a) => Magma.combine(a)(out), start)

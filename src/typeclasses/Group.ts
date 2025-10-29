@@ -3,28 +3,28 @@ import * as Invariant_ from './Invariant'
 import { Hkt } from './Hkt'
 import { flow } from '../utils/flow'
 
-export interface Group<Fixed> extends Monoid.Monoid<Fixed> {
-  readonly inverse: (a: Fixed) => Fixed
+export interface Group<S> extends Monoid.Monoid<S> {
+  readonly inverse: (s: S) => S
 }
 
 export interface GroupHkt extends Hkt {
-  readonly Type: Group<this['In']>
+  readonly Type: Group<this['Fixed']>
 }
 
 export const reverse: {
-  <Fixed>(Group: Group<Fixed>): Group<Fixed>
+  <S>(Group: Group<S>): Group<S>
 } = Group => ({
   ...Group,
   ...Monoid.reverse(Group),
 })
 
 export const Invariant: Invariant_.Invariant<GroupHkt> = {
-  imap: (ab, ba) => self => ({
-    ...Monoid.imap(ab, ba)(self),
-    inverse: flow(ba, self.inverse, ab),
+  imap: (st, ts) => self => ({
+    ...Monoid.imap(st, ts)(self),
+    inverse: flow(ts, self.inverse, st),
   }),
 }
 
 export const imap: {
-  <A, B>(ab: (a: A) => B, ba: (b: B) => A): (self: Group<A>) => Group<B>
+  <S, T>(st: (s: S) => T, ts: (t: T) => S): (self: Group<S>) => Group<T>
 } = Invariant.imap

@@ -4,12 +4,12 @@ import { Semigroup } from './Semigroup'
 import { Monoid } from './Monoid'
 import { constant, constTrue } from '../utils/constant'
 
-export interface Equivalence<In> {
-  readonly equals: (y: In) => (x: In) => boolean
+export interface Equivalence<S> {
+  readonly equals: (y: S) => (x: S) => boolean
 }
 
 export interface EquivalenceHkt extends Hkt {
-  readonly Type: Equivalence<this['In']>
+  readonly Type: Equivalence<this['Fixed']>
 }
 
 export const EquivalenceStrict: Equivalence<unknown> = {
@@ -17,7 +17,7 @@ export const EquivalenceStrict: Equivalence<unknown> = {
 }
 
 export const reverse: {
-  <In>(Equivalence: Equivalence<In>): Equivalence<In>
+  <S>(Equivalence: Equivalence<S>): Equivalence<S>
 } = Equivalence => ({
   equals: y => x => !Equivalence.equals(y)(x),
 })
@@ -29,11 +29,11 @@ export const Contravariant: Contravariant_.Contravariant<EquivalenceHkt> = {
 }
 
 export const contramap: {
-  <In, Out>(ba: (b: Out) => In): (self: Equivalence<In>) => Equivalence<Out>
+  <T, S>(ts: (t: T) => S): (self: Equivalence<S>) => Equivalence<T>
 } = Contravariant.contramap
 
 export const getEquivalenceSemigroup: {
-  <In>(): Semigroup<Equivalence<In>>
+  <S>(): Semigroup<Equivalence<S>>
 } = () => ({
   combine: Eq1 => Eq2 => ({
     equals: y => x =>
@@ -46,7 +46,7 @@ export const empty: Equivalence<never> = {
 }
 
 export const getEquivalenceMonoid: {
-  <In>(): Monoid<Equivalence<In>>
+  <S>(): Monoid<Equivalence<S>>
 } = () => ({
   ...getEquivalenceSemigroup(),
   empty,

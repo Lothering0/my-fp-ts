@@ -1,12 +1,9 @@
 import * as Profunctor_ from '../../typeclasses/Profunctor'
-import { flow } from '../../utils/flow'
+import { Contravariant } from './contravariant'
 import { Functor } from './functor'
-import { Reader, ReaderCollectableHkt } from './reader'
+import { Reader, ReaderHkt } from './reader'
 
-export const Profunctor: Profunctor_.Profunctor<ReaderCollectableHkt> = {
-  ...Functor,
-  promap: (de, ab) => self => flow(de, self, ab),
-}
+export const Profunctor = Profunctor_.create<ReaderHkt>(Functor, Contravariant)
 
 export const promap: {
   <R1, R2, A, B>(

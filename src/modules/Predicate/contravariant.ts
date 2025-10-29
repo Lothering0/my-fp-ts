@@ -7,5 +7,5 @@ export const Contravariant: Contravariant_.Contravariant<PredicateHkt> = {
 }
 
 export const contramap: {
-  <A, B>(ba: (b: B) => A): (self: Predicate<A>) => Predicate<B>
+  <T, S>(ts: (t: T) => S): (self: Predicate<S>) => Predicate<T>
 } = Contravariant.contramap

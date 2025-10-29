@@ -1,11 +1,26 @@
 import { Functor } from './Functor'
+import { Contravariant } from './Contravariant'
 import { Hkt, Kind } from './Hkt'
+import { flow } from '../utils/flow'
 
-export interface Profunctor<F extends Hkt> extends Functor<F> {
-  readonly promap: <Collectable1, Collectable2, In, Out, Fixed>(
-    de: (d: Collectable2) => Collectable1,
+export interface Profunctor<F extends Hkt>
+  extends Functor<F>,
+    Contravariant<F> {
+  readonly promap: <Fixed1, Fixed2, In, Out, Collectable>(
+    ts: (t: Fixed2) => Fixed1,
     ab: (a: In) => Out,
   ) => (
-    self: Kind<F, In, Collectable1, Fixed>,
-  ) => Kind<F, Out, Collectable2, Fixed>
+    self: Kind<F, In, Collectable, Fixed1>,
+  ) => Kind<F, Out, Collectable, Fixed2>
 }
+
+export const create: {
+  <F extends Hkt>(
+    Functor: Functor<F>,
+    Contravariant: Contravariant<F>,
+  ): Profunctor<F>
+} = (Functor, Contravariant) => ({
+  ...Functor,
+  ...Contravariant,
+  promap: (ts, ab) => flow(Contravariant.contramap(ts), Functor.map(ab)),
+})

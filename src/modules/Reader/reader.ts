@@ -4,10 +4,6 @@ export interface ReaderHkt extends Hkt {
   readonly Type: Reader<this['Fixed'], this['In']>
 }
 
-export interface ReaderCollectableHkt extends Hkt {
-  readonly Type: Reader<this['Collectable'], this['In']>
-}
-
 export interface Reader<R, A> {
   (r: R): A
 }

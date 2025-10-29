@@ -11,5 +11,5 @@ export const map: {
 } = Functor.map
 
 export const as: {
-  <A>(b: A): (self: Async<unknown>) => Async<A>
+  <A>(a: A): (self: Async<unknown>) => Async<A>
 } = Functor.as
