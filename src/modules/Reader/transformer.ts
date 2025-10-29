@@ -23,8 +23,8 @@ export interface ReaderTHkt<F extends Hkt, TFixed> extends Hkt {
   >
 }
 
-export const transform = <F extends Hkt, Fixed1>(F: Monad_.Monad<F>) => {
-  type THkt = ReaderTHkt<F, Fixed1>
+export const transform = <F extends Hkt, TFixed>(F: Monad_.Monad<F>) => {
+  type THkt = ReaderTHkt<F, TFixed>
 
   const fromReader: {
     <In, Collectable, Fixed>(
@@ -49,7 +49,7 @@ export const transform = <F extends Hkt, Fixed1>(F: Monad_.Monad<F>) => {
   } = f => r => pipe(r, f(r), F.of)
 
   const local: {
-    <Fixed2>(
+    <Fixed2, Fixed1>(
       f: (r2: Fixed2) => Fixed1,
     ): <In, Collectable>(
       self: Kind<THkt, In, Collectable, Fixed1>,
