@@ -5,7 +5,7 @@ import { match } from './matchers'
 import { constant } from '../../utils/constant'
 import { Tag, Tagged } from '../../types/Tag'
 import { pipe } from '../../utils/flow'
-import { flatMapLeft } from './bimonad'
+import { flatMapLeft } from './monad-both'
 
 export const getOrElse: {
   <B, E>(onFailure: (failure: E) => B): <A>(self: Result<A, E>) => A | B

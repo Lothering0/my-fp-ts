@@ -2,9 +2,9 @@ import * as Result from '../Result'
 import * as Sync from '../Sync'
 import * as Functor_ from '../../typeclasses/Functor'
 import * as Bifunctor_ from '../../typeclasses/Bifunctor'
-import * as Bimonad_ from '../../typeclasses/Bimonad'
 import * as Applicative_ from '../../typeclasses/Applicative'
 import * as Monad_ from '../../typeclasses/Monad'
+import * as MonadBoth_ from '../../typeclasses/MonadBoth'
 import * as Extendable_ from '../../typeclasses/Extendable'
 import * as Tappable_ from '../../typeclasses/Tappable'
 import * as Zippable_ from '../../typeclasses/Zippable'
@@ -234,28 +234,33 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
       ),
   })
 
-  const Bimonad = Bimonad_.create<THkt>(FromIdentityLeft, Bifunctor, Monad, {
-    flatLeft: <In1, In2, Collectable, Fixed>(
-      self: Kind<THkt, In1, Kind<THkt, In2, Collectable, Fixed>, Fixed>,
-    ) =>
-      pipe(
-        self,
-        M.flatMap<
-          Result.Result<
-            In1,
-            Kind<F, Result.Result<In2, Collectable>, TCollectable, Fixed>
-          >,
-          Result.Result<In1 | In2, Collectable>,
-          TCollectable,
-          Fixed
-        >(
-          Result.match({
-            onSuccess: flow(Result.succeed, M.of),
-            onFailure: identity,
-          }),
+  const MonadBoth = MonadBoth_.create<THkt>(
+    FromIdentityLeft,
+    Bifunctor,
+    Monad,
+    {
+      flatLeft: <In1, In2, Collectable, Fixed>(
+        self: Kind<THkt, In1, Kind<THkt, In2, Collectable, Fixed>, Fixed>,
+      ) =>
+        pipe(
+          self,
+          M.flatMap<
+            Result.Result<
+              In1,
+              Kind<F, Result.Result<In2, Collectable>, TCollectable, Fixed>
+            >,
+            Result.Result<In1 | In2, Collectable>,
+            TCollectable,
+            Fixed
+          >(
+            Result.match({
+              onSuccess: flow(Result.succeed, M.of),
+              onFailure: identity,
+            }),
+          ),
         ),
-      ),
-  })
+    },
+  )
 
   const Applicative = Applicative_.create<THkt>(Monad)
 
@@ -318,8 +323,8 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
     ...Applicative,
     Monad,
     ...Monad,
-    Bimonad,
-    ...Bimonad,
+    MonadBoth,
+    ...MonadBoth,
     Tappable,
     ...Tappable,
     tapResult,

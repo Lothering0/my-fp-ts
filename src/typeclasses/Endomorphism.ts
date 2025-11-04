@@ -4,7 +4,7 @@ import { identity, compose } from '../modules/Identity'
 import { curry } from '../utils/currying'
 
 export interface Endomorphism<S> {
-  (a: S): S
+  (s: S): S
 }
 
 export const empty = identity

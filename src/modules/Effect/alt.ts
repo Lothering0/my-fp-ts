@@ -4,7 +4,7 @@ import { pipe } from '../../utils/flow'
 import { identity } from '../Identity'
 import { Effect, EffectHkt, fail } from './effect'
 import { match } from './matchers'
-import { flatMapLeft } from './bimonad'
+import { flatMapLeft } from './monad-both'
 
 export const getOrElse: {
   <B, E>(onFailure: (failure: E) => B): <A>(self: Effect<A, E>) => Effect<A | B>

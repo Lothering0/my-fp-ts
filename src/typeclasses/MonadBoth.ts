@@ -4,7 +4,7 @@ import { flow } from '../utils/flow'
 import { FromIdentityLeft } from './FromIdentityLeft'
 import { Monad } from './Monad'
 
-export interface Bimonad<F extends Hkt>
+export interface MonadBoth<F extends Hkt>
   extends FromIdentityLeft<F>,
     Bifunctor<F>,
     Monad<F> {
@@ -34,22 +34,22 @@ export const create = <F extends Hkt>(
   FromIdentityLeft: FromIdentityLeft<F>,
   Bifunctor: Bifunctor<F>,
   Monad: Monad<F>,
-  Bimonad: Pick<Bimonad<F>, 'flatLeft'>,
-): Bimonad<F> => {
+  MonadBoth: Pick<MonadBoth<F>, 'flatLeft'>,
+): MonadBoth<F> => {
   const { mapLeft } = Bifunctor
-  const { flatLeft } = Bimonad
+  const { flatLeft } = MonadBoth
 
-  const flatMapLeft: Bimonad<F>['flatMapLeft'] = emd =>
+  const flatMapLeft: MonadBoth<F>['flatMapLeft'] = emd =>
     flow(mapLeft(emd), flatLeft)
 
-  const composeLeft: Bimonad<F>['composeLeft'] = (g, f) =>
+  const composeLeft: MonadBoth<F>['composeLeft'] = (g, f) =>
     flow(f, flatMapLeft(g))
 
   return {
     ...FromIdentityLeft,
     ...Bifunctor,
     ...Monad,
-    ...Bimonad,
+    ...MonadBoth,
     flatMapLeft,
     composeLeft,
   }
