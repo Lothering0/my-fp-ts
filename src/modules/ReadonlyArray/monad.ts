@@ -4,6 +4,7 @@ import { ReadonlyArrayHkt } from './readonly-array'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
 import { Functor, FunctorWithIndex } from './functor'
 import { FromIdentity } from './from-identity'
+import { getIterableGen } from '../_internal'
 
 export const Monad = Monad_.create<ReadonlyArrayHkt>(FromIdentity, Functor, {
   flat: self => self.flat(),
@@ -71,3 +72,37 @@ export const flatMapTo: {
     amb: (a: A, i: number) => ReadonlyArray<B>,
   ): (self: ReadonlyArray<A>) => ReadonlyArray<DoObject<N, A, B>>
 } = MonadWithIndex.flatMapToWithIndex
+
+export interface GenUtils {
+  readonly $: <A>(
+    self: ReadonlyArray<A> | (() => ReadonlyArray<A>),
+  ) => ReadonlyArrayIterable<A>
+  readonly where: (a: boolean) => Generator<unknown, void>
+}
+
+export interface ReadonlyArrayGenerator<A> {
+  (genUtils: GenUtils): Generator<unknown, A>
+}
+
+export interface ReadonlyArrayIterable<A> {
+  readonly [Symbol.iterator]: () => Generator<unknown, A>
+}
+
+function* makeIterable<A>(
+  self: ReadonlyArray<A> | (() => ReadonlyArray<A>),
+): ReadonlyArrayIterable<A> {
+  return (yield self) as A
+}
+
+function* where(a: boolean) {
+  if (!a) {
+    return yield* makeIterable([])
+  }
+}
+
+export const gen: {
+  <A>(generator: ReadonlyArrayGenerator<A>): ReadonlyArray<A>
+} = getIterableGen(Monad, {
+  $: makeIterable,
+  where,
+})

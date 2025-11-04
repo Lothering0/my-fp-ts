@@ -6,6 +6,7 @@ import {
   NonEmptyReadonlyArrayHkt,
 } from './non-empty-readonly-array'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
+import { getIterableGen } from '../_internal'
 
 export const Monad = {
   ...Array.Monad,
@@ -86,3 +87,25 @@ export const flatMapTo: {
     self: NonEmptyReadonlyArray<A>,
   ) => NonEmptyReadonlyArray<DoObject<N, A, B>>
 } = MonadWithIndex.flatMapToWithIndex
+
+export interface NonEmptyReadonlyArrayGenerator<A> {
+  (
+    makeIterable: <A>(
+      self: NonEmptyReadonlyArray<A> | (() => NonEmptyReadonlyArray<A>),
+    ) => NonEmptyReadonlyArrayIterable<A>,
+  ): Generator<unknown, A>
+}
+
+export interface NonEmptyReadonlyArrayIterable<A> {
+  readonly [Symbol.iterator]: () => Generator<unknown, A>
+}
+
+function* makeIterable<A>(
+  self: NonEmptyReadonlyArray<A> | (() => NonEmptyReadonlyArray<A>),
+): NonEmptyReadonlyArrayIterable<A> {
+  return (yield self) as A
+}
+
+export const gen: {
+  <A>(generator: NonEmptyReadonlyArrayGenerator<A>): NonEmptyReadonlyArray<A>
+} = getIterableGen(Monad, makeIterable)

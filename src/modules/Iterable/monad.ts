@@ -4,6 +4,7 @@ import { DoObject, DoObjectKey } from '../../types/DoObject'
 import { Functor, FunctorWithIndex } from './functor'
 import { FromIdentity } from './from-identity'
 import { IterableHkt } from './iterable'
+import { getIterableGen } from '../_internal'
 
 export const Monad = Monad_.create<IterableHkt>(FromIdentity, Functor, {
   flat: self => ({
@@ -77,3 +78,37 @@ export const flatMapTo: {
     amb: (a: A, i: number) => Iterable<B>,
   ): (self: Iterable<A>) => Iterable<DoObject<N, A, B>>
 } = MonadWithIndex.flatMapToWithIndex
+
+export interface GenUtils {
+  readonly $: <A>(
+    self: Iterable<A> | (() => Iterable<A>),
+  ) => IterableIterable<A>
+  readonly where: (a: boolean) => Generator<unknown, void>
+}
+
+export interface IterableGenerator<A> {
+  (genUtils: GenUtils): Generator<unknown, A>
+}
+
+export interface IterableIterable<A> {
+  readonly [Symbol.iterator]: () => Generator<unknown, A>
+}
+
+function* makeIterable<A>(
+  self: Iterable<A> | (() => Iterable<A>),
+): IterableIterable<A> {
+  return (yield self) as A
+}
+
+function* where(a: boolean) {
+  if (!a) {
+    return yield* makeIterable([])
+  }
+}
+
+export const gen: {
+  <A>(generator: IterableGenerator<A>): Iterable<A>
+} = getIterableGen(Monad, {
+  $: makeIterable,
+  where,
+})

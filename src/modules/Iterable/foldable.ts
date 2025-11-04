@@ -1,6 +1,6 @@
+import * as Array from '../ReadonlyArray'
 import * as Foldable_ from '../../typeclasses/Foldable'
 import * as FoldableWithIndex_ from '../../typeclasses/FoldableWithIndex'
-import * as Array from '../../modules/ReadonlyArray'
 import { IterableHkt } from './iterable'
 import { flow } from '../../utils/flow'
 import { toReadonlyArray } from './utils'

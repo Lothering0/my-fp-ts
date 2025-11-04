@@ -6,6 +6,7 @@ import { Functor } from './functor'
 import { make, valueOf, forestOf } from './utils'
 import { pipe } from '../../utils/flow'
 import { FromIdentity } from './from-identity'
+import { getIterableGen } from '../_internal'
 
 export const Monad: Monad_.Monad<TreeHkt> = Monad_.create<TreeHkt>(
   FromIdentity,
@@ -69,3 +70,21 @@ export const flatMapTo: {
     amb: (a: A) => Tree<B>,
   ): (self: Tree<A>) => Tree<DoObject<N, A, B>>
 } = Monad.flatMapTo
+
+export interface TreeGenerator<A> {
+  (
+    makeIterable: <A>(self: Tree<A> | (() => Tree<A>)) => TreeIterable<A>,
+  ): Generator<unknown, A>
+}
+
+export interface TreeIterable<A> {
+  readonly [Symbol.iterator]: () => Generator<unknown, A>
+}
+
+function* makeIterable<A>(self: Tree<A> | (() => Tree<A>)): TreeIterable<A> {
+  return (yield self) as A
+}
+
+export const gen: {
+  <A>(generator: TreeGenerator<A>): Tree<A>
+} = getIterableGen(Monad, makeIterable)
