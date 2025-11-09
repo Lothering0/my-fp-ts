@@ -1,8 +1,8 @@
 import { Semigroup } from '../../typeclasses/Semigroup'
-import { Effect, fromOperation, run } from './effect'
+import { Effect, fromReader, run } from './effect'
 
 export const getRaceSemigroup: {
-  <A, E>(): Semigroup<Effect<A, E>>
+  <A, E, R>(): Semigroup<Effect<A, E, R>>
 } = () => ({
-  combine: my => mx => fromOperation(() => Promise.race([run(mx), run(my)])),
+  combine: my => mx => fromReader(r => Promise.race([run(r)(mx), run(r)(my)])),
 })

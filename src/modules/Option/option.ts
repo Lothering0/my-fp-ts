@@ -28,25 +28,27 @@ export interface Some<A> {
 
 export const none: {
   <A = never>(): Option<A>
-} = (): None => ({
-  _id: 'Option',
-  _tag: 'None',
-  *[Symbol.iterator]() {
-    yield
-    return hole()
-  },
-})
+} = () =>
+  Object.freeze<None>({
+    _id: 'Option',
+    _tag: 'None',
+    *[Symbol.iterator]() {
+      yield
+      return hole()
+    },
+  })
 
 export const some: {
   <A>(a: A): Option<A>
-} = value => ({
-  _id: 'Option',
-  _tag: 'Some',
-  value,
-  *[Symbol.iterator]() {
-    return value
-  },
-})
+} = value =>
+  Object.freeze({
+    _id: 'Option',
+    _tag: 'Some',
+    value,
+    *[Symbol.iterator]() {
+      return value
+    },
+  })
 
 export const gen: {
   <A>(generator: OptionGenerator<A>): Option<A>

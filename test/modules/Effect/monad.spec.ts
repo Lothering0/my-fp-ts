@@ -14,13 +14,13 @@ describe('monad', () => {
         Effect.succeed,
         Effect.succeed,
         Effect.flat,
-        Effect.run,
+        Effect.run(),
         expect,
       ).toEqual(Result.succeed(1))
     })
 
     it('should return an effect with a `failure` of outer effect', () => {
-      pipe('e', Effect.fail, Effect.flat, Effect.run, expect).toEqual(
+      pipe('e', Effect.fail, Effect.flat, Effect.run(), expect).toEqual(
         Result.fail('e'),
       )
     })
@@ -31,7 +31,7 @@ describe('monad', () => {
         Effect.fail,
         Effect.succeed,
         Effect.flat,
-        Effect.run,
+        Effect.run(),
         expect,
       ).toEqual(Result.fail('d'))
     })
@@ -44,8 +44,8 @@ describe('monad', () => {
       const fa: Effect.Effect<typeof a> = Effect.fromSync(f)
       const afb = (x: number) => Effect.of(x + 1)
 
-      const result1 = pipe(fa, Effect.flatMap(afb), Effect.runSync)
-      const result2 = pipe(a, afb, Effect.runSync)
+      const result1 = pipe(fa, Effect.flatMap(afb), Effect.runSync())
+      const result2 = pipe(a, afb, Effect.runSync())
 
       expect(result1).toEqual(result2)
       expect(f).toHaveBeenCalledTimes(1)
@@ -56,8 +56,8 @@ describe('monad', () => {
       const f = jest.fn(() => a)
       const fa: Effect.Effect<typeof a> = Effect.fromSync(f)
 
-      const result1 = pipe(fa, Effect.flatMap(Effect.of), Effect.runSync)
-      const result2 = pipe(fa, Effect.runSync)
+      const result1 = pipe(fa, Effect.flatMap(Effect.of), Effect.runSync())
+      const result2 = pipe(fa, Effect.runSync())
 
       expect(result1).toEqual(result2)
       expect(f).toHaveBeenCalledTimes(2)
@@ -74,12 +74,12 @@ describe('monad', () => {
         fa,
         Effect.flatMap(afb),
         Effect.flatMap(bfc),
-        Effect.runSync,
+        Effect.runSync(),
       )
       const result2 = pipe(
         fa,
         Effect.flatMap(flow(afb, Effect.flatMap(bfc))),
-        Effect.runSync,
+        Effect.runSync(),
       )
 
       expect(result1).toEqual(result2)
@@ -93,7 +93,7 @@ describe('monad', () => {
       const result = pipe(
         fa,
         Effect.flatMap(a => Effect.succeed(a + 2)),
-        Effect.runSync,
+        Effect.runSync(),
       )
       expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
       expect(f).toHaveBeenCalledTimes(1)
@@ -104,7 +104,7 @@ describe('monad', () => {
       const a = 1 as const
       const f = jest.fn(() => a)
       const fa: Effect.Effect<typeof a, typeof e> = Effect.fromSync(f)
-      const result = pipe(fa, Effect.andThen(Effect.fail(e)), Effect.runSync)
+      const result = pipe(fa, Effect.andThen(Effect.fail(e)), Effect.runSync())
       expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
       expect(f).toHaveBeenCalledTimes(1)
     })

@@ -16,7 +16,7 @@ describe('functor', () => {
       const f = jest.fn(() => a)
       const fa: Effect.Effect<number> = Effect.fromSync(f)
 
-      const result = pipe(fa, Effect.map(identity), Effect.runSync)
+      const result = pipe(fa, Effect.map(identity), Effect.runSync())
       expect(result).toEqual(Result.succeed(a))
       expect(f).toHaveBeenCalledTimes(1)
     })
@@ -35,9 +35,14 @@ describe('functor', () => {
       const result1 = pipe(
         fa1,
         Effect.map(a => bc(ab(a))),
-        Effect.runSync,
+        Effect.runSync(),
       )
-      const result2 = pipe(fa2, Effect.map(ab), Effect.map(bc), Effect.runSync)
+      const result2 = pipe(
+        fa2,
+        Effect.map(ab),
+        Effect.map(bc),
+        Effect.runSync(),
+      )
 
       expect(result1).toEqual(result2)
       expect(f1).toHaveBeenCalledTimes(1)
@@ -49,7 +54,7 @@ describe('functor', () => {
       const n = 1
       const f = jest.fn(() => Result.fail(a))
       const fe: Effect.Effect<never, typeof a> = Effect.fromSyncResult(f)
-      const result = pipe(fe, Effect.map(Number.add(n)), Effect.runSync)
+      const result = pipe(fe, Effect.map(Number.add(n)), Effect.runSync())
       expect(result).toEqual(Result.fail(a))
       expect(f).toHaveBeenCalledTimes(1)
     })
@@ -59,7 +64,7 @@ describe('functor', () => {
       const n = 1
       const f = jest.fn(() => Result.succeed(a))
       const fa: Effect.Effect<typeof a> = Effect.fromSyncResult(f)
-      const result = pipe(fa, Effect.map(Number.add(n)), Effect.runSync)
+      const result = pipe(fa, Effect.map(Number.add(n)), Effect.runSync())
       expect(result).toEqual(pipe(n, Number.add(a), Result.succeed))
       expect(f).toHaveBeenCalledTimes(1)
     })

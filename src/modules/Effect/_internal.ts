@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as Result from '../Result'
+import * as Reader from '../Reader'
 import { hole } from '../../utils/hole'
 import {
   AsyncEffectException,
@@ -9,20 +10,28 @@ import {
   SyncEffectException,
 } from './effect'
 
-export function _run<A, E>(
-  effect: Effect<A, E>,
+export function _run<A, E, R>(
+  effect: Effect<A, E, R>,
+  r: R,
   type?: 'sync',
 ): Result.Result<A, E>
-export function _run<A, E>(
-  effect: Effect<A, E>,
+export function _run<A, E, R>(
+  effect: Effect<A, E, R>,
+  r: R,
   type?: 'async',
 ): Promise<Result.Result<A, E>>
-export function _run<A, E>(effect: Effect<A, E>, type?: 'sync' | 'async') {
+export function _run<A, E, R>(
+  effect: Effect<A, E>,
+  r: R,
+  type?: 'sync' | 'async',
+) {
   let value
   let previous = effect.previous
   const fs: ((
     result?: Result.Result<unknown, unknown>,
-  ) => EffectValue<unknown, unknown>)[] = [effect.mapper]
+  ) => Reader.Reader<unknown, EffectValue<unknown, unknown>>)[] = [
+    effect.mapper,
+  ]
 
   while (previous !== undefined) {
     fs.push(previous.mapper)
@@ -36,9 +45,9 @@ export function _run<A, E>(effect: Effect<A, E>, type?: 'sync' | 'async') {
         throw new AsyncEffectException()
       }
 
-      value = value.then(f)
+      value = value.then(ma => f(ma)(r))
     } else {
-      value = f(value)
+      value = f(value)(r)
     }
   }
 
@@ -55,29 +64,26 @@ export function _run<A, E>(effect: Effect<A, E>, type?: 'sync' | 'async') {
   return value
 }
 
-const getEffectGenerator: {
-  <A, E>(effect: Effect<A, E>): EffectGenerator<A, E>
-} = effect =>
+const getEffectGenerator = <A, E, R>(
+  effect: Effect<A, E, R>,
+): EffectGenerator<A, E, R> =>
   function* effectGenerator() {
-    const value = _run(effect)
-    if (value instanceof Promise) {
-      const result = yield value as any
-      return result as any
-    }
-    const result = yield* value
-    return result
+    const r = yield
+    const value = _run(effect, r)
+    const result = yield value as any
+    return result as any
   }
 
-export const create = <B, D, A, E>(
-  mapper: (result: Result.Result<B, D>) => EffectValue<A, E>,
-  previous?: Effect<B, D>,
-): Effect<A, E> => {
-  const effect: Effect<A, E> = {
+export const create = <B, D, A, E, R>(
+  mapper: (result: Result.Result<B, D>) => Reader.Reader<R, EffectValue<A, E>>,
+  previous?: Effect<B, D, R>,
+): Effect<A, E, R> => {
+  const effect: Effect<A, E, R> = {
     _id: 'Effect',
     mapper,
     previous,
     [Symbol.iterator]: hole(),
   }
   ;(effect as any)[Symbol.iterator] = getEffectGenerator(effect)
-  return effect
+  return Object.freeze(effect)
 }

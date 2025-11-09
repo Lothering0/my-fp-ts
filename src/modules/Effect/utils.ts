@@ -41,41 +41,56 @@ const try_: {
 export { try_ as try }
 
 export const toUnion: {
-  <A, E>(self: Effect.Effect<A, E>): Effect.Effect<A | E>
-} = mapResult(flow(Result.toUnion, Result.succeed))
+  <A, E, R>(self: Effect.Effect<A, E, R>): Effect.Effect<A | E, never, R>
+} = mapResult(ma => () => pipe(ma, Result.toUnion, Result.succeed))
 
 export const swap: {
-  <A, E>(self: Effect.Effect<A, E>): Effect.Effect<E, A>
-} = mapResult(Result.swap)
+  <A, E, R>(self: Effect.Effect<A, E, R>): Effect.Effect<E, A, R>
+} = mapResult(ma => () => Result.swap(ma))
 
-type Successes<A extends ReadonlyArray<Effect.Effect<unknown, unknown>>> = {
-  readonly [K in keyof A]: A[K] extends Effect.Effect<infer Succes, unknown>
+type Successes<
+  A extends ReadonlyArray<Effect.Effect<unknown, unknown, unknown>>,
+> = {
+  readonly [K in keyof A]: A[K] extends Effect.Effect<
+    infer Succes,
+    unknown,
+    unknown
+  >
     ? Succes
     : never
 }
 
-type Failure<A extends ReadonlyArray<Effect.Effect<unknown, unknown>>> = {
-  readonly [K in keyof A]: A[K] extends Effect.Effect<unknown, infer Failure>
+type Failure<
+  A extends ReadonlyArray<Effect.Effect<unknown, unknown, unknown>>,
+> = {
+  readonly [K in keyof A]: A[K] extends Effect.Effect<
+    unknown,
+    infer Failure,
+    unknown
+  >
     ? Failure
     : never
 }[number]
 
-type EffectFromIterable<A extends Iterable<Effect.Effect<unknown, unknown>>> =
-  A extends Iterable<Effect.Effect<infer Success, infer Failure>>
-    ? Effect.Effect<ReadonlyArray<Success>, Failure>
+type EffectFromIterable<
+  R,
+  A extends Iterable<Effect.Effect<unknown, unknown, R>>,
+> =
+  A extends Iterable<Effect.Effect<infer Success, infer Failure, R>>
+    ? Effect.Effect<ReadonlyArray<Success>, Failure, R>
     : never
 
 export const all: {
-  <const A extends ReadonlyArray<Effect.Effect<unknown, unknown>>>(
+  <R, const A extends ReadonlyArray<Effect.Effect<unknown, unknown, R>>>(
     effects: A,
-  ): Effect.Effect<Successes<A>, Failure<A>>
-  <A extends Iterable<Effect.Effect<unknown, unknown>>>(
+  ): Effect.Effect<Successes<A>, Failure<A>, R>
+  <R, A extends Iterable<Effect.Effect<unknown, unknown, R>>>(
     effects: A,
-  ): EffectFromIterable<A>
+  ): EffectFromIterable<R, A>
 } = (
   effects: Iterable<Effect.Effect<unknown, unknown>>,
-): Effect.Effect<ReadonlyArray<unknown>, unknown> =>
-  Effect.fromOperation<ReadonlyArray<unknown>, unknown>(() => {
+): Effect.Effect<ReadonlyArray<unknown>, unknown, unknown> =>
+  Effect.fromReader<ReadonlyArray<unknown>, unknown, unknown>(r => {
     const out: (
       | Result.Result<unknown, unknown>
       | Promise<Result.Result<unknown, unknown>>
@@ -83,7 +98,7 @@ export const all: {
     let includesPromise = false
 
     for (const effect of effects) {
-      const result = Effect.run(effect)
+      const result = Effect.run(r)(effect)
       if (result instanceof Promise) {
         includesPromise = true
       } else if (Result.isFailure(result)) {
@@ -128,73 +143,94 @@ export const all: {
     )
   })
 
-type Results<A extends ReadonlyArray<Effect.Effect<unknown, unknown>>> = {
+type Results<
+  A extends ReadonlyArray<Effect.Effect<unknown, unknown, unknown>>,
+> = {
   readonly [K in keyof A]: A[K] extends Effect.Effect<
     infer Succes,
-    infer Failure
+    infer Failure,
+    unknown
   >
     ? Result.Result<Succes, Failure>
     : never
 }
 
-type ResultsFromIterable<A extends Iterable<Effect.Effect<unknown, unknown>>> =
-  A extends Iterable<Effect.Effect<infer Success, infer Failure>>
-    ? Effect.Effect<ReadonlyArray<Result.Result<Success, Failure>>>
+type ResultsFromIterable<
+  R,
+  A extends Iterable<Effect.Effect<unknown, unknown, R>>,
+> =
+  A extends Iterable<Effect.Effect<infer Success, infer Failure, R>>
+    ? Effect.Effect<ReadonlyArray<Result.Result<Success, Failure>>, never, R>
     : never
 
 export const allResults: {
-  <const A extends ReadonlyArray<Effect.Effect<unknown, unknown>>>(
+  <R, const A extends ReadonlyArray<Effect.Effect<unknown, unknown, R>>>(
     effects: A,
-  ): Effect.Effect<Results<A>>
-  <A extends Iterable<Effect.Effect<unknown, unknown>>>(
+  ): Effect.Effect<Results<A>, never, R>
+  <R, A extends Iterable<Effect.Effect<unknown, unknown, R>>>(
     effects: A,
-  ): ResultsFromIterable<A>
+  ): ResultsFromIterable<R, A>
 } = (
-  effects: Iterable<Effect.Effect<unknown, unknown>>,
-): Effect.Effect<ReadonlyArray<Result.Result<unknown, unknown>>> =>
-  Effect.fromOperation<ReadonlyArray<Result.Result<unknown, unknown>>, never>(
-    () => {
-      const out: (
-        | Result.Result<unknown, unknown>
-        | Promise<Result.Result<unknown, unknown>>
-      )[] = []
-      let includesPromise = false
+  effects: Iterable<Effect.Effect<unknown, unknown, unknown>>,
+): Effect.Effect<
+  ReadonlyArray<Result.Result<unknown, unknown>>,
+  never,
+  unknown
+> =>
+  Effect.fromReader<
+    ReadonlyArray<Result.Result<unknown, unknown>>,
+    never,
+    unknown
+  >(r => {
+    const out: (
+      | Result.Result<unknown, unknown>
+      | Promise<Result.Result<unknown, unknown>>
+    )[] = []
+    let includesPromise = false
 
-      for (const effect of effects) {
-        const result = Effect.run(effect)
-        if (result instanceof Promise) {
-          includesPromise = true
-        }
-        out.push(result)
+    for (const effect of effects) {
+      const result = Effect.run(r)(effect)
+      if (result instanceof Promise) {
+        includesPromise = true
       }
+      out.push(result)
+    }
 
-      if (includesPromise) {
-        return Promise.all(out).then(Result.succeed)
-      }
+    if (includesPromise) {
+      return Promise.all(out).then(Result.succeed)
+    }
 
-      return pipe(
-        out as ReadonlyArray<Result.Result<unknown, unknown>>,
-        Result.succeed,
-      )
-    },
-  )
+    return pipe(
+      out as ReadonlyArray<Result.Result<unknown, unknown>>,
+      Result.succeed,
+    )
+  })
 
-type Options<A extends ReadonlyArray<Effect.Effect<unknown, unknown>>> = {
-  readonly [K in keyof A]: A[K] extends Effect.Effect<infer Succes, unknown>
+type Options<
+  A extends ReadonlyArray<Effect.Effect<unknown, unknown, unknown>>,
+> = {
+  readonly [K in keyof A]: A[K] extends Effect.Effect<
+    infer Succes,
+    unknown,
+    unknown
+  >
     ? Option.Option<Succes>
     : never
 }
 
-type OptionsFromIterable<A extends Iterable<Effect.Effect<unknown, unknown>>> =
-  A extends Iterable<Effect.Effect<infer Success, unknown>>
-    ? Effect.Effect<ReadonlyArray<Option.Option<Success>>>
+type OptionsFromIterable<
+  R,
+  A extends Iterable<Effect.Effect<unknown, unknown, R>>,
+> =
+  A extends Iterable<Effect.Effect<infer Success, unknown, R>>
+    ? Effect.Effect<ReadonlyArray<Option.Option<Success>>, never, R>
     : never
 
 export const allOptions: {
-  <const A extends ReadonlyArray<Effect.Effect<unknown, unknown>>>(
+  <R, const A extends ReadonlyArray<Effect.Effect<unknown, unknown, R>>>(
     effects: A,
-  ): Effect.Effect<Options<A>>
-  <A extends Iterable<Effect.Effect<unknown, unknown>>>(
+  ): Effect.Effect<Options<A>, never, R>
+  <R, A extends Iterable<Effect.Effect<unknown, unknown, R>>>(
     effects: A,
-  ): OptionsFromIterable<A>
-} = flow(allResults, map(Array.map(Option.fromResult)))
+  ): OptionsFromIterable<R, A>
+} = flow(allResults, ma => ma, map(Array.map(Option.fromResult)))

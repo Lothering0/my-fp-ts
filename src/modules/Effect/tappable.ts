@@ -19,7 +19,7 @@ export const Tappable = create(Monad)
 export const TappableBoth: TappableBoth_.TappableBoth<Effect.EffectHkt> = {
   ...Tappable,
   tapLeft: f =>
-    mapResult(ma => {
+    mapResult(ma => r => {
       if (Result.isSuccess(ma)) {
         return ma
       }
@@ -32,11 +32,11 @@ export const TappableBoth: TappableBoth_.TappableBoth<Effect.EffectHkt> = {
           onFailure: e => e,
         }),
         swap,
-        Effect.run,
+        Effect.run(r),
       )
     }),
   tapLeftSync: f =>
-    mapResult(ma => {
+    mapResult(ma => () => {
       if (Result.isSuccess(ma)) {
         return ma
       }
@@ -46,21 +46,21 @@ export const TappableBoth: TappableBoth_.TappableBoth<Effect.EffectHkt> = {
 }
 
 export const tap: {
-  <A, E1>(
-    f: (a: A) => Effect.Effect<unknown, E1>,
-  ): <E2>(self: Effect.Effect<A, E2>) => Effect.Effect<A, E1 | E2>
+  <A, E1, R>(
+    f: (a: A) => Effect.Effect<unknown, E1, R>,
+  ): <E2>(self: Effect.Effect<A, E2, R>) => Effect.Effect<A, E1 | E2, R>
 } = Tappable.tap
 
 export const tapSync: {
   <A>(
     f: (a: A) => Sync.Sync<unknown>,
-  ): <E>(self: Effect.Effect<A, E>) => Effect.Effect<A, E>
+  ): <E, R>(self: Effect.Effect<A, E, R>) => Effect.Effect<A, E, R>
 } = Tappable.tapSync
 
 export const tapResult: {
   <A, E1>(
     f: (a: A) => Result.Result<unknown, E1>,
-  ): <E2>(self: Effect.Effect<A, E2>) => Effect.Effect<A, E1 | E2>
+  ): <E2, R>(self: Effect.Effect<A, E2, R>) => Effect.Effect<A, E1 | E2, R>
 } = f => self =>
   pipe(
     Do,
@@ -72,7 +72,7 @@ export const tapResult: {
 export const tapSyncResult: {
   <A, E1>(
     f: (a: A) => SyncResult.SyncResult<unknown, E1>,
-  ): <E2>(self: Effect.Effect<A, E2>) => Effect.Effect<A, E1 | E2>
+  ): <E2, R>(self: Effect.Effect<A, E2, R>) => Effect.Effect<A, E1 | E2, R>
 } = f => self =>
   pipe(
     Do,
@@ -84,7 +84,7 @@ export const tapSyncResult: {
 export const tapAsync: {
   <A>(
     f: (a: A) => Async.Async<unknown>,
-  ): <E>(self: Effect.Effect<A, E>) => Effect.Effect<A, E>
+  ): <E, R>(self: Effect.Effect<A, E, R>) => Effect.Effect<A, E, R>
 } = f => self =>
   pipe(
     Do,
@@ -96,7 +96,7 @@ export const tapAsync: {
 export const tapAsyncResult: {
   <A, E1>(
     f: (a: A) => AsyncResult.AsyncResult<unknown, E1>,
-  ): <E2>(self: Effect.Effect<A, E2>) => Effect.Effect<A, E1 | E2>
+  ): <E2, R>(self: Effect.Effect<A, E2, R>) => Effect.Effect<A, E1 | E2, R>
 } = f => self =>
   pipe(
     Do,
@@ -106,23 +106,23 @@ export const tapAsyncResult: {
   )
 
 export const tapLeft: {
-  <E1, E2>(
-    f: (e: E1) => Effect.Effect<unknown, E2>,
-  ): <A>(self: Effect.Effect<A, E1>) => Effect.Effect<A, E1 | E2>
+  <E1, E2, R>(
+    f: (e: E1) => Effect.Effect<unknown, E2, R>,
+  ): <A>(self: Effect.Effect<A, E1, R>) => Effect.Effect<A, E1 | E2, R>
 } = TappableBoth.tapLeft
 
 export const tapLeftSync: {
   <E>(
     f: (e: E) => Sync.Sync<unknown>,
-  ): <A>(self: Effect.Effect<A, E>) => Effect.Effect<A, E>
+  ): <A, R>(self: Effect.Effect<A, E, R>) => Effect.Effect<A, E, R>
 } = TappableBoth.tapLeftSync
 
 export const tapLeftResult: {
   <E1, E2>(
     f: (e: E1) => Result.Result<unknown, E2>,
-  ): <A>(self: Effect.Effect<A, E1>) => Effect.Effect<A, E1 | E2>
+  ): <A, R>(self: Effect.Effect<A, E1, R>) => Effect.Effect<A, E1 | E2, R>
 } = f =>
-  mapResult(ma => {
+  mapResult(ma => () => {
     if (Result.isSuccess(ma)) {
       return ma
     }
@@ -141,9 +141,9 @@ export const tapLeftResult: {
 export const tapLeftSyncResult: {
   <E1, E2>(
     f: (e: E1) => SyncResult.SyncResult<unknown, E2>,
-  ): <A>(self: Effect.Effect<A, E1>) => Effect.Effect<A, E1 | E2>
+  ): <A, R>(self: Effect.Effect<A, E1, R>) => Effect.Effect<A, E1 | E2, R>
 } = f =>
-  mapResult(ma => {
+  mapResult(ma => () => {
     if (Result.isSuccess(ma)) {
       return ma
     }
@@ -163,9 +163,9 @@ export const tapLeftSyncResult: {
 export const tapLeftAsync: {
   <E>(
     f: (e: E) => Async.Async<unknown>,
-  ): <A>(self: Effect.Effect<A, E>) => Effect.Effect<A, E>
+  ): <A, R>(self: Effect.Effect<A, E, R>) => Effect.Effect<A, E, R>
 } = f =>
-  mapResult(async ma => {
+  mapResult(ma => async () => {
     if (Result.isSuccess(ma)) {
       return ma
     }
@@ -176,9 +176,9 @@ export const tapLeftAsync: {
 export const tapLeftAsyncResult: {
   <E1, E2>(
     f: (e: E1) => AsyncResult.AsyncResult<unknown, E2>,
-  ): <A>(self: Effect.Effect<A, E1>) => Effect.Effect<A, E1 | E2>
+  ): <A, R>(self: Effect.Effect<A, E1, R>) => Effect.Effect<A, E1 | E2, R>
 } = f =>
-  mapResult(async ma => {
+  mapResult(ma => async () => {
     if (Result.isSuccess(ma)) {
       return ma
     }

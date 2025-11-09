@@ -16,7 +16,12 @@ describe('applicative', () => {
       const f = jest.fn(() => a)
       const fa: Effect.Effect<typeof a> = Effect.fromSync(f)
 
-      const result = pipe(identity, Effect.of, Effect.apply(fa), Effect.runSync)
+      const result = pipe(
+        identity,
+        Effect.of,
+        Effect.apply(fa),
+        Effect.runSync(),
+      )
 
       expect(result).toEqual<Result.Result<typeof a>>(Result.succeed(a))
       expect(f).toHaveBeenCalledTimes(1)
@@ -32,8 +37,8 @@ describe('applicative', () => {
       const fa: Effect.Effect<typeof a> = Effect.fromSync(f1)
       const fab: Effect.Effect<typeof ab> = Effect.fromSync(f2)
 
-      const result1 = pipe(fab, Effect.apply(fa), Effect.runSync)
-      const result2 = pipe(a, ab, Effect.of, Effect.runSync)
+      const result1 = pipe(fab, Effect.apply(fa), Effect.runSync())
+      const result2 = pipe(a, ab, Effect.of, Effect.runSync())
 
       expect(result1).toEqual(result2)
       expect(f1).toHaveBeenCalledTimes(1)
@@ -50,10 +55,10 @@ describe('applicative', () => {
       const fa: Effect.Effect<typeof a> = Effect.fromSync(f1)
       const fab: Effect.Effect<typeof ab> = Effect.fromSync(f2)
 
-      const result1 = pipe(fab, Effect.apply(fa), Effect.runSync)
+      const result1 = pipe(fab, Effect.apply(fa), Effect.runSync())
       const result2 = pipe(
         Effect.apply(fab)(Effect.of(ab => ab(a))),
-        Effect.runSync,
+        Effect.runSync(),
       )
 
       expect(result1).toEqual(result2)
@@ -71,7 +76,7 @@ describe('applicative', () => {
       const fab: Effect.Effect<typeof ab> = Effect.fromSync(f1)
       const fa: Effect.Effect<never, typeof e> = Effect.fromSyncResult(f2)
 
-      const result = pipe(fab, Effect.apply(fa), Effect.runSync)
+      const result = pipe(fab, Effect.apply(fa), Effect.runSync())
 
       expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
       expect(f1).toHaveBeenCalledTimes(1)
@@ -88,7 +93,7 @@ describe('applicative', () => {
       const fab: Effect.Effect<never, typeof e> = Effect.fromSyncResult(f1)
       const fa: Effect.Effect<typeof a, typeof e> = Effect.fromSync(f2)
 
-      const result = pipe(fab, Effect.apply(fa), Effect.runSync)
+      const result = pipe(fab, Effect.apply(fa), Effect.runSync())
 
       expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))
       expect(f1).toHaveBeenCalledTimes(1)
@@ -108,7 +113,7 @@ describe('applicative', () => {
       const result: Result.Result<unknown, typeof e | typeof d> = pipe(
         fab,
         Effect.apply(fa),
-        Effect.runSync,
+        Effect.runSync(),
       )
 
       expect(result).toEqual<Result.Result<never, typeof e>>(Result.fail(e))

@@ -18,7 +18,7 @@ describe('run', () => {
 
     pipe(
       effect,
-      Effect.runSync,
+      Effect.runSync(),
       ResultEquivalence.equals(Result.succeed(120_000)),
       expect,
     ).toBe(true)
@@ -34,7 +34,7 @@ describe('run', () => {
       )
     }
 
-    const result = await pipe(effect, Effect.runAsync)
+    const result = await pipe(effect, Effect.runAsync())
 
     pipe(
       result,
@@ -49,7 +49,7 @@ describe('runSync', () => {
     expect(() =>
       pipe(
         Effect.fromAsync(() => Promise.resolve(0)),
-        Effect.runSync,
+        Effect.runSync(),
       ),
     ).toThrow(Effect.AsyncEffectException)
 
@@ -57,7 +57,7 @@ describe('runSync', () => {
       pipe(
         Effect.of(Effect.fromAsync(() => Promise.resolve(0))),
         Effect.flat,
-        Effect.runSync,
+        Effect.runSync(),
       ),
     ).toThrow(Effect.AsyncEffectException)
 
@@ -65,7 +65,7 @@ describe('runSync', () => {
       pipe(
         Effect.fromAsync(() => Promise.resolve(Effect.of(0))),
         Effect.flat,
-        Effect.runSync,
+        Effect.runSync(),
       ),
     ).toThrow(Effect.AsyncEffectException)
   })
@@ -73,12 +73,12 @@ describe('runSync', () => {
 
 describe('runAsync', () => {
   it('should throw the exception if effect ran synchronously', () => {
-    expect(() => pipe(0, Effect.of, Effect.runAsync)).toThrow(
+    expect(() => pipe(0, Effect.of, Effect.runAsync())).toThrow(
       Effect.SyncEffectException,
     )
 
     expect(() =>
-      pipe(0, Effect.of, Effect.of, Effect.flat, Effect.runAsync),
+      pipe(0, Effect.of, Effect.of, Effect.flat, Effect.runAsync()),
     ).toThrow(Effect.SyncEffectException)
   })
 })
@@ -99,7 +99,7 @@ describe('gen', () => {
       const a = yield* ma
       return a
     })
-    const result = pipe(effect, Effect.runSync)
+    const result = pipe(effect, Effect.runSync())
 
     pipe(result, ResultEquivalence.equals(Result.succeed(1)), expect).toBe(true)
   })
@@ -116,7 +116,7 @@ describe('gen', () => {
 
       return a + b + c
     })
-    const result = pipe(effect, Effect.runSync)
+    const result = pipe(effect, Effect.runSync())
 
     pipe(result, ResultEquivalence.equals(Result.succeed(6)), expect).toBe(true)
   })
@@ -128,7 +128,7 @@ describe('gen', () => {
       const a = yield* ma
       return a
     })
-    const result = pipe(effect, Effect.runSync)
+    const result = pipe(effect, Effect.runSync())
 
     pipe(result, ResultEquivalence.equals(Result.fail('a')), expect).toBe(true)
   })
@@ -145,7 +145,7 @@ describe('gen', () => {
 
       return a + b + c
     })
-    const result = pipe(effect, Effect.runSync)
+    const result = pipe(effect, Effect.runSync())
 
     pipe(result, ResultEquivalence.equals(Result.fail('a')), expect).toBe(true)
     expect(ma).toHaveBeenCalledTimes(1)
@@ -165,7 +165,7 @@ describe('gen', () => {
 
       return a + b + c
     })
-    const result = await pipe(effect, Effect.runAsync)
+    const result = await pipe(effect, Effect.runAsync())
 
     pipe(result, ResultEquivalence.equals(Result.succeed(6)), expect).toBe(true)
   })
@@ -177,7 +177,7 @@ describe('gen', () => {
       const a = yield* ma
       return a
     })
-    const result = await pipe(effect, Effect.runAsync)
+    const result = await pipe(effect, Effect.runAsync())
 
     const f = jest.fn()
     pipe(
@@ -202,7 +202,7 @@ describe('gen', () => {
 
       return a + b + c
     })
-    const result = await pipe(effect, Effect.runAsync)
+    const result = await pipe(effect, Effect.runAsync())
 
     const f = jest.fn()
     pipe(
@@ -230,7 +230,7 @@ describe('gen', () => {
 
       return a + b + c
     })
-    const result = await pipe(effect, Effect.runAsync)
+    const result = await pipe(effect, Effect.runAsync())
 
     pipe(result, ResultEquivalence.equals(Result.succeed(6)), expect).toBe(true)
   })
@@ -247,7 +247,7 @@ describe('gen', () => {
 
       return a + b + c
     })
-    const result = await pipe(effect, Effect.runAsync)
+    const result = await pipe(effect, Effect.runAsync())
 
     pipe(result, ResultEquivalence.equals(Result.succeed(6)), expect).toBe(true)
   })

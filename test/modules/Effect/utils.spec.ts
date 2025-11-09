@@ -9,7 +9,7 @@ describe('try', () => {
   it('should return a `failure` if synchronous operation threw an error', () => {
     const result1 = pipe(
       Effect.try(() => raise('a')),
-      Effect.runSync,
+      Effect.runSync(),
     )
     const f = jest.fn()
     pipe(
@@ -26,7 +26,7 @@ describe('try', () => {
         try: () => raise('a'),
         catch: e => `${e}b`,
       }),
-      Effect.runSync,
+      Effect.runSync(),
     )
     pipe(result2, ResultEquivalence.equals(Result.fail('ab')), expect).toBe(
       true,
@@ -36,7 +36,7 @@ describe('try', () => {
   it('should return a `success` if synchronous operation returned a value', () => {
     const result1 = pipe(
       Effect.try(() => 1),
-      Effect.runSync,
+      Effect.runSync(),
     )
     pipe(result1, ResultEquivalence.equals(Result.succeed(1)), expect).toBe(
       true,
@@ -47,7 +47,7 @@ describe('try', () => {
         try: () => 2,
         catch: e => `${e}b`,
       }),
-      Effect.runSync,
+      Effect.runSync(),
     )
     pipe(result2, ResultEquivalence.equals(Result.succeed(2)), expect).toBe(
       true,
@@ -57,7 +57,7 @@ describe('try', () => {
   it('should return a `failure` if asynchronous operation rejected an error', async () => {
     const result1 = await pipe(
       Effect.try(() => Promise.reject('a')),
-      Effect.runAsync,
+      Effect.runAsync(),
     )
     const f = jest.fn()
     pipe(
@@ -74,7 +74,7 @@ describe('try', () => {
         try: () => Promise.reject('a'),
         catch: e => `${e}b`,
       }),
-      Effect.runAsync,
+      Effect.runAsync(),
     )
     pipe(result2, ResultEquivalence.equals(Result.fail('ab')), expect).toBe(
       true,
@@ -84,7 +84,7 @@ describe('try', () => {
   it('should return a `success` if asynchronous operation resolved a value', async () => {
     const result1 = await pipe(
       Effect.try(() => Promise.resolve(1)),
-      Effect.runAsync,
+      Effect.runAsync(),
     )
     pipe(result1, ResultEquivalence.equals(Result.succeed(1)), expect).toBe(
       true,
@@ -95,7 +95,7 @@ describe('try', () => {
         try: () => Promise.resolve(2),
         catch: e => `${e}b`,
       }),
-      Effect.runAsync,
+      Effect.runAsync(),
     )
     pipe(result2, ResultEquivalence.equals(Result.succeed(2)), expect).toBe(
       true,
@@ -111,7 +111,7 @@ describe('all', () => {
         Effect.succeed('a'),
         Effect.succeed(true),
       ]),
-      Effect.runSync,
+      Effect.runSync(),
       expect,
     ).toEqual(Result.succeed([1, 'a', true]))
   })
@@ -126,7 +126,7 @@ describe('all', () => {
         Effect.fail('b'),
         Effect.fromSync(() => g()),
       ]),
-      Effect.runSync,
+      Effect.runSync(),
       expect,
     ).toEqual(Result.fail('a'))
     expect(f).toHaveBeenCalledTimes(1)
@@ -137,16 +137,16 @@ describe('all', () => {
     const result = await pipe(
       Effect.all([
         Effect.fromAsyncResult(() =>
-          pipe(wait({ ms: 10 }), Effect.as(1), Effect.runAsync),
+          pipe(wait({ ms: 10 }), Effect.as(1), Effect.runAsync()),
         ),
         Effect.fromAsyncResult(() =>
-          pipe(wait({ ms: 30 }), Effect.as('a'), Effect.runAsync),
+          pipe(wait({ ms: 30 }), Effect.as('a'), Effect.runAsync()),
         ),
         Effect.fromAsyncResult(() =>
-          pipe(wait({ ms: 20 }), Effect.as(true), Effect.runAsync),
+          pipe(wait({ ms: 20 }), Effect.as(true), Effect.runAsync()),
         ),
       ]),
-      Effect.runAsync,
+      Effect.runAsync(),
     )
     expect(result).toEqual(Result.succeed([1, 'a', true]))
   })
@@ -155,24 +155,24 @@ describe('all', () => {
     const result = await pipe(
       Effect.all([
         Effect.fromAsyncResult(() =>
-          pipe(wait({ ms: 10 }), Effect.as(1), Effect.runAsync),
+          pipe(wait({ ms: 10 }), Effect.as(1), Effect.runAsync()),
         ),
         Effect.fromAsyncResult(() =>
           pipe(
             wait({ ms: 30 }),
             Effect.asResult(Result.fail('b')),
-            Effect.runAsync,
+            Effect.runAsync(),
           ),
         ),
         Effect.fromAsyncResult(() =>
           pipe(
             wait({ ms: 20 }),
             Effect.asResult(Result.fail('a')),
-            Effect.runAsync,
+            Effect.runAsync(),
           ),
         ),
       ]),
-      Effect.runAsync,
+      Effect.runAsync(),
     )
     expect(result).toEqual(Result.fail('a'))
   })
@@ -193,7 +193,7 @@ describe('allResults', () => {
           Result.succeed(true),
         ]),
       ),
-      Effect.runSync,
+      Effect.runSync(),
     )
   })
 
@@ -201,17 +201,17 @@ describe('allResults', () => {
     await pipe(
       Effect.allResults([
         Effect.fromAsyncResult(() =>
-          pipe(wait({ ms: 10 }), Effect.as(1), Effect.runAsync),
+          pipe(wait({ ms: 10 }), Effect.as(1), Effect.runAsync()),
         ),
         Effect.fromAsyncResult(() =>
           pipe(
             wait({ ms: 20 }),
             Effect.asResult(Result.fail('a')),
-            Effect.runAsync,
+            Effect.runAsync(),
           ),
         ),
         Effect.fromAsyncResult(() =>
-          pipe(wait({ ms: 20 }), Effect.as(true), Effect.runAsync),
+          pipe(wait({ ms: 20 }), Effect.as(true), Effect.runAsync()),
         ),
       ]),
       Effect.map(xs =>
@@ -221,7 +221,7 @@ describe('allResults', () => {
           Result.succeed(true),
         ]),
       ),
-      Effect.runAsync,
+      Effect.runAsync(),
     )
   })
 })

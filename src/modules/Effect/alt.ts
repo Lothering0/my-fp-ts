@@ -7,28 +7,30 @@ import { match } from './matchers'
 import { flatMapLeft } from './monad-both'
 
 export const getOrElse: {
-  <B, E>(onFailure: (failure: E) => B): <A>(self: Effect<A, E>) => Effect<A | B>
+  <B, E>(
+    onFailure: (failure: E) => B,
+  ): <A, R>(self: Effect<A, E, R>) => Effect<A | B, never, R>
 } = onFailure => match({ onFailure, onSuccess: identity })
 
 export const orElse: {
-  <B, E>(
-    onFailure: Effect<B, E>,
-  ): <A>(self: Effect<A, unknown>) => Effect<A | B, E>
+  <B, E, R>(
+    onFailure: Effect<B, E, R>,
+  ): <A>(self: Effect<A, unknown, R>) => Effect<A | B, E, R>
 } = onFailure => flatMapLeft(() => onFailure)
 
 export const catchTag =
-  <A, B, E1 extends Tagged, E2, T extends Tag<E1>>(
+  <A, B, R, E1 extends Tagged, E2, T extends Tag<E1>>(
     tag: T,
     // Passing to callback exactly tagged object
-    onFailure: (failure: E1 extends Tagged<T> ? E1 : never) => Effect<B, E2>,
+    onFailure: (failure: E1 extends Tagged<T> ? E1 : never) => Effect<B, E2, R>,
   ) =>
   (
-    self: Effect<A, E1>,
+    self: Effect<A, E1, R>,
     // Removing catched tag from result. Leave only uncatched
-  ): Effect<A | B, (E1 extends Tagged<T> ? never : E1) | E2> =>
+  ): Effect<A | B, (E1 extends Tagged<T> ? never : E1) | E2, R> =>
     pipe(
       self,
-      flatMapLeft<A | B, E1, E2>(e =>
+      flatMapLeft<A | B, E1, E2, R>(e =>
         e._tag === tag
           ? onFailure(e as E1 extends Tagged<T> ? E1 : never)
           : fail(e as E1 & E2),
@@ -36,9 +38,9 @@ export const catchTag =
     )
 
 export const catchAll: {
-  <A, B, E1, E2>(
-    onFailure: (failure: E1) => Effect<B, E2>,
-  ): (self: Effect<A, E1>) => Effect<A | B, E2>
+  <A, B, E1, E2, R>(
+    onFailure: (failure: E1) => Effect<B, E2, R>,
+  ): (self: Effect<A, E1, R>) => Effect<A | B, E2, R>
 } = flatMapLeft
 
 export const Alt: Alt_.Alt<EffectHkt> = {

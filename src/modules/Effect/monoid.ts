@@ -9,7 +9,7 @@ export const empty: Effect<never, never> = fromAsync(
 )
 
 export const getRaceMonoid: {
-  <A, E>(): Monoid<Effect<A, E>>
+  <A, E, R>(): Monoid<Effect<A, E, R>>
 } = () => ({
   ...getRaceSemigroup(),
   empty,

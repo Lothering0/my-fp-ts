@@ -5,20 +5,20 @@ import { Effect } from './effect'
 export const Zippable = Zippable_.create(Applicative)
 
 export const zipWith: {
-  <A, B, D, C>(
-    that: Effect<B, D>,
+  <A, B, D, C, R>(
+    that: Effect<B, D, R>,
     f: (a: A, b: B) => C,
-  ): <E>(self: Effect<A, E>) => Effect<C, E | D>
+  ): <E>(self: Effect<A, E, R>) => Effect<C, E | D, R>
 } = Zippable.zipWith
 
 export const zip: {
-  <A, B, D>(
-    that: Effect<B, D>,
-  ): <E>(self: Effect<A, E>) => Effect<readonly [A, B], E | D>
+  <A, B, D, R>(
+    that: Effect<B, D, R>,
+  ): <E>(self: Effect<A, E, R>) => Effect<readonly [A, B], E | D, R>
 } = Zippable.zip
 
 export const unzip: {
-  <A, B, E>(
-    zipped: Effect<readonly [A, B], E>,
-  ): readonly [Effect<A, E>, Effect<B, E>]
+  <A, B, E, R>(
+    zipped: Effect<readonly [A, B], E, R>,
+  ): readonly [Effect<A, E, R>, Effect<B, E, R>]
 } = Zippable.unzip

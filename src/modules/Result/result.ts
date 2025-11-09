@@ -29,26 +29,28 @@ export interface Failure<E> {
 
 export const succeed: {
   <A>(success: A): Result<A>
-} = success => ({
-  _id: 'Result',
-  _tag: 'Success',
-  success: success,
-  *[Symbol.iterator]() {
-    return success
-  },
-})
+} = success =>
+  Object.freeze({
+    _id: 'Result',
+    _tag: 'Success',
+    success: success,
+    *[Symbol.iterator]() {
+      return success
+    },
+  })
 
 export const fail: {
   <E>(failure: E): Result<never, E>
-} = failure => ({
-  _id: 'Result',
-  _tag: 'Failure',
-  failure: failure,
-  *[Symbol.iterator]() {
-    yield failure
-    return hole()
-  },
-})
+} = failure =>
+  Object.freeze({
+    _id: 'Result',
+    _tag: 'Failure',
+    failure: failure,
+    *[Symbol.iterator]() {
+      yield failure
+      return hole()
+    },
+  })
 
 export const gen: {
   <A, E>(generator: ResultGenerator<A, E>): Result<A, E>
