@@ -1,9 +1,9 @@
 import * as Contravariant_ from '../../typeclasses/Contravariant'
-import { flow } from '../../utils/flow'
 import { Reader, ReaderHkt } from './reader'
+import { local } from './utils'
 
 export const Contravariant: Contravariant_.Contravariant<ReaderHkt> = {
-  contramap: ts => self => flow(ts, self),
+  contramap: local,
 }
 
 export const contramap: {

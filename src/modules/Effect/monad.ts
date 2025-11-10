@@ -4,7 +4,7 @@ import { Functor } from './functor'
 import { pipe } from '../../utils/flow'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
 import { FromIdentity } from './from-identity'
-import { Effect, EffectHkt, fromReader, run } from './effect'
+import { Effect, EffectHkt, fromReaderResult, run } from './effect'
 import { create } from './_internal'
 
 export const Monad = Monad_.create<EffectHkt>(FromIdentity, Functor, {
@@ -80,7 +80,7 @@ export const concurrently: {
     fb: Effect<A, E1, R>,
   ): <A, E2>(self: Effect<A, E2, R>) => Effect<DoObject<N, A, A>, E1 | E2, R>
 } = fb => self =>
-  fromReader(r =>
+  fromReaderResult(r =>
     Promise.all([
       Promise.resolve(run(r)(fb)),
       Promise.resolve(run(r)(self)),
@@ -94,7 +94,7 @@ export const concurrentlyTo: {
     fb: Effect<B, E1, R>,
   ): <E2>(self: Effect<A, E1, R>) => Effect<DoObject<N, A, B>, E1 | E2, R>
 } = (name, fb) => self =>
-  fromReader(r =>
+  fromReaderResult(r =>
     Promise.all([
       Promise.resolve(run(r)(self)),
       Promise.resolve(run(r)(fb)),

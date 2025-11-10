@@ -1,12 +1,14 @@
 import * as Array from '../ReadonlyArray'
 import * as Option from '../Option'
 import * as Result from '../Result'
+import * as Reader from '../Reader'
 import * as Effect from './effect'
 import { isFunction } from '../../utils/typeChecks'
 import { flow, pipe } from '../../utils/flow'
 import { mapResult, map } from './functor'
 import { UnknownException } from '../Exception'
 import { TryCatch } from '../../types/TryCatch'
+import { create } from './_internal'
 
 const try_: {
   <A, E>(tryCatch: TryCatch<A, E>): Effect.Effect<Awaited<A>, E>
@@ -90,7 +92,7 @@ export const all: {
 } = (
   effects: Iterable<Effect.Effect<unknown, unknown>>,
 ): Effect.Effect<ReadonlyArray<unknown>, unknown, unknown> =>
-  Effect.fromReader<ReadonlyArray<unknown>, unknown, unknown>(r => {
+  Effect.fromReaderResult<ReadonlyArray<unknown>, unknown, unknown>(r => {
     const out: (
       | Result.Result<unknown, unknown>
       | Promise<Result.Result<unknown, unknown>>
@@ -177,7 +179,7 @@ export const allResults: {
   never,
   unknown
 > =>
-  Effect.fromReader<
+  Effect.fromReaderResult<
     ReadonlyArray<Result.Result<unknown, unknown>>,
     never,
     unknown
@@ -233,4 +235,33 @@ export const allOptions: {
   <R, A extends Iterable<Effect.Effect<unknown, unknown, R>>>(
     effects: A,
   ): OptionsFromIterable<R, A>
-} = flow(allResults, ma => ma, map(Array.map(Option.fromResult)))
+} = flow(allResults, map(Array.map(Option.fromResult)))
+
+export const ask: {
+  <R, E = never>(): Effect.Effect<R, E, R>
+} = () => create(() => Result.succeed)
+
+export const asks: {
+  <R, A, E>(f: (r: R) => A): Effect.Effect<A, E, R>
+} = f => create(() => flow(f, Result.succeed))
+
+export const asksReader = <R1, R2, A, E>(
+  f: (r: R1) => Reader.Reader<R2, A>,
+): Effect.Effect<A, E, R1 & R2> =>
+  create(
+    () => r =>
+      pipe(
+        () => pipe(r, f(r), Result.succeed),
+        Effect.fromReaderResult,
+        Effect.run(),
+      ),
+  )
+
+export const asksEffect = <R1, R2, A, E>(
+  f: (r: R1) => Effect.Effect<A, E, R2>,
+): Effect.Effect<A, E, R1 & R2> => create(() => r => pipe(r, f, Effect.run(r)))
+
+export const local =
+  <R2, R1>(f: (s: R2) => R1) =>
+  <A, E>(self: Effect.Effect<A, E, R1>) =>
+    Effect.fromReaderResult((s: R2) => Effect.run(f(s))(self))

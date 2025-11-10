@@ -72,6 +72,10 @@ export const toPromise: {
 } = r => effect => Promise.resolve(_run(effect, r))
 
 export const fromReader: {
+  <A, E = never, R = undefined>(reader: Reader.Reader<R, A>): Effect<A, E, R>
+} = operation => create(() => flow(operation, Result.succeed))
+
+export const fromReaderResult: {
   <A, E = never, R = undefined>(
     reader: Reader.Reader<R, EffectValue<A, E>>,
   ): Effect<A, E, R>
@@ -87,7 +91,7 @@ export const fail: {
 
 export const fromSyncResult: {
   <A, E, R>(syncResult: SyncResult.SyncResult<A, E>): Effect<A, E, R>
-} = fromReader
+} = fromReaderResult
 
 export const fromSync: {
   <A>(sync: Sync.Sync<A>): Effect<A>
@@ -95,7 +99,7 @@ export const fromSync: {
 
 export const fromAsyncResult: {
   <A, E>(asyncResult: AsyncResult.AsyncResult<A, E>): Effect<A, E>
-} = fromReader
+} = fromReaderResult
 
 export const fromAsync: {
   <A>(async: Async.Async<A>): Effect<A>
@@ -133,7 +137,7 @@ const iteratePromise = async <A, E, R>(
 export const gen = <A, E = never, R = undefined>(
   generator: () => Generator<E, A, R>,
 ): Effect<A, E, R> =>
-  fromReader(r => {
+  fromReaderResult(r => {
     const iterator = generator()
     let { value, done } = iterator.next()
     while (!done) {

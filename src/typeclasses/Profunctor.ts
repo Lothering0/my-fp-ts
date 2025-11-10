@@ -6,10 +6,10 @@ import { flow } from '../utils/flow'
 export interface Profunctor<F extends Hkt>
   extends Functor<F>,
     Contravariant<F> {
-  readonly promap: <Fixed1, Fixed2, In, Out, Collectable>(
+  readonly promap: <Fixed1, Fixed2, In, Out>(
     ts: (t: Fixed2) => Fixed1,
     ab: (a: In) => Out,
-  ) => (
+  ) => <Collectable>(
     self: Kind<F, In, Collectable, Fixed1>,
   ) => Kind<F, Out, Collectable, Fixed2>
 }

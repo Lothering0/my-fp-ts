@@ -1,6 +1,6 @@
 import * as Result from '../Result'
 import { create } from '../../typeclasses/Applicative'
-import { EffectHkt, Effect, fromReader, run } from './effect'
+import { EffectHkt, Effect, fromReaderResult, run } from './effect'
 import { pipe } from '../../utils/flow'
 import { Monad } from './monad'
 import { flip } from '../../utils/flip'
@@ -18,7 +18,7 @@ export const applyConcurrently: {
     fa: Effect<A, E1, R>,
   ): <B, E2>(self: Effect<(a: A) => B, E2, R>) => Effect<B, E1 | E2, R>
 } = fma => self =>
-  fromReader(r => {
+  fromReaderResult(r => {
     const resultAb = pipe(self, run(r))
     const resultA = pipe(fma, run(r))
 
