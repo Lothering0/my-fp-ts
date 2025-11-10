@@ -2,8 +2,8 @@ import * as esbuild from 'esbuild'
 
 await esbuild.build({
   platform: 'node',
-  bundle: false,
-  entryPoints: ['src/**/*'],
+  bundle: true,
+  entryPoints: ['index.ts'],
   outdir: 'dist',
   outExtension: {
     '.js': '.cjs',
