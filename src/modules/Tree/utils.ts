@@ -15,16 +15,17 @@ export const forestOf: {
 
 export const make: {
   <A>(a: A, forest?: Forest<A>): Tree<A>
-} = (value, forest = []) => ({
-  value,
-  forest,
-  *[Symbol.iterator]() {
-    yield value
-    for (const tree of forest) {
-      yield* tree
-    }
-  },
-})
+} = (value, forest = []) =>
+  Object.freeze({
+    value,
+    forest,
+    *[Symbol.iterator]() {
+      yield value
+      for (const tree of forest) {
+        yield* tree
+      }
+    },
+  })
 
 export const hasForest = <A>(tree: Tree<A>): boolean =>
   pipe(tree, forestOf, Iterable.toReadonlyArray, isNonEmpty)
