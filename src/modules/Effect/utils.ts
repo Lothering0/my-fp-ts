@@ -2,6 +2,7 @@ import * as Array from '../ReadonlyArray'
 import * as Option from '../Option'
 import * as Result from '../Result'
 import * as Reader from '../Reader'
+import * as Duration from '../Duration'
 import * as Effect from './effect'
 import { isFunction } from '../../utils/typeChecks'
 import { flow, pipe } from '../../utils/flow'
@@ -265,3 +266,61 @@ export const local =
   <R2, R1>(f: (s: R2) => R1) =>
   <A, E>(self: Effect.Effect<A, E, R1>) =>
     Effect.fromReaderResult((s: R2) => Effect.run(f(s))(self))
+
+export const schedule =
+  <A, E, R>(self: Effect.Effect<A, E, R>) =>
+  (
+    duration: Duration.DurationInput,
+    iterationCount = Infinity,
+  ): Effect.Effect<ReadonlyArray<A>, E, R> =>
+    Effect.fromReaderResult(
+      r =>
+        new Promise(resolve => {
+          let iteration = -1
+          const out: A[] = []
+          const isInfinite = iterationCount === Infinity
+          setInterval(async () => {
+            if (!isInfinite) {
+              iteration++
+            }
+            if (iteration === iterationCount) {
+              pipe(out, Result.succeed, resolve)
+              return
+            }
+            const result = await pipe(self, Effect.run(r))
+            pipe(
+              result,
+              Result.match({
+                onSuccess: a => out.push(a),
+                onFailure: flow(Result.fail, resolve),
+              }),
+            )
+          }, Duration.toMilliseconds(duration))
+        }),
+    )
+
+export const scheduleResults =
+  <A, E, R>(self: Effect.Effect<A, E, R>) =>
+  (
+    duration: Duration.DurationInput,
+    iterationCount = Infinity,
+  ): Effect.Effect<ReadonlyArray<Result.Result<A, E>>, never, R> =>
+    Effect.fromReaderResult(
+      r =>
+        new Promise(resolve => {
+          let iteration = -1
+          const out: Result.Result<A, E>[] = []
+          const isInfinite = iterationCount === Infinity
+          setInterval(async () => {
+            if (!isInfinite) {
+              iteration++
+            }
+            if (iteration === iterationCount) {
+              pipe(out, Result.succeed, resolve)
+              return
+            }
+            const result = await pipe(self, Effect.run(r))
+            out.push(result)
+          }, Duration.toMilliseconds(duration))
+        }),
+    )

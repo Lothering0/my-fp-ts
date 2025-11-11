@@ -4,7 +4,6 @@ import { isDate } from 'node:util/types'
 import { isNumber, isRecord, isString } from '../../utils/typeChecks'
 import { create, Schema } from './schema'
 import { message } from './process'
-import { isDateValid } from '../../utils/time'
 import { pipe } from '../../utils/flow'
 
 export const DateLike: Schema<Date | Duration.DurationInput, Date> = create(
@@ -27,7 +26,7 @@ export const DateLike: Schema<Date | Duration.DurationInput, Date> = create(
     }
 
     const date = new Date(x)
-    if (!isDateValid(date)) {
+    if (date.toString() === 'Invalid Date') {
       return Result.fail([message`value ${x} is not a valid date`])
     }
 
