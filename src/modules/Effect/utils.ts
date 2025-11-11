@@ -268,10 +268,9 @@ export const local =
     Effect.fromReaderResult((s: R2) => Effect.run(f(s))(self))
 
 export const schedule =
-  <A, E, R>(self: Effect.Effect<A, E, R>) =>
-  (
-    duration: Duration.DurationInput,
-    iterationCount = Infinity,
+  (duration: Duration.DurationInput, iterationCount = Infinity) =>
+  <A, E, R>(
+    self: Effect.Effect<A, E, R>,
   ): Effect.Effect<ReadonlyArray<A>, E, R> =>
     Effect.fromReaderResult(
       r =>
@@ -300,10 +299,9 @@ export const schedule =
     )
 
 export const scheduleResults =
-  <A, E, R>(self: Effect.Effect<A, E, R>) =>
-  (
-    duration: Duration.DurationInput,
-    iterationCount = Infinity,
+  (duration: Duration.DurationInput, iterationCount = Infinity) =>
+  <A, E, R>(
+    self: Effect.Effect<A, E, R>,
   ): Effect.Effect<ReadonlyArray<Result.Result<A, E>>, never, R> =>
     Effect.fromReaderResult(
       r =>
