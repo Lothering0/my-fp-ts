@@ -278,22 +278,22 @@ export const schedule =
           let iteration = -1
           const out: A[] = []
           const isInfinite = iterationCount === Infinity
-          setInterval(async () => {
+          const interval = setInterval(async () => {
             if (!isInfinite) {
               iteration++
             }
             if (iteration === iterationCount) {
-              pipe(out, Result.succeed, resolve)
-              return
+              clearInterval(interval)
+              return pipe(out, Result.succeed, resolve)
             }
             const result = await pipe(self, Effect.run(r))
-            pipe(
-              result,
-              Result.match({
-                onSuccess: a => out.push(a),
-                onFailure: flow(Result.fail, resolve),
-              }),
-            )
+            if (Result.isFailure(result)) {
+              clearInterval(interval)
+              return resolve(result)
+            }
+            if (!isInfinite) {
+              out.push(Result.successOf(result))
+            }
           }, Duration.toMilliseconds(duration))
         }),
     )
@@ -309,16 +309,18 @@ export const scheduleResults =
           let iteration = -1
           const out: Result.Result<A, E>[] = []
           const isInfinite = iterationCount === Infinity
-          setInterval(async () => {
+          const interval = setInterval(async () => {
             if (!isInfinite) {
               iteration++
             }
             if (iteration === iterationCount) {
-              pipe(out, Result.succeed, resolve)
-              return
+              clearInterval(interval)
+              return pipe(out, Result.succeed, resolve)
             }
             const result = await pipe(self, Effect.run(r))
-            out.push(result)
+            if (!isInfinite) {
+              out.push(result)
+            }
           }, Duration.toMilliseconds(duration))
         }),
     )

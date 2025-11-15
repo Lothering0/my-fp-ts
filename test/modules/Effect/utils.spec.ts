@@ -225,3 +225,60 @@ describe('allResults', () => {
     )
   })
 })
+
+describe('schedule', () => {
+  it('should run computation exact number of times', async () => {
+    const f = jest.fn()
+    const result = await pipe(
+      Effect.fromSync(() => {
+        f()
+        return 1
+      }),
+      Effect.schedule({ ms: 1 }, 3),
+      Effect.runAsync(),
+    )
+    expect(result).toEqual(Result.succeed([1, 1, 1]))
+    expect(f).toHaveBeenCalledTimes(3)
+  })
+
+  it('should return a failure of an effect', async () => {
+    const f = jest.fn()
+    const result = await pipe(
+      Effect.fromSyncResult(() => {
+        f()
+        return Result.fail('a')
+      }),
+      Effect.schedule({ ms: 1 }, 3),
+      Effect.runAsync(),
+    )
+    expect(result).toEqual(Result.fail('a'))
+    expect(f).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('scheduleResults', () => {
+  it('should run computation exact number of times', async () => {
+    const f = jest.fn()
+    let i = 0
+    const result = await pipe(
+      Effect.fromSyncResult(() => {
+        f()
+        i++
+        return i % 2 === 0 ? Result.succeed(i) : Result.fail('a')
+      }),
+      Effect.scheduleResults({ ms: 1 }, 4),
+      Effect.runAsync(),
+    )
+    expect(JSON.stringify(result)).toBe(
+      JSON.stringify(
+        Result.succeed([
+          Result.fail('a'),
+          Result.succeed(2),
+          Result.fail('a'),
+          Result.succeed(4),
+        ]),
+      ),
+    )
+    expect(f).toHaveBeenCalledTimes(4)
+  })
+})
