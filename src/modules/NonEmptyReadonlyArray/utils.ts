@@ -1,5 +1,4 @@
 import * as Order from '../../typeclasses/Order'
-import { pipe } from '../../utils/flow'
 import { NonEmptyReadonlyArray } from './non-empty-readonly-array'
 
 export const head: {
