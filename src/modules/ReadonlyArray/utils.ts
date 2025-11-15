@@ -551,3 +551,93 @@ export function comprehension(
     ),
   )
 }
+
+export const flatDeep: {
+  (depth: 0): <A>(self: ReadonlyArray<A>) => ReadonlyArray<A>
+  (depth: 1): <A>(self: ReadonlyArray<ReadonlyArray<A>>) => ReadonlyArray<A>
+  (
+    depth: 2,
+  ): <A>(
+    self: ReadonlyArray<ReadonlyArray<ReadonlyArray<A>>>,
+  ) => ReadonlyArray<A>
+  (
+    depth: 3,
+  ): <A>(
+    self: ReadonlyArray<ReadonlyArray<ReadonlyArray<ReadonlyArray<A>>>>,
+  ) => ReadonlyArray<A>
+  (
+    depth: 4,
+  ): <A>(
+    self: ReadonlyArray<
+      ReadonlyArray<ReadonlyArray<ReadonlyArray<ReadonlyArray<A>>>>
+    >,
+  ) => ReadonlyArray<A>
+  (
+    depth: 5,
+  ): <A>(
+    self: ReadonlyArray<
+      ReadonlyArray<
+        ReadonlyArray<ReadonlyArray<ReadonlyArray<ReadonlyArray<A>>>>
+      >
+    >,
+  ) => ReadonlyArray<A>
+  (
+    depth: 6,
+  ): <A>(
+    self: ReadonlyArray<
+      ReadonlyArray<
+        ReadonlyArray<
+          ReadonlyArray<ReadonlyArray<ReadonlyArray<ReadonlyArray<A>>>>
+        >
+      >
+    >,
+  ) => ReadonlyArray<A>
+  (
+    depth: 7,
+  ): <A>(
+    self: ReadonlyArray<
+      ReadonlyArray<
+        ReadonlyArray<
+          ReadonlyArray<
+            ReadonlyArray<ReadonlyArray<ReadonlyArray<ReadonlyArray<A>>>>
+          >
+        >
+      >
+    >,
+  ) => ReadonlyArray<A>
+  (
+    depth: 8,
+  ): <A>(
+    self: ReadonlyArray<
+      ReadonlyArray<
+        ReadonlyArray<
+          ReadonlyArray<
+            ReadonlyArray<
+              ReadonlyArray<ReadonlyArray<ReadonlyArray<ReadonlyArray<A>>>>
+            >
+          >
+        >
+      >
+    >,
+  ) => ReadonlyArray<A>
+  (
+    depth: 9,
+  ): <A>(
+    self: ReadonlyArray<
+      ReadonlyArray<
+        ReadonlyArray<
+          ReadonlyArray<
+            ReadonlyArray<
+              ReadonlyArray<
+                ReadonlyArray<ReadonlyArray<ReadonlyArray<ReadonlyArray<A>>>>
+              >
+            >
+          >
+        >
+      >
+    >,
+  ) => ReadonlyArray<A>
+  (
+    depth: number,
+  ): <A>(self: ReadonlyArray<ReadonlyArray<unknown>>) => ReadonlyArray<A>
+} = NonEmptyArray.flatDeep
