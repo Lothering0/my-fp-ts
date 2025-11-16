@@ -111,6 +111,48 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
       ),
     )
 
+  const orElseSucceed =
+    <In>(onFailure: In) =>
+    <Out, Fixed>(
+      self: Kind<THkt, Out, unknown, Fixed>,
+    ): Kind<THkt, In | Out, never, Fixed> =>
+      pipe(self, orElse<In, never, Fixed>(succeed(onFailure))<Out, never>)
+
+  const orElseSucceedKind =
+    <In, Fixed>(onFailure: Kind<F, In, TCollectable, Fixed>) =>
+    <Out>(
+      self: Kind<THkt, Out, unknown, Fixed>,
+    ): Kind<THkt, In | Out, never, Fixed> =>
+      pipe(
+        self,
+        orElse<In, never, Fixed>(pipe(onFailure, M.map(Result.succeed)))<
+          Out,
+          never
+        >,
+      )
+
+  const orElseFail =
+    <Failure>(onFailure: Failure) =>
+    <Out, Fixed>(
+      self: Kind<THkt, Out, unknown, Fixed>,
+    ): Kind<THkt, Out, Failure, Fixed> =>
+      pipe(self, orElse<Out, Failure, Fixed>(fail(onFailure))<Out, Failure>)
+
+  const orElseFailKind =
+    <Collectable, Fixed>(
+      onFailure: Kind<F, Collectable, TCollectable, Fixed>,
+    ) =>
+    <Out>(
+      self: Kind<THkt, Out, unknown, Fixed>,
+    ): Kind<THkt, Out, Collectable, Fixed> =>
+      pipe(
+        self,
+        orElse<Out, Collectable, Fixed>(pipe(onFailure, M.map(Result.fail)))<
+          Out,
+          Collectable
+        >,
+      )
+
   const catchAll =
     <Out, Collectable1, Collectable2, Fixed>(
       onFailure: (e: Collectable1) => Kind<THkt, Out, Collectable2, Fixed>,
@@ -304,6 +346,10 @@ export const transform = <F extends Hkt, TCollectable>(M: Monad_.Monad<F>) => {
     toUnion,
     failureOf,
     successOf,
+    orElseSucceed,
+    orElseSucceedKind,
+    orElseFail,
+    orElseFailKind,
     getOrElse,
     catchAll,
     catchTag,

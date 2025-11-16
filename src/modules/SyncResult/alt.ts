@@ -15,6 +15,14 @@ export const orElse: {
   ): <A>(self: SyncResult<A, unknown>) => SyncResult<A | B, E>
 } = _SyncResult.orElse
 
+export const orElseSucceed: {
+  <B>(onFailure: B): <A>(self: SyncResult<A, unknown>) => SyncResult<A | B>
+} = _SyncResult.orElseSucceed
+
+export const orElseFail: {
+  <E>(onFailure: E): <A>(self: SyncResult<A, unknown>) => SyncResult<A, E>
+} = _SyncResult.orElseFail
+
 export const catchAll: {
   <B, E1, E2>(
     onFailure: (e: E1) => SyncResult<B, E2>,

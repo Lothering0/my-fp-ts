@@ -2,7 +2,7 @@ import * as Alt_ from '../../typeclasses/Alt'
 import { Tag, Tagged } from '../../types/Tag'
 import { pipe } from '../../utils/flow'
 import { identity } from '../Identity'
-import { Effect, EffectHkt, fail } from './effect'
+import { Effect, EffectHkt, succeed, fail } from './effect'
 import { match } from './matchers'
 import { flatMapLeft } from './monad-both'
 
@@ -17,6 +17,16 @@ export const orElse: {
     onFailure: Effect<B, E, R>,
   ): <A>(self: Effect<A, unknown, R>) => Effect<A | B, E, R>
 } = onFailure => flatMapLeft(() => onFailure)
+
+export const orElseSucceed: {
+  <B>(
+    onFailure: B,
+  ): <A, R>(self: Effect<A, unknown, R>) => Effect<A | B, never, R>
+} = onFailure => orElse(succeed(onFailure))
+
+export const orElseFail: {
+  <E>(onFailure: E): <A, R>(self: Effect<A, unknown, R>) => Effect<A, E, R>
+} = onFailure => orElse(fail(onFailure))
 
 export const catchTag =
   <A, B, R, E1 extends Tagged, E2, T extends Tag<E1>>(

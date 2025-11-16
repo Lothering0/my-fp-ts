@@ -25,6 +25,14 @@ export const orElse: {
     onSuccess: succeed,
   })
 
+export const orElseSucceed: {
+  <B>(onFailure: B): <A>(self: Result<A, unknown>) => Result<A | B>
+} = onFailure => orElse(succeed(onFailure))
+
+export const orElseFail: {
+  <E>(onFailure: E): <A>(self: Result<A, unknown>) => Result<A, E>
+} = onFailure => orElse(fail(onFailure))
+
 export const catchAll: {
   <B, E1, E2>(
     onFailure: (failure: E1) => Result<B, E2>,

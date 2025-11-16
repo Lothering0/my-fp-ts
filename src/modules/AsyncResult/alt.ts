@@ -17,6 +17,14 @@ export const orElse: {
   ): <A>(self: AsyncResult<A, unknown>) => AsyncResult<A | B, E>
 } = _AsyncResult.orElse
 
+export const orElseSucceed: {
+  <B>(onFailure: B): <A>(self: AsyncResult<A, unknown>) => AsyncResult<A | B>
+} = _AsyncResult.orElseSucceed
+
+export const orElseFail: {
+  <E>(onFailure: E): <A>(self: AsyncResult<A, unknown>) => AsyncResult<A, E>
+} = _AsyncResult.orElseFail
+
 export const catchAll: {
   <A, B, E1, E2>(
     onFailure: (failure: E1) => AsyncResult<B, E2>,
