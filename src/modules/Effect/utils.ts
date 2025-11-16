@@ -16,30 +16,31 @@ const try_: {
   <A>(operation: () => A): Effect.Effect<Awaited<A>, UnknownException>
 } = <A, E>(
   operationOrTryCatch: TryCatch<A, E> | (() => A),
-): Effect.Effect<A, E> => {
-  let tryCatch: TryCatch<A, E>
+): Effect.Effect<A, E> =>
+  create(() => () => {
+    let tryCatch: TryCatch<A, E>
 
-  if (isFunction(operationOrTryCatch)) {
-    tryCatch = {
-      try: operationOrTryCatch,
-      catch: e => new UnknownException(e) as E,
+    if (isFunction(operationOrTryCatch)) {
+      tryCatch = {
+        try: operationOrTryCatch,
+        catch: e => new UnknownException(e) as E,
+      }
+    } else {
+      tryCatch = operationOrTryCatch
     }
-  } else {
-    tryCatch = operationOrTryCatch
-  }
 
-  try {
-    const result = tryCatch.try()
-    if (result instanceof Promise) {
-      return Effect.fromAsyncResult(() =>
-        result.then(Result.succeed).catch(flow(tryCatch.catch, Result.fail)),
-      )
+    try {
+      const result = tryCatch.try()
+      if (result instanceof Promise) {
+        return result
+          .then(Result.succeed)
+          .catch(flow(tryCatch.catch, Result.fail))
+      }
+      return Result.succeed(result)
+    } catch (e) {
+      return pipe(e, tryCatch.catch, Result.fail)
     }
-    return Effect.succeed(result)
-  } catch (e) {
-    return pipe(e, tryCatch.catch, Effect.fail)
-  }
-}
+  })
 
 export { try_ as try }
 

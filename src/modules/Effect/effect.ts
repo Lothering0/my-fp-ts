@@ -36,6 +36,25 @@ export interface EffectOperation<A, E = never> {
   (): EffectValue<A, E>
 }
 
+export type Successes<
+  EffectInstance extends Effect<unknown, unknown, unknown>,
+> =
+  EffectInstance extends Effect<infer Successes, unknown, unknown>
+    ? Successes
+    : never
+
+export type Failures<EffectInstance extends Effect<unknown, unknown, unknown>> =
+  EffectInstance extends Effect<unknown, infer Failures, unknown>
+    ? Failures
+    : never
+
+export type Dependencies<
+  EffectInstance extends Effect<unknown, unknown, unknown>,
+> =
+  EffectInstance extends Effect<unknown, unknown, infer Dependencies>
+    ? Dependencies
+    : never
+
 export class AsyncEffectException extends TaggedTypeError(
   'AsyncEffectException',
 ) {}
