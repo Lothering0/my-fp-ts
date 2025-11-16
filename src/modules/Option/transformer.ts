@@ -152,6 +152,13 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
       ),
     )
 
+  const orElseSome =
+    <B>(b: B) =>
+    <A, Collectable, Fixed>(
+      self: Kind<THkt, A, Collectable, Fixed>,
+    ): Kind<THkt, A | B, Collectable, Fixed> =>
+      pipe(self, orElse<B, Collectable, Fixed>(some(b)))
+
   const FromIdentity: FromIdentity<THkt> = {
     of: some,
   }
@@ -267,6 +274,7 @@ export const transform = <F extends Hkt>(M: Monad_.Monad<F>) => {
     toVoid,
     fromKindResult,
     toResult,
+    orElseSome,
     getOrElse,
     catchAll,
     FromIdentity,

@@ -17,6 +17,10 @@ export const orElse: {
   <B>(that: SyncOption<B>): <A>(self: SyncOption<A>) => SyncOption<A | B>
 } = _SyncOption.orElse
 
+export const orElseSome: {
+  <B>(b: B): <A>(self: SyncOption<A>) => SyncOption<A | B>
+} = _SyncOption.orElseSome
+
 /** Lazy version of `orElse` */
 export const catchAll: {
   <B>(

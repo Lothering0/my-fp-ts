@@ -12,6 +12,10 @@ export const orElse: {
   <B>(that: AsyncOption<B>): <A>(self: AsyncOption<A>) => AsyncOption<A | B>
 } = _AsyncOption.orElse
 
+export const orElseSome: {
+  <B>(b: B): <A>(self: AsyncOption<A>) => AsyncOption<A | B>
+} = _AsyncOption.orElseSome
+
 /** Lazy version of `orElse` */
 export const catchAll: {
   <B>(
