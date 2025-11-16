@@ -268,17 +268,35 @@ export const local =
   <A, E>(self: Effect.Effect<A, E, R1>) =>
     Effect.fromReaderResult((s: R2) => Effect.run(f(s))(self))
 
+export interface ScheduleOptions {
+  readonly iterationCount?: number
+  readonly immediate?: boolean
+}
+
 export const schedule =
-  (duration: Duration.DurationInput, iterationCount = Infinity) =>
+  (duration: Duration.DurationInput, options?: ScheduleOptions) =>
   <A, E, R>(
     self: Effect.Effect<A, E, R>,
   ): Effect.Effect<ReadonlyArray<A>, E, R> =>
     Effect.fromReaderResult(
       r =>
-        new Promise(resolve => {
+        new Promise(async resolve => {
+          const { iterationCount = Infinity, immediate = false } = options ?? {}
           let iteration = -1
           const out: A[] = []
           const isInfinite = iterationCount === Infinity
+          if (immediate) {
+            const result = await pipe(self, Effect.run(r))
+            if (Result.isFailure(result)) {
+              return resolve(result)
+            }
+            if (!isInfinite) {
+              out.push(Result.successOf(result))
+            }
+            if (iterationCount < 1) {
+              return pipe(out, Result.succeed, resolve)
+            }
+          }
           const interval = setInterval(async () => {
             if (!isInfinite) {
               iteration++
@@ -300,16 +318,26 @@ export const schedule =
     )
 
 export const scheduleResults =
-  (duration: Duration.DurationInput, iterationCount = Infinity) =>
+  (duration: Duration.DurationInput, options?: ScheduleOptions) =>
   <A, E, R>(
     self: Effect.Effect<A, E, R>,
   ): Effect.Effect<ReadonlyArray<Result.Result<A, E>>, never, R> =>
     Effect.fromReaderResult(
       r =>
-        new Promise(resolve => {
+        new Promise(async resolve => {
+          const { iterationCount = Infinity, immediate = false } = options ?? {}
           let iteration = -1
           const out: Result.Result<A, E>[] = []
           const isInfinite = iterationCount === Infinity
+          if (immediate) {
+            const result = await pipe(self, Effect.run(r))
+            if (!isInfinite) {
+              out.push(result)
+            }
+            if (iterationCount < 1) {
+              return pipe(out, Result.succeed, resolve)
+            }
+          }
           const interval = setInterval(async () => {
             if (!isInfinite) {
               iteration++

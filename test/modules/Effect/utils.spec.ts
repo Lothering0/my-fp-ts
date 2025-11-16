@@ -234,7 +234,7 @@ describe('schedule', () => {
         f()
         return 1
       }),
-      Effect.schedule({ ms: 1 }, 3),
+      Effect.schedule({ ms: 1 }, { iterationCount: 3 }),
       Effect.runAsync(),
     )
     expect(result).toEqual(Result.succeed([1, 1, 1]))
@@ -248,10 +248,26 @@ describe('schedule', () => {
         f()
         return Result.fail('a')
       }),
-      Effect.schedule({ ms: 1 }, 3),
+      Effect.schedule({ ms: 1 }, { iterationCount: 3 }),
       Effect.runAsync(),
     )
     expect(result).toEqual(Result.fail('a'))
+    expect(f).toHaveBeenCalledTimes(1)
+  })
+
+  it('should run effect immediately', async () => {
+    const startTime = Date.now()
+    const f = jest.fn()
+    const result = await pipe(
+      Effect.fromSyncResult(() => {
+        f()
+        return Result.succeed(1)
+      }),
+      Effect.schedule({ days: 1 }, { immediate: true, iterationCount: 0 }),
+      Effect.runAsync(),
+    )
+    expect(result).toEqual(Result.succeed([1]))
+    expect(Date.now() - startTime < 100).toBe(true)
     expect(f).toHaveBeenCalledTimes(1)
   })
 })
@@ -266,7 +282,7 @@ describe('scheduleResults', () => {
         i++
         return i % 2 === 0 ? Result.succeed(i) : Result.fail('a')
       }),
-      Effect.scheduleResults({ ms: 1 }, 4),
+      Effect.scheduleResults({ ms: 1 }, { iterationCount: 4 }),
       Effect.runAsync(),
     )
     expect(JSON.stringify(result)).toBe(
@@ -280,5 +296,26 @@ describe('scheduleResults', () => {
       ),
     )
     expect(f).toHaveBeenCalledTimes(4)
+  })
+
+  it('should run effect immediately', async () => {
+    const startTime = Date.now()
+    const f = jest.fn()
+    const result = await pipe(
+      Effect.fromSyncResult(() => {
+        f()
+        return Result.succeed(1)
+      }),
+      Effect.scheduleResults(
+        { days: 1 },
+        { immediate: true, iterationCount: 0 },
+      ),
+      Effect.runAsync(),
+    )
+    expect(JSON.stringify(result)).toEqual(
+      JSON.stringify(Result.succeed([Result.succeed(1)])),
+    )
+    expect(Date.now() - startTime < 100).toBe(true)
+    expect(f).toHaveBeenCalledTimes(1)
   })
 })
