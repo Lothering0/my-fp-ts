@@ -27,6 +27,7 @@ export const zero: {
   *[Symbol.iterator]() {},
 })
 
+/** Time complexity: O(n) */
 export const length: {
   (self: Iterable<unknown>): number
 } = self => {
@@ -39,20 +40,22 @@ export const length: {
   return i
 }
 
+/** Time complexity: O(n) */
 export const lastIndex: {
   (self: Iterable<unknown>): number
 } = self => length(self) - 1
 
+/** Time complexity: O(n) */
 export const has: {
-  <A>(i: number): Predicate<Iterable<A>>
-} = i => self => {
+  (i: number): <A>(iterable: Iterable<A>) => boolean
+} = i => iterable => {
   if (i < 0) {
     return false
   }
 
   let index = 0
 
-  for (const _ of self) {
+  for (const _ of iterable) {
     if (i === index) {
       return true
     }
@@ -62,10 +65,12 @@ export const has: {
   return false
 }
 
+/** Time complexity: O(n) */
 export const isOutOfBounds: {
-  <A>(i: number): Predicate<Iterable<A>>
-} = i => self => !has(i)(self)
+  (i: number): <A>(iterable: Iterable<A>) => boolean
+} = i => iterable => !has(i)(iterable)
 
+/** Time complexity: O(1) */
 export const prepend: {
   <A>(a: A): (self: Iterable<A>) => Iterable<A>
 } = a => self => ({
@@ -75,6 +80,7 @@ export const prepend: {
   },
 })
 
+/** Time complexity: O(1) */
 export const append: {
   <A>(a: A): (self: Iterable<A>) => Iterable<A>
 } = a => self => ({
@@ -84,6 +90,7 @@ export const append: {
   },
 })
 
+/** Time complexity: O(1) */
 export const concat: {
   <A>(end: Iterable<A>): (start: Iterable<A>) => Iterable<A>
 } = end => start => ({
@@ -93,6 +100,7 @@ export const concat: {
   },
 })
 
+/** Time complexity: O(1) */
 export const head: {
   <A>(self: Iterable<A>): Option.Option<A>
 } = self => {
@@ -102,7 +110,11 @@ export const head: {
   return Option.none()
 }
 
-/** Notice: it always executes one extra iteration */
+/**
+ * Time complexity: O(n).
+ *
+ * Notice: it always executes one extra iteration
+ */
 export const init: {
   <A>(self: Iterable<A>): Option.Option<Iterable<A>>
 } = iterable => {
@@ -127,7 +139,11 @@ export const init: {
   })
 }
 
-/** Notice: it always executes the whole iterable to reach the last element */
+/**
+ * Time complexity: O(n).
+ *
+ * Notice: it always executes the whole iterable to reach the last element
+ */
 export const last: {
   <A>(self: Iterable<A>): Option.Option<A>
 } = self => {
@@ -140,7 +156,11 @@ export const last: {
   return iterationStarted ? Option.some(lastElement!) : Option.none()
 }
 
-/** Notice: it always executes one extra iteration */
+/**
+ * Time complexity: O(n).
+ *
+ * Notice: it always executes one extra iteration
+ */
 export const tail: {
   <A>(self: Iterable<A>): Option.Option<Iterable<A>>
 } = iterable => {
@@ -163,15 +183,16 @@ export const tail: {
   })
 }
 
+/** Time complexity: O(n) */
 export const lookup: {
-  <A>(i: number): (self: Iterable<A>) => Option.Option<A>
-} = i => self => {
+  (i: number): <A>(iterable: Iterable<A>) => Option.Option<A>
+} = i => iterable => {
   if (i < 0) {
     return Option.none()
   }
 
   let index = -1
-  for (const a of self) {
+  for (const a of iterable) {
     index++
     if (i === index) {
       return Option.some(a)

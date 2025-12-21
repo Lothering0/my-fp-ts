@@ -27,6 +27,7 @@ export const fromIterable: {
   <A>(as: Iterable<A>): ReadonlyArray<A>
 } = as => [...as]
 
+/** Time complexity: O(1) */
 export const length: {
   (self: ReadonlyArray<unknown>): number
 } = self => self.length
@@ -35,6 +36,7 @@ export const copy: {
   <A>(self: ReadonlyArray<A>): ReadonlyArray<A>
 } = fromIterable
 
+/** Time complexity: O(1) */
 export const head: {
   <A>(self: ReadonlyArray<A>): Option.Option<A>
 } = match({
@@ -42,6 +44,7 @@ export const head: {
   onNonEmpty: flow(NonEmptyArray.head, Option.some),
 })
 
+/** Time complexity: O(n) */
 export const init: {
   <A>(self: ReadonlyArray<A>): Option.Option<ReadonlyArray<A>>
 } = match({
@@ -49,6 +52,7 @@ export const init: {
   onNonEmpty: flow(NonEmptyArray.init, Option.some),
 })
 
+/** Time complexity: O(1) */
 export const last: {
   <A>(self: ReadonlyArray<A>): Option.Option<A>
 } = match({
@@ -56,6 +60,7 @@ export const last: {
   onNonEmpty: flow(NonEmptyArray.last, Option.some),
 })
 
+/** Time complexity: O(n) */
 export const tail: {
   <A>(self: ReadonlyArray<A>): Option.Option<ReadonlyArray<A>>
 } = match({
@@ -63,27 +68,35 @@ export const tail: {
   onNonEmpty: flow(NonEmptyArray.tail, Option.some),
 })
 
+/** Time complexity: O(1) */
 export const has: {
   <A>(i: number): Predicate<ReadonlyArray<A>>
 } = i => self => Object.hasOwn(self, Number.Number(i))
 
+/** Time complexity: O(1) */
 export const isOutOfBounds: {
   <A>(i: number): Predicate<ReadonlyArray<A>>
 } = i => flow(has(i), Boolean.not)
 
+/** Time complexity: O(1) */
 export const lookup: {
-  <A>(i: number): (self: ReadonlyArray<A>) => Option.Option<A>
+  (i: number): <A>(self: ReadonlyArray<A>) => Option.Option<A>
 } = i => self =>
   pipe(self, has(i)) ? pipe(self.at(i)!, Option.some) : Option.none()
 
-/** Like `lookup` but accepts also negative integers where -1 is index of the last element, -2 of the pre-last and so on. */
+/**
+ * Time complexity: O(1).
+ *
+ * Like `lookup` but accepts also negative integers where -1 is index of the last element, -2 of the pre-last and so on.
+ */
 export const at: {
-  <A>(i: number): (self: ReadonlyArray<A>) => Option.Option<A>
+  (i: number): <A>(self: ReadonlyArray<A>) => Option.Option<A>
 } = i => self =>
   i < length(self) && i >= -length(self)
     ? pipe(self.at(i)!, Option.some)
     : Option.none()
 
+/** Time complexity: O(1) */
 export const lastIndex: {
   (self: ReadonlyArray<unknown>): number
 } = self => length(self) - 1
@@ -218,34 +231,42 @@ export const successes: {
   <A, E>(self: ReadonlyArray<Result.Result<A, E>>): ReadonlyArray<A>
 } = flatMap(Result.match({ onFailure: constEmptyArray, onSuccess: of }))
 
+/** Time complexity: O(n) */
 export const concat: {
   <A>(end: ReadonlyArray<A>): (start: ReadonlyArray<A>) => ReadonlyArray<A>
 } = NonEmptyArray.concat
 
+/** Time complexity: O(n) */
 export const prepend: {
   <A>(a: A): (self: ReadonlyArray<A>) => NonEmptyArray.NonEmptyReadonlyArray<A>
 } = a => self => NonEmptyArray.concat(self)([a])
 
+/** Time complexity: O(n) */
 export const prependAllWith: {
   <A>(f: (a: A, i: number) => A): (self: ReadonlyArray<A>) => ReadonlyArray<A>
 } = f => flatMap((a, i) => [f(a, i), a])
 
+/** Time complexity: O(n) */
 export const prependAll: {
   <A>(a: A): (self: ReadonlyArray<A>) => ReadonlyArray<A>
 } = flow(constant, prependAllWith)
 
+/** Time complexity: O(n) */
 export const append: {
   <A>(a: A): (self: ReadonlyArray<A>) => NonEmptyArray.NonEmptyReadonlyArray<A>
 } = a => NonEmptyArray.concat([a])
 
+/** Time complexity: O(n) */
 export const appendAllWith: {
   <A>(f: (a: A, i: number) => A): (self: ReadonlyArray<A>) => ReadonlyArray<A>
 } = f => flatMap((a, i) => [a, f(a, i)])
 
+/** Time complexity: O(n) */
 export const appendAll: {
   <A>(a: A): (self: ReadonlyArray<A>) => ReadonlyArray<A>
 } = flow(constant, appendAllWith)
 
+/** Time complexity: O(n) */
 export const range: {
   (to: number): (from: number) => NonEmptyArray.NonEmptyReadonlyArray<number>
 } = to => from => {
@@ -266,16 +287,19 @@ export const range: {
   return out
 }
 
+/** Time complexity: O(n) */
 export const reverse: {
   <A>(self: ReadonlyArray<A>): ReadonlyArray<A>
 } = NonEmptyArray.reverse
 
+/** Time complexity: O(n log n) */
 export const sort: {
   <B>(
     Order: Order.Order<B>,
   ): <A extends B>(self: ReadonlyArray<A>) => ReadonlyArray<A>
 } = NonEmptyArray.sort
 
+/** Time complexity: O(n log n) */
 export const sortBy: {
   <B>(
     orders: Iterable<Order.Order<B>>,
@@ -286,6 +310,7 @@ export const join: {
   (separator: string): (self: ReadonlyArray<string>) => string
 } = separator => self => self.join(separator)
 
+/** Time complexity: O(n) */
 export const slice: {
   (start: number, end?: number): <A>(self: ReadonlyArray<A>) => ReadonlyArray<A>
 } = (start, end) => self => self.slice(start, end)
@@ -552,6 +577,7 @@ export function comprehension(
   )
 }
 
+/** Time complexity: O(n) */
 export const flatDeep: {
   (depth: 0): <A>(self: ReadonlyArray<A>) => ReadonlyArray<A>
   (depth: 1): <A>(self: ReadonlyArray<ReadonlyArray<A>>) => ReadonlyArray<A>
