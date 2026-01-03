@@ -26,17 +26,18 @@ export interface Some<A> {
   readonly [Symbol.iterator]: OptionGenerator<A>
 }
 
+const _none = Object.freeze<None>({
+  _id: 'Option',
+  _tag: 'None',
+  *[Symbol.iterator]() {
+    yield
+    return hole()
+  },
+})
+
 export const none: {
   <A = never>(): Option<A>
-} = () =>
-  Object.freeze<None>({
-    _id: 'Option',
-    _tag: 'None',
-    *[Symbol.iterator]() {
-      yield
-      return hole()
-    },
-  })
+} = () => _none
 
 export const some: {
   <A>(a: A): Option<A>
