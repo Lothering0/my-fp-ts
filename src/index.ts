@@ -7,6 +7,8 @@ import * as State from './modules/State'
 import * as Reader from './modules/Reader'
 import * as Tree from './modules/Tree'
 import * as Effect from './modules/Effect'
+import * as List from './modules/List'
+import * as NonEmptyList from './modules/NonEmptyList'
 
 // modules
 export * as Async from './modules/Async'
@@ -18,6 +20,7 @@ export * as Effect from './modules/Effect'
 export * as Identity from './modules/Identity'
 export { identity } from './modules/Identity'
 export * as Iterable from './modules/Iterable'
+export * as NonEmptyList from './modules/NonEmptyList'
 export * as NonEmptyArray from './modules/NonEmptyReadonlyArray'
 export * as Number from './modules/Number'
 export * as Option from './modules/Option'
@@ -51,6 +54,8 @@ export const StateOption = Option.transform(State.Monad)
 export const ReaderOption = Option.transform(Reader.Monad)
 export const TreeOfOptions = Option.transform(Tree.Monad)
 export const EffectOption = Option.transform(Effect.Monad)
+export const ListOfOptions = Option.transform(List.Monad)
+export const NonEmptyListOfOptions = Option.transform(NonEmptyList.Monad)
 
 export const OptionResult = Result.transform(Option.Monad)
 export const ArrayOfResults = Result.transform(Array.Monad)
@@ -61,6 +66,8 @@ export const StateResult = Result.transform(State.Monad)
 export const ReaderResult = Result.transform(Reader.Monad)
 export const TreeOfResults = Result.transform(Tree.Monad)
 export const EffectResult = Result.transform(Effect.Monad)
+export const ListOfResults = Result.transform(List.Monad)
+export const NonEmptyListOfResults = Result.transform(NonEmptyList.Monad)
 
 export const OptionState = State.transform(Option.Monad)
 export const ArrayOfStates = State.transform(Array.Monad)
@@ -71,6 +78,8 @@ export const StateState = State.transform(State.Monad)
 export const ReaderState = State.transform(Reader.Monad)
 export const TreeOfStates = State.transform(Tree.Monad)
 export const EffectState = State.transform(Effect.Monad)
+export const ListOfStates = State.transform(List.Monad)
+export const NonEmptyListOfStates = State.transform(NonEmptyList.Monad)
 
 // typeclasses
 export * as Alt from './typeclasses/Alt'

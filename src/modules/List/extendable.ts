@@ -1,26 +1,23 @@
+import * as List from './list'
 import { create } from '../../typeclasses/Extendable'
-import { ReadonlyArrayHkt } from './readonly-array'
 import { Functor } from './functor'
 import { prepend } from './utils'
 import { matchLeft } from './matchers'
-import { constEmptyArray } from '../../utils/constant'
 import { pipe } from '../../utils/flow'
 
-export const Extendable = create<ReadonlyArrayHkt>(Functor, {
+export const Extendable = create<List.ListHkt>(Functor, {
   extend: fab =>
     matchLeft({
-      onEmpty: constEmptyArray,
-      onNonEmpty: (head, tail) =>
+      onNil: () => List.nil(),
+      onCons: (head, tail) =>
         pipe(tail, extend(fab), pipe(tail, prepend(head), fab, prepend)),
     }),
 })
 
 export const extend: {
-  <A, B>(
-    fab: (fa: ReadonlyArray<A>) => B,
-  ): (self: ReadonlyArray<A>) => ReadonlyArray<B>
+  <A, B>(fab: (fa: List.List<A>) => B): (list: List.List<A>) => List.List<B>
 } = Extendable.extend
 
 export const duplicate: {
-  <A>(self: ReadonlyArray<A>): ReadonlyArray<ReadonlyArray<A>>
+  <A>(list: List.List<A>): List.List<List.List<A>>
 } = Extendable.duplicate

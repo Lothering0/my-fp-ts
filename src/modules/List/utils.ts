@@ -9,6 +9,7 @@ import { PredicateWithIndex } from '../Predicate'
 import { Equivalence } from '../../typeclasses/Equivalence'
 import { reduceRight } from './foldable'
 import { _cons, _internal } from './_internal'
+import { NonEmptyList } from '../NonEmptyList'
 
 export const fromIterable: {
   <A>(iterable: Iterable<A>): List.List<A>
@@ -128,7 +129,7 @@ export const init = <A>(list: List.List<A>): Option.Option<List.List<A>> => {
     return Option.some(List.nil())
   }
   let lastNode = list
-  while (isCons(lastNode.tail) && !isNil(lastNode.tail.tail)) {
+  while (isCons(lastNode.tail) && isCons(lastNode.tail.tail)) {
     lastNode = lastNode.tail
   }
   const newList = _cons(list.head, list.tail, list.length - 1)
@@ -263,9 +264,10 @@ export const every: {
   <A>(p: PredicateWithIndex<A, number>): (list: List.List<A>) => boolean
 } = Iterable.every as typeof every
 
-export const exists: {
-  <A>(p: PredicateWithIndex<A, number>): (list: List.List<A>) => boolean
-} = Iterable.exists
+export const exists =
+  <A>(p: PredicateWithIndex<A, number>) =>
+  (list: List.List<A>): list is NonEmptyList<A> =>
+    Iterable.exists(p)(list)
 
 /** Alias for `exists` */
 export const some = exists
@@ -327,19 +329,19 @@ export const appendAll: {
  * | O(n)            | O(n)             |
  */
 export const range: {
-  (to: number): (from: number) => List.List<number>
+  (to: number): (from: number) => NonEmptyList<number>
 } = to => from => {
-  let out = List.cons(to)
+  let out = _cons(to)
 
   if (from < to) {
     for (let i = to - 1; i >= from; i--) {
-      out = List.cons(i, out)
+      out = _cons(i, out)
     }
   }
 
   if (from > to) {
     for (let i = to + 1; i <= from; i++) {
-      out = List.cons(i, out)
+      out = _cons(i, out)
     }
   }
 
