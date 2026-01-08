@@ -1,36 +1,43 @@
-import * as Array from '../ReadonlyArray'
 import * as Iterable from '../Iterable'
 import * as Option from '../Option'
 import * as List from './list'
-import { flow, pipe } from '../../utils/flow'
+import { pipe } from '../../utils/flow'
 import { match } from './matchers'
-import { isNil } from './refinements'
+import { isCons, isNil } from './refinements'
 import { RefinementWithIndex } from '../Refinement'
 import { PredicateWithIndex } from '../Predicate'
 import { Equivalence } from '../../typeclasses/Equivalence'
 import { reduceRight } from './foldable'
-import { constant } from '../../utils/constant'
 import { _cons, _internal } from './_internal'
 
-export const fromReadonlyArray: {
-  <A>(array: ReadonlyArray<A>): List.List<A>
-  // Not reusing `Iterable.reduceRight` for performance optimization
-} = Array.reduceRight(List.nil(), (x, list) => List.cons(x, list))
-
 export const fromIterable: {
-  <A>(as: Iterable<A>): List.List<A>
-} = Iterable.reduceRight(List.nil(), (a, list) => List.cons(a, list))
+  <A>(iterable: Iterable<A>): List.List<A>
+} = iterable =>
+  Array.isArray(iterable)
+    ? iterable.reduceRight((list, x) => List.cons(x, list), List.nil())
+    : pipe(
+        iterable,
+        Iterable.reduceRight(List.nil(), (a, list) => List.cons(a, list)),
+      )
 
 export const copy: {
   <A>(list: List.List<A>): List.List<A>
 } = fromIterable
 
-/** Time complexity: O(1) */
+/**
+ * | Time complexity |
+ * | --------------- |
+ * | O(1)            |
+ */
 export const length: {
   <A>(list: List.List<A>): number
 } = list => list.length
 
-/** Time complexity: O(n) */
+/**
+ * | Time complexity | Space complexity |
+ * | --------------- | ---------------- |
+ * | O(n)            | O(n)             |
+ */
 export const reverse = <A>(list: List.List<A>): List.List<A> => {
   let out = List.nil<A>()
   while (!isNil(list)) {
@@ -40,12 +47,20 @@ export const reverse = <A>(list: List.List<A>): List.List<A> => {
   return out
 }
 
-/** Time complexity: O(1) */
+/**
+ * | Time complexity | Space complexity |
+ * | --------------- | ---------------- |
+ * | O(1)            | O(1)             |
+ */
 export const prepend: {
   <A>(a: A): (list: List.List<A>) => List.List<A>
 } = a => list => List.cons(a, list)
 
-/** Time complexity: O(1) */
+/**
+ * | Time complexity | Space complexity |
+ * | --------------- | ---------------- |
+ * | O(1)            | O(1)             |
+ */
 export const append =
   <A>(a: A) =>
   (list: List.List<A>): List.List<A> => {
@@ -58,7 +73,11 @@ export const append =
     return newList
   }
 
-/** Time complexity: O(1) */
+/**
+ * | Time complexity |
+ * | --------------- |
+ * | O(1)            |
+ */
 export const head: {
   <A>(list: List.List<A>): Option.Option<A>
 } = match({
@@ -66,7 +85,11 @@ export const head: {
   onNil: Option.none,
 })
 
-/** Time complexity: O(1) */
+/**
+ * | Time complexity | Space complexity |
+ * | --------------- | ---------------- |
+ * | O(1)            | O(1)             |
+ */
 export const tail: {
   <A>(list: List.List<A>): Option.Option<List.List<A>>
 } = list => {
@@ -80,7 +103,11 @@ export const tail: {
   return Option.some(newList)
 }
 
-/** Time complexity: O(1) */
+/**
+ * | Time complexity |
+ * | --------------- |
+ * | O(1)            |
+ */
 export const last: {
   <A>(list: List.List<A>): Option.Option<A>
 } = list => {
@@ -88,41 +115,67 @@ export const last: {
   return lastNode ? Option.some(lastNode.head) : Option.none()
 }
 
-/** Time complexity: O(n) */
+/**
+ * | Time complexity | Space complexity |
+ * | --------------- | ---------------- |
+ * | O(n)            | O(1)             |
+ */
 export const init = <A>(list: List.List<A>): Option.Option<List.List<A>> => {
   if (isNil(list)) {
     return Option.none()
   }
-  let out: List.List<A> = List.nil()
-  while (!isNil(list.tail)) {
-    out = List.cons(list.head, out)
-    list = list.tail
+  if (list.length <= 1) {
+    return Option.some(List.nil())
   }
-  return Option.some(out)
+  let lastNode = list
+  while (isCons(lastNode.tail) && !isNil(lastNode.tail.tail)) {
+    lastNode = lastNode.tail
+  }
+  const newList = _cons(list.head, list.tail, list.length - 1)
+  newList[_internal].last = _cons(lastNode.head)
+  return Option.some(newList)
 }
 
-/** Time complexity: O(n) */
+/**
+ * | Time complexity |
+ * | --------------- |
+ * | O(1)            |
+ */
 export const lastIndex: {
   (list: List.List<unknown>): number
-} = Iterable.lastIndex
+} = list => list.length - 1
 
-/** Time complexity: O(1) */
+/**
+ * | Time complexity |
+ * | --------------- |
+ * | O(1)            |
+ */
 export const has: {
   (i: number): <A>(list: List.List<A>) => boolean
 } = i => list => Number.isInteger(i) && i >= 0 && i < list.length
 
-/** Time complexity: O(1) */
+/**
+ * | Time complexity |
+ * | --------------- |
+ * | O(1)            |
+ */
 export const isOutOfBounds: {
   (i: number): <A>(list: List.List<A>) => boolean
 } = i => list => !has(i)(list)
 
-/** Time complexity: O(n) */
+/**
+ * | Time complexity |
+ * | --------------- |
+ * | O(n)            |
+ */
 export const lookup: {
   (i: number): <A>(list: List.List<A>) => Option.Option<A>
 } = Iterable.lookup
 
 /**
- * Time complexity: O(n).
+ * | Time complexity |
+ * | --------------- |
+ * | O(n)            |
  *
  * Like `lookup` but accepts also negative integers where -1 is index of the last element, -2 of the pre-last and so on.
  */
@@ -221,34 +274,58 @@ export const includes: {
   <A>(a: A): (list: List.List<A>) => boolean
 } = Iterable.includes
 
-/** Time complexity: O(n) */
+/**
+ * | Time complexity | Space complexity |
+ * | --------------- | ---------------- |
+ * | O(n)            | O(n)             |
+ */
 export const concat: {
   <A>(end: List.List<A>): (start: List.List<A>) => List.List<A>
 } = end => reduceRight(end, (a, out) => List.cons(a, out))
 
-/** Time complexity: O(n) */
+/**
+ * | Time complexity | Space complexity |
+ * | --------------- | ---------------- |
+ * | O(n)            | O(n)             |
+ */
 export const prependAllWith: {
   <A>(f: (a: A, i: number) => A): (list: List.List<A>) => List.List<A>
 } = f =>
   reduceRight(List.nil(), (a, out, i) => List.cons(f(a, i), List.cons(a, out)))
 
-/** Time complexity: O(n) */
+/**
+ * | Time complexity | Space complexity |
+ * | --------------- | ---------------- |
+ * | O(n)            | O(n)             |
+ */
 export const prependAll: {
   <A>(a: A): (list: List.List<A>) => List.List<A>
-} = flow(constant, prependAllWith)
+} = a => prependAllWith(() => a)
 
-/** Time complexity: O(n) */
+/**
+ * | Time complexity | Space complexity |
+ * | --------------- | ---------------- |
+ * | O(n)            | O(n)             |
+ */
 export const appendAllWith: {
   <A>(f: (a: A, i: number) => A): (list: List.List<A>) => List.List<A>
 } = f =>
   reduceRight(List.nil(), (a, out, i) => List.cons(a, List.cons(f(a, i), out)))
 
-/** Time complexity: O(n) */
+/**
+ * | Time complexity | Space complexity |
+ * | --------------- | ---------------- |
+ * | O(n)            | O(n)             |
+ */
 export const appendAll: {
   <A>(a: A): (list: List.List<A>) => List.List<A>
-} = flow(constant, appendAllWith)
+} = a => appendAllWith(() => a)
 
-/** Time complexity: O(n) */
+/**
+ * | Time complexity | Space complexity |
+ * | --------------- | ---------------- |
+ * | O(n)            | O(n)             |
+ */
 export const range: {
   (to: number): (from: number) => List.List<number>
 } = to => from => {
@@ -269,28 +346,50 @@ export const range: {
   return out
 }
 
+/**
+ * | Time complexity | Space complexity |
+ * | --------------- | ---------------- |
+ * | O(n)            | O(1)             |
+ */
 export const takeWhile =
   <A>(p: PredicateWithIndex<A, number>) =>
   (list: List.List<A>): List.List<A> => {
-    let newList = List.nil<A>()
-    let i = -1
-    while (true) {
-      i++
-      if (isNil(list)) {
-        return reverse(newList)
-      }
-      if (!p(list.head, i)) {
-        return reverse(newList)
-      }
-      newList = List.cons(list.head, newList)
-      list = list.tail
+    if (isNil(list)) {
+      return List.nil()
     }
+    let preLastNode: List.List<A> = List.nil()
+    let lastNode: List.List<A> = list
+    let i = 0
+    while (!isNil(lastNode)) {
+      if (!p(lastNode.head, i)) {
+        break
+      }
+      i++
+      preLastNode = lastNode
+      lastNode = lastNode.tail
+    }
+    if (isNil(preLastNode)) {
+      return List.nil()
+    }
+    const newList = _cons(list.head, list.tail, i)
+    newList[_internal].last = _cons(preLastNode.head)
+    return newList
   }
 
+/**
+ * | Time complexity | Space complexity |
+ * | --------------- | ---------------- |
+ * | O(n)            | O(1)             |
+ */
 export const take: {
   (n: number): <A>(list: List.List<A>) => List.List<A>
 } = n => takeWhile((_, i) => i < n)
 
+/**
+ * | Time complexity | Space complexity |
+ * | --------------- | ---------------- |
+ * | O(n)            | O(1)             |
+ */
 export const dropWhile =
   <A>(p: PredicateWithIndex<A, number>) =>
   (list: List.List<A>): List.List<A> => {
@@ -307,6 +406,11 @@ export const dropWhile =
     }
   }
 
+/**
+ * | Time complexity | Space complexity |
+ * | --------------- | ---------------- |
+ * | O(n)            | O(1)             |
+ */
 export const drop: {
   (n: number): <A>(list: List.List<A>) => List.List<A>
 } = n => dropWhile((_, i) => i < n)

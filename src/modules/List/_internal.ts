@@ -20,15 +20,17 @@ export const _cons = <A>(
   length?: number,
 ): Cons<A> => {
   const lastNodeOfTail = tail[_internal].last
-  const isTailNil = tail._tag === 'Nil'
-  length ??= isTailNil ? 1 : tail.length + 1
+  length ??= tail.length + 1
   const list: List<A> = Object.freeze({
     _id: 'List',
     _tag: 'Cons',
     length,
     head,
     get tail() {
-      if (length <= 1 || isTailNil) {
+      if (length === 2) {
+        return this[_internal].last
+      }
+      if (length <= 1 || tail._tag === 'Nil') {
         return _nil
       }
       const newList = _cons(tail.head, tail.tail, length - 1)
