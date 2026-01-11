@@ -1,3 +1,4 @@
+import * as Array from './readonly-array'
 import * as Boolean from '../Boolean'
 import { Equivalence } from '../../typeclasses/Equivalence'
 import { Semigroup } from '../../typeclasses/Semigroup'
@@ -6,6 +7,12 @@ import { reduce } from './foldable'
 import { append, concat, elem } from './utils'
 
 export const getConcatSemigroup = <A>(): Semigroup<ReadonlyArray<A>> => ({
+  combine: concat,
+})
+
+export const getConcatNonEmptySemigroup = <A>(): Semigroup<
+  Array.NonEmpty<A>
+> => ({
   combine: concat,
 })
 

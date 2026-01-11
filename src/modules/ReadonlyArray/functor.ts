@@ -1,25 +1,24 @@
+import * as Array from './readonly-array'
 import * as Functor_ from '../../typeclasses/Functor'
 import * as FunctorWithIndex_ from '../../typeclasses/FunctorWithIndex'
-import { ReadonlyArrayHkt } from './readonly-array'
 
-export const Functor = Functor_.create<ReadonlyArrayHkt>({
+export const Functor = Functor_.create<Array.ReadonlyArrayHkt>({
   map: ab => self => self.map(a => ab(a)),
 })
 
+export const map =
+  <F extends ReadonlyArray<any>, B>(aib: (a: Array.Infer<F>, i: number) => B) =>
+  (array: F): Array.With<F, B> =>
+    array.map((a, i) => aib(a, i)) as unknown as Array.With<F, B>
+
 export const FunctorWithIndex: FunctorWithIndex_.FunctorWithIndex<
-  ReadonlyArrayHkt,
+  Array.ReadonlyArrayHkt,
   number
 > = {
   ...Functor,
-  mapWithIndex: aib => self => self.map((a, i) => aib(a, i)),
+  mapWithIndex: map,
 }
 
-export const map: {
-  <A, B>(
-    aib: (a: A, i: number) => B,
-  ): (self: ReadonlyArray<A>) => ReadonlyArray<B>
-} = FunctorWithIndex.mapWithIndex
-
 export const as: {
-  <A>(a: A): (self: ReadonlyArray<unknown>) => ReadonlyArray<A>
-} = FunctorWithIndex.as
+  <A>(a: A): <F extends ReadonlyArray<any>>(array: F) => Array.With<F, A>
+} = FunctorWithIndex.as as any

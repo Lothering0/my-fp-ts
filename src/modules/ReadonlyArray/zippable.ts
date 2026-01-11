@@ -1,34 +1,40 @@
+import * as Array from './readonly-array'
 import * as Zippable_ from '../../typeclasses/Zippable'
 import { ReadonlyArrayHkt } from './readonly-array'
 
-export const zipWith: {
-  <A, B, C>(
-    bs: ReadonlyArray<B>,
-    abic: (a: A, b: B, i: number) => C,
-  ): (self: ReadonlyArray<A>) => ReadonlyArray<C>
-} = (bs, abic) => self => {
-  const minLength = Math.min(self.length, bs.length)
-  const out = []
+export const zipWith =
+  <F extends ReadonlyArray<any>, G extends ReadonlyArray<any>, C>(
+    bs: G,
+    abic: (a: Array.Infer<F>, b: Array.Infer<G>, i: number) => C,
+  ) =>
+  (array: F): Array.AndNonEmpty<F, G, C> => {
+    const minLength = Math.min(array.length, bs.length)
+    const out = []
 
-  for (let i = 0; i < minLength; i++) {
-    const a = self[i]!
-    const b = bs[i]!
-    out.push(abic(a, b, i))
+    for (let i = 0; i < minLength; i++) {
+      const a = array[i]!
+      const b = bs[i]!
+      out.push(abic(a, b, i))
+    }
+
+    return out as any
   }
 
-  return out
-}
-
 export const zip: {
-  <B>(
-    bs: ReadonlyArray<B>,
-  ): <A>(self: ReadonlyArray<A>) => ReadonlyArray<readonly [A, B]>
-} = bs => zipWith(bs, (a, b) => [a, b])
+  <F extends ReadonlyArray<any>>(
+    bs: F,
+  ): <G extends ReadonlyArray<any>>(
+    array: G,
+  ) => Array.AndNonEmpty<F, G, readonly [Array.Infer<G>, Array.Infer<F>]>
+} = bs => zipWith(bs, (a, b) => [a, b]) as any
 
 export const unzip: {
-  <A, B>(
-    zipped: ReadonlyArray<readonly [A, B]>,
-  ): readonly [ReadonlyArray<A>, ReadonlyArray<B>]
+  <F extends ReadonlyArray<readonly [any, any]>>(
+    zipped: F,
+  ): readonly [
+    Array.With<F, Array.Infer<F>[0]>,
+    Array.With<F, Array.Infer<F>[1]>,
+  ]
 } = zipped => {
   const as = []
   const bs = []
@@ -38,7 +44,7 @@ export const unzip: {
     bs.push(b)
   }
 
-  return [as, bs]
+  return [as, bs] as any
 }
 
 export const Zippable: Zippable_.Zippable<ReadonlyArrayHkt> = {

@@ -323,7 +323,7 @@ describe('concat', () => {
   it('should concat two arrays', () => {
     pipe([], Array.concat([1, 2]), expect).toEqual([1, 2])
     pipe([1], Array.concat([2, 3]), expect).toEqual([1, 2, 3])
-    pipe([1], Array.concat<number>([]), expect).toEqual([1])
+    pipe([1], Array.concat([]), expect).toEqual([1])
   })
 })
 

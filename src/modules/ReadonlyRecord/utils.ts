@@ -23,7 +23,9 @@ export const values: {
 } = Object.values
 
 export const toEntries: {
-  <K extends string, A>(self: ReadonlyRecord<K, A>): ReadonlyArray<[K, A]>
+  <K extends string, A>(
+    self: ReadonlyRecord<K, A>,
+  ): ReadonlyArray<readonly [K, A]>
 } = Object.entries
 
 export const fromEntries: {
@@ -241,7 +243,7 @@ export const sortValues: {
     Array.sort(
       pipe(
         Order,
-        Order_.contramap(([, a]) => a),
+        Order_.contramap(([, a]: readonly [string, any]) => a),
       ),
     ),
     fromEntries,
@@ -256,7 +258,12 @@ export const sortValuesBy: {
 } = orders =>
   flow(
     toEntries,
-    Array.sortBy(pipe(orders, Iterable.map(Order_.contramap(([, a]) => a)))),
+    Array.sortBy(
+      pipe(
+        orders,
+        Iterable.map(Order_.contramap(([, a]: readonly [string, any]) => a)),
+      ),
+    ),
     fromEntries,
   )
 
@@ -270,7 +277,7 @@ export const sortKeys: {
     Array.sort(
       pipe(
         Order,
-        Order_.contramap(([k]) => k),
+        Order_.contramap(([k]: readonly [string, any]) => k),
       ),
     ),
     fromEntries,
@@ -283,6 +290,11 @@ export const sortKeysBy: {
 } = orders =>
   flow(
     toEntries,
-    Array.sortBy(pipe(orders, Iterable.map(Order_.contramap(([k]) => k)))),
+    Array.sortBy(
+      pipe(
+        orders,
+        Iterable.map(Order_.contramap(([k]: readonly [string, any]) => k)),
+      ),
+    ),
     fromEntries,
   )

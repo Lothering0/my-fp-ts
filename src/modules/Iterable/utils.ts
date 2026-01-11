@@ -1,10 +1,10 @@
 import * as Option from '../Option'
+import { NonEmpty as ArrayNonEmpty } from '../ReadonlyArray'
 import { Equivalence } from '../../typeclasses/Equivalence'
 import { Predicate, PredicateWithIndex } from '../Predicate'
 import { Refinement, RefinementWithIndex } from '../Refinement'
 import { pipe } from '../../utils/flow'
 import { NonEmpty } from './iterable'
-import { NonEmptyReadonlyArray } from '../NonEmptyReadonlyArray'
 import { isNonEmpty } from './refinements'
 
 /**
@@ -14,12 +14,12 @@ import { isNonEmpty } from './refinements'
  * | Non-array | O(n)            |
  */
 export const toReadonlyArray: {
-  <A>(iterable: NonEmpty<A>): NonEmptyReadonlyArray<A>
+  <A>(iterable: NonEmpty<A>): ArrayNonEmpty<A>
   <A>(iterable: Iterable<A>): ReadonlyArray<A>
-} = <A>(iterable: NonEmpty<A>): NonEmptyReadonlyArray<A> =>
+} = <A>(iterable: NonEmpty<A>): ArrayNonEmpty<A> =>
   (Array.isArray(iterable)
     ? iterable
-    : [...iterable]) as unknown as NonEmptyReadonlyArray<A>
+    : [...iterable]) as unknown as ArrayNonEmpty<A>
 
 export const toEntries: {
   <A>(self: Iterable<A>): Iterable<readonly [number, A]>

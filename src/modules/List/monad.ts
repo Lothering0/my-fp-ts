@@ -61,7 +61,7 @@ export const mapTo: {
   ): (list: List.List<A>) => List.List<DoObject<N, A, B>>
 } = MonadWithIndex.mapToWithIndex
 
-export const flipApplyToWithIndex: {
+export const flipApplyTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     fab: List.List<(a: A, i: number) => B>,

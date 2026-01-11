@@ -1,6 +1,5 @@
 import * as Option from './modules/Option'
 import * as Array from './modules/ReadonlyArray'
-import * as NonEmptyArray from './modules/NonEmptyReadonlyArray'
 import * as Iterable from './modules/Iterable'
 import * as Result from './modules/Result'
 import * as State from './modules/State'
@@ -21,7 +20,6 @@ export * as Identity from './modules/Identity'
 export { identity } from './modules/Identity'
 export * as Iterable from './modules/Iterable'
 export * as NonEmptyList from './modules/NonEmptyList'
-export * as NonEmptyArray from './modules/NonEmptyReadonlyArray'
 export * as Number from './modules/Number'
 export * as Option from './modules/Option'
 export * as Predicate from './modules/Predicate'
@@ -47,7 +45,6 @@ export { UnknownException } from './modules/Exception'
 // transformers
 export const OptionOption = Option.transform(Option.Monad)
 export const ArrayOfOptions = Option.transform(Array.Monad)
-export const NonEmptyArrayOfOptions = Option.transform(NonEmptyArray.Monad)
 export const IterableOfOptions = Option.transform(Iterable.Monad)
 export const ResultOption = Option.transform(Result.Monad)
 export const StateOption = Option.transform(State.Monad)
@@ -59,7 +56,6 @@ export const NonEmptyListOfOptions = Option.transform(NonEmptyList.Monad)
 
 export const OptionResult = Result.transform(Option.Monad)
 export const ArrayOfResults = Result.transform(Array.Monad)
-export const NonEmptyArrayOfResults = Result.transform(NonEmptyArray.Monad)
 export const IterableOfResults = Result.transform(Iterable.Monad)
 export const ResultResult = Result.transform(Result.Monad)
 export const StateResult = Result.transform(State.Monad)
@@ -71,7 +67,6 @@ export const NonEmptyListOfResults = Result.transform(NonEmptyList.Monad)
 
 export const OptionState = State.transform(Option.Monad)
 export const ArrayOfStates = State.transform(Array.Monad)
-export const NonEmptyArrayOfStates = State.transform(NonEmptyArray.Monad)
 export const IterableOfStates = State.transform(Iterable.Monad)
 export const ResultState = State.transform(Result.Monad)
 export const StateState = State.transform(State.Monad)

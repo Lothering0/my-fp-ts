@@ -1,10 +1,8 @@
+import * as Array from './readonly-array'
 import { FromIdentity as FromIdentity_ } from '../../typeclasses/FromIdentity'
-import { ReadonlyArrayHkt } from './readonly-array'
 
-export const FromIdentity: FromIdentity_<ReadonlyArrayHkt> = {
-  of: a => [a],
+export const of = <A>(a: A): Array.NonEmpty<A> => [a]
+
+export const FromIdentity: FromIdentity_<Array.ReadonlyArrayHkt> = {
+  of,
 }
-
-export const of: {
-  <A>(a: A): ReadonlyArray<A>
-} = FromIdentity.of

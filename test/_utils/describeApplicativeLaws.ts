@@ -3,7 +3,7 @@ import {
   Kind,
   Applicative,
   Equivalence,
-  NonEmptyArray,
+  Array,
   pipe,
   identity,
   Number,
@@ -13,10 +13,8 @@ export const describeApplicativeLaws: {
   <F extends Hkt>(
     Applicative: Applicative.Applicative<F>,
     Equivalence: Equivalence.Equivalence<Kind<F, number, unknown, unknown>>,
-    fas: NonEmptyArray.NonEmptyReadonlyArray<Kind<F, number, unknown, unknown>>,
-    fabs: NonEmptyArray.NonEmptyReadonlyArray<
-      Kind<F, (x: number) => number, unknown, never>
-    >,
+    fas: Array.NonEmpty<Kind<F, number, unknown, unknown>>,
+    fabs: Array.NonEmpty<Kind<F, (x: number) => number, unknown, never>>,
   ): void
 } = (Applicative, Equivalence, fas, fabs) => {
   describe('applicative', () => {

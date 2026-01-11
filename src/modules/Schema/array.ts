@@ -1,8 +1,8 @@
+import * as Array from '../ReadonlyArray'
 import * as Result from '../Result'
 import { create, Schema } from './schema'
 import { message } from './process'
 import { pipe } from '../../utils/flow'
-import { NonEmptyReadonlyArray } from '../NonEmptyReadonlyArray'
 import { minLength } from './utils'
 
 const array = <A>(schema: Schema<A>): Schema<ReadonlyArray<A>> =>
@@ -34,5 +34,5 @@ export { array as Array }
 
 export const NonEmptyArray = <A>(
   schema: Schema<A>,
-): Schema<NonEmptyReadonlyArray<A>> =>
-  pipe(schema, array, minLength(1)) as Schema<NonEmptyReadonlyArray<A>>
+): Schema<Array.NonEmpty<A>> =>
+  pipe(schema, array, minLength(1)) as Schema<Array.NonEmpty<A>>

@@ -1,7 +1,6 @@
 import * as Array from '../modules/ReadonlyArray'
 import * as Sync from '../modules/Sync'
 import * as Effect from '../modules/Effect'
-import { NonEmptyReadonlyArray } from '../modules/NonEmptyReadonlyArray'
 import { pipe, flow } from './flow'
 
 export const randomSync: Sync.Sync<number> = () => Math.random()
@@ -37,7 +36,7 @@ export const randomInt: {
 } = flow(randomIntSync, Effect.fromSync)
 
 export const randomElemSync: {
-  <A>(as: NonEmptyReadonlyArray<A>): Sync.Sync<A>
+  <A>(as: Array.NonEmpty<A>): Sync.Sync<A>
 } = as =>
   pipe(
     randomIntSync(0, Array.length(as) - 1),
@@ -45,5 +44,5 @@ export const randomElemSync: {
   )
 
 export const randomElem: {
-  <A>(as: NonEmptyReadonlyArray<A>): Effect.Effect<A>
+  <A>(as: Array.NonEmpty<A>): Effect.Effect<A>
 } = flow(randomElemSync, Effect.fromSync)

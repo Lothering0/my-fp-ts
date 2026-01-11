@@ -1,12 +1,12 @@
+import * as Array from './readonly-array'
 import * as Alt_ from '../../typeclasses/Alt'
 import { concat } from './utils'
-import { ReadonlyArrayHkt } from './readonly-array'
 
 export const orElse =
-  <Out>(that: ReadonlyArray<Out>) =>
-  <In>(self: ReadonlyArray<In>): ReadonlyArray<In | Out> =>
-    concat<In | Out>(that)(self)
+  <F extends ReadonlyArray<any>>(array: F) =>
+  <G extends ReadonlyArray<any>>(selfArray: G): Array.OrNonEmpty<F, G> =>
+    concat(array)(selfArray)
 
-export const Alt: Alt_.Alt<ReadonlyArrayHkt> = {
+export const Alt: Alt_.Alt<Array.ReadonlyArrayHkt> = {
   orElse,
 }

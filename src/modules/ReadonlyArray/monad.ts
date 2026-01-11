@@ -1,35 +1,45 @@
+import * as Array from './readonly-array'
 import * as Monad_ from '../../typeclasses/Monad'
 import * as MonadWithIndex_ from '../../typeclasses/MonadWithIndex'
-import { ReadonlyArrayHkt } from './readonly-array'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
 import { Functor, FunctorWithIndex } from './functor'
 import { FromIdentity } from './from-identity'
 import { getIterableGen } from '../_internal'
 
-export const Monad = Monad_.create<ReadonlyArrayHkt>(FromIdentity, Functor, {
-  flat: self => self.flat(),
-})
-
-export const MonadWithIndex = MonadWithIndex_.create<ReadonlyArrayHkt, number>(
-  FunctorWithIndex,
-  Monad,
+export const Monad = Monad_.create<Array.ReadonlyArrayHkt>(
+  FromIdentity,
+  Functor,
+  {
+    flat: self => self.flat(),
+  },
 )
 
-export const Do = Monad.Do
+export const MonadWithIndex = MonadWithIndex_.create<
+  Array.ReadonlyArrayHkt,
+  number
+>(FunctorWithIndex, Monad)
+
+export const Do: Array.NonEmpty<{}> = Monad.Do as any
 
 export const flat: {
-  <A>(self: ReadonlyArray<ReadonlyArray<A>>): ReadonlyArray<A>
-} = Monad.flat
+  <F extends ReadonlyArray<ReadonlyArray<any>>>(
+    self: F,
+  ): Array.AndNonEmpty<F, Array.Infer<F>, Array.Infer<Array.Infer<F>>>
+} = Monad.flat as any
 
 export const flatMap: {
-  <A, B>(
-    amb: (a: A, i: number) => ReadonlyArray<B>,
-  ): (self: ReadonlyArray<A>) => ReadonlyArray<B>
-} = MonadWithIndex.flatMapWithIndex
+  <F extends ReadonlyArray<any>, G extends ReadonlyArray<any>>(
+    aimb: (a: Array.Infer<F>, i: number) => G,
+  ): (self: F) => Array.AndNonEmpty<F, G, Array.Infer<G>>
+} = MonadWithIndex.flatMapWithIndex as any
 
 export const andThen: {
-  <A>(ma: ReadonlyArray<A>): (self: ReadonlyArray<unknown>) => ReadonlyArray<A>
-} = MonadWithIndex.andThen
+  <F extends ReadonlyArray<any>>(
+    ma: F,
+  ): <G extends ReadonlyArray<any>>(
+    self: G,
+  ) => Array.AndNonEmpty<F, G, Array.Infer<F>>
+} = MonadWithIndex.andThen as any
 
 export const compose: {
   <A, B, C>(
@@ -39,39 +49,61 @@ export const compose: {
 } = MonadWithIndex.composeWithIndex
 
 export const setTo: {
-  <N extends DoObjectKey, A, B>(
-    name: Exclude<N, keyof A>,
+  <N extends DoObjectKey, F extends ReadonlyArray<any>, B>(
+    name: Exclude<N, keyof Array.Infer<F>>,
     b: B,
-  ): (self: ReadonlyArray<A>) => ReadonlyArray<DoObject<N, A, B>>
-} = Monad.setTo
+  ): (self: F) => Array.With<F, DoObject<N, Array.Infer<F>, B>>
+} = Monad.setTo as any
 
 export const mapTo: {
-  <N extends DoObjectKey, A, B>(
-    name: Exclude<N, keyof A>,
-    ab: (a: A, i: number) => B,
-  ): (self: ReadonlyArray<A>) => ReadonlyArray<DoObject<N, A, B>>
-} = MonadWithIndex.mapToWithIndex
+  <N extends DoObjectKey, F extends ReadonlyArray<any>, B>(
+    name: Exclude<N, keyof Array.Infer<F>>,
+    ab: (a: Array.Infer<F>, i: number) => B,
+  ): (self: F) => Array.With<F, DoObject<N, Array.Infer<F>, B>>
+} = MonadWithIndex.mapToWithIndex as any
 
-export const flipApplyToWithIndex: {
-  <N extends DoObjectKey, A, B>(
-    name: Exclude<N, keyof A>,
-    fab: ReadonlyArray<(a: A, i: number) => B>,
-  ): (self: ReadonlyArray<A>) => ReadonlyArray<DoObject<N, A, B>>
-} = MonadWithIndex.flipApplyToWithIndex
+export const flipApplyTo: {
+  <
+    N extends DoObjectKey,
+    F extends ReadonlyArray<any>,
+    G extends ReadonlyArray<(a: Array.Infer<F>, i: number) => any>,
+  >(
+    name: Exclude<N, keyof Array.Infer<F>>,
+    fab: G,
+  ): (
+    self: F,
+  ) => Array.AndNonEmpty<
+    F,
+    G,
+    DoObject<N, Array.Infer<F>, ReturnType<Array.Infer<G>>>
+  >
+} = MonadWithIndex.flipApplyToWithIndex as any
 
 export const bind: {
-  <N extends DoObjectKey, A, B>(
-    name: Exclude<N, keyof A>,
-    fb: ReadonlyArray<B>,
-  ): (self: ReadonlyArray<A>) => ReadonlyArray<DoObject<N, A, B>>
-} = Monad.bind
+  <
+    N extends DoObjectKey,
+    F extends ReadonlyArray<any>,
+    G extends ReadonlyArray<any>,
+  >(
+    name: Exclude<N, keyof Array.Infer<F>>,
+    fb: G,
+  ): (
+    self: F,
+  ) => Array.AndNonEmpty<F, G, DoObject<N, Array.Infer<F>, Array.Infer<G>>>
+} = Monad.bind as any
 
 export const flatMapTo: {
-  <N extends DoObjectKey, A, B>(
-    name: Exclude<N, keyof A>,
-    amb: (a: A, i: number) => ReadonlyArray<B>,
-  ): (self: ReadonlyArray<A>) => ReadonlyArray<DoObject<N, A, B>>
-} = MonadWithIndex.flatMapToWithIndex
+  <
+    N extends DoObjectKey,
+    F extends ReadonlyArray<any>,
+    G extends ReadonlyArray<any>,
+  >(
+    name: Exclude<N, keyof Array.Infer<F>>,
+    amb: (a: Array.Infer<F>, i: number) => G,
+  ): (
+    self: F,
+  ) => Array.AndNonEmpty<F, G, DoObject<N, Array.Infer<F>, Array.Infer<G>>>
+} = MonadWithIndex.flatMapToWithIndex as any
 
 export interface GenUtils {
   readonly $: <A>(

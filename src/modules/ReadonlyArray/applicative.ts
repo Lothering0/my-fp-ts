@@ -1,3 +1,4 @@
+import * as Array from './readonly-array'
 import * as Applicative_ from '../../typeclasses/Applicative'
 import * as ApplicativeWithIndex_ from '../../typeclasses/ApplicativeWithIndex'
 import { ReadonlyArrayHkt } from './readonly-array'
@@ -11,13 +12,18 @@ export const ApplicativeWithIndex = ApplicativeWithIndex_.create<
 >(Applicative, MonadWithIndex)
 
 export const apply: {
-  <A>(
-    fa: ReadonlyArray<A>,
-  ): <B>(self: ReadonlyArray<(a: A, i: number) => B>) => ReadonlyArray<B>
-} = ApplicativeWithIndex.applyWithIndex
+  <F extends ReadonlyArray<any>>(
+    fa: F,
+  ): <G extends ReadonlyArray<(a: Array.Infer<F>, i: number) => any>>(
+    self: G,
+  ) => Array.AndNonEmpty<F, G, ReturnType<Array.Infer<G>>>
+} = ApplicativeWithIndex.applyWithIndex as any
 
 export const flipApply: {
-  <A, B>(
-    fab: ReadonlyArray<(a: A, i: number) => B>,
-  ): (self: ReadonlyArray<A>) => ReadonlyArray<B>
-} = ApplicativeWithIndex.flipApplyWithIndex
+  <
+    F extends ReadonlyArray<any>,
+    G extends ReadonlyArray<(a: Array.Infer<F>, i: number) => any>,
+  >(
+    fab: G,
+  ): (self: F) => Array.AndNonEmpty<F, G, ReturnType<Array.Infer<G>>>
+} = ApplicativeWithIndex.flipApplyWithIndex as any

@@ -1,5 +1,4 @@
-import * as Iterable from '../Iterable'
-import { NonEmptyReadonlyArray } from '../NonEmptyReadonlyArray'
+import * as Array from '../ReadonlyArray'
 import { Chunk, NonEmpty } from './chunk'
 
 export const _emptyChunk: Chunk<never> = Object.freeze<Chunk<never>>({
@@ -21,9 +20,7 @@ export const createSingletonChunk = <A>(a: A): NonEmpty<A> =>
     },
   })
 
-export const createArrayChunk = <A>(
-  array: NonEmptyReadonlyArray<A>,
-): NonEmpty<A> =>
+export const createArrayChunk = <A>(array: Array.NonEmpty<A>): NonEmpty<A> =>
   Object.freeze<NonEmpty<A>>({
     _id: 'Chunk',
     _tag: 'ArrayChunk',
@@ -48,7 +45,9 @@ export const createSliceChunk = <A>(
     chunk,
     0: chunk[0],
     *[Symbol.iterator]() {
-      for (const [i, a] of Iterable.toEntries(chunk)) {
+      let i = -1
+      for (const a of chunk) {
+        i++
         if (i < skip) {
           continue
         }

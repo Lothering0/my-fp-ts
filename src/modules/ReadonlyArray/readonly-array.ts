@@ -1,27 +1,30 @@
 import { Hkt } from '../../typeclasses/Hkt'
-import { NonEmptyReadonlyArray } from '../NonEmptyReadonlyArray'
 
 export interface ReadonlyArrayHkt extends Hkt {
   readonly Type: ReadonlyArray<this['In']>
 }
 
+export interface NonEmptyHkt extends Hkt {
+  readonly Type: NonEmpty<this['In']>
+}
+
+export type NonEmpty<A> = readonly [A, ...ReadonlyArray<A>]
+
 export type Infer<F extends ReadonlyArray<any>> =
   F extends ReadonlyArray<infer A> ? A : never
 
 export type With<F extends ReadonlyArray<any>, A = Infer<F>> =
-  F extends NonEmptyReadonlyArray<any>
-    ? NonEmptyReadonlyArray<A>
-    : ReadonlyArray<A>
+  F extends NonEmpty<any> ? NonEmpty<A> : ReadonlyArray<A>
 
 export type OrNonEmpty<
   F extends ReadonlyArray<any>,
   G extends ReadonlyArray<any>,
   A = Infer<F> | Infer<G>,
 > =
-  F extends NonEmptyReadonlyArray<any>
-    ? NonEmptyReadonlyArray<A>
-    : G extends NonEmptyReadonlyArray<any>
-      ? NonEmptyReadonlyArray<A>
+  F extends NonEmpty<any>
+    ? NonEmpty<A>
+    : G extends NonEmpty<any>
+      ? NonEmpty<A>
       : ReadonlyArray<A>
 
 export type AndNonEmpty<
@@ -29,9 +32,9 @@ export type AndNonEmpty<
   G extends ReadonlyArray<any>,
   A = Infer<F> | Infer<G>,
 > =
-  F extends NonEmptyReadonlyArray<any>
-    ? G extends NonEmptyReadonlyArray<any>
-      ? NonEmptyReadonlyArray<A>
+  F extends NonEmpty<any>
+    ? G extends NonEmpty<any>
+      ? NonEmpty<A>
       : ReadonlyArray<A>
     : ReadonlyArray<A>
 
