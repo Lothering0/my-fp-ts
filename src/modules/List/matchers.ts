@@ -12,9 +12,9 @@ export interface Matchers<A, B, C = B> {
 }
 
 /**
- * | Time complexity | Space complexity |
- * | --------------- | ---------------- |
- * | O(1)            | O(1)             |
+ * | Time complexity |
+ * | --------------- |
+ * | O(1)            |
  */
 export const match: {
   <A, B, C = B>(matchers: Matchers<A, B, C>): (list: List<A>) => B | C

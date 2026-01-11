@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as Result from '../Result'
 import { Monad as Monad_ } from '../../typeclasses/Monad'
 import { AsyncResultHkt, AsyncResult, toPromise } from './async-result'

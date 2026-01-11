@@ -1,3 +1,4 @@
+import * as Array from './readonly-array'
 import * as NonEmptyArray from '../NonEmptyReadonlyArray'
 import * as Option from '../Option'
 import * as Result from '../Result'
@@ -45,27 +46,42 @@ export const head: {
 })
 
 /** Time complexity: O(n) */
+export const initNonEmpty: {
+  <A>(array: NonEmptyArray.NonEmptyReadonlyArray<A>): ReadonlyArray<A>
+} = array => array.slice(0, -1)
+
+/** Time complexity: O(n) */
 export const init: {
   <A>(self: ReadonlyArray<A>): Option.Option<ReadonlyArray<A>>
 } = match({
   onEmpty: Option.none,
-  onNonEmpty: flow(NonEmptyArray.init, Option.some),
+  onNonEmpty: flow(initNonEmpty, Option.some),
 })
+
+/** Time complexity: O(1) */
+export const lastNonEmpty: {
+  <A>(self: NonEmptyArray.NonEmptyReadonlyArray<A>): A
+} = array => array.at(-1)!
 
 /** Time complexity: O(1) */
 export const last: {
   <A>(self: ReadonlyArray<A>): Option.Option<A>
 } = match({
   onEmpty: Option.none,
-  onNonEmpty: flow(NonEmptyArray.last, Option.some),
+  onNonEmpty: flow(lastNonEmpty, Option.some),
 })
+
+/** Time complexity: O(n) */
+export const tailNonEmpty: {
+  <A>(array: NonEmptyArray.NonEmptyReadonlyArray<A>): ReadonlyArray<A>
+} = array => array.slice(1)
 
 /** Time complexity: O(n) */
 export const tail: {
   <A>(self: ReadonlyArray<A>): Option.Option<ReadonlyArray<A>>
 } = match({
   onEmpty: Option.none,
-  onNonEmpty: flow(NonEmptyArray.tail, Option.some),
+  onNonEmpty: flow(tailNonEmpty, Option.some),
 })
 
 /** Time complexity: O(1) */
@@ -288,9 +304,9 @@ export const range: {
 }
 
 /** Time complexity: O(n) */
-export const reverse: {
-  <A>(self: ReadonlyArray<A>): ReadonlyArray<A>
-} = NonEmptyArray.reverse
+export const reverse = <F extends ReadonlyArray<any>>(
+  array: F,
+): Array.With<F> => array.toReversed() as unknown as Array.With<F>
 
 /** Time complexity: O(n log n) */
 export const sort: {
@@ -453,7 +469,6 @@ export const chunksOf =
       lastChunk.push(a)
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return out as any
   }
 

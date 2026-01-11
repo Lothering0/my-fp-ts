@@ -1,5 +1,5 @@
 import { Hkt } from '../../typeclasses/Hkt'
-import { _cons, _internal, _ListInternal, _nil } from './_internal'
+import { _cons, _nil, ListInternal } from './_internal'
 
 export interface ListHkt extends Hkt {
   readonly Type: List<this['In']>
@@ -11,7 +11,7 @@ export interface Nil extends Iterable<never> {
   readonly _id: 'List'
   readonly _tag: 'Nil'
   readonly length: number
-  readonly [_internal]: _ListInternal<never>
+  readonly _internal: ListInternal<never>
 }
 
 export interface Cons<A> extends Iterable<A> {
@@ -20,7 +20,7 @@ export interface Cons<A> extends Iterable<A> {
   readonly length: number
   readonly head: A
   readonly tail: List<A>
-  readonly [_internal]: _ListInternal<A>
+  readonly _internal: ListInternal<A>
 }
 
 export const nil: {

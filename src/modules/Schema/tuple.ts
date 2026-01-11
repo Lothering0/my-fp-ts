@@ -43,7 +43,6 @@ export const Tuple = <A extends ReadonlyArray<Schema<unknown>>>(
       ])
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const out: any = []
 
     for (const i in schemas) {

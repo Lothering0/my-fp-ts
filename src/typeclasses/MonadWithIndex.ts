@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { DoObject, DoObjectKey } from '../types/DoObject'
 import { Hkt, Kind } from './Hkt'
 import { flow, pipe } from '../utils/flow'

@@ -3,10 +3,23 @@ import { Equivalence } from '../../typeclasses/Equivalence'
 import { Predicate, PredicateWithIndex } from '../Predicate'
 import { Refinement, RefinementWithIndex } from '../Refinement'
 import { pipe } from '../../utils/flow'
+import { NonEmpty } from './iterable'
+import { NonEmptyReadonlyArray } from '../NonEmptyReadonlyArray'
+import { isNonEmpty } from './refinements'
 
+/**
+ * | Case      | Time complexity |
+ * | --------- | --------------- |
+ * | Array     | O(1)            |
+ * | Non-array | O(n)            |
+ */
 export const toReadonlyArray: {
-  <A>(self: Iterable<A>): ReadonlyArray<A>
-} = self => [...self]
+  <A>(iterable: NonEmpty<A>): NonEmptyReadonlyArray<A>
+  <A>(iterable: Iterable<A>): ReadonlyArray<A>
+} = <A>(iterable: NonEmpty<A>): NonEmptyReadonlyArray<A> =>
+  (Array.isArray(iterable)
+    ? iterable
+    : [...iterable]) as unknown as NonEmptyReadonlyArray<A>
 
 export const toEntries: {
   <A>(self: Iterable<A>): Iterable<readonly [number, A]>
@@ -22,21 +35,27 @@ export const toEntries: {
 })
 
 export const zero: {
-  <Out>(): Iterable<Out>
+  <A>(): Iterable<A>
 } = () => ({
   *[Symbol.iterator]() {},
 })
 
-/** Time complexity: O(n) */
+/**
+ * | Case      | Time complexity |
+ * | --------- | --------------- |
+ * | Array     | O(1)            |
+ * | Non-array | O(n)            |
+ */
 export const length: {
-  (self: Iterable<unknown>): number
-} = self => {
+  (iterable: Iterable<unknown>): number
+} = iterable => {
+  if (Array.isArray(iterable)) {
+    return iterable.length
+  }
   let i = 0
-
-  for (const _ of self) {
+  for (const _ of iterable) {
     i++
   }
-
   return i
 }
 
@@ -72,20 +91,22 @@ export const isOutOfBounds: {
 
 /** Time complexity: O(1) */
 export const prepend: {
-  <A>(a: A): (self: Iterable<A>) => Iterable<A>
-} = a => self => ({
+  <A>(a: A): (iterable: Iterable<A>) => NonEmpty<A>
+} = a => iterable => ({
+  0: a,
   *[Symbol.iterator]() {
     yield a
-    yield* self
+    yield* iterable
   },
 })
 
 /** Time complexity: O(1) */
 export const append: {
-  <A>(a: A): (self: Iterable<A>) => Iterable<A>
-} = a => self => ({
+  <A>(a: A): (iterable: Iterable<A>) => Iterable<A>
+} = a => iterable => ({
+  0: isNonEmpty(iterable) ? iterable[0] : a,
   *[Symbol.iterator]() {
-    yield* self
+    yield* iterable
     yield a
   },
 })
@@ -110,13 +131,16 @@ export const head: {
   return Option.none()
 }
 
+/** Time complexity: O(1) */
+export const headNonEmpty = <A>(iterable: NonEmpty<A>): A => iterable[0]
+
 /**
  * Time complexity: O(n).
  *
  * Notice: it always executes one extra iteration
  */
 export const init: {
-  <A>(self: Iterable<A>): Option.Option<Iterable<A>>
+  <A>(iterable: Iterable<A>): Option.Option<Iterable<A>>
 } = iterable => {
   const iterator = iterable[Symbol.iterator]()
   const iteration = iterator.next()
@@ -142,6 +166,32 @@ export const init: {
 /**
  * Time complexity: O(n).
  *
+ * Notice: it always executes one extra iteration
+ */
+export const initNonEmpty: {
+  <A>(iterable: NonEmpty<A>): Iterable<A>
+} = iterable => {
+  const iterator = iterable[Symbol.iterator]()
+  const iteration = iterator.next()
+  let isDone = false
+  return {
+    *[Symbol.iterator]() {
+      let previousValue = iteration.value
+      while (!isDone) {
+        const { done, value } = iterator.next()
+        if (!done) {
+          yield previousValue
+        }
+        previousValue = value
+        isDone = Boolean(done)
+      }
+    },
+  }
+}
+
+/**
+ * Time complexity: O(n).
+ *
  * Notice: it always executes the whole iterable to reach the last element
  */
 export const last: {
@@ -159,10 +209,25 @@ export const last: {
 /**
  * Time complexity: O(n).
  *
+ * Notice: it always executes the whole iterable to reach the last element
+ */
+export const lastNonEmpty: {
+  <A>(iterable: NonEmpty<A>): A
+} = iterable => {
+  let lastElement
+  for (const a of iterable) {
+    lastElement = a
+  }
+  return lastElement!
+}
+
+/**
+ * Time complexity: O(n).
+ *
  * Notice: it always executes one extra iteration
  */
 export const tail: {
-  <A>(self: Iterable<A>): Option.Option<Iterable<A>>
+  <A>(iterable: Iterable<A>): Option.Option<Iterable<A>>
 } = iterable => {
   const iterator = iterable[Symbol.iterator]()
   const { done } = iterator.next()
@@ -183,14 +248,44 @@ export const tail: {
   })
 }
 
-/** Time complexity: O(n) */
+/**
+ * Time complexity: O(n).
+ *
+ * Notice: it always executes one extra iteration
+ */
+export const tailNonEmpty: {
+  <A>(iterable: NonEmpty<A>): Iterable<A>
+} = iterable => ({
+  *[Symbol.iterator]() {
+    let isFirstSkipped = false
+    for (const a of iterable) {
+      if (!isFirstSkipped) {
+        isFirstSkipped = true
+        continue
+      }
+      yield a
+    }
+  },
+})
+
+/**
+ * | Case      | Time complexity |
+ * | --------- | --------------- |
+ * | Array     | O(1)            |
+ * | Non-array | O(n)            |
+ */
 export const lookup: {
   (i: number): <A>(iterable: Iterable<A>) => Option.Option<A>
 } = i => iterable => {
   if (i < 0) {
     return Option.none()
   }
-
+  if (Array.isArray(iterable)) {
+    const array = iterable
+    return Object.hasOwn(array, Number(i))
+      ? Option.some(array[i])
+      : Option.none()
+  }
   let index = -1
   for (const a of iterable) {
     index++

@@ -97,7 +97,6 @@ export const toPromise: {
 /** Alias for `toPromise` */
 export const run = toPromise
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 const makeIterable: {
   <A, E>(self: AsyncResult<A, E>): AsyncResultIterable<A, E>
 } = self => ({

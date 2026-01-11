@@ -63,7 +63,6 @@ export const fromAsyncResult: {
     }),
   )
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 const makeIterable: {
   <A>(self: AsyncOption<A>): AsyncOptionIterable<A>
 } = self => ({

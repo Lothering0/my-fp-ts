@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as Async from './async'
 import { create } from '../../typeclasses/Monad'
 import { Functor } from './functor'

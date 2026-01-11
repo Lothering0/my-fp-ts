@@ -8,7 +8,7 @@ import { RefinementWithIndex } from '../Refinement'
 import { PredicateWithIndex } from '../Predicate'
 import { Equivalence } from '../../typeclasses/Equivalence'
 import { reduceRight } from './foldable'
-import { _cons, _internal } from './_internal'
+import { _cons } from './_internal'
 import { NonEmptyList } from '../NonEmptyList'
 
 export const fromIterable: {
@@ -54,8 +54,8 @@ export const reverse = <A>(list: List.List<A>): List.List<A> => {
  * | O(1)            | O(1)             |
  */
 export const prepend: {
-  <A>(a: A): (list: List.List<A>) => List.List<A>
-} = a => list => List.cons(a, list)
+  <A>(a: A): (list: List.List<A>) => NonEmptyList<A>
+} = a => list => _cons(a, list)
 
 /**
  * | Time complexity | Space complexity |
@@ -64,13 +64,13 @@ export const prepend: {
  */
 export const append =
   <A>(a: A) =>
-  (list: List.List<A>): List.List<A> => {
+  (list: List.List<A>): NonEmptyList<A> => {
     const newNode = _cons(a)
     if (isNil(list)) {
       return newNode
     }
     const newList = _cons(list.head, list.tail, list.length + 1)
-    newList[_internal].last = newNode
+    newList._internal.last = newNode
     return newList
   }
 
@@ -112,7 +112,7 @@ export const tail: {
 export const last: {
   <A>(list: List.List<A>): Option.Option<A>
 } = list => {
-  const lastNode = list[_internal].last
+  const lastNode = list._internal.last
   return lastNode ? Option.some(lastNode.head) : Option.none()
 }
 
@@ -133,7 +133,7 @@ export const init = <A>(list: List.List<A>): Option.Option<List.List<A>> => {
     lastNode = lastNode.tail
   }
   const newList = _cons(list.head, list.tail, list.length - 1)
-  newList[_internal].last = _cons(lastNode.head)
+  newList._internal.last = _cons(lastNode.head)
   return Option.some(newList)
 }
 
@@ -374,7 +374,7 @@ export const takeWhile =
       return List.nil()
     }
     const newList = _cons(list.head, list.tail, i)
-    newList[_internal].last = _cons(preLastNode.head)
+    newList._internal.last = _cons(preLastNode.head)
     return newList
   }
 

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as Option from '../Option'
 import { Monad as Monad_ } from '../../typeclasses/Monad'
 import { AsyncOptionHkt, AsyncOption, toPromise } from './async-option'

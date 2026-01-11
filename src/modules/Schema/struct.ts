@@ -145,7 +145,6 @@ export const partial: {
   <A extends Record.ReadonlyRecord<string, Schema<unknown>>>(
     self: StructSchema<A>,
   ): StructSchema<{ [K in keyof A]: SchemaOptional<Type<A[K]>> }>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } = self => pipe(self.schemasByKey, Record.map(optional), Struct) as any
 
 export const required: {
@@ -171,7 +170,6 @@ export const required: {
       }),
     ),
     Struct,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ) as any
 
 export const intersection: {

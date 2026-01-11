@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as Result from '../Result'
 import * as Reader from '../Reader'
 import * as Sync from '../Sync'

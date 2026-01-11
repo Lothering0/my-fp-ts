@@ -84,7 +84,6 @@ export const concurrently: {
     Promise.all([
       Promise.resolve(run(r)(fb)),
       Promise.resolve(run(r)(self)),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ]).then(([ma, mb]) => pipe(mb, Result.andThen(ma) as any)),
   )
 

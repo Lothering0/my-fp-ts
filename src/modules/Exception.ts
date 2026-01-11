@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { Tagged } from '../types/Tag'
 import { raise } from '../utils/exceptions'
 

@@ -1,8 +1,6 @@
 import { Cons, List, nil } from './list'
 
-export const _internal = Symbol('List.internal')
-
-export interface _ListInternal<A> {
+export interface ListInternal<A> {
   last?: Cons<A>
 }
 
@@ -10,7 +8,7 @@ export const _nil: List<never> = Object.freeze({
   _id: 'List',
   _tag: 'Nil',
   length: 0,
-  [_internal]: {},
+  _internal: {},
   *[Symbol.iterator]() {},
 })
 
@@ -19,7 +17,7 @@ export const _cons = <A>(
   tail: List<A> = nil(),
   length?: number,
 ): Cons<A> => {
-  const lastNodeOfTail = tail[_internal].last
+  const lastNodeOfTail = tail._internal.last
   length ??= tail.length + 1
   const list: List<A> = Object.freeze({
     _id: 'List',
@@ -28,16 +26,16 @@ export const _cons = <A>(
     head,
     get tail() {
       if (length === 2) {
-        return this[_internal].last
+        return this._internal.last
       }
       if (length <= 1 || tail._tag === 'Nil') {
         return _nil
       }
       const newList = _cons(tail.head, tail.tail, length - 1)
-      newList[_internal].last = this[_internal].last
+      newList._internal.last = this._internal.last
       return newList
     },
-    [_internal]: {},
+    _internal: {},
     *[Symbol.iterator]() {
       yield head
       if (length > 1) {
@@ -45,6 +43,6 @@ export const _cons = <A>(
       }
     },
   })
-  list[_internal].last = lastNodeOfTail ?? list
+  list._internal.last = lastNodeOfTail ?? list
   return list
 }
