@@ -1,9 +1,11 @@
 import * as Array from './readonly-array'
 import { create } from '../../typeclasses/Tappable'
 import { Sync } from '../Sync'
-import { Monad } from './monad'
+import { Monad, NonEmptyMonad } from './monad'
 
 export const Tappable = create(Monad)
+
+export const NonEmptyTappable = create(NonEmptyMonad)
 
 export const tap: {
   <F extends ReadonlyArray<any>, G extends ReadonlyArray<any>>(

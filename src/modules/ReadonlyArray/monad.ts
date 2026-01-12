@@ -2,22 +2,23 @@ import * as Array from './readonly-array'
 import * as Monad_ from '../../typeclasses/Monad'
 import * as MonadWithIndex_ from '../../typeclasses/MonadWithIndex'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
-import { Functor, FunctorWithIndex } from './functor'
-import { FromIdentity } from './from-identity'
+import {
+  Functor,
+  FunctorWithIndex,
+  NonEmptyFunctor,
+  NonEmptyFunctorWithIndex,
+} from './functor'
+import { FromIdentity, NonEmptyFromIdentity } from './from-identity'
 import { getIterableGen } from '../_internal'
 
-export const Monad = Monad_.create<Array.ReadonlyArrayHkt>(
-  FromIdentity,
-  Functor,
-  {
-    flat: self => self.flat(),
-  },
-)
+export const Monad = Monad_.create<Array.Hkt>(FromIdentity, Functor, {
+  flat: self => self.flat(),
+})
 
-export const MonadWithIndex = MonadWithIndex_.create<
-  Array.ReadonlyArrayHkt,
-  number
->(FunctorWithIndex, Monad)
+export const MonadWithIndex = MonadWithIndex_.create<Array.Hkt, number>(
+  FunctorWithIndex,
+  Monad,
+)
 
 export const Do: Array.NonEmpty<{}> = Monad.Do as any
 
@@ -26,6 +27,17 @@ export const flat: {
     self: F,
   ): Array.AndNonEmpty<F, Array.Infer<F>, Array.Infer<Array.Infer<F>>>
 } = Monad.flat as any
+
+export const NonEmptyMonad = Monad_.create<Array.NonEmptyHkt>(
+  NonEmptyFromIdentity,
+  NonEmptyFunctor,
+  { flat },
+)
+
+export const NonEmptyMonadWithIndex = MonadWithIndex_.create<
+  Array.NonEmptyHkt,
+  number
+>(NonEmptyFunctorWithIndex, NonEmptyMonad)
 
 export const flatMap: {
   <F extends ReadonlyArray<any>, G extends ReadonlyArray<any>>(

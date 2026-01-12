@@ -1,9 +1,9 @@
 import * as Array from './readonly-array'
 import { create } from '../../typeclasses/Bimonad'
-import { Monad } from './monad'
+import { NonEmptyMonad } from './monad'
 import { Comonad } from './comonad'
 
-export const Bimonad = create<Array.NonEmptyHkt>(Monad as any, Comonad)
+export const Bimonad = create<Array.NonEmptyHkt>(NonEmptyMonad, Comonad)
 
 export const single: {
   <A>(self: Array.NonEmpty<A>): Array.NonEmpty<A>

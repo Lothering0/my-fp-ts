@@ -1,6 +1,5 @@
 import * as Array from './readonly-array'
 import * as Zippable_ from '../../typeclasses/Zippable'
-import { ReadonlyArrayHkt } from './readonly-array'
 
 export const zipWith =
   <F extends ReadonlyArray<any>, G extends ReadonlyArray<any>, C>(
@@ -47,7 +46,13 @@ export const unzip: {
   return [as, bs] as any
 }
 
-export const Zippable: Zippable_.Zippable<ReadonlyArrayHkt> = {
+export const Zippable: Zippable_.Zippable<Array.Hkt> = {
+  zipWith,
+  zip,
+  unzip,
+}
+
+export const NonEmptyZippable: Zippable_.Zippable<Array.NonEmptyHkt> = {
   zipWith,
   zip,
   unzip,

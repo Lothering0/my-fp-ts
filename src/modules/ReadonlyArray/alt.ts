@@ -7,6 +7,10 @@ export const orElse =
   <G extends ReadonlyArray<any>>(selfArray: G): Array.OrNonEmpty<F, G> =>
     concat(array)(selfArray)
 
-export const Alt: Alt_.Alt<Array.ReadonlyArrayHkt> = {
+export const Alt: Alt_.Alt<Array.Hkt> = {
+  orElse,
+}
+
+export const NonEmptyAlt: Alt_.Alt<Array.NonEmptyHkt> = {
   orElse,
 }

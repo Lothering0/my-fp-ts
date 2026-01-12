@@ -1,10 +1,10 @@
-import { Hkt } from '../../typeclasses/Hkt'
+import { Hkt as Hkt_ } from '../../typeclasses/Hkt'
 
-export interface ReadonlyArrayHkt extends Hkt {
+export interface Hkt extends Hkt_ {
   readonly Type: ReadonlyArray<this['In']>
 }
 
-export interface NonEmptyHkt extends Hkt {
+export interface NonEmptyHkt extends Hkt_ {
   readonly Type: NonEmpty<this['In']>
 }
 

@@ -1,15 +1,27 @@
 import * as Array from './readonly-array'
 import * as Applicative_ from '../../typeclasses/Applicative'
 import * as ApplicativeWithIndex_ from '../../typeclasses/ApplicativeWithIndex'
-import { ReadonlyArrayHkt } from './readonly-array'
-import { Monad, MonadWithIndex } from './monad'
+import {
+  Monad,
+  MonadWithIndex,
+  NonEmptyMonad,
+  NonEmptyMonadWithIndex,
+} from './monad'
 
-export const Applicative = Applicative_.create<ReadonlyArrayHkt>(Monad)
+export const Applicative = Applicative_.create<Array.Hkt>(Monad)
+
+export const NonEmptyApplicative =
+  Applicative_.create<Array.NonEmptyHkt>(NonEmptyMonad)
 
 export const ApplicativeWithIndex = ApplicativeWithIndex_.create<
-  ReadonlyArrayHkt,
+  Array.Hkt,
   number
 >(Applicative, MonadWithIndex)
+
+export const NonEmptyApplicativeWithIndex = ApplicativeWithIndex_.create<
+  Array.NonEmptyHkt,
+  number
+>(NonEmptyApplicative, NonEmptyMonadWithIndex)
 
 export const apply: {
   <F extends ReadonlyArray<any>>(

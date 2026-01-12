@@ -1,14 +1,14 @@
 import * as Foldable_ from '../../typeclasses/Foldable'
 import * as FoldableWithIndex_ from '../../typeclasses/FoldableWithIndex'
-import { ReadonlyArrayHkt } from './readonly-array'
+import * as Array from './readonly-array'
 
-export const Foldable: Foldable_.Foldable<ReadonlyArrayHkt> = {
+export const Foldable: Foldable_.Foldable<Array.Hkt> = {
   reduce: (b, bab) => self => self.reduce((b, a) => bab(b, a), b),
   reduceRight: (b, abb) => self => self.reduceRight((b, a) => abb(a, b), b),
 }
 
 export const FoldableWithIndex: FoldableWithIndex_.FoldableWithIndex<
-  ReadonlyArrayHkt,
+  Array.Hkt,
   number
 > = {
   ...Foldable,

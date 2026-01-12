@@ -3,6 +3,10 @@ import { FromIdentity as FromIdentity_ } from '../../typeclasses/FromIdentity'
 
 export const of = <A>(a: A): Array.NonEmpty<A> => [a]
 
-export const FromIdentity: FromIdentity_<Array.ReadonlyArrayHkt> = {
+export const FromIdentity: FromIdentity_<Array.Hkt> = {
+  of,
+}
+
+export const NonEmptyFromIdentity: FromIdentity_<Array.NonEmptyHkt> = {
   of,
 }

@@ -1,10 +1,10 @@
 import * as Array from './readonly-array'
 import * as Comonad_ from '../../typeclasses/Comonad'
 import { headNonEmpty } from './utils'
-import { Extendable } from './extendable'
+import { NonEmptyExtendable } from './extendable'
 
 export const Comonad: Comonad_.Comonad<Array.NonEmptyHkt> = {
-  ...(Extendable as any),
+  ...NonEmptyExtendable,
   extract: headNonEmpty,
 }
 
