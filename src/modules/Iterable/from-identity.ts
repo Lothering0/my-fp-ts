@@ -1,14 +1,20 @@
+import * as Iterable from './iterable'
 import { FromIdentity as FromIdentity_ } from '../../typeclasses/FromIdentity'
-import { IterableHkt } from './iterable'
+import { maybeNonEmpty } from './_internal'
 
-export const FromIdentity: FromIdentity_<IterableHkt> = {
-  of: a => ({
+export const of: {
+  <A>(a: A): Iterable.NonEmpty<A>
+} = a =>
+  maybeNonEmpty({
     *[Symbol.iterator]() {
       yield a
     },
-  }),
+  })
+
+export const FromIdentity: FromIdentity_<Iterable.Hkt> = {
+  of,
 }
 
-export const of: {
-  <A>(a: A): Iterable<A>
-} = FromIdentity.of
+export const NonEmptyFromIdentity: FromIdentity_<Iterable.NonEmptyHkt> = {
+  of,
+}

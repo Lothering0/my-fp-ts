@@ -1,6 +1,6 @@
-import * as Iterable from '../Iterable'
 import * as Array from '../ReadonlyArray'
 import { Hkt } from '../../typeclasses/Hkt'
+import { NonEmptyIterable } from '../_internal'
 
 export interface ChunkHkt extends Hkt {
   readonly Type: Chunk<this['In']>
@@ -47,21 +47,21 @@ export interface EmptyChunk<A> extends Iterable<A> {
   readonly length: 0
 }
 
-interface SingletonChunk<A> extends Iterable.NonEmpty<A> {
+interface SingletonChunk<A> extends NonEmptyIterable<A> {
   readonly _id: 'Chunk'
   readonly _tag: 'SingletonChunk'
   readonly length: 1
   readonly a: A
 }
 
-interface ArrayChunk<A> extends Iterable.NonEmpty<A> {
+interface ArrayChunk<A> extends NonEmptyIterable<A> {
   readonly _id: 'Chunk'
   readonly _tag: 'ArrayChunk'
   readonly length: number
   readonly array: Array.NonEmpty<A>
 }
 
-interface ConcatChunk<A> extends Iterable.NonEmpty<A> {
+interface ConcatChunk<A> extends NonEmptyIterable<A> {
   readonly _id: 'Chunk'
   readonly _tag: 'ConcatChunk'
   readonly length: number
@@ -69,7 +69,7 @@ interface ConcatChunk<A> extends Iterable.NonEmpty<A> {
   readonly end: NonEmpty<A>
 }
 
-interface SliceChunk<A> extends Iterable.NonEmpty<A> {
+interface SliceChunk<A> extends NonEmptyIterable<A> {
   readonly _id: 'Chunk'
   readonly _tag: 'SliceChunk'
   readonly length: number

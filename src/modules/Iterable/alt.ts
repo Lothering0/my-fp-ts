@@ -1,12 +1,16 @@
 import * as Alt_ from '../../typeclasses/Alt'
+import * as Iterable from './iterable'
 import { concat } from './utils'
-import { IterableHkt } from './iterable'
 
 export const orElse =
-  <Out>(that: Iterable<Out>) =>
-  <In>(self: Iterable<In>): Iterable<In | Out> =>
-    concat<In | Out>(that)(self)
+  <F extends Iterable<any>>(end: F) =>
+  <G extends Iterable<any>>(start: G): Iterable.OrNonEmpty<F, G> =>
+    concat(end)(start)
 
-export const Alt: Alt_.Alt<IterableHkt> = {
+export const Alt: Alt_.Alt<Iterable.Hkt> = {
+  orElse,
+}
+
+export const NonEmptyAlt: Alt_.Alt<Iterable.NonEmptyHkt> = {
   orElse,
 }

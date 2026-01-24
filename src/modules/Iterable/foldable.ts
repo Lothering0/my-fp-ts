@@ -1,11 +1,11 @@
 import * as Array from '../ReadonlyArray'
 import * as Foldable_ from '../../typeclasses/Foldable'
 import * as FoldableWithIndex_ from '../../typeclasses/FoldableWithIndex'
-import { IterableHkt } from './iterable'
+import * as Iterable from './iterable'
 import { flow } from '../../utils/flow'
 import { toReadonlyArray } from './utils'
 
-export const Foldable: Foldable_.Foldable<IterableHkt> = {
+export const Foldable: Foldable_.Foldable<Iterable.Hkt> = {
   reduce: (b, bab) => iterable => {
     let out = b
     for (const a of iterable) {
@@ -18,7 +18,7 @@ export const Foldable: Foldable_.Foldable<IterableHkt> = {
 }
 
 export const FoldableWithIndex: FoldableWithIndex_.FoldableWithIndex<
-  IterableHkt,
+  Iterable.Hkt,
   number
 > = {
   ...Foldable,

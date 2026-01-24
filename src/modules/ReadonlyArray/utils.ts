@@ -250,7 +250,7 @@ export const successes: {
 export const concat =
   <F extends ReadonlyArray<any>>(end: F) =>
   <G extends ReadonlyArray<any>>(start: G): Array.OrNonEmpty<F, G> =>
-    start.concat(end) as unknown as Array.OrNonEmpty<F, G>
+    start.concat(end) as any
 
 /** Time complexity: O(n) */
 export const prepend: {

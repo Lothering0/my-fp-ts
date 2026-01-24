@@ -1,4 +1,11 @@
 import { NonEmpty } from './iterable'
 
-export const isNonEmpty = <A>(iterable: Iterable<A>): iterable is NonEmpty<A> =>
-  '0' in iterable
+/** Notice: it always executes one iteration */
+export const isNonEmpty = <A>(
+  iterable: Iterable<A>,
+): iterable is NonEmpty<A> => {
+  for (const _ of iterable) {
+    return true
+  }
+  return false
+}

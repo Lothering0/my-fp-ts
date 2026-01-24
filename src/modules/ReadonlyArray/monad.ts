@@ -20,8 +20,6 @@ export const MonadWithIndex = MonadWithIndex_.create<Array.Hkt, number>(
   Monad,
 )
 
-export const Do: Array.NonEmpty<{}> = Monad.Do as any
-
 export const flat: {
   <F extends ReadonlyArray<ReadonlyArray<any>>>(
     self: F,
@@ -33,6 +31,8 @@ export const NonEmptyMonad = Monad_.create<Array.NonEmptyHkt>(
   NonEmptyFunctor,
   { flat },
 )
+
+export const Do: Array.NonEmpty<{}> = NonEmptyMonad.Do
 
 export const NonEmptyMonadWithIndex = MonadWithIndex_.create<
   Array.NonEmptyHkt,

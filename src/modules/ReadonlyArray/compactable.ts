@@ -20,9 +20,6 @@ export const compact: {
   <A>(self: ReadonlyArray<Option.Option<A>>): ReadonlyArray<A>
 } = Compactable.compact
 
-export const NonEmptyCompactable: Compactable_.Compactable<Array.NonEmptyHkt> =
-  Compactable as any
-
 export const compactResults: {
   <A>(self: ReadonlyArray<Result.Result<A, unknown>>): ReadonlyArray<A>
 } = Compactable.compactResults

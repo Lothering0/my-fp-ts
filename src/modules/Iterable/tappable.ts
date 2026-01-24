@@ -1,13 +1,20 @@
+import * as Iterable from './iterable'
 import { create } from '../../typeclasses/Tappable'
 import { Sync } from '../Sync'
-import { Monad } from './monad'
+import { Monad, NonEmptyMonad } from './monad'
 
 export const Tappable = create(Monad)
 
+export const NonEmptyTappable = create(NonEmptyMonad)
+
 export const tap: {
-  <A>(f: (a: A) => Iterable<unknown>): (self: Iterable<A>) => Iterable<A>
-} = Tappable.tap
+  <F extends Iterable<any>, G extends Iterable<any>>(
+    f: (a: Iterable.Infer<F>) => G,
+  ): (self: F) => Iterable.AndNonEmpty<F, G, Iterable.Infer<F>>
+} = NonEmptyTappable.tap as any
 
 export const tapSync: {
-  <A>(f: (a: A) => Sync<unknown>): (self: Iterable<A>) => Iterable<A>
-} = Tappable.tapSync
+  <F extends Iterable<any>>(
+    f: (a: Iterable.Infer<F>) => Sync<unknown>,
+  ): (self: F) => Iterable.With<F>
+} = NonEmptyTappable.tapSync as any

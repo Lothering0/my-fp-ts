@@ -2,6 +2,14 @@ import { Hkt, Kind } from '../typeclasses/Hkt'
 import { Monad } from '../typeclasses/Monad'
 import { pipe } from '../utils/flow'
 
+export declare const nonEmpty: unique symbol
+
+interface NonEmptyObject {
+  readonly [nonEmpty]: undefined
+}
+
+export interface NonEmptyIterable<A> extends Iterable<A>, NonEmptyObject {}
+
 export const getIterableGen =
   <F extends Hkt, U>(Monad: Monad<F>, genUtils: U) =>
   <A>(generator: {

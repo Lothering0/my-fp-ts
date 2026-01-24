@@ -1,12 +1,16 @@
-import { Hkt } from '../../typeclasses/Hkt'
+import { Hkt as Hkt_ } from '../../typeclasses/Hkt'
+import { NonEmptyIterable } from '../_internal'
+import { NonEmpty as NonEmptyArray } from '../ReadonlyArray'
 
-export interface IterableHkt extends Hkt {
+export interface Hkt extends Hkt_ {
   readonly Type: Iterable<this['In']>
 }
 
-export interface NonEmpty<A> extends Iterable<A> {
-  readonly 0: A
+export interface NonEmptyHkt extends Hkt_ {
+  readonly Type: NonEmpty<this['In']>
 }
+
+export type NonEmpty<A> = NonEmptyArray<A> | NonEmptyIterable<A>
 
 export type Infer<F extends Iterable<any>> =
   F extends Iterable<infer A> ? A : never

@@ -1,23 +1,41 @@
+import * as Iterable from './iterable'
 import * as Applicative_ from '../../typeclasses/Applicative'
 import * as ApplicativeWithIndex_ from '../../typeclasses/ApplicativeWithIndex'
-import { Monad, MonadWithIndex } from './monad'
-import { IterableHkt } from './iterable'
+import {
+  Monad,
+  MonadWithIndex,
+  NonEmptyMonad,
+  NonEmptyMonadWithIndex,
+} from './monad'
 
-export const Applicative = Applicative_.create<IterableHkt>(Monad)
+export const Applicative = Applicative_.create<Iterable.Hkt>(Monad)
+
+export const NonEmptyApplicative =
+  Applicative_.create<Iterable.NonEmptyHkt>(NonEmptyMonad)
 
 export const ApplicativeWithIndex = ApplicativeWithIndex_.create<
-  IterableHkt,
+  Iterable.Hkt,
   number
 >(Applicative, MonadWithIndex)
 
+export const NonEmptyApplicativeWithIndex = ApplicativeWithIndex_.create<
+  Iterable.NonEmptyHkt,
+  number
+>(NonEmptyApplicative, NonEmptyMonadWithIndex)
+
 export const apply: {
-  <A>(
-    fa: Iterable<A>,
-  ): <B>(self: Iterable<(a: A, i: number) => B>) => Iterable<B>
-} = ApplicativeWithIndex.applyWithIndex
+  <F extends Iterable<any>>(
+    fa: F,
+  ): <G extends Iterable<(a: Iterable.Infer<F>, i: number) => any>>(
+    self: G,
+  ) => Iterable.AndNonEmpty<F, G, ReturnType<Iterable.Infer<G>>>
+} = NonEmptyApplicativeWithIndex.applyWithIndex as any
 
 export const flipApply: {
-  <A, B>(
-    fab: Iterable<(a: A, i: number) => B>,
-  ): (self: Iterable<A>) => Iterable<B>
-} = ApplicativeWithIndex.flipApplyWithIndex
+  <
+    F extends Iterable<any>,
+    G extends Iterable<(a: Iterable.Infer<F>, i: number) => any>,
+  >(
+    fab: G,
+  ): (self: F) => Iterable.AndNonEmpty<F, G, ReturnType<Iterable.Infer<G>>>
+} = NonEmptyApplicativeWithIndex.flipApplyWithIndex as any
