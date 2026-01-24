@@ -1,5 +1,5 @@
-import { nonEmpty } from '../_internal'
 import * as Array from '../ReadonlyArray'
+import { nonEmpty } from '../_internal'
 import { Chunk, NonEmpty } from './chunk'
 
 export const _emptyChunk: Chunk<never> = Object.freeze<Chunk<never>>({

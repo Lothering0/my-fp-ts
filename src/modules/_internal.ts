@@ -2,7 +2,7 @@ import { Hkt, Kind } from '../typeclasses/Hkt'
 import { Monad } from '../typeclasses/Monad'
 import { pipe } from '../utils/flow'
 
-export declare const nonEmpty: unique symbol
+export const nonEmpty: unique symbol = Symbol('nonEmpty')
 
 interface NonEmptyObject {
   readonly [nonEmpty]: undefined
