@@ -1,3 +1,4 @@
+import * as Iterable from '../Iterable'
 import { isRecord } from '../../utils/typeChecks'
 import { Chunk, EmptyChunk, NonEmpty } from './chunk'
 
@@ -8,4 +9,4 @@ export const isEmpty = <A>(chunk: Chunk<A>): chunk is EmptyChunk<A> =>
   chunk.length === 0
 
 export const isNonEmpty = <A>(chunk: Chunk<A>): chunk is NonEmpty<A> =>
-  '0' in chunk
+  Iterable.isNonEmpty(chunk)

@@ -2,12 +2,12 @@ import * as Monad_ from '../../typeclasses/Monad'
 import * as MonadWithIndex_ from '../../typeclasses/MonadWithIndex'
 import * as List from './list'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
-import { Functor, FunctorWithIndex } from './functor'
+import { Functor, FunctorWithIndex, NonEmptyFunctorWithIndex } from './functor'
 import { FromIdentity } from './from-identity'
 import { getIterableGen } from '../_internal'
 import { append } from './utils'
 
-export const Monad = Monad_.create<List.ListHkt>(FromIdentity, Functor, {
+export const Monad = Monad_.create<List.Hkt>(FromIdentity, Functor, {
   flat: <A>(list: List.List<List.List<A>>) => {
     let out = List.nil<A>()
     for (const as of list) {
@@ -19,26 +19,39 @@ export const Monad = Monad_.create<List.ListHkt>(FromIdentity, Functor, {
   },
 })
 
-export const MonadWithIndex = MonadWithIndex_.create<List.ListHkt, number>(
+export const NonEmptyMonad: Monad_.Monad<List.NonEmptyHkt> = Monad as any
+
+export const MonadWithIndex = MonadWithIndex_.create<List.Hkt, number>(
   FunctorWithIndex,
   Monad,
 )
 
-export const Do = Monad.Do
+export const NonEmptyMonadWithIndex = MonadWithIndex_.create<
+  List.NonEmptyHkt,
+  number
+>(NonEmptyFunctorWithIndex, NonEmptyMonad)
+
+export const Do: List.NonEmpty<{}> = NonEmptyMonad.Do
 
 export const flat: {
-  <A>(list: List.List<List.List<A>>): List.List<A>
-} = Monad.flat
+  <F extends List.List<List.List<any>>>(
+    self: F,
+  ): List.AndNonEmpty<F, List.Infer<F>, List.Infer<List.Infer<F>>>
+} = Monad.flat as any
 
 export const flatMap: {
-  <A, B>(
-    amb: (a: A, i: number) => List.List<B>,
-  ): (list: List.List<A>) => List.List<B>
-} = MonadWithIndex.flatMapWithIndex
+  <F extends List.List<any>, G extends List.List<any>>(
+    aimb: (a: List.Infer<F>, i: number) => G,
+  ): (list: F) => List.AndNonEmpty<F, G, List.Infer<G>>
+} = MonadWithIndex.flatMapWithIndex as any
 
 export const andThen: {
-  <A>(list: List.List<A>): (list: List.List<unknown>) => List.List<A>
-} = MonadWithIndex.andThen
+  <F extends List.List<any>>(
+    ma: F,
+  ): <G extends List.List<any>>(
+    list: G,
+  ) => List.AndNonEmpty<F, G, List.Infer<F>>
+} = MonadWithIndex.andThen as any
 
 export const compose: {
   <A, B, C>(
@@ -48,39 +61,53 @@ export const compose: {
 } = MonadWithIndex.composeWithIndex
 
 export const setTo: {
-  <N extends DoObjectKey, A, B>(
-    name: Exclude<N, keyof A>,
+  <N extends DoObjectKey, F extends List.List<any>, B>(
+    name: Exclude<N, keyof List.Infer<F>>,
     b: B,
-  ): (list: List.List<A>) => List.List<DoObject<N, A, B>>
-} = Monad.setTo
+  ): (list: F) => List.With<F, DoObject<N, List.Infer<F>, B>>
+} = Monad.setTo as any
 
 export const mapTo: {
-  <N extends DoObjectKey, A, B>(
-    name: Exclude<N, keyof A>,
-    ab: (a: A, i: number) => B,
-  ): (list: List.List<A>) => List.List<DoObject<N, A, B>>
-} = MonadWithIndex.mapToWithIndex
+  <N extends DoObjectKey, F extends List.List<any>, B>(
+    name: Exclude<N, keyof List.Infer<F>>,
+    ab: (a: List.Infer<F>, i: number) => B,
+  ): (list: F) => List.With<F, DoObject<N, List.Infer<F>, B>>
+} = MonadWithIndex.mapToWithIndex as any
 
 export const flipApplyTo: {
-  <N extends DoObjectKey, A, B>(
-    name: Exclude<N, keyof A>,
-    fab: List.List<(a: A, i: number) => B>,
-  ): (list: List.List<A>) => List.List<DoObject<N, A, B>>
-} = MonadWithIndex.flipApplyToWithIndex
+  <
+    N extends DoObjectKey,
+    F extends List.List<any>,
+    G extends List.List<(a: List.Infer<F>, i: number) => any>,
+  >(
+    name: Exclude<N, keyof List.Infer<F>>,
+    fab: G,
+  ): (
+    list: F,
+  ) => List.AndNonEmpty<
+    F,
+    G,
+    DoObject<N, List.Infer<F>, ReturnType<List.Infer<G>>>
+  >
+} = MonadWithIndex.flipApplyToWithIndex as any
 
 export const bind: {
-  <N extends DoObjectKey, A, B>(
-    name: Exclude<N, keyof A>,
-    fb: List.List<B>,
-  ): (list: List.List<A>) => List.List<DoObject<N, A, B>>
-} = Monad.bind
+  <N extends DoObjectKey, F extends List.List<any>, G extends List.List<any>>(
+    name: Exclude<N, keyof List.Infer<F>>,
+    fb: G,
+  ): (
+    list: F,
+  ) => List.AndNonEmpty<F, G, DoObject<N, List.Infer<F>, List.Infer<G>>>
+} = Monad.bind as any
 
 export const flatMapTo: {
-  <N extends DoObjectKey, A, B>(
-    name: Exclude<N, keyof A>,
-    amb: (a: A, i: number) => List.List<B>,
-  ): (list: List.List<A>) => List.List<DoObject<N, A, B>>
-} = MonadWithIndex.flatMapToWithIndex
+  <N extends DoObjectKey, F extends List.List<any>, G extends List.List<any>>(
+    name: Exclude<N, keyof List.Infer<F>>,
+    amb: (a: List.Infer<F>, i: number) => G,
+  ): (
+    list: F,
+  ) => List.AndNonEmpty<F, G, DoObject<N, List.Infer<F>, List.Infer<G>>>
+} = MonadWithIndex.flatMapToWithIndex as any
 
 export interface GenUtils {
   readonly $: <A>(list: List.List<A> | (() => List.List<A>)) => ListIterable<A>

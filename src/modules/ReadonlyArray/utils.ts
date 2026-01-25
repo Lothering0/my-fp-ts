@@ -18,10 +18,6 @@ import { Endomorphism } from '../../typeclasses/Endomorphism'
 
 export const toArray = <A>(self: ReadonlyArray<A>): A[] => self as A[]
 
-export const fromIterable: {
-  <A>(array: Iterable<A>): ReadonlyArray<A>
-} = array => (Array.Array.isArray(array) ? array : [...array])
-
 /** Time complexity: O(1) */
 export const length: {
   (self: ReadonlyArray<unknown>): number
@@ -306,7 +302,7 @@ export const range: {
 /** Time complexity: O(n) */
 export const reverse = <F extends ReadonlyArray<any>>(
   array: F,
-): Array.With<F> => array.toReversed() as unknown as Array.With<F>
+): Array.With<F> => array.toReversed() as any
 
 /** Time complexity: O(n log n) */
 export const sort: {

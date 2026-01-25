@@ -6,7 +6,7 @@ export const zero: {
   <A>(): List.List<A>
 } = List.nil
 
-export const Alternative: Alternative_.Alternative<List.ListHkt> = {
+export const Alternative: Alternative_.Alternative<List.Hkt> = {
   ...Alt,
   zero,
 }

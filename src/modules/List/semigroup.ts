@@ -10,6 +10,12 @@ export const getConcatSemigroup = <A>(): Semigroup<List.List<A>> => ({
   combine: concat,
 })
 
+export const getConcatNonEmptySemigroup = <A>(): Semigroup<
+  List.NonEmpty<A>
+> => ({
+  combine: concat,
+})
+
 export const getIntersectionSemigroup = <A>(
   Equivalence: Equivalence<A>,
 ): Semigroup<List.List<A>> => ({

@@ -10,8 +10,11 @@ export const Extendable = create<Array.Hkt>(Functor, {
   extend: fab =>
     matchLeft({
       onEmpty: constEmptyArray,
-      onNonEmpty: (head, tail) =>
-        pipe(tail, extend(fab), pipe(tail, prepend(head), fab, prepend)),
+      onNonEmpty: (head, tail) => {
+        const extendedArray = pipe(tail, prepend(head), fab)
+        const extendedTail = pipe(tail, extend(fab))
+        return pipe(extendedTail, prepend(extendedArray))
+      },
     }),
 })
 

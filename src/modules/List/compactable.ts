@@ -6,7 +6,7 @@ import { of } from './from-identity'
 import { flatMap } from './monad'
 import { Functor } from './functor'
 
-export const Compactable = create<List.ListHkt>(Functor, {
+export const Compactable = create<List.Hkt>(Functor, {
   compact: flatMap(
     Option.match({
       onNone: () => List.nil(),

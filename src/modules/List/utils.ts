@@ -2,16 +2,15 @@ import * as Iterable from '../Iterable'
 import * as Option from '../Option'
 import * as List from './list'
 import { pipe } from '../../utils/flow'
-import { match } from './matchers'
 import { isCons, isNil } from './refinements'
 import { RefinementWithIndex } from '../Refinement'
 import { PredicateWithIndex } from '../Predicate'
 import { Equivalence } from '../../typeclasses/Equivalence'
 import { reduceRight } from './foldable'
 import { _cons } from './_internal'
-import { NonEmptyList } from '../NonEmptyList'
 
 export const fromIterable: {
+  <A>(iterable: Iterable.NonEmpty<A>): List.NonEmpty<A>
   <A>(iterable: Iterable<A>): List.List<A>
 } = iterable =>
   Array.isArray(iterable)
@@ -20,10 +19,6 @@ export const fromIterable: {
         iterable,
         Iterable.reduceRight(List.nil(), (a, list) => List.cons(a, list)),
       )
-
-export const copy: {
-  <A>(list: List.List<A>): List.List<A>
-} = fromIterable
 
 /**
  * | Time complexity |
@@ -39,13 +34,13 @@ export const length: {
  * | --------------- | ---------------- |
  * | O(n)            | O(n)             |
  */
-export const reverse = <A>(list: List.List<A>): List.List<A> => {
-  let out = List.nil<A>()
+export const reverse = <F extends List.List<any>>(list: F): List.With<F> => {
+  let out = List.nil<List.Infer<F>>()
   while (!isNil(list)) {
     out = List.cons(list.head, out)
-    list = list.tail
+    list = list.tail as F
   }
-  return out
+  return out as List.With<F>
 }
 
 /**
@@ -54,7 +49,7 @@ export const reverse = <A>(list: List.List<A>): List.List<A> => {
  * | O(1)            | O(1)             |
  */
 export const prepend: {
-  <A>(a: A): (list: List.List<A>) => NonEmptyList<A>
+  <A>(a: A): (list: List.List<A>) => List.NonEmpty<A>
 } = a => list => _cons(a, list)
 
 /**
@@ -64,7 +59,7 @@ export const prepend: {
  */
 export const append =
   <A>(a: A) =>
-  (list: List.List<A>): NonEmptyList<A> => {
+  (list: List.List<A>): List.NonEmpty<A> => {
     const newNode = _cons(a)
     if (isNil(list)) {
       return newNode
@@ -79,12 +74,34 @@ export const append =
  * | --------------- |
  * | O(1)            |
  */
+export const headNonEmpty: {
+  <A>(list: List.NonEmpty<A>): A
+} = list => list.head
+
+/**
+ * | Time complexity |
+ * | --------------- |
+ * | O(1)            |
+ */
 export const head: {
   <A>(list: List.List<A>): Option.Option<A>
-} = match({
-  onCons: Option.some,
-  onNil: Option.none,
-})
+} = list =>
+  isCons(list) ? pipe(list, headNonEmpty, Option.some) : Option.none()
+
+/**
+ * | Time complexity | Space complexity |
+ * | --------------- | ---------------- |
+ * | O(1)            | O(1)             |
+ */
+export const tailNonEmpty: {
+  <A>(list: List.NonEmpty<A>): List.List<A>
+} = list => {
+  if (isNil(list.tail)) {
+    return list.tail
+  }
+  const newList = _cons(list.tail.head, list.tail.tail, list.length - 1)
+  return newList
+}
 
 /**
  * | Time complexity | Space complexity |
@@ -93,16 +110,17 @@ export const head: {
  */
 export const tail: {
   <A>(list: List.List<A>): Option.Option<List.List<A>>
-} = list => {
-  if (isNil(list)) {
-    return Option.none()
-  }
-  if (isNil(list.tail)) {
-    return Option.some(list.tail)
-  }
-  const newList = _cons(list.tail.head, list.tail.tail, list.length - 1)
-  return Option.some(newList)
-}
+} = list =>
+  isCons(list) ? pipe(list, tailNonEmpty, Option.some) : Option.none()
+
+/**
+ * | Time complexity |
+ * | --------------- |
+ * | O(1)            |
+ */
+export const lastNonEmpty: {
+  <A>(list: List.NonEmpty<A>): A
+} = list => list._internal.last!.head
 
 /**
  * | Time complexity |
@@ -111,22 +129,17 @@ export const tail: {
  */
 export const last: {
   <A>(list: List.List<A>): Option.Option<A>
-} = list => {
-  const lastNode = list._internal.last
-  return lastNode ? Option.some(lastNode.head) : Option.none()
-}
+} = list =>
+  isCons(list) ? pipe(list, lastNonEmpty, Option.some) : Option.none()
 
 /**
  * | Time complexity | Space complexity |
  * | --------------- | ---------------- |
  * | O(n)            | O(1)             |
  */
-export const init = <A>(list: List.List<A>): Option.Option<List.List<A>> => {
-  if (isNil(list)) {
-    return Option.none()
-  }
+export const initNonEmpty = <A>(list: List.NonEmpty<A>): List.List<A> => {
   if (list.length <= 1) {
-    return Option.some(List.nil())
+    return List.nil()
   }
   let lastNode = list
   while (isCons(lastNode.tail) && isCons(lastNode.tail.tail)) {
@@ -134,8 +147,16 @@ export const init = <A>(list: List.List<A>): Option.Option<List.List<A>> => {
   }
   const newList = _cons(list.head, list.tail, list.length - 1)
   newList._internal.last = _cons(lastNode.head)
-  return Option.some(newList)
+  return newList
 }
+
+/**
+ * | Time complexity | Space complexity |
+ * | --------------- | ---------------- |
+ * | O(n)            | O(1)             |
+ */
+export const init = <A>(list: List.List<A>): Option.Option<List.List<A>> =>
+  isCons(list) ? pipe(list, initNonEmpty, Option.some) : Option.none()
 
 /**
  * | Time complexity |
@@ -266,7 +287,7 @@ export const every: {
 
 export const exists =
   <A>(p: PredicateWithIndex<A, number>) =>
-  (list: List.List<A>): list is NonEmptyList<A> =>
+  (list: List.List<A>): list is List.NonEmpty<A> =>
     Iterable.exists(p)(list)
 
 /** Alias for `exists` */
@@ -282,8 +303,10 @@ export const includes: {
  * | O(n)            | O(n)             |
  */
 export const concat: {
-  <A>(end: List.List<A>): (start: List.List<A>) => List.List<A>
-} = end => reduceRight(end, (a, out) => List.cons(a, out))
+  <F extends List.List<any>>(
+    end: F,
+  ): <G extends List.List<any>>(start: G) => List.OrNonEmpty<F, G>
+} = end => reduceRight(end as any, (a, out) => List.cons(a, out))
 
 /**
  * | Time complexity | Space complexity |
@@ -329,7 +352,7 @@ export const appendAll: {
  * | O(n)            | O(n)             |
  */
 export const range: {
-  (to: number): (from: number) => NonEmptyList<number>
+  (to: number): (from: number) => List.NonEmpty<number>
 } = to => from => {
   let out = _cons(to)
 

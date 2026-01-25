@@ -1,12 +1,12 @@
+import * as List from './list'
 import * as Alt_ from '../../typeclasses/Alt'
 import { concat } from './utils'
-import { List, ListHkt } from './list'
 
 export const orElse =
-  <Out>(list: List<Out>) =>
-  <In>(selfList: List<In>): List<In | Out> =>
-    concat<In | Out>(list)(selfList)
+  <F extends List.List<any>>(list: F) =>
+  <G extends List.List<any>>(selfList: G): List.OrNonEmpty<F, G> =>
+    concat(list)(selfList)
 
-export const Alt: Alt_.Alt<ListHkt> = {
+export const Alt: Alt_.Alt<List.Hkt> = {
   orElse,
 }

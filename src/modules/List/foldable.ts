@@ -1,15 +1,15 @@
 import * as Iterable from '../Iterable'
 import * as Foldable_ from '../../typeclasses/Foldable'
 import * as FoldableWithIndex_ from '../../typeclasses/FoldableWithIndex'
-import { List, ListHkt } from './list'
+import { List, Hkt } from './list'
 
-export const Foldable: Foldable_.Foldable<ListHkt> = {
+export const Foldable: Foldable_.Foldable<Hkt> = {
   reduce: (b, bab) => Iterable.Foldable.reduce(b, bab),
   reduceRight: (b, abb) => Iterable.Foldable.reduceRight(b, abb),
 }
 
 export const FoldableWithIndex: FoldableWithIndex_.FoldableWithIndex<
-  ListHkt,
+  Hkt,
   number
 > = {
   ...Foldable,

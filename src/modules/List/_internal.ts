@@ -1,3 +1,4 @@
+import { nonEmpty } from '../_internal'
 import { Cons, List, nil } from './list'
 
 export interface ListInternal<A> {
@@ -20,6 +21,7 @@ export const _cons = <A>(
   const lastNodeOfTail = tail._internal.last
   length ??= tail.length + 1
   const list: List<A> = Object.freeze({
+    [nonEmpty]: undefined,
     _id: 'List',
     _tag: 'Cons',
     length,

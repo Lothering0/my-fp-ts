@@ -7,7 +7,6 @@ import * as Reader from './modules/Reader'
 import * as Tree from './modules/Tree'
 import * as Effect from './modules/Effect'
 import * as List from './modules/List'
-import * as NonEmptyList from './modules/NonEmptyList'
 
 // modules
 export * as Async from './modules/Async'
@@ -20,7 +19,6 @@ export * as Effect from './modules/Effect'
 export * as Identity from './modules/Identity'
 export { identity } from './modules/Identity'
 export * as Iterable from './modules/Iterable'
-export * as NonEmptyList from './modules/NonEmptyList'
 export * as Number from './modules/Number'
 export * as Option from './modules/Option'
 export * as Predicate from './modules/Predicate'
@@ -47,38 +45,44 @@ export { UnknownException } from './modules/Exception'
 export const OptionOption = Option.transform(Option.Monad)
 export const ArrayOfOptions = Option.transform(Array.Monad)
 export const NonEmptyArrayOfOptions = Option.transform(Array.NonEmptyMonad)
-export const IterableOfOptions = Option.transform(Iterable.Monad)
+export const NonEmptyIterableOfOptions = Option.transform(
+  Iterable.NonEmptyMonad,
+)
 export const ResultOption = Option.transform(Result.Monad)
 export const StateOption = Option.transform(State.Monad)
 export const ReaderOption = Option.transform(Reader.Monad)
 export const TreeOfOptions = Option.transform(Tree.Monad)
 export const EffectOption = Option.transform(Effect.Monad)
 export const ListOfOptions = Option.transform(List.Monad)
-export const NonEmptyListOfOptions = Option.transform(NonEmptyList.Monad)
+export const NonEmptyListOfOptions = Option.transform(List.NonEmptyMonad)
 
 export const OptionResult = Result.transform(Option.Monad)
 export const ArrayOfResults = Result.transform(Array.Monad)
 export const NonEmptyArrayOfResults = Result.transform(Array.NonEmptyMonad)
 export const IterableOfResults = Result.transform(Iterable.Monad)
+export const NonEmptyIterableOfResults = Result.transform(
+  Iterable.NonEmptyMonad,
+)
 export const ResultResult = Result.transform(Result.Monad)
 export const StateResult = Result.transform(State.Monad)
 export const ReaderResult = Result.transform(Reader.Monad)
 export const TreeOfResults = Result.transform(Tree.Monad)
 export const EffectResult = Result.transform(Effect.Monad)
 export const ListOfResults = Result.transform(List.Monad)
-export const NonEmptyListOfResults = Result.transform(NonEmptyList.Monad)
+export const NonEmptyListOfResults = Result.transform(List.NonEmptyMonad)
 
 export const OptionState = State.transform(Option.Monad)
 export const ArrayOfStates = State.transform(Array.Monad)
 export const NonEmptyArrayOfStates = State.transform(Array.NonEmptyMonad)
 export const IterableOfStates = State.transform(Iterable.Monad)
+export const NonEmptyIterableOfStates = State.transform(Iterable.NonEmptyMonad)
 export const ResultState = State.transform(Result.Monad)
 export const StateState = State.transform(State.Monad)
 export const ReaderState = State.transform(Reader.Monad)
 export const TreeOfStates = State.transform(Tree.Monad)
 export const EffectState = State.transform(Effect.Monad)
 export const ListOfStates = State.transform(List.Monad)
-export const NonEmptyListOfStates = State.transform(NonEmptyList.Monad)
+export const NonEmptyListOfStates = State.transform(List.NonEmptyMonad)
 
 // typeclasses
 export * as Alt from './typeclasses/Alt'

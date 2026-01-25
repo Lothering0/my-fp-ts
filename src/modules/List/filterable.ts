@@ -8,10 +8,10 @@ import { Compactable } from './compactable'
 import { Functor, FunctorWithIndex } from './functor'
 import { RefinementWithIndex } from '../Refinement'
 
-export const Filterable = Filterable_.create<List.ListHkt>(Functor, Compactable)
+export const Filterable = Filterable_.create<List.Hkt>(Functor, Compactable)
 
 export const FilterableWithIndex = FilterableWithIndex_.create<
-  List.ListHkt,
+  List.Hkt,
   number
 >(FunctorWithIndex, Filterable)
 

@@ -19,16 +19,6 @@ describe('fromIterable', () => {
   })
 })
 
-describe('copy', () => {
-  it('should generate a new instance of a list', () => {
-    const list = List.fromIterable([1, 2, 3])
-    const copy = List.copy(list)
-
-    expect(list !== copy).toBe(true)
-    pipe(list, ListEquivalence.equals(copy), expect).toBe(true)
-  })
-})
-
 describe('length', () => {
   it("should return a `List`'s length", () => {
     pipe([1, 2, 3], List.fromIterable, List.length, expect).toBe(3)
@@ -171,8 +161,7 @@ describe('tail', () => {
 describe('concat', () => {
   it('should concatenate two lists', () => {
     pipe(
-      [1, 2],
-      List.fromIterable,
+      List.fromIterable([1, 2]),
       List.concat(List.fromIterable([3, 4])),
       ListEquivalence.equals(List.fromIterable([1, 2, 3, 4])),
       expect,

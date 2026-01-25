@@ -141,7 +141,7 @@ export const headNonEmpty = <A>(iterable: Iterable.NonEmpty<A>): A =>
 /**
  * Time complexity: O(n).
  *
- * Notice: it always executes two extra iterations
+ * Notice: it always executes one extra iteration
  */
 export const init = <A>(iterable: Iterable<A>): Option.Option<Iterable<A>> => {
   const iterator = iterable[Symbol.iterator]()
@@ -169,7 +169,7 @@ export const init = <A>(iterable: Iterable<A>): Option.Option<Iterable<A>> => {
 /**
  * Time complexity: O(n).
  *
- * Notice: it always executes two extra iterations
+ * Notice: it always executes one extra iteration
  */
 export const initNonEmpty = <A>(
   iterable: Iterable.NonEmpty<A>,
@@ -227,7 +227,7 @@ export const lastNonEmpty: {
 /**
  * Time complexity: O(n).
  *
- * Notice: it always executes two extra iterations
+ * Notice: it always executes one extra iteration
  */
 export const tail = <A>(iterable: Iterable<A>): Option.Option<Iterable<A>> => {
   const iterator = iterable[Symbol.iterator]()
@@ -253,7 +253,7 @@ export const tail = <A>(iterable: Iterable<A>): Option.Option<Iterable<A>> => {
 /**
  * Time complexity: O(n).
  *
- * Notice: it always executes two extra iterations
+ * Notice: it always executes one extra iteration
  */
 export const tailNonEmpty = <A>(iterable: Iterable.NonEmpty<A>): Iterable<A> =>
   maybeNonEmpty({
