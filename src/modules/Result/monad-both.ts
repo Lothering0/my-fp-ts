@@ -25,7 +25,7 @@ export const flatMapLeft: {
 
 export const composeLeft: {
   <A, E1, E2, D>(
-    bmc: (d: E2) => Result<A, D>,
     amb: (e: E1) => Result<A, E2>,
+    bmc: (d: E2) => Result<A, D>,
   ): (e: E1) => Result<A, D>
 } = MonadBoth.composeLeft

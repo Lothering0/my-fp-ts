@@ -58,11 +58,11 @@ export const andThen: {
 } = MonadWithIndex.andThen as any
 
 export const compose: {
-  <A, B, C>(
-    bmc: (b: B, i: number) => Chunk.Chunk<C>,
-    amb: (a: A) => Chunk.Chunk<B>,
-  ): (a: A) => Chunk.Chunk<C>
-} = MonadWithIndex.composeWithIndex
+  <A, F extends Chunk.Chunk<any>, G extends Chunk.Chunk<any>>(
+    amb: (a: A) => F,
+    bmc: (b: Chunk.Infer<F>, i: number) => G,
+  ): (a: A) => Chunk.AndNonEmpty<F, G, Chunk.Infer<G>>
+} = MonadWithIndex.composeWithIndex as any
 
 export const setTo: {
   <N extends DoObjectKey, F extends Chunk.Chunk<any>, B>(

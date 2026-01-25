@@ -25,8 +25,8 @@ export const andThen: {
 
 export const compose: {
   <A, B, C>(
-    bmc: (b: B) => AsyncOption<C>,
     amb: (a: A) => AsyncOption<B>,
+    bmc: (b: B) => AsyncOption<C>,
   ): (a: A) => AsyncOption<C>
 } = Monad.compose
 

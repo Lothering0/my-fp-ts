@@ -33,7 +33,7 @@ export const andThen: {
 } = Monad.andThen
 
 export const compose: {
-  <A, B, C>(bmc: (b: B) => Tree<C>, amb: (a: A) => Tree<B>): (a: A) => Tree<C>
+  <A, B, C>(amb: (a: A) => Tree<B>, bmc: (b: B) => Tree<C>): (a: A) => Tree<C>
 } = Monad.compose
 
 export const setTo: {

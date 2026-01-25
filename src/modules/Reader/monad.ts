@@ -24,8 +24,8 @@ export const andThen: {
 
 export const compose: {
   <R, A, Out1, Out2>(
-    bmc: (b: Out1) => Reader<R, Out2>,
     amb: (a: A) => Reader<R, Out1>,
+    bmc: (b: Out1) => Reader<R, Out2>,
   ): (a: A) => Reader<R, Out2>
 } = Monad.compose
 

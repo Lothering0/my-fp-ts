@@ -4,6 +4,7 @@ import { Show } from '../../typeclasses/Show'
 import { isNonEmpty } from '../ReadonlyArray'
 import { Forest, Tree } from './tree'
 import { pipe, flow } from '../../utils/flow'
+import { nonEmpty } from '../_internal'
 
 export const valueOf: {
   <A>(tree: Tree<A>): A
@@ -17,6 +18,7 @@ export const make: {
   <A>(a: A, forest?: Forest<A>): Tree<A>
 } = (value, forest = []) =>
   Object.freeze({
+    [nonEmpty]: undefined,
     value,
     forest,
     *[Symbol.iterator]() {

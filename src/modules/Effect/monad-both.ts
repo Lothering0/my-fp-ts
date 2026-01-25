@@ -31,7 +31,7 @@ export const flatMapLeft: {
 
 export const composeLeft: {
   <A, E1, E2, D, R>(
-    bmc: (d: E2) => Effect<A, D, R>,
     amb: (e: E1) => Effect<A, E2, R>,
+    bmc: (d: E2) => Effect<A, D, R>,
   ): (e: E1) => Effect<A, D, R>
 } = MonadBoth.composeLeft

@@ -55,11 +55,11 @@ export const andThen: {
 } = NonEmptyMonadWithIndex.andThen as any
 
 export const compose: {
-  <A, B, C>(
-    bmc: (b: B, i: number) => Iterable<C>,
-    amb: (a: A) => Iterable<B>,
-  ): (a: A) => Iterable<C>
-} = MonadWithIndex.composeWithIndex
+  <A, F extends Iterable<any>, G extends Iterable<any>>(
+    amb: (a: A) => F,
+    bmc: (b: Iterable.Infer<F>, i: number) => G,
+  ): (a: A) => Iterable.AndNonEmpty<F, G, Iterable.Infer<G>>
+} = MonadWithIndex.composeWithIndex as any
 
 export const setTo: {
   <N extends DoObjectKey, F extends Iterable<any>, B>(

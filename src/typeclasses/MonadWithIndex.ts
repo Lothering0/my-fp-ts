@@ -21,8 +21,8 @@ export interface MonadWithIndex<F extends Hkt, Index>
     Collectable2,
     Fixed,
   >(
+    aimb: (a: In) => Kind<F, Out1, Collectable1, Fixed>,
     bimc: (b: Out1, i: Index) => Kind<F, Out2, Collectable2, Fixed>,
-    amb: (a: In) => Kind<F, Out1, Collectable1, Fixed>,
   ) => (a: In) => Kind<F, Out2, Collectable1 | Collectable2, Fixed>
 
   readonly mapToWithIndex: <N extends DoObjectKey, In, Out>(
@@ -67,8 +67,8 @@ export const create = <F extends Hkt, Index>(
     flow(FunctorWithIndex.mapWithIndex(aimb), Monad.flat)
 
   const composeWithIndex: MonadWithIndex<F, Index>['composeWithIndex'] = (
-    bmc,
     amb,
+    bmc,
   ) => flow(amb, flatMapWithIndex(bmc))
 
   const mapToWithIndex: MonadWithIndex<F, Index>['mapToWithIndex'] = (

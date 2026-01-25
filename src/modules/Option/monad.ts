@@ -31,8 +31,8 @@ export const andThen: {
 
 export const compose: {
   <A, B, C>(
-    bmc: (b: B) => Option.Option<C>,
     amb: (a: A) => Option.Option<B>,
+    bmc: (b: B) => Option.Option<C>,
   ): (a: A) => Option.Option<C>
 } = Monad.compose
 

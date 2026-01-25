@@ -17,7 +17,7 @@ export const flatMapLeft: {
 
 export const composeLeft: {
   <A, E1, E2, D>(
-    bmc: (d: E2) => SyncResult<A, D>,
     amb: (e: E1) => SyncResult<A, E2>,
+    bmc: (d: E2) => SyncResult<A, D>,
   ): (e: E1) => SyncResult<A, D>
 } = MonadBoth.composeLeft

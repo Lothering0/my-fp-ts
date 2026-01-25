@@ -23,7 +23,7 @@ export const andThen: {
 } = Monad.andThen
 
 export const compose: {
-  <A, B, C>(bmc: (b: B) => Sync<C>, amb: (a: A) => Sync<B>): (a: A) => Sync<C>
+  <A, B, C>(amb: (a: A) => Sync<B>, bmc: (b: B) => Sync<C>): (a: A) => Sync<C>
 } = Monad.compose
 
 export const setTo: {

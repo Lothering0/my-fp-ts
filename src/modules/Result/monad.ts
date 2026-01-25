@@ -33,8 +33,8 @@ export const andThen: {
 
 export const compose: {
   <E1, E2, A, B, C>(
-    bmc: (b: B) => Result<C, E2>,
     amb: (a: A) => Result<B, E1>,
+    bmc: (b: B) => Result<C, E2>,
   ): (a: A) => Result<C, E1 | E2>
 } = Monad.compose
 

@@ -54,11 +54,11 @@ export const andThen: {
 } = MonadWithIndex.andThen as any
 
 export const compose: {
-  <A, B, C>(
-    bmc: (b: B, i: number) => ReadonlyArray<C>,
-    amb: (a: A) => ReadonlyArray<B>,
-  ): (a: A) => ReadonlyArray<C>
-} = MonadWithIndex.composeWithIndex
+  <A, F extends ReadonlyArray<any>, G extends ReadonlyArray<any>>(
+    amb: (a: A) => F,
+    bmc: (b: Array.Infer<F>, i: number) => G,
+  ): (a: A) => Array.AndNonEmpty<F, G, Array.Infer<G>>
+} = MonadWithIndex.composeWithIndex as any
 
 export const setTo: {
   <N extends DoObjectKey, F extends ReadonlyArray<any>, B>(

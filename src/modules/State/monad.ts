@@ -25,8 +25,8 @@ export const andThen: {
 
 export const compose: {
   <S, A, B, C>(
-    bmc: (b: B) => State<S, C>,
     amb: (a: A) => State<S, B>,
+    bmc: (b: B) => State<S, C>,
   ): (a: A) => State<S, C>
 } = Monad.compose
 

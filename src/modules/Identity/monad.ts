@@ -24,8 +24,8 @@ export const andThen: {
 
 export const compose: {
   <A, B, C>(
-    bmc: (b: B) => Identity<C>,
     amb: (a: A) => Identity<B>,
+    bmc: (b: B) => Identity<C>,
   ): (a: A) => Identity<C>
 } = Monad.compose
 

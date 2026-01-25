@@ -25,8 +25,8 @@ export interface MonadBoth<F extends Hkt>
     CollectableOut2,
     Fixed,
   >(
-    bmc: (d: CollectableOut1) => Kind<F, Out, CollectableOut2, Fixed>,
     amb: (e: CollectableIn) => Kind<F, Out, CollectableOut1, Fixed>,
+    bmc: (d: CollectableOut1) => Kind<F, Out, CollectableOut2, Fixed>,
   ) => (e: CollectableIn) => Kind<F, Out, CollectableOut2, Fixed>
 }
 
@@ -42,7 +42,7 @@ export const create = <F extends Hkt>(
   const flatMapLeft: MonadBoth<F>['flatMapLeft'] = emd =>
     flow(mapLeft(emd), flatLeft)
 
-  const composeLeft: MonadBoth<F>['composeLeft'] = (g, f) =>
+  const composeLeft: MonadBoth<F>['composeLeft'] = (f, g) =>
     flow(f, flatMapLeft(g))
 
   return {
