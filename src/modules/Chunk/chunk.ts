@@ -1,9 +1,13 @@
 import * as Array from '../ReadonlyArray'
-import { Hkt } from '../../typeclasses/Hkt'
+import { Hkt as Hkt_ } from '../../typeclasses/Hkt'
 import { NonEmptyIterable } from '../_internal'
 
-export interface ChunkHkt extends Hkt {
+export interface Hkt extends Hkt_ {
   readonly Type: Chunk<this['In']>
+}
+
+export interface NonEmptyHkt extends Hkt_ {
+  readonly Type: NonEmpty<this['In']>
 }
 
 export type NonEmpty<A> =
