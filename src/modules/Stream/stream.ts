@@ -86,21 +86,20 @@ export const createAsync = <A, E = never>(
   f: (handlers: Handlers<A, E>) => void,
 ): Stream<A, E> => _create(f, true)
 
-export const withHandlers = <A, E1 = never>(): Effect.Effect<
-  WithHandlers<A, E1>,
-  E1
+export const withHandlers = <A, E = never>(): Effect.Effect<
+  WithHandlers<A, E>,
+  E
 > => {
-  let push: Handlers<A, E1>['push']
-  let fail: Handlers<A, E1>['fail']
-  let finish: Handlers<A, E1>['finish']
-  const stream = create<A, E1>(handlers => {
+  let push: Handlers<A, E>['push']
+  let fail: Handlers<A, E>['fail']
+  let finish: Handlers<A, E>['finish']
+  const stream = create<A, E>(handlers => {
     push = handlers.push
     fail = handlers.fail
     finish = handlers.finish
   })
   return pipe(
     stream,
-    // FIXME: it possible would not work correctly
     Effect.map(() => ({ stream, push, fail, finish })),
   )
 }
