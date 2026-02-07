@@ -25,6 +25,11 @@ export const fromIterable = <F extends Iterable<any>>(
   ) as any
 }
 
+export const make: {
+  <A>(...as: Array.NonEmpty<A>): Chunk.NonEmpty<A>
+  <A>(...as: ReadonlyArray<A>): Chunk.Chunk<A>
+} = (...as) => fromIterable(as) as any
+
 export const length: {
   (chunk: Chunk.Chunk<unknown>): number
 } = chunk => chunk.length
@@ -119,15 +124,15 @@ export const last = <A>(chunk: Chunk.Chunk<A>): Option.Option<A> =>
   isNonEmpty(chunk) ? pipe(chunk, lastNonEmpty, Option.some) : Option.none()
 
 export const append =
-  <A>(chunk: Chunk.Chunk<A>) =>
-  (a: A): Chunk.NonEmpty<A> =>
+  <A>(a: A) =>
+  (chunk: Chunk.Chunk<A>): Chunk.NonEmpty<A> =>
     isNonEmpty(chunk)
       ? createConcatChunk(chunk, createSingletonChunk(a))
       : createSingletonChunk(a)
 
 export const prepend =
-  <A>(chunk: Chunk.Chunk<A>) =>
-  (a: A): Chunk.NonEmpty<A> =>
+  <A>(a: A) =>
+  (chunk: Chunk.Chunk<A>): Chunk.NonEmpty<A> =>
     isNonEmpty(chunk)
       ? createConcatChunk(createSingletonChunk(a), chunk)
       : createSingletonChunk(a)

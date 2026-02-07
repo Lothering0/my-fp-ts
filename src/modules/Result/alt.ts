@@ -6,6 +6,7 @@ import { constant } from '../../utils/constant'
 import { Tag, Tagged } from '../../types/Tag'
 import { pipe } from '../../utils/flow'
 import { flatMapLeft } from './monad-both'
+import { absurd } from '../../utils/absurd'
 
 export const getOrElse: {
   <B, E>(onFailure: (failure: E) => B): <A>(self: Result<A, E>) => A | B
@@ -14,6 +15,13 @@ export const getOrElse: {
     onFailure,
     onSuccess: identity,
   })
+
+export const getOrAbsurd: {
+  <A>(result: Result<A, unknown>): A
+} = match({
+  onFailure: absurd,
+  onSuccess: identity,
+})
 
 export const orElse: {
   <B, E>(

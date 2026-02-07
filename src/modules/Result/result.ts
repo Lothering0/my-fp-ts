@@ -28,7 +28,7 @@ export interface Failure<E> {
 }
 
 export const succeed: {
-  <A>(success: A): Result<A>
+  <A, E = never>(success: A): Result<A, E>
 } = success =>
   Object.freeze({
     _id: 'Result',

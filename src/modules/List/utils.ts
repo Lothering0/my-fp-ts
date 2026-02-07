@@ -1,6 +1,7 @@
 import * as Iterable from '../Iterable'
 import * as Option from '../Option'
 import * as List from './list'
+import * as Array from '../ReadonlyArray'
 import { pipe } from '../../utils/flow'
 import { isCons, isNil } from './refinements'
 import { RefinementWithIndex } from '../Refinement'
@@ -19,6 +20,11 @@ export const fromIterable: {
         iterable,
         Iterable.reduceRight(List.nil(), (a, list) => List.cons(a, list)),
       )
+
+export const make: {
+  <A>(...as: Array.NonEmpty<A>): List.NonEmpty<A>
+  <A>(...as: ReadonlyArray<A>): List.List<A>
+} = (...as) => fromIterable(as) as any
 
 /**
  * | Time complexity |
