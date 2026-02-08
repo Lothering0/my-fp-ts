@@ -37,14 +37,14 @@ describe('make', () => {
 describe('withHandlers', () => {
   it('should return effect with handlers', async () => {
     pipe(
-      Stream.withHandlers<number>(),
-      Effect.flatMap(({ stream, push, finish }) => {
-        push(1)
+      Stream.withHandlers<number, never, number>(),
+      Effect.flatMap(({ stream, push, finish, readerData: n }) => {
+        push(n)
         finish()
         return stream
       }),
       Stream.toReadonlyArray,
-      Effect.runSync(),
+      Effect.runSync(1),
       expect,
     ).toEqual(Result.succeed([1]))
     const calls: string[] = []

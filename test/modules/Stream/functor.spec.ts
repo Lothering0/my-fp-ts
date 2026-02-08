@@ -4,18 +4,21 @@ describe('functor', () => {
   describe('map', () => {
     it('should correctly run a synchronous successful stream', () => {
       const f = jest.fn()
-      const syncStream = Stream.create<number>(({ push, finish }) => {
-        f()
-        for (let i = 1; i < 5; i++) {
-          push(i)
-        }
-        finish()
-      })
+      const syncStream = Stream.create<number, never, number>(
+        ({ push, finish }) =>
+          n => {
+            f()
+            for (let i = 1; i < n; i++) {
+              push(i)
+            }
+            finish()
+          },
+      )
       const result1 = pipe(
         syncStream,
         Stream.map((a, i) => `${i}-${a}`),
         Stream.toReadonlyArray,
-        Effect.runSync(),
+        Effect.runSync(5),
       )
       pipe(result1, expect).toEqual(
         Result.succeed(['0-1', '1-2', '2-3', '3-4']),
@@ -25,7 +28,7 @@ describe('functor', () => {
         Stream.map((a, i) => `${i}-${a}`),
         Stream.map((a, i) => `${i}-${a}`),
         Stream.toReadonlyArray,
-        Effect.runSync(),
+        Effect.runSync(5),
       )
       pipe(result2, expect).toEqual(
         Result.succeed(['0-0-1', '1-1-2', '2-2-3', '3-3-4']),
@@ -35,23 +38,26 @@ describe('functor', () => {
 
     it('should correctly run an asynchronous successful stream', async () => {
       const f = jest.fn()
-      const asyncStream = Stream.createAsync<number>(({ push, finish }) => {
-        f()
-        let i = 0
-        const interval = setInterval(() => {
-          i++
-          push(i)
-          if (i === 3) {
-            clearInterval(interval)
-            finish()
-          }
-        })
-      })
+      const asyncStream = Stream.createAsync<number, never, number>(
+        ({ push, finish }) =>
+          n => {
+            f()
+            let i = 0
+            const interval = setInterval(() => {
+              i++
+              push(i)
+              if (i === n) {
+                clearInterval(interval)
+                finish()
+              }
+            })
+          },
+      )
       const result1 = await pipe(
         asyncStream,
         Stream.map((a, i) => `${i}-${a}`),
         Stream.toReadonlyArray,
-        Effect.runAsync(),
+        Effect.runAsync(3),
       )
       pipe(result1, expect).toEqual(Result.succeed(['0-1', '1-2', '2-3']))
       const result2 = await pipe(
@@ -59,7 +65,7 @@ describe('functor', () => {
         Stream.map((a, i) => `${i}-${a}`),
         Stream.map((a, i) => `${i}-${a}`),
         Stream.toReadonlyArray,
-        Effect.runAsync(),
+        Effect.runAsync(3),
       )
       pipe(result2, expect).toEqual(Result.succeed(['0-0-1', '1-1-2', '2-2-3']))
       expect(f).toHaveBeenCalledTimes(1)
@@ -68,13 +74,16 @@ describe('functor', () => {
     it('should correctly run a synchronous stream that failed at start', () => {
       const f = jest.fn()
       const g = jest.fn()
-      const syncStream = Stream.create<number, string>(({ push, fail }) => {
-        f()
-        fail('e')
-        for (let i = 0; i < 5; i++) {
-          push(i)
-        }
-      })
+      const syncStream = Stream.create<number, string, number>(
+        ({ push, fail }) =>
+          n => {
+            f()
+            fail('e')
+            for (let i = 0; i < n; i++) {
+              push(i)
+            }
+          },
+      )
       const result = pipe(
         syncStream,
         Stream.map((a, i) => {
@@ -82,7 +91,7 @@ describe('functor', () => {
           return `${i}-${a}`
         }),
         Stream.toChunk,
-        Effect.runSync(),
+        Effect.runSync(5),
       )
       pipe(result, expect).toEqual(Result.fail('e'))
       expect(f).toHaveBeenCalledTimes(1)
@@ -92,14 +101,15 @@ describe('functor', () => {
     it('should correctly run an asynchronous stream that failed at start', async () => {
       const f = jest.fn()
       const g = jest.fn()
-      const asyncStream = Stream.createAsync<number, string>(
-        ({ push, fail }) => {
-          f()
-          fail('e')
-          for (let i = 0; i < 5; i++) {
-            push(i)
-          }
-        },
+      const asyncStream = Stream.createAsync<number, string, number>(
+        ({ push, fail }) =>
+          n => {
+            f()
+            fail('e')
+            for (let i = 0; i < n; i++) {
+              push(i)
+            }
+          },
       )
       const result = await pipe(
         asyncStream,
@@ -108,7 +118,7 @@ describe('functor', () => {
           return `${i}-${a}`
         }),
         Stream.toChunk,
-        Effect.runAsync(),
+        Effect.runAsync(5),
       )
       pipe(result, expect).toEqual(Result.fail('e'))
       expect(f).toHaveBeenCalledTimes(1)
@@ -118,15 +128,18 @@ describe('functor', () => {
     it('should correctly run a synchronous stream that failed at mid', () => {
       const f = jest.fn()
       const g = jest.fn()
-      const syncStream = Stream.create<number, string>(({ push, fail }) => {
-        f()
-        for (let i = 0; i < 5; i++) {
-          push(i)
-          if (i === 3) {
-            fail('e')
-          }
-        }
-      })
+      const syncStream = Stream.create<number, string, number>(
+        ({ push, fail }) =>
+          n => {
+            f()
+            for (let i = 0; i < n; i++) {
+              push(i)
+              if (i === 3) {
+                fail('e')
+              }
+            }
+          },
+      )
       const result = pipe(
         syncStream,
         Stream.map((a, i) => {
@@ -134,7 +147,7 @@ describe('functor', () => {
           return `${i}-${a}`
         }),
         Stream.toChunk,
-        Effect.runSync(),
+        Effect.runSync(5),
       )
       pipe(result, expect).toEqual(Result.fail('e'))
       expect(f).toHaveBeenCalledTimes(1)
@@ -144,19 +157,20 @@ describe('functor', () => {
     it('should correctly run an asynchronous stream that failed at mid', async () => {
       const f = jest.fn()
       const g = jest.fn()
-      const asyncStream = Stream.createAsync<number, string>(
-        ({ push, fail }) => {
-          f()
-          let i = 0
-          const interval = setInterval(() => {
-            i++
-            push(i)
-            if (i === 3) {
-              clearInterval(interval)
-              fail('e')
-            }
-          })
-        },
+      const asyncStream = Stream.createAsync<number, string, number>(
+        ({ push, fail }) =>
+          n => {
+            f()
+            let i = 0
+            const interval = setInterval(() => {
+              i++
+              push(i)
+              if (i === n) {
+                clearInterval(interval)
+                fail('e')
+              }
+            })
+          },
       )
       const result = await pipe(
         asyncStream,
@@ -165,7 +179,7 @@ describe('functor', () => {
           return `${i}-${a}`
         }),
         Stream.toChunk,
-        Effect.runAsync(),
+        Effect.runAsync(3),
       )
       pipe(result, expect).toEqual(Result.fail('e'))
       expect(f).toHaveBeenCalledTimes(1)

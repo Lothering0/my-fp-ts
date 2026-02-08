@@ -10,7 +10,7 @@ export const Functor = Functor_.create<Stream.Hkt>({
     pipe(
       stream,
       Effect.flatMap(streamable =>
-        Stream.create(({ push, fail, finish }) => {
+        Stream.create(({ push, fail, finish }) => () => {
           pipe(
             streamable._result,
             Result.map(chunk => {
@@ -35,11 +35,11 @@ export const Functor = Functor_.create<Stream.Hkt>({
 
 export const map =
   <A, B>(ab: (a: A, i: number) => B) =>
-  <E>(stream: Stream.Stream<A, E>): Stream.Stream<B, E> =>
+  <E, R>(stream: Stream.Stream<A, E, R>): Stream.Stream<B, E, R> =>
     pipe(
       stream,
       Effect.flatMap(streamable =>
-        Stream.create(({ push, fail, finish }) => {
+        Stream.create(({ push, fail, finish }) => () => {
           pipe(
             streamable._result,
             Result.map(chunk => {

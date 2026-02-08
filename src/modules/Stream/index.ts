@@ -1,3 +1,6 @@
+export * from './from-effect'
+export * from './from-identity'
+export * from './from-identity-left'
 export * from './functor'
 export * from './stream'
 export * from './utils'

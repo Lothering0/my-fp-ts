@@ -6,7 +6,7 @@ import * as Result from '../Result'
 import { pipe } from '../../utils/flow'
 
 export const fromIterable = <A>(iterable: Iterable<A>): Stream.Stream<A> =>
-  Stream.create(({ push, finish }) => {
+  Stream.create(({ push, finish }) => () => {
     for (const a of iterable) {
       push(a)
     }
@@ -16,9 +16,18 @@ export const fromIterable = <A>(iterable: Iterable<A>): Stream.Stream<A> =>
 export const make = <A>(...as: ReadonlyArray<A>): Stream.Stream<A> =>
   fromIterable(as)
 
-export const toChunk = <A, E>(
-  stream: Stream.Stream<A, E>,
-): Effect.Effect<Chunk.Chunk<A>, E> =>
+export const succeed = <A>(a: A): Stream.Stream<A> => make(a)
+
+export const fail = <E>(e: E): Stream.Stream<never, E> =>
+  Stream.create(
+    ({ fail }) =>
+      () =>
+        fail(e),
+  )
+
+export const toChunk = <A, E, R>(
+  stream: Stream.Stream<A, E, R>,
+): Effect.Effect<Chunk.Chunk<A>, E, R> =>
   pipe(
     stream,
     Effect.mapResult(result => () => {
@@ -38,9 +47,9 @@ export const toChunk = <A, E>(
     }),
   )
 
-export const toReadonlyArray = <A, E>(
-  stream: Stream.Stream<A, E>,
-): Effect.Effect<ReadonlyArray<A>, E> =>
+export const toReadonlyArray = <A, E, R>(
+  stream: Stream.Stream<A, E, R>,
+): Effect.Effect<ReadonlyArray<A>, E, R> =>
   pipe(
     stream,
     toChunk,

@@ -1,15 +1,16 @@
 import * as Effect from '../Effect'
 import * as Chunk from '../Chunk'
 import * as Result from '../Result'
+import * as Reader from '../Reader'
 import { Hkt as Hkt_ } from '../../typeclasses/Hkt'
 import { pipe } from '../../utils/flow'
 
 export interface Hkt extends Hkt_ {
-  readonly Type: Stream<this['In'], this['Collectable']>
+  readonly Type: Stream<this['In'], this['Collectable'], this['Fixed']>
 }
 
-export interface Stream<A, E = never>
-  extends Effect.Effect<Streamable<A, E>, E> {}
+export interface Stream<A, E = never, R = unknown>
+  extends Effect.Effect<Streamable<A, E>, E, R> {}
 
 interface Streamable<A, E = never> {
   readonly _id: 'Streamable'
@@ -30,14 +31,16 @@ export interface Handlers<A, E = never> {
   readonly finish: () => void
 }
 
-export interface WithHandlers<A, E = never> extends Handlers<A, E> {
-  readonly stream: Stream<A, E>
+export interface WithHandlers<A, E = never, R = unknown>
+  extends Handlers<A, E> {
+  readonly stream: Stream<A, E, R>
+  readonly readerData: R
 }
 
-const _create = <A, E = never>(
-  f: (handlers: Handlers<A, E>) => void,
+const _create = <A, E = never, R = unknown>(
+  f: (handlers: Handlers<A, E>) => Reader.Reader<R, void>,
   forceAsync = false,
-): Stream<A, E> => {
+): Stream<A, E, R> => {
   const streamable: Streamable<A, E> = {
     _id: 'Streamable',
     _result: Result.succeed(Chunk.empty),
@@ -70,36 +73,39 @@ const _create = <A, E = never>(
     streamable._isFinished = true
     streamable._consumers.forEach(({ onFinish }) => onFinish?.())
   }
-  return Effect.fromReaderResult(() => {
+  return Effect.fromReaderResult(r => {
     if (!streamable._isFinished) {
-      f({ push: onPush, fail: onFail, finish: onFinish })
+      f({ push: onPush, fail: onFail, finish: onFinish })(r)
     }
     return forceAsync ? Promise.resolve(result) : result
   })
 }
 
-export const create = <A, E = never>(
-  f: (handlers: Handlers<A, E>) => void,
-): Stream<A, E> => _create(f)
+export const create = <A, E = never, R = unknown>(
+  f: (handlers: Handlers<A, E>) => Reader.Reader<R, void>,
+): Stream<A, E, R> => _create(f)
 
-export const createAsync = <A, E = never>(
-  f: (handlers: Handlers<A, E>) => void,
-): Stream<A, E> => _create(f, true)
+export const createAsync = <A, E = never, R = unknown>(
+  f: (handlers: Handlers<A, E>) => Reader.Reader<R, void>,
+): Stream<A, E, R> => _create(f, true)
 
-export const withHandlers = <A, E = never>(): Effect.Effect<
-  WithHandlers<A, E>,
-  E
+export const withHandlers = <A, E = never, R = unknown>(): Effect.Effect<
+  WithHandlers<A, E, R>,
+  E,
+  R
 > => {
   let push: Handlers<A, E>['push']
   let fail: Handlers<A, E>['fail']
   let finish: Handlers<A, E>['finish']
-  const stream = create<A, E>(handlers => {
+  let readerData: R
+  const stream = create<A, E, R>(handlers => r => {
     push = handlers.push
     fail = handlers.fail
     finish = handlers.finish
+    readerData = r
   })
   return pipe(
     stream,
-    Effect.map(() => ({ stream, push, fail, finish })),
+    Effect.map(() => ({ stream, push, fail, finish, readerData })),
   )
 }
