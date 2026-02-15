@@ -16,7 +16,7 @@ export interface OrderingMatchers<A, B, C> {
 export const match: {
   <A, B = A, C = B>(
     matchers: OrderingMatchers<A, B, C>,
-  ): (self: Ordering) => A | B | C
+  ): (ordering: Ordering) => A | B | C
 } = matchers =>
   flow(
     Matching.match,
@@ -26,7 +26,7 @@ export const match: {
   )
 
 export const reverse: {
-  (self: Ordering): Ordering
+  (ordering: Ordering): Ordering
 } = match({
   onLessThan: constant(1),
   onEqual: constant(0),

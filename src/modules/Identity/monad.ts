@@ -11,21 +11,21 @@ export const Monad = create<IdentityHkt>(FromIdentity, Functor, {
 export const Do = Monad.Do
 
 export const flat: {
-  <A>(self: Identity<Identity<A>>): Identity<A>
+  <A>(a: Identity<Identity<A>>): Identity<A>
 } = Monad.flat
 
 export const flatMap: {
-  <A, B>(amb: (a: A) => Identity<B>): (self: Identity<A>) => Identity<B>
+  <A, B>(ab: (a: A) => Identity<B>): (a: Identity<A>) => Identity<B>
 } = Monad.flatMap
 
 export const andThen: {
-  <A>(ma: Identity<A>): (self: Identity<unknown>) => Identity<A>
+  <A>(a: Identity<A>): (x: Identity<unknown>) => Identity<A>
 } = Monad.andThen
 
 export const compose: {
   <A, B, C>(
-    amb: (a: A) => Identity<B>,
-    bmc: (b: B) => Identity<C>,
+    ab: (a: A) => Identity<B>,
+    bc: (b: B) => Identity<C>,
   ): (a: A) => Identity<C>
 } = Monad.compose
 
@@ -33,33 +33,33 @@ export const setTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     b: B,
-  ): (self: Identity<A>) => Identity<DoObject<N, A, B>>
+  ): (a: Identity<A>) => Identity<DoObject<N, A, B>>
 } = Monad.setTo
 
 export const mapTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     ab: (a: A) => B,
-  ): (self: Identity<A>) => Identity<DoObject<N, A, B>>
+  ): (a: Identity<A>) => Identity<DoObject<N, A, B>>
 } = Monad.mapTo
 
 export const flipApplyTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
-    fab: Identity<(a: A) => B>,
-  ): (self: Identity<A>) => Identity<DoObject<N, A, B>>
+    ab: Identity<(a: A) => B>,
+  ): (a: Identity<A>) => Identity<DoObject<N, A, B>>
 } = Monad.flipApplyTo
 
 export const bind: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
-    fb: Identity<B>,
-  ): (self: Identity<A>) => Identity<DoObject<N, A, B>>
+    b: Identity<B>,
+  ): (a: Identity<A>) => Identity<DoObject<N, A, B>>
 } = Monad.bind
 
 export const flatMapTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
-    amb: (a: A) => Identity<B>,
-  ): (self: Identity<A>) => Identity<DoObject<N, A, B>>
+    ab: (a: A) => Identity<B>,
+  ): (a: Identity<A>) => Identity<DoObject<N, A, B>>
 } = Monad.flatMapTo

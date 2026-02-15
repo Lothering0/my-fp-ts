@@ -5,18 +5,18 @@ import { Effect, EffectHkt } from './effect'
 import { pipe } from '../../utils/flow'
 
 export const Bifunctor = create<EffectHkt>(Functor, {
-  mapLeft: ed => mapResult(ma => () => pipe(ma, Result.mapLeft(ed))),
+  mapLeft: ed => mapResult(result => () => pipe(result, Result.mapLeft(ed))),
 })
 
 export const mapLeft: {
   <E1, E2>(
     ed: (failure: E1) => E2,
-  ): <A, R>(self: Effect<A, E1, R>) => Effect<A, E2, R>
+  ): <A, R>(effect: Effect<A, E1, R>) => Effect<A, E2, R>
 } = Bifunctor.mapLeft
 
 export const bimap: {
   <E1, E2, A, B>(
     ed: (failure: E1) => E2,
     ab: (success: A) => B,
-  ): <R>(self: Effect<A, E1, R>) => Effect<B, E2, R>
+  ): <R>(effect: Effect<A, E1, R>) => Effect<B, E2, R>
 } = Bifunctor.bimap

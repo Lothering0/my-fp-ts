@@ -3,16 +3,16 @@ import * as Zippable_ from '../../typeclasses/Zippable'
 
 export const zipWith =
   <F extends ReadonlyArray<any>, G extends ReadonlyArray<any>, C>(
-    bs: G,
+    array: G,
     abic: (a: Array.Infer<F>, b: Array.Infer<G>, i: number) => C,
   ) =>
-  (array: F): Array.AndNonEmpty<F, G, C> => {
-    const minLength = Math.min(array.length, bs.length)
+  (selfArray: F): Array.AndNonEmpty<F, G, C> => {
+    const minLength = Math.min(selfArray.length, array.length)
     const out = []
 
     for (let i = 0; i < minLength; i++) {
-      const a = array[i]!
-      const b = bs[i]!
+      const a = selfArray[i]!
+      const b = array[i]!
       out.push(abic(a, b, i))
     }
 
@@ -21,9 +21,9 @@ export const zipWith =
 
 export const zip: {
   <F extends ReadonlyArray<any>>(
-    bs: F,
+    array: F,
   ): <G extends ReadonlyArray<any>>(
-    array: G,
+    selfArray: G,
   ) => Array.AndNonEmpty<F, G, readonly [Array.Infer<G>, Array.Infer<F>]>
 } = bs => zipWith(bs, (a, b) => [a, b]) as any
 

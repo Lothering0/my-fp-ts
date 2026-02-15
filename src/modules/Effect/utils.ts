@@ -45,11 +45,11 @@ const try_: {
 export { try_ as try }
 
 export const toUnion: {
-  <A, E, R>(self: Effect.Effect<A, E, R>): Effect.Effect<A | E, never, R>
+  <A, E, R>(effect: Effect.Effect<A, E, R>): Effect.Effect<A | E, never, R>
 } = mapResult(ma => () => pipe(ma, Result.toUnion, Result.succeed))
 
 export const swap: {
-  <A, E, R>(self: Effect.Effect<A, E, R>): Effect.Effect<E, A, R>
+  <A, E, R>(effect: Effect.Effect<A, E, R>): Effect.Effect<E, A, R>
 } = mapResult(ma => () => Result.swap(ma))
 
 type Successes<
@@ -265,8 +265,8 @@ export const asksEffect = <R1, R2, A, E>(
 
 export const local =
   <R2, R1>(f: (s: R2) => R1) =>
-  <A, E>(self: Effect.Effect<A, E, R1>) =>
-    Effect.fromReaderResult((s: R2) => Effect.run(f(s))(self))
+  <A, E>(effect: Effect.Effect<A, E, R1>) =>
+    Effect.fromReaderResult((s: R2) => Effect.run(f(s))(effect))
 
 export interface ScheduleOptions {
   readonly iterationCount?: number
@@ -276,7 +276,7 @@ export interface ScheduleOptions {
 export const schedule =
   (duration: Duration.DurationInput, options?: ScheduleOptions) =>
   <A, E, R>(
-    self: Effect.Effect<A, E, R>,
+    effect: Effect.Effect<A, E, R>,
   ): Effect.Effect<ReadonlyArray<A>, E, R> =>
     Effect.fromReaderResult(
       r =>
@@ -286,7 +286,7 @@ export const schedule =
           const out: A[] = []
           const isInfinite = iterationCount === Infinity
           if (immediate) {
-            const result = await pipe(self, Effect.run(r))
+            const result = await pipe(effect, Effect.run(r))
             if (Result.isFailure(result)) {
               return resolve(result)
             }
@@ -305,7 +305,7 @@ export const schedule =
               clearInterval(interval)
               return pipe(out, Result.succeed, resolve)
             }
-            const result = await pipe(self, Effect.run(r))
+            const result = await pipe(effect, Effect.run(r))
             if (Result.isFailure(result)) {
               clearInterval(interval)
               return resolve(result)
@@ -320,7 +320,7 @@ export const schedule =
 export const scheduleResults =
   (duration: Duration.DurationInput, options?: ScheduleOptions) =>
   <A, E, R>(
-    self: Effect.Effect<A, E, R>,
+    effect: Effect.Effect<A, E, R>,
   ): Effect.Effect<ReadonlyArray<Result.Result<A, E>>, never, R> =>
     Effect.fromReaderResult(
       r =>
@@ -330,7 +330,7 @@ export const scheduleResults =
           const out: Result.Result<A, E>[] = []
           const isInfinite = iterationCount === Infinity
           if (immediate) {
-            const result = await pipe(self, Effect.run(r))
+            const result = await pipe(effect, Effect.run(r))
             if (!isInfinite) {
               out.push(result)
             }
@@ -346,7 +346,7 @@ export const scheduleResults =
               clearInterval(interval)
               return pipe(out, Result.succeed, resolve)
             }
-            const result = await pipe(self, Effect.run(r))
+            const result = await pipe(effect, Effect.run(r))
             if (!isInfinite) {
               out.push(result)
             }

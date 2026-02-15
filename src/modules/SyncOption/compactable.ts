@@ -7,15 +7,15 @@ import { _SyncOption } from './_internal'
 export const Compactable: Compactable_<SyncOptionHkt> = _SyncOption.Compactable
 
 export const compact: {
-  <A>(self: SyncOption<Option.Option<A>>): SyncOption<A>
+  <A>(syncOption: SyncOption<Option.Option<A>>): SyncOption<A>
 } = Compactable.compact
 
 export const compactResults: {
-  <A>(self: SyncOption<Result.Result<A, unknown>>): SyncOption<A>
+  <A>(syncOption: SyncOption<Result.Result<A, unknown>>): SyncOption<A>
 } = Compactable.compactResults
 
 export const separate: {
   <A, E>(
-    self: SyncOption<Result.Result<A, E>>,
+    syncOption: SyncOption<Result.Result<A, E>>,
   ): readonly [SyncOption<A>, SyncOption<E>]
 } = Compactable.separate

@@ -3,7 +3,7 @@ import * as Functor_ from '../../typeclasses/Functor'
 import * as FunctorWithIndex_ from '../../typeclasses/FunctorWithIndex'
 
 export const Functor = Functor_.create<Array.Hkt>({
-  map: ab => self => self.map(a => ab(a)),
+  map: ab => array => array.map(a => ab(a)),
 })
 
 export const NonEmptyFunctor: Functor_.Functor<Array.NonEmptyHkt> =

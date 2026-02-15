@@ -10,11 +10,11 @@ export const FromResult: FromResult_<OptionHkt> = {
 }
 
 export const fromResult: {
-  <A, E>(ma: Result.Result<A, E>): Option<A>
+  <A, E>(result: Result.Result<A, E>): Option<A>
 } = FromResult.fromResult
 
 export const toResult: {
-  <E>(onNone: LazyArg<E>): <A>(self: Option<A>) => Result.Result<A, E>
+  <E>(onNone: LazyArg<E>): <A>(option: Option<A>) => Result.Result<A, E>
 } = onNone =>
   match({
     onNone: flow(onNone, Result.fail),

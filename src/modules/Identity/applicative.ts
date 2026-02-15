@@ -5,9 +5,9 @@ import { Identity, IdentityHkt } from './identity'
 export const Applicative = create<IdentityHkt>(Monad)
 
 export const apply: {
-  <A>(fa: Identity<A>): <B>(self: Identity<(a: A) => B>) => Identity<B>
+  <A>(a: Identity<A>): <B>(f: Identity<(a: A) => B>) => Identity<B>
 } = Applicative.apply
 
 export const flipApply: {
-  <A, B>(fab: Identity<(a: A) => B>): (self: Identity<A>) => Identity<B>
+  <A, B>(ab: Identity<(a: A) => B>): (a: Identity<A>) => Identity<B>
 } = Applicative.flipApply

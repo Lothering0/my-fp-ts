@@ -9,15 +9,15 @@ import { forestOf, hasForest, valueOf } from './utils'
 export const getShow: {
   <A>(Show: Show<A>): Show<Tree<A>>
 } = Show => ({
-  show: self =>
-    pipe(self, valueOf, Show.show, s =>
+  show: tree =>
+    pipe(tree, valueOf, Show.show, s =>
       pipe(
-        self,
+        tree,
         hasForest,
         Boolean.match({
           onFalse: () => `make(${s})`,
           onTrue: () =>
-            `make(${s}, ${pipe(self, forestOf, Iterable.toReadonlyArray, Array.getShow(getShow(Show)).show)})`,
+            `make(${s}, ${pipe(tree, forestOf, Iterable.toReadonlyArray, Array.getShow(getShow(Show)).show)})`,
         }),
       ),
     ),

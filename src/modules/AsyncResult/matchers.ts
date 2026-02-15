@@ -6,5 +6,5 @@ import { _AsyncResult } from './_internal'
 export const match: {
   <A, B, E, C = B>(
     matchers: Result.Matchers<A, B, E, C>,
-  ): (self: AsyncResult<A, E>) => Async<B | C>
+  ): (asyncResult: AsyncResult<A, E>) => Async<B | C>
 } = _AsyncResult.match

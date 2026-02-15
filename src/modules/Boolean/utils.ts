@@ -3,13 +3,13 @@ export const not: {
 } = <A>(a: A) => !a as A extends true ? false : true
 
 export const or: {
-  (a: boolean): (self: boolean) => boolean
-} = a => self => a || self
+  (y: boolean): (x: boolean) => boolean
+} = y => x => x || y
 
 export const xor: {
-  (a: boolean): (self: boolean) => boolean
-} = a => self => (a || self) && !(a && self)
+  (y: boolean): (x: boolean) => boolean
+} = y => x => (x || y) && !(x && y)
 
 export const and: {
-  (a: boolean): (self: boolean) => boolean
-} = a => self => a && self
+  (y: boolean): (x: boolean) => boolean
+} = y => x => x && y

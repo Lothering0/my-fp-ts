@@ -30,16 +30,16 @@ export const FunctorWithIndex: FunctorWithIndex_.FunctorWithIndex<
 export const map: {
   <A, B, K extends string>(
     akb: (a: A, k: K) => B,
-  ): (self: ReadonlyRecord<K, A>) => ReadonlyRecord<K, B>
+  ): (record: ReadonlyRecord<K, A>) => ReadonlyRecord<K, B>
   <A, B>(
     akb: (a: A, k: string) => B,
-  ): <K extends string>(self: ReadonlyRecord<K, A>) => ReadonlyRecord<K, B>
+  ): <K extends string>(record: ReadonlyRecord<K, A>) => ReadonlyRecord<K, B>
 } = FunctorWithIndex.mapWithIndex as typeof map
 
 export const as: {
   <A>(
     a: A,
   ): <K extends string>(
-    self: ReadonlyRecord<K, unknown>,
+    record: ReadonlyRecord<K, unknown>,
   ) => ReadonlyRecord<K, A>
 } = FunctorWithIndex.as

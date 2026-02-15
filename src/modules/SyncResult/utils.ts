@@ -3,5 +3,5 @@ import { SyncResult } from './sync-result'
 import { _SyncResult } from './_internal'
 
 export const toUnion: {
-  <A, E>(self: SyncResult<A, E>): Sync.Sync<A | E>
+  <A, E>(syncResult: SyncResult<A, E>): Sync.Sync<A | E>
 } = _SyncResult.toUnion

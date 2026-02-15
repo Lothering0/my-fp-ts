@@ -34,25 +34,29 @@ export const TappableBoth: TappableBoth_.TappableBoth<ResultHkt> = {
 export const tap: {
   <A, E1>(
     f: (a: A) => Result<unknown, E1>,
-  ): <E2>(self: Result<A, E2>) => Result<A, E1 | E2>
+  ): <E2>(result: Result<A, E2>) => Result<A, E1 | E2>
 } = Tappable.tap
 
 export const tapSync: {
-  <A>(f: (a: A) => Sync.Sync<unknown>): <E>(self: Result<A, E>) => Result<A, E>
+  <A>(
+    f: (a: A) => Sync.Sync<unknown>,
+  ): <E>(result: Result<A, E>) => Result<A, E>
 } = Tappable.tapSync
 
 export const tapSyncResult: {
   <A, E2>(
     f: (a: A) => Sync.Sync<Result<unknown, E2>>,
-  ): <E1>(self: Result<A, E1>) => Result<A, E1 | E2>
+  ): <E1>(result: Result<A, E1>) => Result<A, E1 | E2>
 } = f => flatMap(a => pipe(a, f, g => g(), Functor.as(a)))
 
 export const tapLeft: {
   <E1, E2>(
     f: (e: E1) => Result<unknown, E2>,
-  ): <A>(self: Result<A, E1>) => Result<A, E1 | E2>
+  ): <A>(result: Result<A, E1>) => Result<A, E1 | E2>
 } = TappableBoth.tapLeft
 
 export const tapLeftSync: {
-  <E>(f: (e: E) => Sync.Sync<unknown>): <A>(self: Result<A, E>) => Result<A, E>
+  <E>(
+    f: (e: E) => Sync.Sync<unknown>,
+  ): <A>(result: Result<A, E>) => Result<A, E>
 } = TappableBoth.tapLeftSync

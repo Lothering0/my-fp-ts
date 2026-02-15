@@ -26,7 +26,7 @@ export const MonadWithIndex = MonadWithIndex_.create<Chunk.Hkt, number>(
 
 export const flat: {
   <F extends Chunk.Chunk<Chunk.Chunk<any>>>(
-    self: F,
+    chunk: F,
   ): Chunk.AndNonEmpty<F, Chunk.Infer<F>, Chunk.Infer<Chunk.Infer<F>>>
 } = Monad.flat as any
 
@@ -46,14 +46,14 @@ export const NonEmptyMonadWithIndex = MonadWithIndex_.create<
 export const flatMap: {
   <F extends Chunk.Chunk<any>, G extends Chunk.Chunk<any>>(
     aimb: (a: Chunk.Infer<F>, i: number) => G,
-  ): (self: F) => Chunk.AndNonEmpty<F, G, Chunk.Infer<G>>
+  ): (chunk: F) => Chunk.AndNonEmpty<F, G, Chunk.Infer<G>>
 } = MonadWithIndex.flatMapWithIndex as any
 
 export const andThen: {
   <F extends Chunk.Chunk<any>>(
-    ma: F,
+    chunk: F,
   ): <G extends Chunk.Chunk<any>>(
-    self: G,
+    selfChunk: G,
   ) => Chunk.AndNonEmpty<F, G, Chunk.Infer<F>>
 } = MonadWithIndex.andThen as any
 
@@ -68,14 +68,14 @@ export const setTo: {
   <N extends DoObjectKey, F extends Chunk.Chunk<any>, B>(
     name: Exclude<N, keyof Chunk.Infer<F>>,
     b: B,
-  ): (self: F) => Chunk.With<F, DoObject<N, Chunk.Infer<F>, B>>
+  ): (chunk: F) => Chunk.With<F, DoObject<N, Chunk.Infer<F>, B>>
 } = Monad.setTo as any
 
 export const mapTo: {
   <N extends DoObjectKey, F extends Chunk.Chunk<any>, B>(
     name: Exclude<N, keyof Chunk.Infer<F>>,
     ab: (a: Chunk.Infer<F>, i: number) => B,
-  ): (self: F) => Chunk.With<F, DoObject<N, Chunk.Infer<F>, B>>
+  ): (chunk: F) => Chunk.With<F, DoObject<N, Chunk.Infer<F>, B>>
 } = MonadWithIndex.mapToWithIndex as any
 
 export const flipApplyTo: {
@@ -85,9 +85,9 @@ export const flipApplyTo: {
     G extends Chunk.Chunk<(a: Chunk.Infer<F>, i: number) => any>,
   >(
     name: Exclude<N, keyof Chunk.Infer<F>>,
-    fab: G,
+    chunk: G,
   ): (
-    self: F,
+    selfChunk: F,
   ) => Chunk.AndNonEmpty<
     F,
     G,
@@ -102,9 +102,9 @@ export const bind: {
     G extends Chunk.Chunk<any>,
   >(
     name: Exclude<N, keyof Chunk.Infer<F>>,
-    fb: G,
+    chunk: G,
   ): (
-    self: F,
+    selfChunk: F,
   ) => Chunk.AndNonEmpty<F, G, DoObject<N, Chunk.Infer<F>, Chunk.Infer<G>>>
 } = Monad.bind as any
 
@@ -117,13 +117,13 @@ export const flatMapTo: {
     name: Exclude<N, keyof Chunk.Infer<F>>,
     amb: (a: Chunk.Infer<F>, i: number) => G,
   ): (
-    self: F,
+    chunk: F,
   ) => Chunk.AndNonEmpty<F, G, DoObject<N, Chunk.Infer<F>, Chunk.Infer<G>>>
 } = MonadWithIndex.flatMapToWithIndex as any
 
 export interface GenUtils {
   readonly $: <A>(
-    self: Chunk.Chunk<A> | (() => Chunk.Chunk<A>),
+    chunk: Chunk.Chunk<A> | (() => Chunk.Chunk<A>),
   ) => ChunkIterable<A>
   readonly where: (a: boolean) => Generator<unknown, void>
 }
@@ -137,9 +137,9 @@ export interface ChunkIterable<A> {
 }
 
 function* makeIterable<A>(
-  self: Chunk.Chunk<A> | (() => Chunk.Chunk<A>),
+  chunk: Chunk.Chunk<A> | (() => Chunk.Chunk<A>),
 ): ChunkIterable<A> {
-  return (yield self) as A
+  return (yield chunk) as A
 }
 
 function* where(a: boolean) {

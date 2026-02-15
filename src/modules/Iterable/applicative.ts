@@ -25,9 +25,9 @@ export const NonEmptyApplicativeWithIndex = ApplicativeWithIndex_.create<
 
 export const apply: {
   <F extends Iterable<any>>(
-    fa: F,
+    iterable: F,
   ): <G extends Iterable<(a: Iterable.Infer<F>, i: number) => any>>(
-    self: G,
+    selfIterable: G,
   ) => Iterable.AndNonEmpty<F, G, ReturnType<Iterable.Infer<G>>>
 } = NonEmptyApplicativeWithIndex.applyWithIndex as any
 
@@ -36,6 +36,8 @@ export const flipApply: {
     F extends Iterable<any>,
     G extends Iterable<(a: Iterable.Infer<F>, i: number) => any>,
   >(
-    fab: G,
-  ): (self: F) => Iterable.AndNonEmpty<F, G, ReturnType<Iterable.Infer<G>>>
+    iterable: G,
+  ): (
+    selfIterable: F,
+  ) => Iterable.AndNonEmpty<F, G, ReturnType<Iterable.Infer<G>>>
 } = NonEmptyApplicativeWithIndex.flipApplyWithIndex as any

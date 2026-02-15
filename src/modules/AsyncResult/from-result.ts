@@ -6,5 +6,5 @@ import { _AsyncResult } from './_internal'
 export const FromResult: FromResult_<AsyncResultHkt> = _AsyncResult.FromResult
 
 export const fromResult: {
-  <A, E>(ma: Result<A, E>): AsyncResult<A, E>
+  <A, E>(result: Result<A, E>): AsyncResult<A, E>
 } = FromResult.fromResult

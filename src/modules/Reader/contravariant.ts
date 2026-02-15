@@ -7,5 +7,5 @@ export const Contravariant: Contravariant_.Contravariant<ReaderHkt> = {
 }
 
 export const contramap: {
-  <T, S>(ts: (t: T) => S): <A>(self: Reader<S, A>) => Reader<T, A>
+  <T, S>(ts: (t: T) => S): <A>(reader: Reader<S, A>) => Reader<T, A>
 } = Contravariant.contramap

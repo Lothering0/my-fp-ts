@@ -6,13 +6,15 @@ export const MonadBoth: MonadBoth_.MonadBoth<AsyncResultHkt> =
   _AsyncResult.MonadBoth
 
 export const flatLeft: {
-  <A, B, E>(self: AsyncResult<A, AsyncResult<B, E>>): AsyncResult<A | B, E>
+  <A, B, E>(
+    asyncResult: AsyncResult<A, AsyncResult<B, E>>,
+  ): AsyncResult<A | B, E>
 } = MonadBoth.flatLeft
 
 export const flatMapLeft: {
   <A, E, D>(
     emd: (e: E) => AsyncResult<A, D>,
-  ): <B>(self: AsyncResult<B, E>) => AsyncResult<A | B, D>
+  ): <B>(asyncResult: AsyncResult<B, E>) => AsyncResult<A | B, D>
 } = MonadBoth.flatMapLeft
 
 export const composeLeft: {

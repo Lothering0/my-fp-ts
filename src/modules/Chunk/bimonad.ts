@@ -6,5 +6,5 @@ import { Comonad } from './comonad'
 export const Bimonad = create<Chunk.NonEmptyHkt>(NonEmptyMonad, Comonad)
 
 export const single: {
-  <A>(self: Chunk.NonEmpty<A>): Chunk.NonEmpty<A>
+  <A>(chunk: Chunk.NonEmpty<A>): Chunk.NonEmpty<A>
 } = Bimonad.single as any

@@ -37,23 +37,23 @@ export const on: {
   <E, D extends E, A>(
     p: Refinement<E, D>,
     da: (d: D) => A,
-  ): <B>(self: Matching<E, B>) => Matching<E, A | B>
+  ): <B>(matching: Matching<E, B>) => Matching<E, A | B>
   <E, A>(
     p: Predicate.Predicate<E>,
     ea: (e: E) => A,
-  ): <B>(self: Matching<E, B>) => Matching<E, A | B>
+  ): <B>(matching: Matching<E, B>) => Matching<E, A | B>
 } =
   <E, A>(p: Predicate.Predicate<E>, ea: (e: E) => A) =>
-  <B>(self: Matching<E, B>): Matching<E, A | B> => ({
-    ...self,
-    patterns: pipe(self.patterns, Array.append([p, ea as (e: E) => A | B])),
+  <B>(matching: Matching<E, B>): Matching<E, A | B> => ({
+    ...matching,
+    patterns: pipe(matching.patterns, Array.append([p, ea as (e: E) => A | B])),
   })
 
 export const onNot: {
   <E, A>(
     p: Predicate.Predicate<E>,
     ea: (e: E) => A,
-  ): <B>(self: Matching<E, B>) => Matching<E, A | B>
+  ): <B>(matching: Matching<E, B>) => Matching<E, A | B>
 } = (p, ea) => on(Predicate.not(p), ea)
 
 export const whenEquals: {
@@ -61,7 +61,7 @@ export const whenEquals: {
     Equivalence: Equivalence_.Equivalence<E>,
     pattern: D,
     da: (d: D) => A,
-  ): <B>(self: Matching<E, B>) => Matching<E, A | B>
+  ): <B>(matching: Matching<E, B>) => Matching<E, A | B>
 } = (Equivalence, pattern, da) => on(Equivalence.equals(pattern), da)
 
 export const whenNotEquals =
@@ -70,27 +70,28 @@ export const whenNotEquals =
     pattern: D,
     ea: (e: Exclude<E, D>) => A,
   ) =>
-  <B>(self: Matching<E, B>): Matching<E, A | B> =>
+  <B>(matching: Matching<E, B>): Matching<E, A | B> =>
     whenEquals(
       Equivalence_.reverse(Equivalence),
       pattern as Exclude<E, D>,
       ea,
-    )(self)
+    )(matching)
 
 export const when: {
   <E, const D extends E, A>(
     pattern: D,
     ea: (e: D) => A,
-  ): <B>(self: Matching<E, B>) => Matching<E, A | B>
-} = (pattern, ea) => self => whenEquals(self.Equivalence, pattern, ea)(self)
+  ): <B>(matching: Matching<E, B>) => Matching<E, A | B>
+} = (pattern, ea) => matching =>
+  whenEquals(matching.Equivalence, pattern, ea)(matching)
 
 export const whenNot =
   <E, const D extends E, A>(pattern: D, ea: (e: Exclude<E, D>) => A) =>
-  <B>(self: Matching<E, B>): Matching<E, A | B> =>
+  <B>(matching: Matching<E, B>): Matching<E, A | B> =>
     pipe(
-      self,
+      matching,
       whenEquals(
-        Equivalence_.reverse(self.Equivalence),
+        Equivalence_.reverse(matching.Equivalence),
         pattern as Exclude<E, D>,
         ea,
       ),
@@ -101,7 +102,7 @@ export const whenTag: {
     tag: T,
     // Passing to callback exactly tagged object
     ea: (e: E extends Tagged<T> ? E : never) => A,
-  ): <B>(self: Matching<E, B>) => Matching<E, A | B>
+  ): <B>(matching: Matching<E, B>) => Matching<E, A | B>
 } = (tag, ea) => on(e => e._tag === tag, ea)
 
 export const whenNotTag: {
@@ -109,21 +110,21 @@ export const whenNotTag: {
     tag: T,
     // Passing to callback only those objects which is not tagged with provided tag
     ea: (e: E extends Tagged<T> ? never : E) => A,
-  ): <B>(self: Matching<E, B>) => Matching<E, A | B>
+  ): <B>(matching: Matching<E, B>) => Matching<E, A | B>
 } = (tag, ea) => on(e => e._tag !== tag, ea)
 
 export const whenInstance: {
   <E, D extends E, A>(
     constructor: new (...args: unknown[]) => D,
     ea: (e: D) => A,
-  ): <B>(self: Matching<E, B>) => Matching<E, A | B>
+  ): <B>(matching: Matching<E, B>) => Matching<E, A | B>
 } = (constructor, ea) => on(e => e instanceof constructor, ea)
 
 export const whenNotInstance: {
   <E, D extends E, A>(
     constructor: new (...args: unknown[]) => D,
     ea: (e: Exclude<E, D>) => A,
-  ): <B>(self: Matching<E, B>) => Matching<E, A | B>
+  ): <B>(matching: Matching<E, B>) => Matching<E, A | B>
 } = (constructor, ea) =>
   on(e => pipe(e instanceof constructor, Boolean.not), ea)
 
@@ -131,67 +132,67 @@ export const whenSchema: {
   <E, D extends E, A>(
     Schema: Schema_.Schema<D>,
     ea: (e: D) => A,
-  ): <B>(self: Matching<E, B>) => Matching<E, A | B>
+  ): <B>(matching: Matching<E, B>) => Matching<E, A | B>
 } = (Schema, ea) => on(Schema_.validate(Schema), ea)
 
 export const whenNotSchema: {
   <E, D extends E, A>(
     Schema: Schema_.Schema<D>,
     ea: (e: D) => A,
-  ): <B>(self: Matching<E, B>) => Matching<E, A | B>
+  ): <B>(matching: Matching<E, B>) => Matching<E, A | B>
 } = (Schema, ea) => onNot(Schema_.validate(Schema), ea)
 
 export const getResult: {
-  <E, A>(self: Matching<E, A>): Result.Result<A, E>
-} = self =>
+  <E, A>(matching: Matching<E, A>): Result.Result<A, E>
+} = matching =>
   pipe(
-    self.patterns,
-    Array.find(([p]) => p(self.value)),
+    matching.patterns,
+    Array.find(([p]) => p(matching.value)),
     Option.match({
-      onNone: () => Result.fail(self.value),
-      onSome: ([, f]) => pipe(self.value, f, Result.succeed),
+      onNone: () => Result.fail(matching.value),
+      onSome: ([, f]) => pipe(matching.value, f, Result.succeed),
     }),
   )
 
 export const getOption: {
-  <E, A>(self: Matching<E, A>): Option.Option<A>
+  <E, A>(matching: Matching<E, A>): Option.Option<A>
 } = flow(getResult, Option.fromResult)
 
 export const getOrElse: {
-  <E, A>(onDefault: (e: E) => A): <B>(self: Matching<E, B>) => A | B
+  <E, A>(onDefault: (e: E) => A): <B>(matching: Matching<E, B>) => A | B
 } = onDefault => flow(getResult, Result.getOrElse(onDefault))
 
 export const getResults: {
-  <E, A>(self: Matching<E, A>): ReadonlyArray<Result.Result<A, E>>
-} = self =>
+  <E, A>(matching: Matching<E, A>): ReadonlyArray<Result.Result<A, E>>
+} = matching =>
   pipe(
-    self.patterns,
+    matching.patterns,
     Array.map(([p, f]) =>
       pipe(
-        self.value,
+        matching.value,
         p,
         Boolean.match({
-          onFalse: () => Result.fail(self.value),
-          onTrue: () => pipe(self.value, f, Result.succeed),
+          onFalse: () => Result.fail(matching.value),
+          onTrue: () => pipe(matching.value, f, Result.succeed),
         }),
       ),
     ),
   )
 
 export const getFailures: {
-  <E, A>(self: Matching<E, A>): ReadonlyArray<E>
+  <E, A>(matching: Matching<E, A>): ReadonlyArray<E>
 } = flow(getResults, Array.failures)
 
 export const getSuccesses: {
-  <E, A>(self: Matching<E, A>): ReadonlyArray<A>
+  <E, A>(matching: Matching<E, A>): ReadonlyArray<A>
 } = flow(getResults, Array.successes)
 
 export const getOptions: {
-  <E, A>(self: Matching<E, A>): ReadonlyArray<Option.Option<A>>
+  <E, A>(matching: Matching<E, A>): ReadonlyArray<Option.Option<A>>
 } = flow(getResults, Array.map(Option.fromResult))
 
 export const getOrElseAll: {
   <E, A>(
     onDefault: (e: E) => A,
-  ): <B>(self: Matching<E, B>) => ReadonlyArray<A | B>
+  ): <B>(matching: Matching<E, B>) => ReadonlyArray<A | B>
 } = onDefault => flow(getResults, Array.map(Result.getOrElse(onDefault)))

@@ -6,15 +6,15 @@ export const Zippable = Zippable_.create(Applicative)
 
 export const zipWith: {
   <A, B, C, R>(
-    that: Reader<R, B>,
+    reader: Reader<R, B>,
     f: (a: A, b: B) => C,
-  ): (self: Reader<R, A>) => Reader<R, C>
+  ): (selfReader: Reader<R, A>) => Reader<R, C>
 } = Zippable.zipWith
 
 export const zip: {
   <A, B, R>(
-    that: Reader<R, B>,
-  ): (self: Reader<R, A>) => Reader<R, readonly [A, B]>
+    reader: Reader<R, B>,
+  ): (selfReader: Reader<R, A>) => Reader<R, readonly [A, B]>
 } = Zippable.zip
 
 export const unzip: {

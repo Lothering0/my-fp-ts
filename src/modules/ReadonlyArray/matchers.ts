@@ -9,9 +9,9 @@ export interface Matchers<A, B, C = B> {
 }
 
 export const match: {
-  <A, B, C = B>(matchers: Matchers<A, B, C>): (self: ReadonlyArray<A>) => B | C
-} = matchers => self =>
-  isNonEmpty(self) ? matchers.onNonEmpty(self) : matchers.onEmpty()
+  <A, B, C = B>(matchers: Matchers<A, B, C>): (array: ReadonlyArray<A>) => B | C
+} = matchers => array =>
+  isNonEmpty(array) ? matchers.onNonEmpty(array) : matchers.onEmpty()
 
 export interface MatchersLeft<A, B, C = B> {
   readonly onEmpty: LazyArg<B>
@@ -21,10 +21,10 @@ export interface MatchersLeft<A, B, C = B> {
 export const matchLeft: {
   <A, B, C = B>(
     matchers: MatchersLeft<A, B, C>,
-  ): (self: ReadonlyArray<A>) => B | C
-} = matchers => self =>
-  isNonEmpty(self)
-    ? matchers.onNonEmpty(headNonEmpty(self), tailNonEmpty(self))
+  ): (array: ReadonlyArray<A>) => B | C
+} = matchers => array =>
+  isNonEmpty(array)
+    ? matchers.onNonEmpty(headNonEmpty(array), tailNonEmpty(array))
     : matchers.onEmpty()
 
 export interface MatchersRight<A, B, C = B> {
@@ -35,8 +35,8 @@ export interface MatchersRight<A, B, C = B> {
 export const matchRight: {
   <A, B, C = B>(
     matchers: MatchersRight<A, B, C>,
-  ): (self: ReadonlyArray<A>) => B | C
-} = matchers => self =>
-  isNonEmpty(self)
-    ? matchers.onNonEmpty(initNonEmpty(self), lastNonEmpty(self))
+  ): (array: ReadonlyArray<A>) => B | C
+} = matchers => array =>
+  isNonEmpty(array)
+    ? matchers.onNonEmpty(initNonEmpty(array), lastNonEmpty(array))
     : matchers.onEmpty()

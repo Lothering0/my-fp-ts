@@ -29,9 +29,9 @@ export const BigInt: Schema<bigint> = create(x => {
 
 export const min =
   (min: number) =>
-  <A extends number>(self: Schema<A>): Schema<A> =>
+  <A extends number>(schema: Schema<A>): Schema<A> =>
     create(x => {
-      const processResult = self.proceed(x)
+      const processResult = schema.proceed(x)
       if (Result.isFailure(processResult)) {
         return processResult
       }
@@ -46,9 +46,9 @@ export const min =
 
 export const max =
   (max: number) =>
-  <A extends number>(self: Schema<A>): Schema<A> =>
+  <A extends number>(schema: Schema<A>): Schema<A> =>
     create(x => {
-      const processResult = self.proceed(x)
+      const processResult = schema.proceed(x)
       if (Result.isFailure(processResult)) {
         return processResult
       }

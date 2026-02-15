@@ -101,10 +101,10 @@ export const Struct = <
 
 export const keyof: {
   <A extends Record.ReadonlyRecord<string, Schema<unknown>>>(
-    self: StructSchema<A>,
+    schema: StructSchema<A>,
   ): Schema<keyof A>
-} = self => {
-  const keys = Object.keys(self.schemasByKey)
+} = schema => {
+  const keys = Object.keys(schema.schemasByKey)
 
   return create((x: string) => {
     if (keys.includes(x)) {
@@ -123,11 +123,11 @@ export const omit: {
     K extends ReadonlyArray<keyof A>,
   >(
     ...keys: K
-  ): (self: StructSchema<A>) => StructSchema<Omit<A, K[number]>>
+  ): (schema: StructSchema<A>) => StructSchema<Omit<A, K[number]>>
 } =
   (...keys) =>
-  self =>
-    pipe(self.schemasByKey, Record.omit(...keys), Struct)
+  schema =>
+    pipe(schema.schemasByKey, Record.omit(...keys), Struct)
 
 export const pick: {
   <
@@ -135,25 +135,25 @@ export const pick: {
     K extends ReadonlyArray<keyof A>,
   >(
     ...keys: K
-  ): (self: StructSchema<A>) => StructSchema<Pick<A, K[number]>>
+  ): (schema: StructSchema<A>) => StructSchema<Pick<A, K[number]>>
 } =
   (...keys) =>
-  self =>
-    pipe(self.schemasByKey, Record.pick(...keys), Struct)
+  schema =>
+    pipe(schema.schemasByKey, Record.pick(...keys), Struct)
 
 export const partial: {
   <A extends Record.ReadonlyRecord<string, Schema<unknown>>>(
-    self: StructSchema<A>,
+    schema: StructSchema<A>,
   ): StructSchema<{ [K in keyof A]: SchemaOptional<Type<A[K]>> }>
-} = self => pipe(self.schemasByKey, Record.map(optional), Struct) as any
+} = schema => pipe(schema.schemasByKey, Record.map(optional), Struct) as any
 
 export const required: {
   <A extends Record.ReadonlyRecord<string, Schema<unknown>>>(
-    self: StructSchema<A>,
+    schema: StructSchema<A>,
   ): StructSchema<{ [K in keyof A]: Schema<Type<A[K]>> }>
-} = self =>
+} = schema =>
   pipe(
-    self.schemasByKey,
+    schema.schemasByKey,
     Record.map(
       (schema): Schema<unknown> => ({
         In: hole(),
@@ -174,12 +174,12 @@ export const required: {
 
 export const intersection: {
   <A extends Record.ReadonlyRecord<string, Schema<unknown>>>(
-    that: StructSchema<A>,
+    schema: StructSchema<A>,
   ): <B extends Record.ReadonlyRecord<string, Schema<unknown>>>(
-    self: StructSchema<B>,
+    selfSchema: StructSchema<B>,
   ) => StructSchema<A & B>
-} = that => self =>
+} = schema => selfSchema =>
   Struct({
-    ...self.schemasByKey,
-    ...that.schemasByKey,
+    ...selfSchema.schemasByKey,
+    ...schema.schemasByKey,
   })

@@ -6,21 +6,21 @@ import { DoObject, DoObjectKey } from '../../types/DoObject'
 import { FromIdentity } from './from-identity'
 
 export const Monad = create<StateHkt>(FromIdentity, Functor, {
-  flat: self => flow(self, ([ma, s1]) => ma(s1)),
+  flat: state => flow(state, ([ma, s1]) => ma(s1)),
 })
 
 export const Do = Monad.Do
 
 export const flat: {
-  <S, A>(self: State<S, State<S, A>>): State<S, A>
+  <S, A>(state: State<S, State<S, A>>): State<S, A>
 } = Monad.flat
 
 export const flatMap: {
-  <S, A, B>(amb: (a: A) => State<S, B>): (self: State<S, A>) => State<S, B>
+  <S, A, B>(amb: (a: A) => State<S, B>): (state: State<S, A>) => State<S, B>
 } = Monad.flatMap
 
 export const andThen: {
-  <S, A>(ma: State<S, A>): (self: State<S, unknown>) => State<S, A>
+  <S, A>(state: State<S, A>): (selfState: State<S, unknown>) => State<S, A>
 } = Monad.andThen
 
 export const compose: {
@@ -34,33 +34,33 @@ export const setTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     b: B,
-  ): <S>(self: State<S, A>) => State<S, DoObject<N, A, B>>
+  ): <S>(state: State<S, A>) => State<S, DoObject<N, A, B>>
 } = Monad.setTo
 
 export const mapTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     ab: (a: A) => B,
-  ): <S>(self: State<S, A>) => State<S, DoObject<N, A, B>>
+  ): <S>(state: State<S, A>) => State<S, DoObject<N, A, B>>
 } = Monad.mapTo
 
 export const flipApplyTo: {
   <N extends DoObjectKey, S, A, B>(
     name: Exclude<N, keyof A>,
-    fab: State<S, (a: A) => B>,
-  ): (self: State<S, A>) => State<S, DoObject<N, A, B>>
+    state: State<S, (a: A) => B>,
+  ): (selfState: State<S, A>) => State<S, DoObject<N, A, B>>
 } = Monad.flipApplyTo
 
 export const bind: {
   <N extends DoObjectKey, S, A, B>(
     name: Exclude<N, keyof A>,
-    fb: State<S, B>,
-  ): (self: State<S, A>) => State<S, DoObject<N, A, B>>
+    state: State<S, B>,
+  ): (selfState: State<S, A>) => State<S, DoObject<N, A, B>>
 } = Monad.bind
 
 export const flatMapTo: {
   <N extends DoObjectKey, S, A, B>(
     name: Exclude<N, keyof A>,
     amb: (a: A) => State<S, B>,
-  ): (self: State<S, A>) => State<S, DoObject<N, A, B>>
+  ): (state: State<S, A>) => State<S, DoObject<N, A, B>>
 } = Monad.flatMapTo

@@ -15,5 +15,5 @@ export const asksReader: {
 } = f => r => pipe(r, f(r))
 
 export const local: {
-  <R1, R2>(f: (r2: R2) => R1): <A>(self: Reader<R1, A>) => Reader<R2, A>
-} = f => self => flow(f, self)
+  <R1, R2>(f: (r2: R2) => R1): <A>(reader: Reader<R1, A>) => Reader<R2, A>
+} = f => reader => flow(f, reader)

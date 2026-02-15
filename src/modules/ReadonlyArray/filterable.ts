@@ -18,26 +18,26 @@ export const FilterableWithIndex = FilterableWithIndex_.create<
 export const filterMap: {
   <A, B>(
     p: (a: A, i: number) => Option<B>,
-  ): (self: ReadonlyArray<A>) => ReadonlyArray<B>
+  ): (array: ReadonlyArray<A>) => ReadonlyArray<B>
 } = FilterableWithIndex.filterMapWithIndex
 
 export const filter: {
   <A, B extends A>(
     p: RefinementWithIndex<A, B, number>,
-  ): (self: ReadonlyArray<A>) => ReadonlyArray<B>
+  ): (array: ReadonlyArray<A>) => ReadonlyArray<B>
   <A>(
     p: PredicateWithIndex<A, number>,
-  ): (self: ReadonlyArray<A>) => ReadonlyArray<A>
+  ): (array: ReadonlyArray<A>) => ReadonlyArray<A>
 } = FilterableWithIndex.filterWithIndex
 
 export const partitionMap: {
   <A, E, B>(
     p: (a: A, i: number) => Result<E, B>,
-  ): (self: ReadonlyArray<A>) => readonly [ReadonlyArray<E>, ReadonlyArray<B>]
+  ): (array: ReadonlyArray<A>) => readonly [ReadonlyArray<E>, ReadonlyArray<B>]
 } = FilterableWithIndex.partitionMapWithIndex
 
 export const partition: {
   <A>(
     p: PredicateWithIndex<A, number>,
-  ): (self: ReadonlyArray<A>) => readonly [ReadonlyArray<A>, ReadonlyArray<A>]
+  ): (array: ReadonlyArray<A>) => readonly [ReadonlyArray<A>, ReadonlyArray<A>]
 } = FilterableWithIndex.partitionWithIndex

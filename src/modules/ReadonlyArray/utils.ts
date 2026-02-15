@@ -16,12 +16,12 @@ import { isEmpty, isNonEmpty } from './refinements'
 import { of } from './from-identity'
 import { Endomorphism } from '../../typeclasses/Endomorphism'
 
-export const toArray = <A>(self: ReadonlyArray<A>): A[] => self as A[]
+export const toArray = <A>(array: ReadonlyArray<A>): A[] => array as A[]
 
 /** Time complexity: O(1) */
 export const length: {
-  (self: ReadonlyArray<unknown>): number
-} = self => self.length
+  (array: ReadonlyArray<unknown>): number
+} = array => array.length
 
 export const copy: {
   <A>(array: ReadonlyArray<A>): ReadonlyArray<A>
@@ -34,7 +34,7 @@ export const headNonEmpty: {
 
 /** Time complexity: O(1) */
 export const head: {
-  <A>(self: ReadonlyArray<A>): Option.Option<A>
+  <A>(array: ReadonlyArray<A>): Option.Option<A>
 } = match({
   onEmpty: Option.none,
   onNonEmpty: flow(headNonEmpty, Option.some),
@@ -47,7 +47,7 @@ export const initNonEmpty: {
 
 /** Time complexity: O(n) */
 export const init: {
-  <A>(self: ReadonlyArray<A>): Option.Option<ReadonlyArray<A>>
+  <A>(array: ReadonlyArray<A>): Option.Option<ReadonlyArray<A>>
 } = match({
   onEmpty: Option.none,
   onNonEmpty: flow(initNonEmpty, Option.some),
@@ -55,12 +55,12 @@ export const init: {
 
 /** Time complexity: O(1) */
 export const lastNonEmpty: {
-  <A>(self: Array.NonEmpty<A>): A
+  <A>(array: Array.NonEmpty<A>): A
 } = array => array.at(-1)!
 
 /** Time complexity: O(1) */
 export const last: {
-  <A>(self: ReadonlyArray<A>): Option.Option<A>
+  <A>(array: ReadonlyArray<A>): Option.Option<A>
 } = match({
   onEmpty: Option.none,
   onNonEmpty: flow(lastNonEmpty, Option.some),
@@ -73,7 +73,7 @@ export const tailNonEmpty: {
 
 /** Time complexity: O(n) */
 export const tail: {
-  <A>(self: ReadonlyArray<A>): Option.Option<ReadonlyArray<A>>
+  <A>(array: ReadonlyArray<A>): Option.Option<ReadonlyArray<A>>
 } = match({
   onEmpty: Option.none,
   onNonEmpty: flow(tailNonEmpty, Option.some),
@@ -82,7 +82,7 @@ export const tail: {
 /** Time complexity: O(1) */
 export const has: {
   (i: number): <A>(array: ReadonlyArray<A>) => boolean
-} = i => self => Object.hasOwn(self, Number.Number(i))
+} = i => array => Object.hasOwn(array, Number.Number(i))
 
 /** Time complexity: O(1) */
 export const isOutOfBounds: {
@@ -91,9 +91,9 @@ export const isOutOfBounds: {
 
 /** Time complexity: O(1) */
 export const lookup: {
-  (i: number): <A>(self: ReadonlyArray<A>) => Option.Option<A>
-} = i => self =>
-  pipe(self, has(i)) ? pipe(self.at(i)!, Option.some) : Option.none()
+  (i: number): <A>(array: ReadonlyArray<A>) => Option.Option<A>
+} = i => array =>
+  pipe(array, has(i)) ? pipe(array.at(i)!, Option.some) : Option.none()
 
 /**
  * Time complexity: O(1).
@@ -101,24 +101,24 @@ export const lookup: {
  * Like `lookup` but accepts also negative integers where -1 is index of the last element, -2 of the pre-last and so on.
  */
 export const at: {
-  (i: number): <A>(self: ReadonlyArray<A>) => Option.Option<A>
-} = i => self =>
-  i < length(self) && i >= -length(self)
-    ? pipe(self.at(i)!, Option.some)
+  (i: number): <A>(array: ReadonlyArray<A>) => Option.Option<A>
+} = i => array =>
+  i < length(array) && i >= -length(array)
+    ? pipe(array.at(i)!, Option.some)
     : Option.none()
 
 /** Time complexity: O(1) */
 export const lastIndex: {
-  (self: ReadonlyArray<unknown>): number
-} = self => length(self) - 1
+  (array: ReadonlyArray<unknown>): number
+} = array => length(array) - 1
 
 export const findMap: {
   <A, B>(
     aimb: (a: A, i: number) => Option.Option<B>,
-  ): (self: ReadonlyArray<A>) => Option.Option<B>
-} = aimb => self => {
-  for (let i = 0; i < self.length; i++) {
-    const a = self[i]!
+  ): (array: ReadonlyArray<A>) => Option.Option<B>
+} = aimb => array => {
+  for (let i = 0; i < array.length; i++) {
+    const a = array[i]!
     const mb = aimb(a, i)
 
     if (Option.isSome(mb)) {
@@ -132,10 +132,10 @@ export const findMap: {
 export const find: {
   <A, B extends A>(
     p: RefinementWithIndex<A, B, number>,
-  ): (self: ReadonlyArray<A>) => Option.Option<B>
+  ): (array: ReadonlyArray<A>) => Option.Option<B>
   <A>(
     p: PredicateWithIndex<A, number>,
-  ): (self: ReadonlyArray<A>) => Option.Option<A>
+  ): (array: ReadonlyArray<A>) => Option.Option<A>
 } = <A>(p: PredicateWithIndex<A, number>) =>
   findMap<A, A>((a, i) =>
     pipe(
@@ -150,20 +150,20 @@ export const find: {
 export const findIndex: {
   <A>(
     p: PredicateWithIndex<A, number>,
-  ): (self: ReadonlyArray<A>) => Option.Option<number>
-} = p => self =>
+  ): (array: ReadonlyArray<A>) => Option.Option<number>
+} = p => array =>
   pipe(
-    self.findIndex((a, i) => p(a, i)),
+    array.findIndex((a, i) => p(a, i)),
     i => (i > -1 ? Option.some(i) : Option.none()),
   )
 
 export const findLastMap: {
   <A, B>(
     aimb: (a: A, i: number) => Option.Option<B>,
-  ): (self: ReadonlyArray<A>) => Option.Option<B>
-} = aimb => self => {
-  for (let i = lastIndex(self); i > 0; i--) {
-    const a = self[i]!
+  ): (array: ReadonlyArray<A>) => Option.Option<B>
+} = aimb => array => {
+  for (let i = lastIndex(array); i > 0; i--) {
+    const a = array[i]!
     const mb = aimb(a, i)
 
     if (Option.isSome(mb)) {
@@ -177,10 +177,10 @@ export const findLastMap: {
 export const findLast: {
   <A, B extends A>(
     p: RefinementWithIndex<A, B, number>,
-  ): (self: ReadonlyArray<A>) => Option.Option<B>
+  ): (array: ReadonlyArray<A>) => Option.Option<B>
   <A>(
     p: PredicateWithIndex<A, number>,
-  ): (self: ReadonlyArray<A>) => Option.Option<A>
+  ): (array: ReadonlyArray<A>) => Option.Option<A>
 } = <A>(p: PredicateWithIndex<A, number>) =>
   findLastMap<A, A>((a, i) =>
     pipe(
@@ -195,10 +195,10 @@ export const findLast: {
 export const findLastIndex: {
   <A>(
     p: PredicateWithIndex<A, number>,
-  ): (self: ReadonlyArray<A>) => Option.Option<number>
-} = p => self =>
+  ): (array: ReadonlyArray<A>) => Option.Option<number>
+} = p => array =>
   pipe(
-    self.findLastIndex((a, i) => p(a, i)),
+    array.findLastIndex((a, i) => p(a, i)),
     Number.matchNegative({
       onNegative: Option.none,
       onNonNegative: Option.some,
@@ -209,8 +209,8 @@ export const findLastIndex: {
 export const elem =
   <A>(Equivalence: Equivalence.Equivalence<A>) =>
   (a: A) =>
-  (self: ReadonlyArray<A>): boolean =>
-    pipe(self, find(Equivalence.equals(a)), Option.isSome)
+  (array: ReadonlyArray<A>): boolean =>
+    pipe(array, find(Equivalence.equals(a)), Option.isSome)
 
 export const every: {
   <A, B extends A>(
@@ -219,27 +219,27 @@ export const every: {
   <A>(p: PredicateWithIndex<A, number>): Predicate<ReadonlyArray<A>>
 } =
   <A, B extends A>(p: RefinementWithIndex<A, B, number>) =>
-  (self: ReadonlyArray<A>) =>
-    self.every((a, i) => p(a, i))
+  (array: ReadonlyArray<A>) =>
+    array.every((a, i) => p(a, i))
 
 export const exists =
   <A>(p: PredicateWithIndex<A, number>) =>
-  (self: ReadonlyArray<A>): self is Array.NonEmpty<A> =>
-    self.some((a, i) => p(a, i))
+  (array: ReadonlyArray<A>): array is Array.NonEmpty<A> =>
+    array.some((a, i) => p(a, i))
 
 /** Alias for `exists` */
 export const some = exists
 
 export const includes: {
-  <A>(a: A): (self: ReadonlyArray<A>) => boolean
-} = a => self => self.includes(a)
+  <A>(a: A): (array: ReadonlyArray<A>) => boolean
+} = a => array => array.includes(a)
 
 export const failures: {
-  <A, E>(self: ReadonlyArray<Result.Result<A, E>>): ReadonlyArray<E>
+  <A, E>(array: ReadonlyArray<Result.Result<A, E>>): ReadonlyArray<E>
 } = flatMap(Result.match({ onFailure: of, onSuccess: constEmptyArray }))
 
 export const successes: {
-  <A, E>(self: ReadonlyArray<Result.Result<A, E>>): ReadonlyArray<A>
+  <A, E>(array: ReadonlyArray<Result.Result<A, E>>): ReadonlyArray<A>
 } = flatMap(Result.match({ onFailure: constEmptyArray, onSuccess: of }))
 
 /** Time complexity: O(n) */
@@ -255,27 +255,27 @@ export const prepend: {
 
 /** Time complexity: O(n) */
 export const prependAllWith: {
-  <A>(f: (a: A, i: number) => A): (self: ReadonlyArray<A>) => ReadonlyArray<A>
+  <A>(f: (a: A, i: number) => A): (array: ReadonlyArray<A>) => ReadonlyArray<A>
 } = f => flatMap((a, i) => [f(a, i), a])
 
 /** Time complexity: O(n) */
 export const prependAll: {
-  <A>(a: A): (self: ReadonlyArray<A>) => ReadonlyArray<A>
+  <A>(a: A): (array: ReadonlyArray<A>) => ReadonlyArray<A>
 } = flow(constant, prependAllWith)
 
 /** Time complexity: O(n) */
 export const append: {
-  <A>(a: A): (self: ReadonlyArray<A>) => Array.NonEmpty<A>
+  <A>(a: A): (array: ReadonlyArray<A>) => Array.NonEmpty<A>
 } = a => concat([a] as const)
 
 /** Time complexity: O(n) */
 export const appendAllWith: {
-  <A>(f: (a: A, i: number) => A): (self: ReadonlyArray<A>) => ReadonlyArray<A>
+  <A>(f: (a: A, i: number) => A): (array: ReadonlyArray<A>) => ReadonlyArray<A>
 } = f => flatMap((a, i) => [a, f(a, i)])
 
 /** Time complexity: O(n) */
 export const appendAll: {
-  <A>(a: A): (self: ReadonlyArray<A>) => ReadonlyArray<A>
+  <A>(a: A): (array: ReadonlyArray<A>) => ReadonlyArray<A>
 } = flow(constant, appendAllWith)
 
 /** Time complexity: O(n) */
@@ -320,48 +320,51 @@ export const sortBy: {
   [...orders].reduce((out, Ord) => sort(Ord)(out) as any, array)
 
 export const join: {
-  (separator: string): (self: ReadonlyArray<string>) => string
-} = separator => self => self.join(separator)
+  (separator: string): (array: ReadonlyArray<string>) => string
+} = separator => array => array.join(separator)
 
 /** Time complexity: O(n) */
 export const slice: {
-  (start: number, end?: number): <A>(self: ReadonlyArray<A>) => ReadonlyArray<A>
-} = (start, end) => self => self.slice(start, end)
+  (
+    start: number,
+    end?: number,
+  ): <A>(array: ReadonlyArray<A>) => ReadonlyArray<A>
+} = (start, end) => array => array.slice(start, end)
 
 export const takeLeftWhile: {
   <A>(
     p: PredicateWithIndex<A, number>,
-  ): (self: ReadonlyArray<A>) => ReadonlyArray<A>
-} = p => self =>
+  ): (array: ReadonlyArray<A>) => ReadonlyArray<A>
+} = p => array =>
   pipe(
-    self,
+    array,
     findIndex(flow(p, Boolean.not)),
     Option.match({
-      onNone: constant(self),
-      onSome: i => slice(0, i)(self),
+      onNone: constant(array),
+      onSome: i => slice(0, i)(array),
     }),
   )
 
 export const takeLeft: {
-  (n: number): <A>(self: ReadonlyArray<A>) => ReadonlyArray<A>
+  (n: number): <A>(array: ReadonlyArray<A>) => ReadonlyArray<A>
 } = n => slice(0, Number.toNonNegative(n))
 
 export const takeRightWhile: {
   <A>(
     p: PredicateWithIndex<A, number>,
-  ): (self: ReadonlyArray<A>) => ReadonlyArray<A>
-} = p => self =>
+  ): (array: ReadonlyArray<A>) => ReadonlyArray<A>
+} = p => array =>
   pipe(
-    self,
+    array,
     findLastIndex(flow(p, Boolean.not)),
     Option.match({
-      onNone: constant(self),
-      onSome: i => slice(i - length(self) + 1)(self),
+      onNone: constant(array),
+      onSome: i => slice(i - length(array) + 1)(array),
     }),
   )
 
 export const takeRight: {
-  (n: number): <A>(self: ReadonlyArray<A>) => ReadonlyArray<A>
+  (n: number): <A>(array: ReadonlyArray<A>) => ReadonlyArray<A>
 } = Number.matchNonPositive({
   onNonPositive: () => constant([]),
   onPositive: n => slice(-n),
@@ -370,90 +373,90 @@ export const takeRight: {
 export const dropLeftWhile: {
   <A>(
     p: PredicateWithIndex<A, number>,
-  ): (self: ReadonlyArray<A>) => ReadonlyArray<A>
-} = p => self =>
+  ): (array: ReadonlyArray<A>) => ReadonlyArray<A>
+} = p => array =>
   pipe(
-    self,
+    array,
     findIndex(flow(p, Boolean.not)),
     Option.match({
       onNone: constant([]),
-      onSome: i => slice(i)(self),
+      onSome: i => slice(i)(array),
     }),
   )
 
 export const dropLeft: {
-  (n: number): <A>(self: ReadonlyArray<A>) => ReadonlyArray<A>
-} = n => self =>
+  (n: number): <A>(array: ReadonlyArray<A>) => ReadonlyArray<A>
+} = n => array =>
   Number.matchNonPositive({
-    onNonPositive: constant(self),
-    onPositive: n => slice(n)(self),
+    onNonPositive: constant(array),
+    onPositive: n => slice(n)(array),
   })(n)
 
 export const dropRightWhile: {
   <A>(
     p: PredicateWithIndex<A, number>,
-  ): (self: ReadonlyArray<A>) => ReadonlyArray<A>
-} = p => self =>
+  ): (array: ReadonlyArray<A>) => ReadonlyArray<A>
+} = p => array =>
   pipe(
-    self,
+    array,
     findLastIndex(flow(p, Boolean.not)),
     Option.match({
       onNone: constant([]),
-      onSome: i => slice(0, i + 1)(self),
+      onSome: i => slice(0, i + 1)(array),
     }),
   )
 
 export const dropRight: {
-  (n: number): <A>(self: ReadonlyArray<A>) => ReadonlyArray<A>
-} = n => self =>
+  (n: number): <A>(array: ReadonlyArray<A>) => ReadonlyArray<A>
+} = n => array =>
   Number.matchNonPositive({
-    onNonPositive: constant(self),
-    onPositive: n => slice(0, -n)(self),
+    onNonPositive: constant(array),
+    onPositive: n => slice(0, -n)(array),
   })(n)
 
 export const dropBothWhile: {
   <A>(
     p: PredicateWithIndex<A, number>,
-  ): (self: ReadonlyArray<A>) => ReadonlyArray<A>
-} = p => self =>
+  ): (array: ReadonlyArray<A>) => ReadonlyArray<A>
+} = p => array =>
   slice(
     pipe(
-      self,
+      array,
       findIndex(flow(p, Boolean.not)),
-      Option.getOrElse(constant(length(self))),
+      Option.getOrElse(constant(length(array))),
     ),
     pipe(
-      self,
+      array,
       findLastIndex(flow(p, Boolean.not)),
       Option.match({
         onNone: constant(0),
         onSome: Number.add(1),
       }),
     ),
-  )(self)
+  )(array)
 
 export const dropBoth: {
-  (n: number): <A>(self: ReadonlyArray<A>) => ReadonlyArray<A>
-} = n => self =>
+  (n: number): <A>(array: ReadonlyArray<A>) => ReadonlyArray<A>
+} = n => array =>
   Number.matchNonPositive({
-    onNonPositive: constant(self),
-    onPositive: n => slice(0, -n)(self),
+    onNonPositive: constant(array),
+    onPositive: n => slice(0, -n)(array),
   })(n)
 
 export const chunksOf =
   (n: number) =>
-  <A>(self: ReadonlyArray<A>): ReadonlyArray<Array.NonEmpty<A>> => {
-    if (n <= 0 || isEmpty(self)) {
+  <A>(array: ReadonlyArray<A>): ReadonlyArray<Array.NonEmpty<A>> => {
+    if (n <= 0 || isEmpty(array)) {
       return []
     }
 
-    if (self.length <= n) {
-      return [self] as [Array.NonEmpty<A>]
+    if (array.length <= n) {
+      return [array] as [Array.NonEmpty<A>]
     }
 
     const out: [A[], ...A[][]] = [[]]
 
-    for (const a of self) {
+    for (const a of array) {
       let lastChunk = lastNonEmpty(out)
 
       if (lastChunk.length === n) {
@@ -471,19 +474,19 @@ export const insertAt: {
   <A>(
     i: number,
     a: A,
-  ): (self: ReadonlyArray<A>) => Option.Option<Array.NonEmpty<A>>
-} = (i, a) => self =>
+  ): (array: ReadonlyArray<A>) => Option.Option<Array.NonEmpty<A>>
+} = (i, a) => array =>
   pipe(
     Option.Do,
     Option.tap(() =>
       pipe(
-        self,
+        array,
         lookup(i),
-        Option.orElse(pipe(i === length(self), Option.some)),
+        Option.orElse(pipe(i === length(array), Option.some)),
       ),
     ),
-    Option.bind('start', pipe(self, slice(0, i), Option.some)),
-    Option.bind('end', pipe(self, slice(i), Option.some)),
+    Option.bind('start', pipe(array, slice(0, i), Option.some)),
+    Option.bind('end', pipe(array, slice(i), Option.some)),
     Option.map(({ start, end }) => pipe(start, append(a), concat(end))),
   )
 
@@ -491,13 +494,13 @@ export const modifyAt: {
   <A>(
     i: number,
     f: Endomorphism<A>,
-  ): (self: ReadonlyArray<A>) => Option.Option<ReadonlyArray<A>>
-} = (i, f) => self =>
+  ): (array: ReadonlyArray<A>) => Option.Option<ReadonlyArray<A>>
+} = (i, f) => array =>
   pipe(
-    self,
+    array,
     lookup(i),
     Option.map(x => {
-      const clone = pipe(self, copy, toArray)
+      const clone = pipe(array, copy, toArray)
       clone[i] = f(x)
       return clone
     }),
@@ -507,17 +510,17 @@ export const updateAt: {
   <A>(
     i: number,
     a: A,
-  ): (self: ReadonlyArray<A>) => Option.Option<ReadonlyArray<A>>
+  ): (array: ReadonlyArray<A>) => Option.Option<ReadonlyArray<A>>
 } = (i, a) => modifyAt(i, constant(a))
 
 export const removeAt: {
-  <A>(i: number): (self: ReadonlyArray<A>) => Option.Option<ReadonlyArray<A>>
-} = i => self =>
+  <A>(i: number): (array: ReadonlyArray<A>) => Option.Option<ReadonlyArray<A>>
+} = i => array =>
   pipe(
     Option.Do,
-    Option.tap(() => pipe(self, lookup(i))),
-    Option.bind('start', pipe(self, slice(0, i), Option.some)),
-    Option.bind('end', pipe(self, slice(i + 2), Option.some)),
+    Option.tap(() => pipe(array, lookup(i))),
+    Option.bind('start', pipe(array, slice(0, i), Option.some)),
+    Option.bind('end', pipe(array, slice(i + 2), Option.some)),
     Option.map(({ start, end }) => pipe(start, concat(end))),
   )
 
@@ -583,29 +586,29 @@ export function comprehension(
 
 /** Time complexity: O(n) */
 export const flatDeep: {
-  (depth: 0): <A>(self: ReadonlyArray<A>) => ReadonlyArray<A>
-  (depth: 1): <A>(self: ReadonlyArray<ReadonlyArray<A>>) => ReadonlyArray<A>
+  (depth: 0): <A>(array: ReadonlyArray<A>) => ReadonlyArray<A>
+  (depth: 1): <A>(array: ReadonlyArray<ReadonlyArray<A>>) => ReadonlyArray<A>
   (
     depth: 2,
   ): <A>(
-    self: ReadonlyArray<ReadonlyArray<ReadonlyArray<A>>>,
+    array: ReadonlyArray<ReadonlyArray<ReadonlyArray<A>>>,
   ) => ReadonlyArray<A>
   (
     depth: 3,
   ): <A>(
-    self: ReadonlyArray<ReadonlyArray<ReadonlyArray<ReadonlyArray<A>>>>,
+    array: ReadonlyArray<ReadonlyArray<ReadonlyArray<ReadonlyArray<A>>>>,
   ) => ReadonlyArray<A>
   (
     depth: 4,
   ): <A>(
-    self: ReadonlyArray<
+    array: ReadonlyArray<
       ReadonlyArray<ReadonlyArray<ReadonlyArray<ReadonlyArray<A>>>>
     >,
   ) => ReadonlyArray<A>
   (
     depth: 5,
   ): <A>(
-    self: ReadonlyArray<
+    array: ReadonlyArray<
       ReadonlyArray<
         ReadonlyArray<ReadonlyArray<ReadonlyArray<ReadonlyArray<A>>>>
       >
@@ -614,7 +617,7 @@ export const flatDeep: {
   (
     depth: 6,
   ): <A>(
-    self: ReadonlyArray<
+    array: ReadonlyArray<
       ReadonlyArray<
         ReadonlyArray<
           ReadonlyArray<ReadonlyArray<ReadonlyArray<ReadonlyArray<A>>>>
@@ -625,7 +628,7 @@ export const flatDeep: {
   (
     depth: 7,
   ): <A>(
-    self: ReadonlyArray<
+    array: ReadonlyArray<
       ReadonlyArray<
         ReadonlyArray<
           ReadonlyArray<
@@ -638,7 +641,7 @@ export const flatDeep: {
   (
     depth: 8,
   ): <A>(
-    self: ReadonlyArray<
+    array: ReadonlyArray<
       ReadonlyArray<
         ReadonlyArray<
           ReadonlyArray<
@@ -653,7 +656,7 @@ export const flatDeep: {
   (
     depth: 9,
   ): <A>(
-    self: ReadonlyArray<
+    array: ReadonlyArray<
       ReadonlyArray<
         ReadonlyArray<
           ReadonlyArray<
@@ -669,8 +672,8 @@ export const flatDeep: {
   ) => ReadonlyArray<A>
   (
     depth: number,
-  ): <A>(self: ReadonlyArray<ReadonlyArray<unknown>>) => ReadonlyArray<A>
+  ): <A>(array: ReadonlyArray<ReadonlyArray<unknown>>) => ReadonlyArray<A>
 } =
   (depth: number) =>
-  <A>(self: ReadonlyArray<unknown>) =>
-    self.flat(depth) as unknown as ReadonlyArray<A>
+  <A>(array: ReadonlyArray<unknown>) =>
+    array.flat(depth) as unknown as ReadonlyArray<A>

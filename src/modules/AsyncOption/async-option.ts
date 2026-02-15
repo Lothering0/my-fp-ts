@@ -50,13 +50,13 @@ export const toPromise: {
 export const run = toPromise
 
 export const fromAsync: {
-  <A>(ma: Async.Async<A>): AsyncOption<A>
-} = ma => () => ma().then(Option.some)
+  <A>(async: Async.Async<A>): AsyncOption<A>
+} = async => () => async().then(Option.some)
 
 export const fromAsyncResult: {
-  <A, E>(ma: AsyncResult.AsyncResult<A, E>): AsyncOption<A>
-} = ma => () =>
-  ma().then(
+  <A, E>(asyncResult: AsyncResult.AsyncResult<A, E>): AsyncOption<A>
+} = asyncResult => () =>
+  asyncResult().then(
     Result.match({
       onFailure: constant(Option.none()),
       onSuccess: Option.some,
@@ -64,10 +64,10 @@ export const fromAsyncResult: {
   )
 
 const makeIterable: {
-  <A>(self: AsyncOption<A>): AsyncOptionIterable<A>
-} = self => ({
+  <A>(asyncOption: AsyncOption<A>): AsyncOptionIterable<A>
+} = asyncOption => ({
   *[Symbol.iterator]() {
-    const option = yield self() as any
+    const option = yield asyncOption() as any
     return option as any
   },
 })

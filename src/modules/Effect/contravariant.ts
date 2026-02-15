@@ -7,5 +7,5 @@ export const Contravariant: Contravariant_.Contravariant<EffectHkt> = {
 }
 
 export const contramap: {
-  <S, R>(sr: (s: S) => R): <A, E>(self: Effect<A, E, R>) => Effect<A, E, S>
+  <S, R>(sr: (s: S) => R): <A, E>(effect: Effect<A, E, R>) => Effect<A, E, S>
 } = Contravariant.contramap

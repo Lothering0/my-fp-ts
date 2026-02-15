@@ -13,5 +13,5 @@ export const sync: {
 } = a => () => a
 
 export const run: {
-  <A>(self: Sync<A>): A
-} = self => self()
+  <A>(sync: Sync<A>): A
+} = sync => sync()

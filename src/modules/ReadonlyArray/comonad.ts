@@ -9,5 +9,5 @@ export const Comonad: Comonad_.Comonad<Array.NonEmptyHkt> = {
 }
 
 export const extract: {
-  <A>(self: Array.NonEmpty<A>): A
+  <A>(array: Array.NonEmpty<A>): A
 } = Comonad.extract

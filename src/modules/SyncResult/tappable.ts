@@ -10,9 +10,9 @@ export const Tappable: Tappable_<SyncResultHkt> = _SyncResult.Tappable
 
 export const TappableBoth: TappableBoth_.TappableBoth<SyncResultHkt> = {
   ...Tappable,
-  tapLeft: f => self => () =>
+  tapLeft: f => syncResult => () =>
     pipe(
-      self,
+      syncResult,
       run,
       Result.match({
         onFailure: e =>
@@ -28,9 +28,9 @@ export const TappableBoth: TappableBoth_.TappableBoth<SyncResultHkt> = {
         onSuccess: Result.succeed,
       }),
     ),
-  tapLeftSync: f => self => () =>
+  tapLeftSync: f => syncResult => () =>
     pipe(
-      self,
+      syncResult,
       run,
       Result.match({
         onFailure: e => pipe(e, f, fromSync, run, () => Result.fail(e)),
@@ -42,40 +42,40 @@ export const TappableBoth: TappableBoth_.TappableBoth<SyncResultHkt> = {
 export const tap: {
   <A, E1>(
     f: (a: A) => SyncResult<unknown, E1>,
-  ): <E2>(self: SyncResult<A, E2>) => SyncResult<A, E1 | E2>
+  ): <E2>(syncResult: SyncResult<A, E2>) => SyncResult<A, E1 | E2>
 } = Tappable.tap
 
 export const tapSync: {
   <A>(
     f: (a: A) => Sync<unknown>,
-  ): <E>(self: SyncResult<A, E>) => SyncResult<A, E>
+  ): <E>(syncResult: SyncResult<A, E>) => SyncResult<A, E>
 } = Tappable.tapSync
 
 export const tapResult: {
   <A, E1>(
     f: (a: A) => Result.Result<unknown, E1>,
-  ): <E2>(self: SyncResult<A, E2>) => SyncResult<A, E1 | E2>
+  ): <E2>(syncResult: SyncResult<A, E2>) => SyncResult<A, E1 | E2>
 } = _SyncResult.tapResult
 
 export const tapLeft: {
   <E1, E2>(
     f: (e: E1) => SyncResult<unknown, E2>,
-  ): <A>(self: SyncResult<A, E1>) => SyncResult<A, E1 | E2>
+  ): <A>(syncResult: SyncResult<A, E1>) => SyncResult<A, E1 | E2>
 } = TappableBoth.tapLeft
 
 export const tapLeftSync: {
   <E>(
     f: (e: E) => Sync<unknown>,
-  ): <A>(self: SyncResult<A, E>) => SyncResult<A, E>
+  ): <A>(syncResult: SyncResult<A, E>) => SyncResult<A, E>
 } = TappableBoth.tapLeftSync
 
 export const tapLeftResult: {
   <E1, E2>(
     f: (e: E1) => Result.Result<unknown, E2>,
-  ): <A>(self: SyncResult<A, E1>) => SyncResult<A, E1 | E2>
-} = f => self => () =>
+  ): <A>(syncResult: SyncResult<A, E1>) => SyncResult<A, E1 | E2>
+} = f => syncResult => () =>
   pipe(
-    self,
+    syncResult,
     run,
     Result.match({
       onFailure: e =>

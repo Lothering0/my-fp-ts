@@ -5,5 +5,5 @@ import { run, SyncOption } from './sync-option'
 export const match: {
   <A, B, C = B>(
     matchers: Option.Matchers<A, B, C>,
-  ): (self: SyncOption<A>) => B | C
+  ): (syncOption: SyncOption<A>) => B | C
 } = matchers => flow(run, Option.match(matchers))

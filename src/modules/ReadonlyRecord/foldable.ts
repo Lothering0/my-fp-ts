@@ -31,12 +31,12 @@ export const reduce: {
   <A, B, K extends string>(
     b: B,
     baib: (b: B, a: A, i: K) => B,
-  ): (self: ReadonlyRecord<K, A>) => B
+  ): (record: ReadonlyRecord<K, A>) => B
 } = FoldableWithIndex.reduceWithIndex as typeof reduce
 
 export const reduceRight: {
   <A, B, K extends string>(
     b: B,
     abib: (a: A, b: B, i: K) => B,
-  ): (self: ReadonlyRecord<K, A>) => B
+  ): (record: ReadonlyRecord<K, A>) => B
 } = FoldableWithIndex.reduceRightWithIndex as typeof reduceRight

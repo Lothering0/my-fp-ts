@@ -12,9 +12,9 @@ export const Functor = Functor_.create<ResultHkt>({
 })
 
 export const map: {
-  <A, B>(ab: (success: A) => B): <E>(self: Result<A, E>) => Result<B, E>
+  <A, B>(ab: (success: A) => B): <E>(result: Result<A, E>) => Result<B, E>
 } = Functor.map
 
 export const as: {
-  <A>(a: A): <E>(self: Result<unknown, E>) => Result<A, E>
+  <A>(a: A): <E>(result: Result<unknown, E>) => Result<A, E>
 } = Functor.as

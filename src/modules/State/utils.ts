@@ -21,13 +21,13 @@ export const put: {
 } = s => pipe(s, constant, modify)
 
 export const run: {
-  <S>(s: S): <A>(self: State<S, A>) => readonly [A, S]
-} = s => self => self(s)
+  <S>(s: S): <A>(state: State<S, A>) => readonly [A, S]
+} = s => state => state(s)
 
 export const evaluate: {
-  <S>(s: S): <A>(self: State<S, A>) => A
-} = s => self => run(s)(self)[0]
+  <S>(s: S): <A>(state: State<S, A>) => A
+} = s => state => run(s)(state)[0]
 
 export const execute: {
-  <S>(s: S): <A>(self: State<S, A>) => S
-} = s => self => run(s)(self)[1]
+  <S>(s: S): <A>(state: State<S, A>) => S
+} = s => state => run(s)(state)[1]

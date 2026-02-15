@@ -8,15 +8,15 @@ export const Compactable: Compactable_<AsyncOptionHkt> =
   _AsyncOption.Compactable
 
 export const compact: {
-  <A>(self: AsyncOption<Option.Option<A>>): AsyncOption<A>
+  <A>(asyncOption: AsyncOption<Option.Option<A>>): AsyncOption<A>
 } = Compactable.compact
 
 export const compactResults: {
-  <A>(self: AsyncOption<Result.Result<A, unknown>>): AsyncOption<A>
+  <A>(asyncOption: AsyncOption<Result.Result<A, unknown>>): AsyncOption<A>
 } = Compactable.compactResults
 
 export const separate: {
   <A, E>(
-    self: AsyncOption<Result.Result<A, E>>,
+    asyncOption: AsyncOption<Result.Result<A, E>>,
   ): readonly [AsyncOption<A>, AsyncOption<E>]
 } = Compactable.separate

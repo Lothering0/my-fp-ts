@@ -6,5 +6,5 @@ import { _SyncResult } from './_internal'
 export const FromResult: FromResult_<SyncResultHkt> = _SyncResult.FromResult
 
 export const fromResult: {
-  <A, E>(ma: Result<A, E>): SyncResult<A, E>
+  <A, E>(result: Result<A, E>): SyncResult<A, E>
 } = FromResult.fromResult

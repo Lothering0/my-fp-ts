@@ -12,40 +12,42 @@ export const Tappable = create(Monad.Monad)
 export const tap: {
   <A>(
     f: (a: A) => Option.Option<unknown>,
-  ): (self: Option.Option<A>) => Option.Option<A>
+  ): (option: Option.Option<A>) => Option.Option<A>
 } = Tappable.tap
 
 export const tapSync: {
-  <A>(f: (a: A) => Sync<unknown>): (self: Option.Option<A>) => Option.Option<A>
+  <A>(
+    f: (a: A) => Sync<unknown>,
+  ): (option: Option.Option<A>) => Option.Option<A>
 } = Tappable.tapSync
 
 export const tapSyncOption: {
   <A>(
     f: (a: A) => Sync<Option.Option<unknown>>,
-  ): (self: Option.Option<A>) => Option.Option<A>
-} = afe => self =>
+  ): (option: Option.Option<A>) => Option.Option<A>
+} = afe => option =>
   pipe(
-    self,
+    option,
     map(afe),
     Monad.flatMap(f => f()),
-    Monad.andThen(self),
+    Monad.andThen(option),
   )
 
 export const tapResult: {
   <A>(
     afe: (a: A) => Result.Result<unknown, unknown>,
-  ): (self: Option.Option<A>) => Option.Option<A>
-} = afe => self =>
-  pipe(self, map(afe), Monad.flatMap(fromResult), Monad.andThen(self))
+  ): (option: Option.Option<A>) => Option.Option<A>
+} = afe => option =>
+  pipe(option, map(afe), Monad.flatMap(fromResult), Monad.andThen(option))
 
 export const tapSyncResult: {
   <A>(
     afe: (a: A) => Sync<Result.Result<unknown, unknown>>,
-  ): (self: Option.Option<A>) => Option.Option<A>
-} = afe => self =>
+  ): (option: Option.Option<A>) => Option.Option<A>
+} = afe => option =>
   pipe(
-    self,
+    option,
     map(afe),
     Monad.flatMap(f => fromResult(f())),
-    Monad.andThen(self),
+    Monad.andThen(option),
   )

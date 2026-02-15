@@ -25,7 +25,7 @@ export const Option: {
   <A>(schema: Schema<A>): Schema<Option_.Option<A>>
 
   readonly orElse: <B>(
-    mb: Option_.Option<B>,
+    option: Option_.Option<B>,
   ) => <In, A>(
     Schema: Schema<In, Option_.Option<A>>,
   ) => Schema<In, Option_.Option<A | B>>
@@ -38,7 +38,7 @@ export const Option: {
 type WritableOption = {
   -readonly [K in keyof typeof Option]: (typeof Option)[K]
 }
-;(Option as WritableOption).orElse = mb => schema =>
-  create(flow(schema.proceed, Result.map(Option_.orElse(mb))))
+;(Option as WritableOption).orElse = option => schema =>
+  create(flow(schema.proceed, Result.map(Option_.orElse(option))))
 ;(Option as WritableOption).getOrElse = f => schema =>
   create(flow(schema.proceed, Result.map(Option_.getOrElse(f))))

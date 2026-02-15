@@ -17,15 +17,15 @@ export const Compactable = Compactable_.create<Array.Hkt>(Functor, {
 })
 
 export const compact: {
-  <A>(self: ReadonlyArray<Option.Option<A>>): ReadonlyArray<A>
+  <A>(array: ReadonlyArray<Option.Option<A>>): ReadonlyArray<A>
 } = Compactable.compact
 
 export const compactResults: {
-  <A>(self: ReadonlyArray<Result.Result<A, unknown>>): ReadonlyArray<A>
+  <A>(array: ReadonlyArray<Result.Result<A, unknown>>): ReadonlyArray<A>
 } = Compactable.compactResults
 
 export const separate: {
   <A, E>(
-    self: ReadonlyArray<Result.Result<A, E>>,
+    array: ReadonlyArray<Result.Result<A, E>>,
   ): readonly [ReadonlyArray<A>, ReadonlyArray<E>]
 } = Compactable.separate

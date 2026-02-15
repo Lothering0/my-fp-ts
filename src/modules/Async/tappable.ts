@@ -8,9 +8,9 @@ export const Tappable = create(Monad)
 export const tap: {
   <A>(
     f: (a: A) => Async.Async<unknown>,
-  ): (self: Async.Async<A>) => Async.Async<A>
+  ): (async: Async.Async<A>) => Async.Async<A>
 } = Tappable.tap
 
 export const tapSync: {
-  <A>(f: (a: A) => Sync<unknown>): (self: Async.Async<A>) => Async.Async<A>
+  <A>(f: (a: A) => Sync<unknown>): (async: Async.Async<A>) => Async.Async<A>
 } = Tappable.tapSync

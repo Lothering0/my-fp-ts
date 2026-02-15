@@ -16,7 +16,7 @@ export interface SyncResult<A, E = never>
 
 export interface SyncResultGenerator<A, E = never> {
   (
-    make: <B, D>(self: SyncResult<B, D>) => SyncResultIterable<B, D>,
+    make: <B, D>(syncResult: SyncResult<B, D>) => SyncResultIterable<B, D>,
   ): Generator<E, A>
 }
 
@@ -37,12 +37,12 @@ export const succeed: {
 } = _SyncResult.succeed
 
 export const succeedSync: {
-  <A>(ma: Sync.Sync<A>): SyncResult<A>
+  <A>(sync: Sync.Sync<A>): SyncResult<A>
 } = _SyncResult.succeedKind
 
 export const fromSync: {
-  <A, E>(ma: Sync.Sync<A>): SyncResult<A, E>
-} = ma => () => Result.succeed(ma())
+  <A, E>(sync: Sync.Sync<A>): SyncResult<A, E>
+} = sync => () => Result.succeed(sync())
 
 const try_: {
   <A, E>(tryCatch: TryCatch<A, E>): SyncResult<A, E>
@@ -71,14 +71,14 @@ const try_: {
 export { try_ as try }
 
 export const run: {
-  <A, E>(ma: SyncResult<A, E>): Result.Result<A, E>
-} = ma => ma()
+  <A, E>(syncResult: SyncResult<A, E>): Result.Result<A, E>
+} = syncResult => syncResult()
 
 const makeIterable: {
-  <A, E>(self: SyncResult<A, E>): SyncResultIterable<A, E>
-} = self => ({
+  <A, E>(syncResult: SyncResult<A, E>): SyncResultIterable<A, E>
+} = syncResult => ({
   *[Symbol.iterator]() {
-    const a = yield* self()
+    const a = yield* syncResult()
     return a
   },
 })

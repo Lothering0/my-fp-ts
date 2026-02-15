@@ -35,7 +35,7 @@ export const Do: List.NonEmpty<{}> = NonEmptyMonad.Do
 
 export const flat: {
   <F extends List.List<List.List<any>>>(
-    self: F,
+    list: F,
   ): List.AndNonEmpty<F, List.Infer<F>, List.Infer<List.Infer<F>>>
 } = Monad.flat as any
 
@@ -47,9 +47,9 @@ export const flatMap: {
 
 export const andThen: {
   <F extends List.List<any>>(
-    ma: F,
+    list: F,
   ): <G extends List.List<any>>(
-    list: G,
+    selfList: G,
   ) => List.AndNonEmpty<F, G, List.Infer<F>>
 } = MonadWithIndex.andThen as any
 
@@ -81,9 +81,9 @@ export const flipApplyTo: {
     G extends List.List<(a: List.Infer<F>, i: number) => any>,
   >(
     name: Exclude<N, keyof List.Infer<F>>,
-    fab: G,
+    list: G,
   ): (
-    list: F,
+    selfList: F,
   ) => List.AndNonEmpty<
     F,
     G,
@@ -94,9 +94,9 @@ export const flipApplyTo: {
 export const bind: {
   <N extends DoObjectKey, F extends List.List<any>, G extends List.List<any>>(
     name: Exclude<N, keyof List.Infer<F>>,
-    fb: G,
+    list: G,
   ): (
-    list: F,
+    selfList: F,
   ) => List.AndNonEmpty<F, G, DoObject<N, List.Infer<F>, List.Infer<G>>>
 } = Monad.bind as any
 

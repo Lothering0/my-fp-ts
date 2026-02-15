@@ -32,7 +32,7 @@ export const Result: {
   <A, E>(schemas: ResultSchemas<A, E>): Schema<Result_.Result<A, E>>
 
   readonly orElse: <B, D>(
-    mb: Result_.Result<B, D>,
+    result: Result_.Result<B, D>,
   ) => <In, A>(
     Schema: Schema<In, Result_.Result<A, unknown>>,
   ) => Schema<In, Result_.Result<A | B, D>>
@@ -45,7 +45,7 @@ export const Result: {
 type WritableResult = {
   -readonly [K in keyof typeof Result]: (typeof Result)[K]
 }
-;(Result as WritableResult).orElse = mb => schema =>
-  create(flow(schema.proceed, Result_.map(Result_.orElse(mb))))
+;(Result as WritableResult).orElse = result => schema =>
+  create(flow(schema.proceed, Result_.map(Result_.orElse(result))))
 ;(Result as WritableResult).getOrElse = f => schema =>
   create(flow(schema.proceed, Result_.map(Result_.getOrElse(f))))

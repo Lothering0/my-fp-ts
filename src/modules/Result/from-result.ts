@@ -7,5 +7,5 @@ export const FromResult: FromResult_<ResultHkt> = {
 }
 
 export const fromResult: {
-  <A, E>(ma: Result<A, E>): Result<A, E>
+  <A, E>(result: Result<A, E>): Result<A, E>
 } = FromResult.fromResult

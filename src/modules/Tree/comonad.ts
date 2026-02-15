@@ -9,5 +9,5 @@ export const Comonad: Comonad_.Comonad<TreeHkt> = {
 }
 
 export const extract: {
-  <A>(self: Tree<A>): A
+  <A>(tree: Tree<A>): A
 } = Comonad.extract

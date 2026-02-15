@@ -11,7 +11,7 @@ export interface SyncOption<A> extends Sync.Sync<Option.Option<A>> {}
 
 export interface SyncOptionGenerator<A> {
   (
-    make: <B>(self: SyncOption<B>) => SyncOptionIterable<B>,
+    make: <B>(syncOption: SyncOption<B>) => SyncOptionIterable<B>,
   ): Generator<unknown, A>
 }
 
@@ -40,18 +40,18 @@ const try_: {
 export { try_ as try }
 
 export const fromSync: {
-  <A>(ma: Sync.Sync<A>): SyncOption<A>
-} = ma => () => Option.some(ma())
+  <A>(sync: Sync.Sync<A>): SyncOption<A>
+} = sync => () => Option.some(sync())
 
 export const run: {
-  <A>(ma: SyncOption<A>): Option.Option<A>
-} = <A>(ma: SyncOption<A>) => ma()
+  <A>(syncOption: SyncOption<A>): Option.Option<A>
+} = <A>(syncOption: SyncOption<A>) => syncOption()
 
 const makeIterable: {
-  <A>(self: SyncOption<A>): SyncOptionIterable<A>
-} = self => ({
+  <A>(syncOption: SyncOption<A>): SyncOptionIterable<A>
+} = syncOption => ({
   *[Symbol.iterator]() {
-    const a = yield* self()
+    const a = yield* syncOption()
     return a
   },
 })

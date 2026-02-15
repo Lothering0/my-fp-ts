@@ -25,9 +25,9 @@ export const NonEmptyApplicativeWithIndex = ApplicativeWithIndex_.create<
 
 export const apply: {
   <F extends List.List<any>>(
-    fa: F,
+    list: F,
   ): <G extends List.List<(a: List.Infer<F>, i: number) => any>>(
-    list: G,
+    selfList: G,
   ) => List.AndNonEmpty<F, G, ReturnType<List.Infer<G>>>
 } = ApplicativeWithIndex.applyWithIndex as any
 
@@ -36,6 +36,6 @@ export const flipApply: {
     F extends List.List<any>,
     G extends List.List<(a: List.Infer<F>, i: number) => any>,
   >(
-    fab: G,
-  ): (list: F) => List.AndNonEmpty<F, G, ReturnType<List.Infer<G>>>
+    list: G,
+  ): (selfList: F) => List.AndNonEmpty<F, G, ReturnType<List.Infer<G>>>
 } = ApplicativeWithIndex.flipApplyWithIndex as any

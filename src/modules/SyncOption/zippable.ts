@@ -6,15 +6,15 @@ export const Zippable: Zippable_.Zippable<SyncOptionHkt> = _SyncOption.Zippable
 
 export const zipWith: {
   <A, B, C>(
-    that: SyncOption<B>,
+    syncOption: SyncOption<B>,
     f: (a: A, b: B) => C,
-  ): (self: SyncOption<A>) => SyncOption<C>
+  ): (selfSyncOption: SyncOption<A>) => SyncOption<C>
 } = Zippable.zipWith
 
 export const zip: {
   <A, B>(
-    that: SyncOption<B>,
-  ): (self: SyncOption<A>) => SyncOption<readonly [A, B]>
+    syncOption: SyncOption<B>,
+  ): (selfSyncOption: SyncOption<A>) => SyncOption<readonly [A, B]>
 } = Zippable.zip
 
 export const unzip: {

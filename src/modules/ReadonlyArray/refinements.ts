@@ -1,11 +1,11 @@
 import * as Array from './readonly-array'
 
-export const isEmpty = <A>(self: ReadonlyArray<A>): self is readonly [] =>
-  self.length === 0
+export const isEmpty = <A>(array: ReadonlyArray<A>): array is readonly [] =>
+  array.length === 0
 
 export const isNonEmpty = <A>(
-  self: ReadonlyArray<A>,
-): self is Array.NonEmpty<A> => !isEmpty(self)
+  array: ReadonlyArray<A>,
+): array is Array.NonEmpty<A> => !isEmpty(array)
 
 export const isArray = (x: any): x is any[] => Array.Array.isArray(x)
 

@@ -16,17 +16,19 @@ export const Monad = create<Option.OptionHkt>(FromIdentity, Functor, {
 export const Do = Monad.Do
 
 export const flat: {
-  <A>(self: Option.Option<Option.Option<A>>): Option.Option<A>
+  <A>(option: Option.Option<Option.Option<A>>): Option.Option<A>
 } = Monad.flat
 
 export const flatMap: {
   <A, B>(
     amb: (a: A) => Option.Option<B>,
-  ): (self: Option.Option<A>) => Option.Option<B>
+  ): (option: Option.Option<A>) => Option.Option<B>
 } = Monad.flatMap
 
 export const andThen: {
-  <A>(ma: Option.Option<A>): (self: Option.Option<unknown>) => Option.Option<A>
+  <A>(
+    option: Option.Option<A>,
+  ): (selfOption: Option.Option<unknown>) => Option.Option<A>
 } = Monad.andThen
 
 export const compose: {
@@ -40,33 +42,33 @@ export const setTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     b: B,
-  ): (self: Option.Option<A>) => Option.Option<DoObject<N, A, B>>
+  ): (option: Option.Option<A>) => Option.Option<DoObject<N, A, B>>
 } = Monad.setTo
 
 export const mapTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     ab: (a: A) => B,
-  ): (self: Option.Option<A>) => Option.Option<DoObject<N, A, B>>
+  ): (option: Option.Option<A>) => Option.Option<DoObject<N, A, B>>
 } = Monad.mapTo
 
 export const flipApplyTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
-    fab: Option.Option<(a: A) => B>,
-  ): (self: Option.Option<A>) => Option.Option<DoObject<N, A, B>>
+    option: Option.Option<(a: A) => B>,
+  ): (selfOption: Option.Option<A>) => Option.Option<DoObject<N, A, B>>
 } = Monad.flipApplyTo
 
 export const bind: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
-    fb: Option.Option<B>,
-  ): (self: Option.Option<A>) => Option.Option<DoObject<N, A, B>>
+    option: Option.Option<B>,
+  ): (selfOption: Option.Option<A>) => Option.Option<DoObject<N, A, B>>
 } = Monad.bind
 
 export const flatMapTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     amb: (a: A) => Option.Option<B>,
-  ): (self: Option.Option<A>) => Option.Option<DoObject<N, A, B>>
+  ): (option: Option.Option<A>) => Option.Option<DoObject<N, A, B>>
 } = Monad.flatMapTo

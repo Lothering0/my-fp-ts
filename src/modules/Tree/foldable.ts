@@ -5,23 +5,23 @@ import { forestOf, valueOf } from './utils'
 import { pipe } from '../../utils/flow'
 
 export const Foldable: Foldable_.Foldable<TreeHkt> = {
-  reduce: (b, bab) => self =>
-    Iterable.reduce(bab(b, valueOf(self)), (b, tree) =>
+  reduce: (b, bab) => tree =>
+    Iterable.reduce(bab(b, valueOf(tree)), (b, tree) =>
       pipe(tree, reduce(b, bab)),
-    )(forestOf(self)),
-  reduceRight: (b, abb) => self =>
+    )(forestOf(tree)),
+  reduceRight: (b, abb) => tree =>
     abb(
-      valueOf(self),
+      valueOf(tree),
       Iterable.reduceRight(b, (tree, b) => pipe(tree, reduceRight(b, abb)))(
-        forestOf(self),
+        forestOf(tree),
       ),
     ),
 }
 
 export const reduce: {
-  <A, B>(b: B, bab: (b: B, a: A) => B): (self: Tree<A>) => B
+  <A, B>(b: B, bab: (b: B, a: A) => B): (tree: Tree<A>) => B
 } = Foldable.reduce
 
 export const reduceRight: {
-  <A, B>(b: B, abb: (a: A, b: B) => B): (self: Tree<A>) => B
+  <A, B>(b: B, abb: (a: A, b: B) => B): (tree: Tree<A>) => B
 } = Foldable.reduceRight

@@ -5,22 +5,26 @@ import { _AsyncOption } from './_internal'
 import { LazyArg } from '../../types/utils'
 
 export const getOrElse: {
-  <B>(onNone: LazyArg<B>): <A>(self: AsyncOption<A>) => Async.Async<A | B>
+  <B>(
+    onNone: LazyArg<B>,
+  ): <A>(asyncOption: AsyncOption<A>) => Async.Async<A | B>
 } = _AsyncOption.getOrElse
 
 export const orElse: {
-  <B>(that: AsyncOption<B>): <A>(self: AsyncOption<A>) => AsyncOption<A | B>
+  <B>(
+    asyncOption: AsyncOption<B>,
+  ): <A>(selfAsyncOption: AsyncOption<A>) => AsyncOption<A | B>
 } = _AsyncOption.orElse
 
 export const orElseSome: {
-  <B>(b: B): <A>(self: AsyncOption<A>) => AsyncOption<A | B>
+  <B>(b: B): <A>(asyncOption: AsyncOption<A>) => AsyncOption<A | B>
 } = _AsyncOption.orElseSome
 
 /** Lazy version of `orElse` */
 export const catchAll: {
   <B>(
-    that: LazyArg<AsyncOption<B>>,
-  ): <A>(self: AsyncOption<A>) => AsyncOption<A | B>
+    asyncOption: LazyArg<AsyncOption<B>>,
+  ): <A>(selfAsyncOption: AsyncOption<A>) => AsyncOption<A | B>
 } = _AsyncOption.catchAll
 
 export const Alt: Alt_.Alt<AsyncOptionHkt> = _AsyncOption.Alt

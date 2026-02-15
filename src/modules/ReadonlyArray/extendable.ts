@@ -21,7 +21,7 @@ export const Extendable = create<Array.Hkt>(Functor, {
 export const extend: {
   <F extends ReadonlyArray<any>, B>(
     fab: (fa: F) => B,
-  ): (self: F) => Array.With<F, B>
+  ): (array: F) => Array.With<F, B>
 } = Extendable.extend as any
 
 export const NonEmptyExtendable = create<Array.NonEmptyHkt>(NonEmptyFunctor, {
@@ -29,5 +29,5 @@ export const NonEmptyExtendable = create<Array.NonEmptyHkt>(NonEmptyFunctor, {
 })
 
 export const duplicate: {
-  <F extends ReadonlyArray<any>>(self: F): Array.With<F, Array.With<F>>
+  <F extends ReadonlyArray<any>>(array: F): Array.With<F, Array.With<F>>
 } = Extendable.duplicate as any

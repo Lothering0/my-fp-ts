@@ -3,13 +3,13 @@ import { Option, OptionHkt } from './option'
 import { Functor, as } from './functor'
 
 export const Extendable = create<OptionHkt>(Functor, {
-  extend: fab => self => as(fab(self))(self),
+  extend: fab => option => as(fab(option))(option),
 })
 
 export const extend: {
-  <A, B>(fab: (fa: Option<A>) => B): (self: Option<A>) => Option<B>
+  <A, B>(fab: (fa: Option<A>) => B): (option: Option<A>) => Option<B>
 } = Extendable.extend
 
 export const duplicate: {
-  <A>(self: Option<A>): Option<Option<A>>
+  <A>(option: Option<A>): Option<Option<A>>
 } = Extendable.duplicate

@@ -12,7 +12,7 @@ import { FromIdentity, NonEmptyFromIdentity } from './from-identity'
 import { getIterableGen } from '../_internal'
 
 export const Monad = Monad_.create<Array.Hkt>(FromIdentity, Functor, {
-  flat: self => self.flat(),
+  flat: array => array.flat(),
 })
 
 export const MonadWithIndex = MonadWithIndex_.create<Array.Hkt, number>(
@@ -22,7 +22,7 @@ export const MonadWithIndex = MonadWithIndex_.create<Array.Hkt, number>(
 
 export const flat: {
   <F extends ReadonlyArray<ReadonlyArray<any>>>(
-    self: F,
+    array: F,
   ): Array.AndNonEmpty<F, Array.Infer<F>, Array.Infer<Array.Infer<F>>>
 } = Monad.flat as any
 
@@ -42,14 +42,14 @@ export const NonEmptyMonadWithIndex = MonadWithIndex_.create<
 export const flatMap: {
   <F extends ReadonlyArray<any>, G extends ReadonlyArray<any>>(
     aimb: (a: Array.Infer<F>, i: number) => G,
-  ): (self: F) => Array.AndNonEmpty<F, G, Array.Infer<G>>
+  ): (array: F) => Array.AndNonEmpty<F, G, Array.Infer<G>>
 } = MonadWithIndex.flatMapWithIndex as any
 
 export const andThen: {
   <F extends ReadonlyArray<any>>(
-    ma: F,
+    array: F,
   ): <G extends ReadonlyArray<any>>(
-    self: G,
+    selfArray: G,
   ) => Array.AndNonEmpty<F, G, Array.Infer<F>>
 } = MonadWithIndex.andThen as any
 
@@ -64,14 +64,14 @@ export const setTo: {
   <N extends DoObjectKey, F extends ReadonlyArray<any>, B>(
     name: Exclude<N, keyof Array.Infer<F>>,
     b: B,
-  ): (self: F) => Array.With<F, DoObject<N, Array.Infer<F>, B>>
+  ): (array: F) => Array.With<F, DoObject<N, Array.Infer<F>, B>>
 } = Monad.setTo as any
 
 export const mapTo: {
   <N extends DoObjectKey, F extends ReadonlyArray<any>, B>(
     name: Exclude<N, keyof Array.Infer<F>>,
     ab: (a: Array.Infer<F>, i: number) => B,
-  ): (self: F) => Array.With<F, DoObject<N, Array.Infer<F>, B>>
+  ): (array: F) => Array.With<F, DoObject<N, Array.Infer<F>, B>>
 } = MonadWithIndex.mapToWithIndex as any
 
 export const flipApplyTo: {
@@ -81,9 +81,9 @@ export const flipApplyTo: {
     G extends ReadonlyArray<(a: Array.Infer<F>, i: number) => any>,
   >(
     name: Exclude<N, keyof Array.Infer<F>>,
-    fab: G,
+    array: G,
   ): (
-    self: F,
+    selfArray: F,
   ) => Array.AndNonEmpty<
     F,
     G,
@@ -98,9 +98,9 @@ export const bind: {
     G extends ReadonlyArray<any>,
   >(
     name: Exclude<N, keyof Array.Infer<F>>,
-    fb: G,
+    array: G,
   ): (
-    self: F,
+    selfArray: F,
   ) => Array.AndNonEmpty<F, G, DoObject<N, Array.Infer<F>, Array.Infer<G>>>
 } = Monad.bind as any
 
@@ -113,13 +113,13 @@ export const flatMapTo: {
     name: Exclude<N, keyof Array.Infer<F>>,
     amb: (a: Array.Infer<F>, i: number) => G,
   ): (
-    self: F,
+    array: F,
   ) => Array.AndNonEmpty<F, G, DoObject<N, Array.Infer<F>, Array.Infer<G>>>
 } = MonadWithIndex.flatMapToWithIndex as any
 
 export interface GenUtils {
   readonly $: <A>(
-    self: ReadonlyArray<A> | (() => ReadonlyArray<A>),
+    array: ReadonlyArray<A> | (() => ReadonlyArray<A>),
   ) => ReadonlyArrayIterable<A>
   readonly where: (a: boolean) => Generator<unknown, void>
 }
@@ -133,9 +133,9 @@ export interface ReadonlyArrayIterable<A> {
 }
 
 function* makeIterable<A>(
-  self: ReadonlyArray<A> | (() => ReadonlyArray<A>),
+  array: ReadonlyArray<A> | (() => ReadonlyArray<A>),
 ): ReadonlyArrayIterable<A> {
-  return (yield self) as A
+  return (yield array) as A
 }
 
 function* where(a: boolean) {

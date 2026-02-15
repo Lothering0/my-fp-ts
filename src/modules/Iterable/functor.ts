@@ -3,9 +3,9 @@ import * as FunctorWithIndex_ from '../../typeclasses/FunctorWithIndex'
 import * as Iterable from './iterable'
 
 export const Functor = Functor_.create<Iterable.Hkt>({
-  map: ab => self => ({
+  map: ab => iterable => ({
     *[Symbol.iterator]() {
-      for (const a of self) {
+      for (const a of iterable) {
         yield ab(a)
       }
     },
@@ -20,10 +20,10 @@ export const FunctorWithIndex: FunctorWithIndex_.FunctorWithIndex<
   number
 > = {
   ...Functor,
-  mapWithIndex: aib => self => ({
+  mapWithIndex: aib => iterable => ({
     *[Symbol.iterator]() {
       let i = -1
-      for (const a of self) {
+      for (const a of iterable) {
         i++
         yield aib(a, i)
       }

@@ -6,19 +6,19 @@ import { fromIterable } from './utils'
 
 export const zipWith: {
   <F extends Chunk.Chunk<any>, G extends Chunk.Chunk<any>, C>(
-    bs: G,
+    chunk: G,
     abic: (a: Chunk.Infer<F>, b: Chunk.Infer<G>, i: number) => C,
-  ): (chunk: F) => Chunk.AndNonEmpty<F, G, C>
-} = (bs, abic) => chunk =>
-  pipe(chunk, Iterable.zipWith(bs, abic as any), fromIterable) as any
+  ): (selfChunk: F) => Chunk.AndNonEmpty<F, G, C>
+} = (chunk, abic) => selfChunk =>
+  pipe(selfChunk, Iterable.zipWith(chunk, abic as any), fromIterable) as any
 
 export const zip: {
   <F extends Chunk.Chunk<any>>(
-    bs: F,
+    chunk: F,
   ): <G extends Chunk.Chunk<any>>(
-    chunk: G,
+    selfChunk: G,
   ) => Chunk.AndNonEmpty<F, G, readonly [Chunk.Infer<G>, Chunk.Infer<F>]>
-} = bs => zipWith(bs, (a, b) => [a, b]) as any
+} = chunk => zipWith(chunk, (a, b) => [a, b]) as any
 
 export const unzip: {
   <F extends Chunk.Chunk<readonly [any, any]>>(

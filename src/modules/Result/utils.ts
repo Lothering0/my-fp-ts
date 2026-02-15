@@ -3,22 +3,22 @@ import { match } from './matchers'
 import { Result, fail, Failure, succeed, Success } from './result'
 
 export const failureOf: {
-  <E>(self: Failure<E>): E
-} = self => self.failure
+  <E>(result: Failure<E>): E
+} = result => result.failure
 
 export const successOf: {
-  <A>(self: Success<A>): A
-} = self => self.success
+  <A>(result: Success<A>): A
+} = result => result.success
 
 export const toUnion: {
-  <A, E>(self: Result<A, E>): A | E
+  <A, E>(result: Result<A, E>): A | E
 } = match({
   onFailure: identity,
   onSuccess: identity,
 })
 
 export const swap: {
-  <A, E>(self: Result<A, E>): Result<E, A>
+  <A, E>(result: Result<A, E>): Result<E, A>
 } = match({
   onFailure: succeed,
   onSuccess: fail,

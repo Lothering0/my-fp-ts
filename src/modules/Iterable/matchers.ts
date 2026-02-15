@@ -9,9 +9,9 @@ export interface Matchers<A, B, C = B> {
 }
 
 export const match: {
-  <A, B, C = B>(matchers: Matchers<A, B, C>): (self: Iterable<A>) => B | C
-} = matchers => self =>
-  isNonEmpty(self) ? matchers.onNonEmpty(self) : matchers.onEmpty()
+  <A, B, C = B>(matchers: Matchers<A, B, C>): (iterable: Iterable<A>) => B | C
+} = matchers => iterable =>
+  isNonEmpty(iterable) ? matchers.onNonEmpty(iterable) : matchers.onEmpty()
 
 export interface MatchersLeft<A, B, C = B> {
   readonly onEmpty: LazyArg<B>
@@ -19,10 +19,12 @@ export interface MatchersLeft<A, B, C = B> {
 }
 
 export const matchLeft: {
-  <A, B, C = B>(matchers: MatchersLeft<A, B, C>): (self: Iterable<A>) => B | C
-} = matchers => self =>
-  isNonEmpty(self)
-    ? matchers.onNonEmpty(headNonEmpty(self), tailNonEmpty(self))
+  <A, B, C = B>(
+    matchers: MatchersLeft<A, B, C>,
+  ): (iterable: Iterable<A>) => B | C
+} = matchers => iterable =>
+  isNonEmpty(iterable)
+    ? matchers.onNonEmpty(headNonEmpty(iterable), tailNonEmpty(iterable))
     : matchers.onEmpty()
 
 export interface MatchersRight<A, B, C = B> {
@@ -31,8 +33,10 @@ export interface MatchersRight<A, B, C = B> {
 }
 
 export const matchRight: {
-  <A, B, C = B>(matchers: MatchersRight<A, B, C>): (self: Iterable<A>) => B | C
-} = matchers => self =>
-  isNonEmpty(self)
-    ? matchers.onNonEmpty(initNonEmpty(self), lastNonEmpty(self))
+  <A, B, C = B>(
+    matchers: MatchersRight<A, B, C>,
+  ): (iterable: Iterable<A>) => B | C
+} = matchers => iterable =>
+  isNonEmpty(iterable)
+    ? matchers.onNonEmpty(initNonEmpty(iterable), lastNonEmpty(iterable))
     : matchers.onEmpty()

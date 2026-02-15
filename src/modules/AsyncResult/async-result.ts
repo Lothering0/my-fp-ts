@@ -19,7 +19,7 @@ export interface AsyncResult<A, E = never>
 
 export interface AsyncResultGenerator<A, E = never> {
   (
-    make: <B, D>(self: AsyncResult<B, D>) => AsyncResultIterable<B, D>,
+    make: <B, D>(asyncResult: AsyncResult<B, D>) => AsyncResultIterable<B, D>,
   ): Generator<E, A>
 }
 
@@ -32,11 +32,11 @@ export const fail: {
 } = _AsyncResult.fail
 
 export const failSync: {
-  <E>(me: Sync.Sync<E>): AsyncResult<never, E>
+  <E>(sync: Sync.Sync<E>): AsyncResult<never, E>
 } = flow(Sync.run, fail)
 
 export const failAsync: {
-  <E>(me: Async.Async<E>): AsyncResult<never, E>
+  <E>(async: Async.Async<E>): AsyncResult<never, E>
 } = _AsyncResult.failKind
 
 export const succeed: {
@@ -44,20 +44,21 @@ export const succeed: {
 } = _AsyncResult.succeed
 
 export const succeedSync: {
-  <A>(ma: Sync.Sync<A>): AsyncResult<A>
+  <A>(sync: Sync.Sync<A>): AsyncResult<A>
 } = flow(Sync.run, succeed)
 
 export const succeedAsync: {
-  <A>(me: Async.Async<A>): AsyncResult<A>
+  <A>(async: Async.Async<A>): AsyncResult<A>
 } = _AsyncResult.succeedKind
 
 export const fromAsync: {
-  <A, E>(ma: Async.Async<A>): AsyncResult<A, E>
-} = ma => () => ma().then(Result.succeed, Result.fail)
+  <A, E>(async: Async.Async<A>): AsyncResult<A, E>
+} = async => () => async().then(Result.succeed, Result.fail)
 
 export const fromSyncResult: {
-  <A, E>(mma: SyncResult.SyncResult<A, E>): AsyncResult<A, E>
-} = mma => () => pipe(mma, SyncResult.run, ma => Promise.resolve(ma))
+  <A, E>(syncResult: SyncResult.SyncResult<A, E>): AsyncResult<A, E>
+} = syncResult => () =>
+  pipe(syncResult, SyncResult.run, ma => Promise.resolve(ma))
 
 const try_: {
   <A, E>(tryCatch: TryCatch<Promise<A>, E>): AsyncResult<A, E>
@@ -91,17 +92,17 @@ const try_: {
 export { try_ as try }
 
 export const toPromise: {
-  <A, E>(ma: AsyncResult<A, E>): Promise<Result.Result<A, E>>
-} = mma => mma().then(identity)
+  <A, E>(asyncResult: AsyncResult<A, E>): Promise<Result.Result<A, E>>
+} = asyncResult => asyncResult().then(identity)
 
 /** Alias for `toPromise` */
 export const run = toPromise
 
 const makeIterable: {
-  <A, E>(self: AsyncResult<A, E>): AsyncResultIterable<A, E>
-} = self => ({
+  <A, E>(asyncResult: AsyncResult<A, E>): AsyncResultIterable<A, E>
+} = asyncResult => ({
   *[Symbol.iterator]() {
-    const result = yield self() as any
+    const result = yield asyncResult() as any
     return result as any
   },
 })

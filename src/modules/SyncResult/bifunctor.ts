@@ -5,12 +5,14 @@ import { _SyncResult } from './_internal'
 export const Bifunctor: Bifunctor_<SyncResultHkt> = _SyncResult.Bifunctor
 
 export const mapLeft: {
-  <E, D>(ed: (failure: E) => D): <A>(self: SyncResult<A, E>) => SyncResult<A, D>
+  <E, D>(
+    ed: (failure: E) => D,
+  ): <A>(syncResult: SyncResult<A, E>) => SyncResult<A, D>
 } = Bifunctor.mapLeft
 
 export const bimap: {
   <E, D, A, B>(
     ed: (failure: E) => D,
     ab: (success: A) => B,
-  ): (self: SyncResult<A, E>) => SyncResult<B, D>
+  ): (syncResult: SyncResult<A, E>) => SyncResult<B, D>
 } = Bifunctor.bimap

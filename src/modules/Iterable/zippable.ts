@@ -4,14 +4,14 @@ import { maybeNonEmpty } from './_internal'
 
 export const zipWith: {
   <F extends Iterable<any>, G extends Iterable<any>, C>(
-    bs: G,
+    iterable: G,
     abic: (a: Iterable.Infer<F>, b: Iterable.Infer<G>, i: number) => C,
-  ): (iterable: F) => Iterable.AndNonEmpty<F, G, C>
-} = (bs, abic) => iterable =>
+  ): (selfIterable: F) => Iterable.AndNonEmpty<F, G, C>
+} = (iterable, abic) => selfIterable =>
   maybeNonEmpty({
     *[Symbol.iterator]() {
-      const firstIterator = iterable[Symbol.iterator]()
-      const secondIterator = bs[Symbol.iterator]()
+      const firstIterator = selfIterable[Symbol.iterator]()
+      const secondIterator = iterable[Symbol.iterator]()
 
       const first = firstIterator.next()
       const second = secondIterator.next()
@@ -26,15 +26,15 @@ export const zipWith: {
 
 export const zip: {
   <F extends Iterable<any>>(
-    bs: F,
+    iterable: F,
   ): <G extends Iterable<any>>(
-    iterable: G,
+    selfIterable: G,
   ) => Iterable.AndNonEmpty<
     F,
     G,
     readonly [Iterable.Infer<G>, Iterable.Infer<F>]
   >
-} = bs => zipWith(bs, (a, b) => [a, b]) as any
+} = iterable => zipWith(iterable, (a, b) => [a, b]) as any
 
 export const unzip: {
   <F extends Iterable<readonly [any, any]>>(

@@ -5,7 +5,7 @@ import { Duration } from './duration'
 import { toTemplate } from './utils'
 
 export const show: {
-  (self: Duration): string
+  (duration: Duration): string
 } = flow(toTemplate, String.prepend('make("'), String.append('")'))
 
 export const Show: Show_.Show<Duration> = { show }

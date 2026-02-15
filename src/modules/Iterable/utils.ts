@@ -66,8 +66,8 @@ export const length: {
  * | Non-array | O(n)            |
  */
 export const lastIndex: {
-  (self: Iterable<unknown>): number
-} = self => length(self) - 1
+  (iterable: Iterable<unknown>): number
+} = iterable => length(iterable) - 1
 
 /** Time complexity: O(n) */
 export const has: {
@@ -126,9 +126,9 @@ export const concat =
 
 /** Time complexity: O(1) */
 export const head: {
-  <A>(self: Iterable<A>): Option.Option<A>
-} = self => {
-  for (const a of self) {
+  <A>(iterable: Iterable<A>): Option.Option<A>
+} = iterable => {
+  for (const a of iterable) {
     return Option.some(a)
   }
   return Option.none()
@@ -198,11 +198,11 @@ export const initNonEmpty = <A>(
  * Notice: it always executes the whole iterable to reach the last element
  */
 export const last: {
-  <A>(self: Iterable<A>): Option.Option<A>
-} = self => {
+  <A>(iterable: Iterable<A>): Option.Option<A>
+} = iterable => {
   let iterationStarted = false
   let lastElement
-  for (const a of self) {
+  for (const a of iterable) {
     iterationStarted = true
     lastElement = a
   }
@@ -300,10 +300,10 @@ export const lookup: {
 export const findMap: {
   <A, B>(
     aimb: (a: A, i: number) => Option.Option<B>,
-  ): (self: Iterable<A>) => Option.Option<B>
-} = aimb => self => {
+  ): (iterable: Iterable<A>) => Option.Option<B>
+} = aimb => iterable => {
   let i = -1
-  for (const a of self) {
+  for (const a of iterable) {
     i++
     const option = aimb(a, i)
     if (Option.isSome(option)) {
@@ -316,18 +316,20 @@ export const findMap: {
 export const find: {
   <A, B extends A>(
     p: RefinementWithIndex<A, B, number>,
-  ): (self: Iterable<A>) => Option.Option<B>
-  <A>(p: PredicateWithIndex<A, number>): (self: Iterable<A>) => Option.Option<A>
+  ): (iterable: Iterable<A>) => Option.Option<B>
+  <A>(
+    p: PredicateWithIndex<A, number>,
+  ): (iterable: Iterable<A>) => Option.Option<A>
 } = <A>(p: PredicateWithIndex<A, number>) =>
   findMap((a: A, i) => (p(a, i) ? Option.some(a) : Option.none()))
 
 export const findIndex: {
   <A>(
     p: PredicateWithIndex<A, number>,
-  ): (self: Iterable<A>) => Option.Option<number>
-} = p => self => {
+  ): (iterable: Iterable<A>) => Option.Option<number>
+} = p => iterable => {
   let i = -1
-  for (const a of self) {
+  for (const a of iterable) {
     i++
     if (p(a, i)) {
       return Option.some(i)
@@ -340,8 +342,8 @@ export const findIndex: {
 export const elem =
   <A>(Equivalence: Equivalence<A>) =>
   (a: A) =>
-  (self: Iterable<A>): boolean =>
-    pipe(self, find(Equivalence.equals(a)), Option.isSome)
+  (iterable: Iterable<A>): boolean =>
+    pipe(iterable, find(Equivalence.equals(a)), Option.isSome)
 
 export const every: {
   <A, B extends A>(
@@ -350,9 +352,9 @@ export const every: {
   <A>(p: PredicateWithIndex<A, number>): Predicate<Iterable<A>>
 } =
   <A, B extends A>(p: RefinementWithIndex<A, B, number>) =>
-  (self: Iterable<A>): self is Iterable<B> => {
+  (iterable: Iterable<A>): iterable is Iterable<B> => {
     let i = -1
-    for (const a of self) {
+    for (const a of iterable) {
       i++
       if (!p(a, i)) {
         return false
@@ -362,10 +364,10 @@ export const every: {
   }
 
 export const exists: {
-  <A>(p: PredicateWithIndex<A, number>): (self: Iterable<A>) => boolean
-} = p => self => {
+  <A>(p: PredicateWithIndex<A, number>): (iterable: Iterable<A>) => boolean
+} = p => iterable => {
   let i = -1
-  for (const a of self) {
+  for (const a of iterable) {
     i++
     if (p(a, i)) {
       return true
@@ -378,16 +380,16 @@ export const exists: {
 export const some = exists
 
 export const includes: {
-  <A>(a: A): (self: Iterable<A>) => boolean
+  <A>(a: A): (iterable: Iterable<A>) => boolean
 } = a => some(x => x === a)
 
 export const takeWhile: {
-  <A>(p: PredicateWithIndex<A, number>): (self: Iterable<A>) => Iterable<A>
-} = p => self =>
+  <A>(p: PredicateWithIndex<A, number>): (iterable: Iterable<A>) => Iterable<A>
+} = p => iterable =>
   maybeNonEmpty({
     *[Symbol.iterator]() {
       let i = -1
-      for (const a of self) {
+      for (const a of iterable) {
         i++
         if (!p(a, i)) {
           break
@@ -398,15 +400,15 @@ export const takeWhile: {
   })
 
 export const take: {
-  (n: number): <A>(self: Iterable<A>) => Iterable<A>
-} = n => self => {
+  (n: number): <A>(iterable: Iterable<A>) => Iterable<A>
+} = n => iterable => {
   if (n <= 0) {
     return zero()
   }
   return maybeNonEmpty({
     *[Symbol.iterator]() {
       let i = -1
-      for (const a of self) {
+      for (const a of iterable) {
         i++
         yield a
         if (i === n - 1) {
@@ -418,13 +420,13 @@ export const take: {
 }
 
 export const dropWhile: {
-  <A>(p: PredicateWithIndex<A, number>): (self: Iterable<A>) => Iterable<A>
-} = p => self =>
+  <A>(p: PredicateWithIndex<A, number>): (iterable: Iterable<A>) => Iterable<A>
+} = p => iterable =>
   maybeNonEmpty({
     *[Symbol.iterator]() {
       let isDropped = false
       let i = -1
-      for (const a of self) {
+      for (const a of iterable) {
         i++
 
         if (!isDropped && p(a, i)) {
@@ -438,19 +440,19 @@ export const dropWhile: {
   })
 
 export const drop: {
-  (n: number): <A>(self: Iterable<A>) => Iterable<A>
+  (n: number): <A>(iterable: Iterable<A>) => Iterable<A>
 } = n => dropWhile((_, i) => i < n)
 
 export const chunksOf =
   (n: number) =>
-  <A>(self: Iterable<A>): Iterable<Iterable<A>> => {
+  <A>(iterable: Iterable<A>): Iterable<Iterable<A>> => {
     if (n <= 0) {
       return zero()
     }
 
     return maybeNonEmpty({
       *[Symbol.iterator]() {
-        const iterator = self[Symbol.iterator]()
+        const iterator = iterable[Symbol.iterator]()
         let iteration = iterator.next()
         let count = n
 

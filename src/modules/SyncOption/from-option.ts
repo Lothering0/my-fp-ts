@@ -6,5 +6,5 @@ import { _SyncOption } from './_internal'
 export const FromOption: FromOption_<SyncOptionHkt> = _SyncOption.FromOption
 
 export const fromOption: {
-  <A>(ma: Option<A>): SyncOption<A>
+  <A>(option: Option<A>): SyncOption<A>
 } = FromOption.fromOption

@@ -6,5 +6,5 @@ import { _SyncResult } from './_internal'
 export const match: {
   <A, B, E, C = B>(
     matchers: Result.Matchers<A, B, E, C>,
-  ): (self: SyncResult<A, E>) => Sync.Sync<B | C>
+  ): (syncResult: SyncResult<A, E>) => Sync.Sync<B | C>
 } = _SyncResult.match

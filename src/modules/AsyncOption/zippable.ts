@@ -7,15 +7,15 @@ export const Zippable: Zippable_.Zippable<AsyncOptionHkt> =
 
 export const zipWith: {
   <A, B, C>(
-    that: AsyncOption<B>,
+    asyncOption: AsyncOption<B>,
     f: (a: A, b: B) => C,
-  ): (self: AsyncOption<A>) => AsyncOption<C>
+  ): (selfAsyncOption: AsyncOption<A>) => AsyncOption<C>
 } = Zippable.zipWith
 
 export const zip: {
   <A, B>(
-    that: AsyncOption<B>,
-  ): (self: AsyncOption<A>) => AsyncOption<readonly [A, B]>
+    asyncOption: AsyncOption<B>,
+  ): (selfAsyncOption: AsyncOption<A>) => AsyncOption<readonly [A, B]>
 } = Zippable.zip
 
 export const unzip: {

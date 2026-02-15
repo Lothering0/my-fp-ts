@@ -6,7 +6,7 @@ import { match } from './matchers'
 import { constant } from '../../utils/constant'
 
 export const getOrElse: {
-  <B>(onNone: LazyArg<B>): <A>(self: Option<A>) => A | B
+  <B>(onNone: LazyArg<B>): <A>(option: Option<A>) => A | B
 } = onNone =>
   match({
     onNone,
@@ -14,7 +14,7 @@ export const getOrElse: {
   })
 
 export const orElse: {
-  <B>(that: Option<B>): <A>(self: Option<A>) => Option<A | B>
+  <B>(that: Option<B>): <A>(option: Option<A>) => Option<A | B>
 } = that =>
   match({
     onNone: constant(that),
@@ -22,15 +22,15 @@ export const orElse: {
   })
 
 export const orElseSome: {
-  <B>(b: B): <A>(self: Option<A>) => Option<A | B>
+  <B>(b: B): <A>(option: Option<A>) => Option<A | B>
 } = b => orElse(some(b))
 
 /** Lazy version of `orElse` */
 export const catchAll: {
-  <Out>(that: LazyArg<Option<Out>>): <In>(self: Option<In>) => Option<In | Out>
-} = that =>
+  <B>(option: LazyArg<Option<B>>): <A>(selfOption: Option<A>) => Option<A | B>
+} = option =>
   match({
-    onNone: that,
+    onNone: option,
     onSome: some,
   })
 

@@ -9,9 +9,9 @@ export const isOption = (x: unknown): x is Option<unknown> => {
 }
 
 export const isSome: {
-  <A>(self: Option<A>): self is Some<A>
-} = self => self._tag === 'Some'
+  <A>(option: Option<A>): option is Some<A>
+} = option => option._tag === 'Some'
 
 export const isNone: {
-  <A>(self: Option<A>): self is None
-} = self => self._tag === 'None'
+  <A>(option: Option<A>): option is None
+} = option => option._tag === 'None'

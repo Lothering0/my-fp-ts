@@ -23,5 +23,5 @@ export const NonEmptyExtendable = create<List.NonEmptyHkt>(NonEmptyFunctor, {
 })
 
 export const duplicate: {
-  <F extends List.List<any>>(self: F): List.With<F, List.With<F>>
+  <F extends List.List<any>>(list: F): List.With<F, List.With<F>>
 } = Extendable.duplicate as any

@@ -5,9 +5,9 @@ import { Hkt } from './iterable'
 import { Functor } from './functor'
 
 export const Compactable = create<Hkt>(Functor, {
-  compact: self => ({
+  compact: iterable => ({
     *[Symbol.iterator]() {
-      for (const a of self) {
+      for (const a of iterable) {
         if (Option.isSome(a)) {
           yield Option.valueOf(a)
         }
@@ -17,15 +17,15 @@ export const Compactable = create<Hkt>(Functor, {
 })
 
 export const compact: {
-  <A>(self: Iterable<Option.Option<A>>): Iterable<A>
+  <A>(iterable: Iterable<Option.Option<A>>): Iterable<A>
 } = Compactable.compact
 
 export const compactResults: {
-  <A>(self: Iterable<Result.Result<A, unknown>>): Iterable<A>
+  <A>(iterable: Iterable<Result.Result<A, unknown>>): Iterable<A>
 } = Compactable.compactResults
 
 export const separate: {
   <A, E>(
-    self: Iterable<Result.Result<A, E>>,
+    iterable: Iterable<Result.Result<A, E>>,
   ): readonly [Iterable<A>, Iterable<E>]
 } = Compactable.separate

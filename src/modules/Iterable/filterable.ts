@@ -16,24 +16,26 @@ export const FilterableWithIndex = FilterableWithIndex_.create<
 >(FunctorWithIndex, Filterable)
 
 export const filterMap: {
-  <A, B>(p: (a: A, i: number) => Option<B>): (self: Iterable<A>) => Iterable<B>
+  <A, B>(
+    p: (a: A, i: number) => Option<B>,
+  ): (iterable: Iterable<A>) => Iterable<B>
 } = FilterableWithIndex.filterMapWithIndex
 
 export const filter: {
   <A, B extends A>(
     p: RefinementWithIndex<A, B, number>,
-  ): (self: Iterable<A>) => Iterable<B>
-  <A>(p: PredicateWithIndex<A, number>): (self: Iterable<A>) => Iterable<A>
+  ): (iterable: Iterable<A>) => Iterable<B>
+  <A>(p: PredicateWithIndex<A, number>): (iterable: Iterable<A>) => Iterable<A>
 } = FilterableWithIndex.filterWithIndex
 
 export const partitionMap: {
   <A, E, B>(
     p: (a: A, i: number) => Result<E, B>,
-  ): (self: Iterable<A>) => readonly [Iterable<E>, Iterable<B>]
+  ): (iterable: Iterable<A>) => readonly [Iterable<E>, Iterable<B>]
 } = FilterableWithIndex.partitionMapWithIndex
 
 export const partition: {
   <A>(
     p: PredicateWithIndex<A, number>,
-  ): (self: Iterable<A>) => readonly [Iterable<A>, Iterable<A>]
+  ): (iterable: Iterable<A>) => readonly [Iterable<A>, Iterable<A>]
 } = FilterableWithIndex.partitionWithIndex

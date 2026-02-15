@@ -12,10 +12,10 @@ import { listen } from './_internal'
 
 export const Monad = Monad_.create<Stream.Hkt>(FromIdentity, Functor, {
   flat: <A, E1, E2, R>(
-    streamOfStreams: Stream.Stream<Stream.Stream<A, E1, R>, E2, R>,
+    streams: Stream.Stream<Stream.Stream<A, E1, R>, E2, R>,
   ) =>
     pipe(
-      streamOfStreams,
+      streams,
       toChunk,
       Effect.flatMap(chunk =>
         Stream.create<A, E1 | E2>(({ push, fail, finish }) => r => {
@@ -101,18 +101,18 @@ export const mapTo: {
 export const flipApplyTo: {
   <N extends DoObjectKey, A, B, E1, R>(
     name: Exclude<N, keyof A>,
-    fab: Stream.Stream<(a: A, i: number) => B, E1, R>,
+    stream: Stream.Stream<(a: A, i: number) => B, E1, R>,
   ): <E2>(
-    stream: Stream.Stream<A, E2, R>,
+    selfStream: Stream.Stream<A, E2, R>,
   ) => Stream.Stream<DoObject<N, A, B>, E1 | E2, R>
 } = MonadWithIndex.flipApplyToWithIndex
 
 export const bind: {
   <N extends DoObjectKey, A, B, E1, R>(
     name: Exclude<N, keyof A>,
-    fb: Stream.Stream<B, E1, R>,
+    stream: Stream.Stream<B, E1, R>,
   ): <E2>(
-    stream: Stream.Stream<A, E2, R>,
+    selfStream: Stream.Stream<A, E2, R>,
   ) => Stream.Stream<DoObject<N, A, B>, E1 | E2, R>
 } = Monad.bind
 
@@ -121,6 +121,6 @@ export const flatMapTo: {
     name: Exclude<N, keyof A>,
     amb: (a: A, i: number) => Stream.Stream<B, E1, R>,
   ): <E2>(
-    self: Stream.Stream<A, E2, R>,
+    stream: Stream.Stream<A, E2, R>,
   ) => Stream.Stream<DoObject<N, A, B>, E1 | E2, R>
 } = MonadWithIndex.flatMapToWithIndex

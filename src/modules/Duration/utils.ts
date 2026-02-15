@@ -127,9 +127,9 @@ export const make: {
 }
 
 export const prettify: {
-  (self: Duration): Duration
-} = self => {
-  const ms = toMilliseconds(self)
+  (duration: Duration): Duration
+} = duration => {
+  const ms = toMilliseconds(duration)
   const out = {
     years: Math.floor(toYears(ms)),
     months: Math.floor(toMonths(ms)) % 12,
@@ -146,7 +146,7 @@ export const prettify: {
 }
 
 export const toTemplate: {
-  (self: Duration): string
+  (duration: Duration): string
 } = flow(
   prettify,
   Record.toEntries,
@@ -309,10 +309,10 @@ export const moreThanOrEquals: {
  * ```
  */
 export const toStartOf: {
-  (interval: Duration): (self: Duration) => Duration
-} = interval => self => {
+  (interval: Duration): (duration: Duration) => Duration
+} = interval => duration => {
   const intervalMs = toMilliseconds(interval)
-  const selfMs = toMilliseconds(self)
+  const selfMs = toMilliseconds(duration)
   const startOfInterval = selfMs - (selfMs % intervalMs)
   return fromMilliseconds(startOfInterval)
 }

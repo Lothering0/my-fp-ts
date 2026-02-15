@@ -6,7 +6,7 @@ import { match } from './matchers'
 import { _SyncOption } from './_internal'
 
 export const getOrElse: {
-  <B>(onNone: LazyArg<B>): <A>(self: SyncOption<A>) => A | B
+  <B>(onNone: LazyArg<B>): <A>(syncOption: SyncOption<A>) => A | B
 } = onNone =>
   match({
     onNone,
@@ -14,18 +14,20 @@ export const getOrElse: {
   })
 
 export const orElse: {
-  <B>(that: SyncOption<B>): <A>(self: SyncOption<A>) => SyncOption<A | B>
+  <B>(
+    syncOption: SyncOption<B>,
+  ): <A>(selfSyncOption: SyncOption<A>) => SyncOption<A | B>
 } = _SyncOption.orElse
 
 export const orElseSome: {
-  <B>(b: B): <A>(self: SyncOption<A>) => SyncOption<A | B>
+  <B>(b: B): <A>(syncOption: SyncOption<A>) => SyncOption<A | B>
 } = _SyncOption.orElseSome
 
 /** Lazy version of `orElse` */
 export const catchAll: {
   <B>(
-    that: LazyArg<SyncOption<B>>,
-  ): <A>(self: SyncOption<A>) => SyncOption<A | B>
+    syncOption: LazyArg<SyncOption<B>>,
+  ): <A>(selfSyncOption: SyncOption<A>) => SyncOption<A | B>
 } = _SyncOption.catchAll
 
 export const Alt: Alt_.Alt<SyncOptionHkt> = _SyncOption.Alt

@@ -12,11 +12,11 @@ export const Monad: Monad_.Monad<TreeHkt> = Monad_.create<TreeHkt>(
   FromIdentity,
   Functor,
   {
-    flat: self =>
+    flat: tree =>
       make(
-        pipe(self, valueOf, valueOf),
-        Iterable.concat(pipe(self, forestOf, Iterable.map(Monad.flat)))(
-          pipe(self, valueOf, forestOf),
+        pipe(tree, valueOf, valueOf),
+        Iterable.concat(pipe(tree, forestOf, Iterable.map(Monad.flat)))(
+          pipe(tree, valueOf, forestOf),
         ),
       ),
   },
@@ -25,11 +25,11 @@ export const Monad: Monad_.Monad<TreeHkt> = Monad_.create<TreeHkt>(
 export const Do = Monad.Do
 
 export const flatMap: {
-  <A, B>(amb: (a: A) => Tree<B>): (self: Tree<A>) => Tree<B>
+  <A, B>(amb: (a: A) => Tree<B>): (tree: Tree<A>) => Tree<B>
 } = Monad.flatMap
 
 export const andThen: {
-  <A>(ma: Tree<A>): (self: Tree<unknown>) => Tree<A>
+  <A>(tree: Tree<A>): (selfTree: Tree<unknown>) => Tree<A>
 } = Monad.andThen
 
 export const compose: {
@@ -40,40 +40,40 @@ export const setTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     b: B,
-  ): (self: Tree<A>) => Tree<DoObject<N, A, B>>
+  ): (tree: Tree<A>) => Tree<DoObject<N, A, B>>
 } = Monad.setTo
 
 export const mapTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     ab: (a: A) => B,
-  ): (self: Tree<A>) => Tree<DoObject<N, A, B>>
+  ): (tree: Tree<A>) => Tree<DoObject<N, A, B>>
 } = Monad.mapTo
 
 export const flipApplyTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
-    fab: Tree<(a: A) => B>,
-  ): (self: Tree<A>) => Tree<DoObject<N, A, B>>
+    tree: Tree<(a: A) => B>,
+  ): (selfTree: Tree<A>) => Tree<DoObject<N, A, B>>
 } = Monad.flipApplyTo
 
 export const bind: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
-    fb: Tree<B>,
-  ): (self: Tree<A>) => Tree<DoObject<N, A, B>>
+    tree: Tree<B>,
+  ): (selfTree: Tree<A>) => Tree<DoObject<N, A, B>>
 } = Monad.bind
 
 export const flatMapTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
     amb: (a: A) => Tree<B>,
-  ): (self: Tree<A>) => Tree<DoObject<N, A, B>>
+  ): (tree: Tree<A>) => Tree<DoObject<N, A, B>>
 } = Monad.flatMapTo
 
 export interface TreeGenerator<A> {
   (
-    makeIterable: <A>(self: Tree<A> | (() => Tree<A>)) => TreeIterable<A>,
+    makeIterable: <A>(tree: Tree<A> | (() => Tree<A>)) => TreeIterable<A>,
   ): Generator<unknown, A>
 }
 
@@ -81,8 +81,8 @@ export interface TreeIterable<A> {
   readonly [Symbol.iterator]: () => Generator<unknown, A>
 }
 
-function* makeIterable<A>(self: Tree<A> | (() => Tree<A>)): TreeIterable<A> {
-  return (yield self) as A
+function* makeIterable<A>(tree: Tree<A> | (() => Tree<A>)): TreeIterable<A> {
+  return (yield tree) as A
 }
 
 export const gen: {

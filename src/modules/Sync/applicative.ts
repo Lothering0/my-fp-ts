@@ -5,9 +5,9 @@ import { Monad } from './monad'
 export const Applicative = create<SyncHkt>(Monad)
 
 export const apply: {
-  <A>(fa: Sync<A>): <B>(self: Sync<(a: A) => B>) => Sync<B>
+  <A>(sync: Sync<A>): <B>(selfSync: Sync<(a: A) => B>) => Sync<B>
 } = Applicative.apply
 
 export const flipApply: {
-  <A, B>(fab: Sync<(a: A) => B>): (self: Sync<A>) => Sync<B>
+  <A, B>(sync: Sync<(a: A) => B>): (selfSync: Sync<A>) => Sync<B>
 } = Applicative.flipApply

@@ -22,7 +22,7 @@ export const Undefined: Schema<undefined> = create(x => {
 })
 
 export const Nullable: {
-  <A>(self: Schema<A>): Schema<A | null | undefined>
+  <A>(schema: Schema<A>): Schema<A | null | undefined>
 } = flow(union(Null), union(Undefined))
 
 export const orElse: {
@@ -43,7 +43,7 @@ export const getOrElse: {
   <B>(
     f: (x: null | undefined) => B,
   ): <In, A>(
-    Schema: Schema<In | null | undefined, A | null | undefined>,
+    schema: Schema<In | null | undefined, A | null | undefined>,
   ) => Schema<In | null | undefined, A | B>
 } = f => schema =>
   create(

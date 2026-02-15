@@ -19,8 +19,8 @@ export const Tappable: Tappable_<AsyncResultHkt> = _AsyncResult.Tappable
 
 export const TappableBoth: TappableBoth_.TappableBoth<AsyncResultHkt> = {
   ...Tappable,
-  tapLeft: f => self => () =>
-    pipe(self, toPromise, promise =>
+  tapLeft: f => asyncResult => () =>
+    pipe(asyncResult, toPromise, promise =>
       promise.then(
         Result.match({
           onFailure: e =>
@@ -36,8 +36,8 @@ export const TappableBoth: TappableBoth_.TappableBoth<AsyncResultHkt> = {
         }),
       ),
     ),
-  tapLeftSync: f => self => () =>
-    pipe(self, toPromise, promise =>
+  tapLeftSync: f => asyncResult => () =>
+    pipe(asyncResult, toPromise, promise =>
       promise.then(
         Result.match({
           onFailure: e => pipe(e, f, Sync.run, () => Result.fail(e)),
@@ -50,35 +50,35 @@ export const TappableBoth: TappableBoth_.TappableBoth<AsyncResultHkt> = {
 export const tap: {
   <A, E1>(
     f: (a: A) => AsyncResult<unknown, E1>,
-  ): <E2>(self: AsyncResult<A, E2>) => AsyncResult<A, E1 | E2>
+  ): <E2>(asyncResult: AsyncResult<A, E2>) => AsyncResult<A, E1 | E2>
 } = Tappable.tap
 
 export const tapSync: {
   <A>(
     f: (a: A) => Sync.Sync<unknown>,
-  ): <E>(self: AsyncResult<A, E>) => AsyncResult<A, E>
+  ): <E>(asyncResult: AsyncResult<A, E>) => AsyncResult<A, E>
 } = Tappable.tapSync
 
 export const tapResult: {
   <A, E1>(
     f: (a: A) => Result.Result<unknown, E1>,
-  ): <E2>(self: AsyncResult<A, E2>) => AsyncResult<A, E1 | E2>
+  ): <E2>(asyncResult: AsyncResult<A, E2>) => AsyncResult<A, E1 | E2>
 } = _AsyncResult.tapResult
 
 export const tapSyncResult: {
   <A, E1>(
     f: (a: A) => SyncResult.SyncResult<unknown, E1>,
-  ): <E2>(self: AsyncResult<A, E2>) => AsyncResult<A, E1 | E2>
+  ): <E2>(asyncResult: AsyncResult<A, E2>) => AsyncResult<A, E1 | E2>
 } = _AsyncResult.tapSyncResult
 
 export const tapAsync: {
   <A>(
     f: (a: A) => Async.Async<unknown>,
-  ): <E>(self: AsyncResult<A, E>) => AsyncResult<A, E>
-} = f => self =>
+  ): <E>(asyncResult: AsyncResult<A, E>) => AsyncResult<A, E>
+} = f => asyncResult =>
   pipe(
     Do,
-    bind('a', self),
+    bind('a', asyncResult),
     tap(({ a }) => pipe(a, f, fromAsync<never, never>)),
     map(({ a }) => a),
   )
@@ -86,21 +86,21 @@ export const tapAsync: {
 export const tapLeft: {
   <E1, E2>(
     f: (e: E1) => AsyncResult<unknown, E2>,
-  ): <A>(self: AsyncResult<A, E1>) => AsyncResult<A, E1 | E2>
+  ): <A>(asyncResult: AsyncResult<A, E1>) => AsyncResult<A, E1 | E2>
 } = TappableBoth.tapLeft
 
 export const tapLeftSync: {
   <E>(
     f: (e: E) => Sync.Sync<unknown>,
-  ): <A>(self: AsyncResult<A, E>) => AsyncResult<A, E>
+  ): <A>(asyncResult: AsyncResult<A, E>) => AsyncResult<A, E>
 } = TappableBoth.tapLeftSync
 
 export const tapLeftResult: {
   <E1, E2>(
     f: (e: E1) => Result.Result<unknown, E2>,
-  ): <A>(self: AsyncResult<A, E1>) => AsyncResult<A, E1 | E2>
-} = f => self => () =>
-  pipe(self, toPromise, promise =>
+  ): <A>(asyncResult: AsyncResult<A, E1>) => AsyncResult<A, E1 | E2>
+} = f => asyncResult => () =>
+  pipe(asyncResult, toPromise, promise =>
     promise.then(
       Result.match({
         onFailure: e =>
@@ -120,9 +120,9 @@ export const tapLeftResult: {
 export const tapLeftSyncResult: {
   <E1, E2>(
     f: (e: E1) => SyncResult.SyncResult<unknown, E2>,
-  ): <A>(self: AsyncResult<A, E1>) => AsyncResult<A, E1 | E2>
-} = f => self => () =>
-  pipe(self, toPromise, promise =>
+  ): <A>(asyncResult: AsyncResult<A, E1>) => AsyncResult<A, E1 | E2>
+} = f => asyncResult => () =>
+  pipe(asyncResult, toPromise, promise =>
     promise.then(
       Result.match({
         onFailure: e =>
@@ -143,9 +143,9 @@ export const tapLeftSyncResult: {
 export const tapLeftAsync: {
   <E>(
     f: (e: E) => Async.Async<unknown>,
-  ): <A>(self: AsyncResult<A, E>) => AsyncResult<A, E>
-} = f => self => () =>
-  pipe(self, toPromise, promise =>
+  ): <A>(asyncResult: AsyncResult<A, E>) => AsyncResult<A, E>
+} = f => asyncResult => () =>
+  pipe(asyncResult, toPromise, promise =>
     promise.then(
       Result.match({
         onFailure: e =>

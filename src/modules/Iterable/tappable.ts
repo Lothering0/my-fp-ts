@@ -10,11 +10,11 @@ export const NonEmptyTappable = create(NonEmptyMonad)
 export const tap: {
   <F extends Iterable<any>, G extends Iterable<any>>(
     f: (a: Iterable.Infer<F>) => G,
-  ): (self: F) => Iterable.AndNonEmpty<F, G, Iterable.Infer<F>>
+  ): (iterable: F) => Iterable.AndNonEmpty<F, G, Iterable.Infer<F>>
 } = NonEmptyTappable.tap as any
 
 export const tapSync: {
   <F extends Iterable<any>>(
     f: (a: Iterable.Infer<F>) => Sync<unknown>,
-  ): (self: F) => Iterable.With<F>
+  ): (iterable: F) => Iterable.With<F>
 } = NonEmptyTappable.tapSync as any

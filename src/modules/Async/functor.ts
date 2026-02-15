@@ -3,13 +3,13 @@ import { AsyncHkt, Async } from './async'
 
 export const Functor = Functor_.create<AsyncHkt>({
   // `Promise.resolve` for recursion optimization
-  map: ab => self => () => Promise.resolve().then(self).then(ab),
+  map: ab => async => () => Promise.resolve().then(async).then(ab),
 })
 
 export const map: {
-  <A, B>(ab: (a: A) => B): (self: Async<A>) => Async<B>
+  <A, B>(ab: (a: A) => B): (async: Async<A>) => Async<B>
 } = Functor.map
 
 export const as: {
-  <A>(a: A): (self: Async<unknown>) => Async<A>
+  <A>(a: A): (async: Async<unknown>) => Async<A>
 } = Functor.as

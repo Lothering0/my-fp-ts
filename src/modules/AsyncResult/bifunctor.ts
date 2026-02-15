@@ -7,12 +7,12 @@ export const Bifunctor: Bifunctor_<AsyncResultHkt> = _AsyncResult.Bifunctor
 export const mapLeft: {
   <E, D>(
     ed: (failure: E) => D,
-  ): <A>(self: AsyncResult<A, E>) => AsyncResult<A, D>
+  ): <A>(asyncResult: AsyncResult<A, E>) => AsyncResult<A, D>
 } = Bifunctor.mapLeft
 
 export const bimap: {
   <E, D, A, B>(
     ed: (e: E) => D,
     ab: (a: A) => B,
-  ): (self: AsyncResult<A, E>) => AsyncResult<B, D>
+  ): (asyncResult: AsyncResult<A, E>) => AsyncResult<B, D>
 } = Bifunctor.bimap

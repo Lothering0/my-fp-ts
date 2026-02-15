@@ -6,5 +6,5 @@ import { Comonad } from './comonad'
 export const Bimonad = create(NonEmptyMonad, Comonad)
 
 export const single: {
-  <A>(list: Iterable.NonEmpty<A>): Iterable.NonEmpty<A>
+  <A>(iterable: Iterable.NonEmpty<A>): Iterable.NonEmpty<A>
 } = Bimonad.single

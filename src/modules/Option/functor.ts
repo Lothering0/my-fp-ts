@@ -12,9 +12,9 @@ export const Functor = Functor_.create<OptionHkt>({
 })
 
 export const map: {
-  <A, B>(ab: (a: A) => B): (self: Option<A>) => Option<B>
+  <A, B>(ab: (a: A) => B): (option: Option<A>) => Option<B>
 } = Functor.map
 
 export const as: {
-  <A>(a: A): (self: Option<unknown>) => Option<A>
+  <A>(a: A): (option: Option<unknown>) => Option<A>
 } = Functor.as

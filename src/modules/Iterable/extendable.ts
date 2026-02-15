@@ -19,8 +19,8 @@ export const Extendable = create<Iterable.Hkt>(Functor, {
 
 export const extend: {
   <F extends Iterable<any>, B>(
-    fab: (fa: F) => B,
-  ): (self: F) => Iterable.With<F, B>
+    fab: (iterable: F) => B,
+  ): (iterable: F) => Iterable.With<F, B>
 } = Extendable.extend as any
 
 export const NonEmptyExtendable = create<Iterable.NonEmptyHkt>(
@@ -29,5 +29,5 @@ export const NonEmptyExtendable = create<Iterable.NonEmptyHkt>(
 )
 
 export const duplicate: {
-  <F extends Iterable<any>>(self: F): Iterable.With<F, Iterable.With<F>>
+  <F extends Iterable<any>>(iterable: F): Iterable.With<F, Iterable.With<F>>
 } = Extendable.duplicate as any

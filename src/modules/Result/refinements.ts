@@ -5,9 +5,9 @@ export const isResult = (x: unknown): x is Result<unknown, unknown> =>
   isRecord(x) && x._id === 'Result'
 
 export const isFailure: {
-  <E>(self: Result<unknown, E>): self is Failure<E>
-} = self => self._tag === 'Failure'
+  <E>(result: Result<unknown, E>): result is Failure<E>
+} = result => result._tag === 'Failure'
 
 export const isSuccess: {
-  <A>(self: Result<A, unknown>): self is Success<A>
-} = self => self._tag === 'Success'
+  <A>(result: Result<A, unknown>): result is Success<A>
+} = result => result._tag === 'Success'

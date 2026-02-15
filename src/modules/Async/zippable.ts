@@ -5,11 +5,14 @@ import { Async } from './async'
 export const Zippable = Zippable_.create(Applicative)
 
 export const zipWith: {
-  <A, B, C>(that: Async<B>, f: (a: A, b: B) => C): (self: Async<A>) => Async<C>
+  <A, B, C>(
+    async: Async<B>,
+    f: (a: A, b: B) => C,
+  ): (selfAsync: Async<A>) => Async<C>
 } = Zippable.zipWith
 
 export const zip: {
-  <A, B>(that: Async<B>): (self: Async<A>) => Async<readonly [A, B]>
+  <A, B>(async: Async<B>): (selfAsync: Async<A>) => Async<readonly [A, B]>
 } = Zippable.zip
 
 export const unzip: {

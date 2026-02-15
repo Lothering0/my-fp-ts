@@ -5,9 +5,9 @@ import { _SyncOption } from './_internal'
 export const Functor: Functor_.Functor<SyncOptionHkt> = _SyncOption.Functor
 
 export const map: {
-  <A, B>(ab: (a: A) => B): (self: SyncOption<A>) => SyncOption<B>
+  <A, B>(ab: (a: A) => B): (syncOption: SyncOption<A>) => SyncOption<B>
 } = Functor.map
 
 export const as: {
-  <A>(a: A): (self: SyncOption<unknown>) => SyncOption<A>
+  <A>(a: A): (syncOption: SyncOption<unknown>) => SyncOption<A>
 } = Functor.as

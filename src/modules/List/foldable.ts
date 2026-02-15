@@ -24,5 +24,5 @@ export const reduce: {
 } = FoldableWithIndex.reduceWithIndex
 
 export const reduceRight: {
-  <A, B>(b: B, abib: (a: A, b: B, i: number) => B): (self: List<A>) => B
+  <A, B>(b: B, abib: (a: A, b: B, i: number) => B): (list: List<A>) => B
 } = FoldableWithIndex.reduceRightWithIndex

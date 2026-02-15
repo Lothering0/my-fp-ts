@@ -6,13 +6,13 @@ export const MonadBoth: MonadBoth_.MonadBoth<SyncResultHkt> =
   _SyncResult.MonadBoth
 
 export const flatLeft: {
-  <A, B, E>(self: SyncResult<A, SyncResult<B, E>>): SyncResult<A | B, E>
+  <A, B, E>(syncResult: SyncResult<A, SyncResult<B, E>>): SyncResult<A | B, E>
 } = MonadBoth.flatLeft
 
 export const flatMapLeft: {
   <A, E, D>(
     emd: (e: E) => SyncResult<A, D>,
-  ): <B>(self: SyncResult<B, E>) => SyncResult<A | B, D>
+  ): <B>(syncResult: SyncResult<B, E>) => SyncResult<A | B, D>
 } = MonadBoth.flatMapLeft
 
 export const composeLeft: {

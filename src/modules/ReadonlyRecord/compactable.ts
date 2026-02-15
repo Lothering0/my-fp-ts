@@ -25,18 +25,18 @@ export const Compactable = create<ReadonlyRecordHkt>(Functor, {
 
 export const compact: {
   <A, K extends string>(
-    self: ReadonlyRecord<K, Option.Option<A>>,
+    record: ReadonlyRecord<K, Option.Option<A>>,
   ): ReadonlyRecord<K, A>
 } = Compactable.compact
 
 export const compactResults: {
   <A, K extends string>(
-    self: ReadonlyRecord<K, Result.Result<A, unknown>>,
+    record: ReadonlyRecord<K, Result.Result<A, unknown>>,
   ): ReadonlyRecord<K, A>
 } = Compactable.compactResults
 
 export const separate: {
   <A, E, K extends string>(
-    self: ReadonlyRecord<K, Result.Result<A, E>>,
+    record: ReadonlyRecord<K, Result.Result<A, E>>,
   ): readonly [ReadonlyRecord<K, A>, ReadonlyRecord<K, E>]
 } = Compactable.separate

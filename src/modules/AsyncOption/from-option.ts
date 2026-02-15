@@ -6,5 +6,5 @@ import { _AsyncOption } from './_internal'
 export const FromOption: FromOption_<AsyncOptionHkt> = _AsyncOption.FromOption
 
 export const fromOption: {
-  <A>(ma: Option<A>): AsyncOption<A>
+  <A>(option: Option<A>): AsyncOption<A>
 } = FromOption.fromOption

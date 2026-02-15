@@ -9,6 +9,6 @@ export interface Matchers<A, B, C = B> {
 }
 
 export const match: {
-  <A, B, C = B>(matchers: Matchers<A, B, C>): (self: Option<A>) => B | C
-} = matchers => self =>
-  isNone(self) ? matchers.onNone() : pipe(self.value, matchers.onSome)
+  <A, B, C = B>(matchers: Matchers<A, B, C>): (option: Option<A>) => B | C
+} = matchers => option =>
+  isNone(option) ? matchers.onNone() : pipe(option.value, matchers.onSome)

@@ -10,8 +10,8 @@ export interface Matchers<A, B, E, C = B> {
 export const match: {
   <A, B, E, C = B>(
     matchers: Matchers<A, B, E, C>,
-  ): (self: Result<A, E>) => B | C
-} = matchers => self =>
-  isFailure(self)
-    ? pipe(self.failure, matchers.onFailure)
-    : pipe(self.success, matchers.onSuccess)
+  ): (result: Result<A, E>) => B | C
+} = matchers => result =>
+  isFailure(result)
+    ? pipe(result.failure, matchers.onFailure)
+    : pipe(result.success, matchers.onSuccess)

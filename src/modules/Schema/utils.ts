@@ -70,11 +70,11 @@ export const instanceOf: {
   })
 
 export const union: {
-  <A>(that: Schema<A>): <B>(self: Schema<B>) => Schema<A | B>
-} = that => self =>
+  <A>(schema: Schema<A>): <B>(selfSchema: Schema<B>) => Schema<A | B>
+} = schema => selfSchema =>
   create(x => {
-    const selfResult = self.proceed(x)
-    const thatResult = that.proceed(x)
+    const selfResult = selfSchema.proceed(x)
+    const thatResult = schema.proceed(x)
     const isValid = Result.isSuccess(selfResult) || Result.isSuccess(thatResult)
 
     if (!isValid) {
@@ -89,9 +89,9 @@ export const union: {
 
 export const minLength =
   (min: number) =>
-  <A extends ReadonlyArray<unknown> | string>(self: Schema<A>): Schema<A> =>
+  <A extends { readonly length: number }>(schema: Schema<A>): Schema<A> =>
     create(x => {
-      const processResult = self.proceed(x)
+      const processResult = schema.proceed(x)
 
       if (Result.isFailure(processResult)) {
         return processResult
@@ -108,9 +108,9 @@ export const minLength =
 
 export const maxLength =
   (max: number) =>
-  <A extends ReadonlyArray<unknown> | string>(self: Schema<A>): Schema<A> =>
+  <A extends { readonly length: number }>(schema: Schema<A>): Schema<A> =>
     create(x => {
-      const processResult = self.proceed(x)
+      const processResult = schema.proceed(x)
 
       if (Result.isFailure(processResult)) {
         return processResult
@@ -128,11 +128,11 @@ export const maxLength =
 export const transformIn: {
   <In, In1 = unknown, Out = In1>(
     f: (a: unknown) => Out,
-  ): (Schema: Schema<In, Out>) => Schema<In1, Out>
-} = f => Schema => create(flow(f, Schema.proceed))
+  ): (schema: Schema<In, Out>) => Schema<In1, Out>
+} = f => schema => create(flow(f, schema.proceed))
 
 export const transformOut: {
   <Out1, In, Out2>(
     f: (a: Out1) => Out2,
-  ): (Schema: Schema<In, Out1>) => Schema<In, Out2>
-} = f => Schema => create(flow(Schema.proceed, Result.map(f)))
+  ): (schema: Schema<In, Out1>) => Schema<In, Out2>
+} = f => schema => create(flow(schema.proceed, Result.map(f)))

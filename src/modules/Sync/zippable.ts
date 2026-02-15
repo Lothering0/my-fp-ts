@@ -5,11 +5,11 @@ import { Sync } from './sync'
 export const Zippable = Zippable_.create(Applicative)
 
 export const zipWith: {
-  <A, B, C>(that: Sync<B>, f: (a: A, b: B) => C): (self: Sync<A>) => Sync<C>
+  <A, B, C>(sync: Sync<B>, f: (a: A, b: B) => C): (selfSync: Sync<A>) => Sync<C>
 } = Zippable.zipWith
 
 export const zip: {
-  <A, B>(that: Sync<B>): (self: Sync<A>) => Sync<readonly [A, B]>
+  <A, B>(sync: Sync<B>): (selfSync: Sync<A>) => Sync<readonly [A, B]>
 } = Zippable.zip
 
 export const unzip: {

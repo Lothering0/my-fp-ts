@@ -7,9 +7,9 @@ import { FromIdentity } from './from-identity'
 import { getIterableGen } from '../_internal'
 
 export const Monad = Monad_.create<Iterable.Hkt>(FromIdentity, Functor, {
-  flat: self => ({
+  flat: iterables => ({
     *[Symbol.iterator]() {
-      for (const iterable of self) {
+      for (const iterable of iterables) {
         yield* iterable
       }
     },
@@ -32,7 +32,7 @@ export const Do: Iterable.NonEmpty<{}> = NonEmptyMonad.Do
 
 export const flat: {
   <F extends Iterable<Iterable<any>>>(
-    self: F,
+    iterable: F,
   ): Iterable.AndNonEmpty<
     F,
     Iterable.Infer<F>,
@@ -43,14 +43,14 @@ export const flat: {
 export const flatMap: {
   <F extends Iterable<any>, G extends Iterable<any>>(
     aimb: (a: Iterable.Infer<F>, i: number) => G,
-  ): (self: F) => Iterable.AndNonEmpty<F, G, Iterable.Infer<G>>
+  ): (iterable: F) => Iterable.AndNonEmpty<F, G, Iterable.Infer<G>>
 } = NonEmptyMonadWithIndex.flatMapWithIndex as any
 
 export const andThen: {
   <F extends Iterable<any>>(
-    ma: F,
+    iterable: F,
   ): <G extends Iterable<any>>(
-    self: G,
+    selfIterable: G,
   ) => Iterable.AndNonEmpty<F, G, Iterable.Infer<F>>
 } = NonEmptyMonadWithIndex.andThen as any
 
@@ -65,14 +65,14 @@ export const setTo: {
   <N extends DoObjectKey, F extends Iterable<any>, B>(
     name: Exclude<N, keyof Iterable.Infer<F>>,
     b: B,
-  ): (self: F) => Iterable.With<F, DoObject<N, Iterable.Infer<F>, B>>
+  ): (iterable: F) => Iterable.With<F, DoObject<N, Iterable.Infer<F>, B>>
 } = NonEmptyMonad.setTo as any
 
 export const mapTo: {
   <N extends DoObjectKey, F extends Iterable<any>, B>(
     name: Exclude<N, keyof Iterable.Infer<F>>,
     ab: (a: Iterable.Infer<F>, i: number) => B,
-  ): (self: F) => Iterable.With<F, DoObject<N, Iterable.Infer<F>, B>>
+  ): (iterable: F) => Iterable.With<F, DoObject<N, Iterable.Infer<F>, B>>
 } = NonEmptyMonadWithIndex.mapToWithIndex as any
 
 export const flipApplyTo: {
@@ -82,9 +82,9 @@ export const flipApplyTo: {
     G extends Iterable<(a: Iterable.Infer<F>, i: number) => any>,
   >(
     name: Exclude<N, keyof Iterable.Infer<F>>,
-    fab: G,
+    iterable: G,
   ): (
-    self: F,
+    selfIterable: F,
   ) => Iterable.AndNonEmpty<
     F,
     G,
@@ -95,9 +95,9 @@ export const flipApplyTo: {
 export const bind: {
   <N extends DoObjectKey, F extends Iterable<any>, G extends Iterable<any>>(
     name: Exclude<N, keyof Iterable.Infer<F>>,
-    fb: G,
+    iterable: G,
   ): (
-    self: F,
+    selfIterable: F,
   ) => Iterable.AndNonEmpty<
     F,
     G,
@@ -110,7 +110,7 @@ export const flatMapTo: {
     name: Exclude<N, keyof Iterable.Infer<F>>,
     amb: (a: Iterable.Infer<F>, i: number) => G,
   ): (
-    self: F,
+    iterable: F,
   ) => Iterable.AndNonEmpty<
     F,
     G,
@@ -120,7 +120,7 @@ export const flatMapTo: {
 
 export interface GenUtils {
   readonly $: <A>(
-    self: Iterable<A> | (() => Iterable<A>),
+    iterable: Iterable<A> | (() => Iterable<A>),
   ) => IterableIterable<A>
   readonly where: (a: boolean) => Generator<unknown, void>
 }
@@ -134,9 +134,9 @@ export interface IterableIterable<A> {
 }
 
 function* makeIterable<A>(
-  self: Iterable<A> | (() => Iterable<A>),
+  iterable: Iterable<A> | (() => Iterable<A>),
 ): IterableIterable<A> {
-  return (yield self) as A
+  return (yield iterable) as A
 }
 
 function* where(a: boolean) {

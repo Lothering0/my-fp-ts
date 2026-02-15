@@ -6,13 +6,13 @@ export const Zippable = Zippable_.create(Applicative)
 
 export const zipWith: {
   <A, B, C>(
-    that: Identity<B>,
+    b: Identity<B>,
     f: (a: A, b: B) => C,
-  ): (self: Identity<A>) => Identity<C>
+  ): (a: Identity<A>) => Identity<C>
 } = Zippable.zipWith
 
 export const zip: {
-  <A, B>(that: Identity<B>): (self: Identity<A>) => Identity<readonly [A, B]>
+  <A, B>(b: Identity<B>): (a: Identity<A>) => Identity<readonly [A, B]>
 } = Zippable.zip
 
 export const unzip: {

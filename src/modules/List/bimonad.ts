@@ -6,5 +6,5 @@ import { Comonad } from './comonad'
 export const Bimonad = create<List.NonEmptyHkt>(NonEmptyMonad, Comonad)
 
 export const single: {
-  <A>(self: List.NonEmpty<A>): List.NonEmpty<A>
+  <A>(list: List.NonEmpty<A>): List.NonEmpty<A>
 } = Bimonad.single as any

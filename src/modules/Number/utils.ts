@@ -47,16 +47,16 @@ export const isEven: Predicate<number> = x => x % 2 === 0
 export const isOdd: Predicate<number> = flow(isEven, Boolean.not)
 
 export const toNonNegative: {
-  (self: number): number
+  (n: number): number
 } = matchNegative({
   onNegative: constant(0),
   onNonNegative: identity,
 })
 
 export const toFixedString: {
-  (fractionDigits: number): (self: number) => string
-} = fractionDigits => self => self.toFixed(fractionDigits)
+  (fractionDigits: number): (n: number) => string
+} = fractionDigits => n => n.toFixed(fractionDigits)
 
 export const toFixed: {
-  (fractionDigits: number): (self: number) => number
+  (fractionDigits: number): (n: number) => number
 } = fractionDigits => flow(toFixedString(fractionDigits), Number)

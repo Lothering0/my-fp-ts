@@ -6,15 +6,15 @@ export const Zippable = Zippable_.create(Applicative)
 
 export const zipWith: {
   <A, B, D, C>(
-    that: Result<B, D>,
+    result: Result<B, D>,
     f: (a: A, b: B) => C,
-  ): <E>(self: Result<A, E>) => Result<C, E | D>
+  ): <E>(selfResult: Result<A, E>) => Result<C, E | D>
 } = Zippable.zipWith
 
 export const zip: {
   <A, B, D>(
-    that: Result<B, D>,
-  ): <E>(self: Result<A, E>) => Result<readonly [A, B], E | D>
+    result: Result<B, D>,
+  ): <E>(selfResult: Result<A, E>) => Result<readonly [A, B], E | D>
 } = Zippable.zip
 
 export const unzip: {

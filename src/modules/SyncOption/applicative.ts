@@ -5,9 +5,13 @@ import { _SyncOption } from './_internal'
 export const Applicative: Applicative_<SyncOptionHkt> = _SyncOption.Applicative
 
 export const apply: {
-  <A>(fa: SyncOption<A>): <B>(self: SyncOption<(a: A) => B>) => SyncOption<B>
+  <A>(
+    syncOption: SyncOption<A>,
+  ): <B>(selfSyncOption: SyncOption<(a: A) => B>) => SyncOption<B>
 } = Applicative.apply
 
 export const flipApply: {
-  <A, B>(fab: SyncOption<(a: A) => B>): (self: SyncOption<A>) => SyncOption<B>
+  <A, B>(
+    syncOption: SyncOption<(a: A) => B>,
+  ): (selfSyncOption: SyncOption<A>) => SyncOption<B>
 } = Applicative.flipApply

@@ -25,9 +25,9 @@ export const NonEmptyApplicativeWithIndex = ApplicativeWithIndex_.create<
 
 export const apply: {
   <F extends Chunk.Chunk<any>>(
-    fa: F,
+    chunk: F,
   ): <G extends Chunk.Chunk<(a: Chunk.Infer<F>, i: number) => any>>(
-    self: G,
+    selfChunk: G,
   ) => Chunk.AndNonEmpty<F, G, ReturnType<Chunk.Infer<G>>>
 } = ApplicativeWithIndex.applyWithIndex as any
 
@@ -36,6 +36,6 @@ export const flipApply: {
     F extends Chunk.Chunk<any>,
     G extends Chunk.Chunk<(a: Chunk.Infer<F>, i: number) => any>,
   >(
-    fab: G,
-  ): (self: F) => Chunk.AndNonEmpty<F, G, ReturnType<Chunk.Infer<G>>>
+    chunk: G,
+  ): (selfChunk: F) => Chunk.AndNonEmpty<F, G, ReturnType<Chunk.Infer<G>>>
 } = ApplicativeWithIndex.flipApplyWithIndex as any

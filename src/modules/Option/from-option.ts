@@ -7,5 +7,5 @@ export const FromOption: FromOption_<OptionHkt> = {
 }
 
 export const fromOption: {
-  <A>(ma: Option<A>): Option<A>
+  <A>(option: Option<A>): Option<A>
 } = FromOption.fromOption

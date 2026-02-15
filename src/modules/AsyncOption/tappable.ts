@@ -17,33 +17,35 @@ export const Tappable: Tappable_<AsyncOptionHkt> = _AsyncOption.Tappable
 export const tap: {
   <A>(
     f: (a: A) => AsyncOption<unknown>,
-  ): (self: AsyncOption<A>) => AsyncOption<A>
+  ): (asyncOption: AsyncOption<A>) => AsyncOption<A>
 } = Tappable.tap
 
 export const tapSync: {
-  <A>(f: (a: A) => Sync<unknown>): (self: AsyncOption<A>) => AsyncOption<A>
+  <A>(
+    f: (a: A) => Sync<unknown>,
+  ): (asyncOption: AsyncOption<A>) => AsyncOption<A>
 } = Tappable.tapSync
 
 export const tapOption: {
   <A>(
     f: (a: A) => Option.Option<unknown>,
-  ): (self: AsyncOption<A>) => AsyncOption<A>
+  ): (asyncOption: AsyncOption<A>) => AsyncOption<A>
 } = _AsyncOption.tapOption
 
 export const tapResult: {
   <A>(
     f: (a: A) => Result.Result<unknown, unknown>,
-  ): (self: AsyncOption<A>) => AsyncOption<A>
+  ): (asyncOption: AsyncOption<A>) => AsyncOption<A>
 } = _AsyncOption.tapResult
 
 export const tapAsync: {
   <A>(
     f: (a: A) => Async.Async<unknown>,
-  ): (self: AsyncOption<A>) => AsyncOption<A>
-} = f => self =>
+  ): (asyncOption: AsyncOption<A>) => AsyncOption<A>
+} = f => asyncOption =>
   pipe(
     Do,
-    bind('a', self),
+    bind('a', asyncOption),
     tap(({ a }) => pipe(a, f, fromAsync)),
     map(({ a }) => a),
   )
@@ -51,11 +53,11 @@ export const tapAsync: {
 export const tapAsyncResult: {
   <A>(
     f: (a: A) => AsyncResult.AsyncResult<unknown, unknown>,
-  ): (self: AsyncOption<A>) => AsyncOption<A>
-} = f => self =>
+  ): (asyncOption: AsyncOption<A>) => AsyncOption<A>
+} = f => asyncOption =>
   pipe(
     Do,
-    bind('a', self),
+    bind('a', asyncOption),
     tap(({ a }) =>
       pipe(
         a,
@@ -72,11 +74,11 @@ export const tapAsyncResult: {
 export const tapSyncOption: {
   <A>(
     f: (a: A) => SyncOption.SyncOption<unknown>,
-  ): (self: AsyncOption<A>) => AsyncOption<A>
+  ): (asyncOption: AsyncOption<A>) => AsyncOption<A>
 } = _AsyncOption.tapSyncOption
 
 export const tapSyncResult: {
   <A>(
     f: (a: A) => SyncResult.SyncResult<unknown, unknown>,
-  ): (self: AsyncOption<A>) => AsyncOption<A>
+  ): (asyncOption: AsyncOption<A>) => AsyncOption<A>
 } = _AsyncOption.tapSyncResult

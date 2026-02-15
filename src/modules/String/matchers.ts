@@ -6,6 +6,6 @@ export interface Matchers<A, B = A> {
 }
 
 export const match: {
-  <A, B = A>(matchers: Matchers<A, B>): (self: string) => A | B
-} = matchers => self =>
-  isEmpty(self) ? matchers.onEmpty('') : matchers.onNonEmpty(self)
+  <A, B = A>(matchers: Matchers<A, B>): (string: string) => A | B
+} = matchers => string =>
+  isEmpty(string) ? matchers.onEmpty('') : matchers.onNonEmpty(string)

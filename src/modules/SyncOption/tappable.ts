@@ -9,27 +9,29 @@ import { _SyncOption } from './_internal'
 export const Tappable: Tappable_<SyncOptionHkt> = _SyncOption.Tappable
 
 export const tap: {
-  <A>(f: (a: A) => SyncOption<unknown>): (self: SyncOption<A>) => SyncOption<A>
+  <A>(
+    f: (a: A) => SyncOption<unknown>,
+  ): (syncOption: SyncOption<A>) => SyncOption<A>
 } = Tappable.tap
 
 export const tapSync: {
-  <A>(f: (a: A) => Sync<unknown>): (self: SyncOption<A>) => SyncOption<A>
+  <A>(f: (a: A) => Sync<unknown>): (syncOption: SyncOption<A>) => SyncOption<A>
 } = Tappable.tapSync
 
 export const tapOption: {
   <A>(
     f: (a: A) => Option.Option<unknown>,
-  ): (self: SyncOption<A>) => SyncOption<A>
+  ): (syncOption: SyncOption<A>) => SyncOption<A>
 } = _SyncOption.tapOption
 
 export const tapResult: {
   <E, A>(
     f: (a: A) => Result<E, unknown>,
-  ): (self: SyncOption<A>) => SyncOption<A>
+  ): (syncOption: SyncOption<A>) => SyncOption<A>
 } = _SyncOption.tapResult
 
 export const tapSyncResult: {
   <E, A>(
     f: (a: A) => SyncResult.SyncResult<E, unknown>,
-  ): (self: SyncOption<A>) => SyncOption<A>
+  ): (syncOption: SyncOption<A>) => SyncOption<A>
 } = _SyncOption.tapSyncResult

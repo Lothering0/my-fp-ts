@@ -5,9 +5,11 @@ import { _AsyncResult } from './_internal'
 export const Functor: Functor_.Functor<AsyncResultHkt> = _AsyncResult.Functor
 
 export const map: {
-  <A, B>(ab: (a: A) => B): <E>(self: AsyncResult<A, E>) => AsyncResult<B, E>
+  <A, B>(
+    ab: (a: A) => B,
+  ): <E>(asyncResult: AsyncResult<A, E>) => AsyncResult<B, E>
 } = Functor.map
 
 export const as: {
-  <A>(a: A): <E>(self: AsyncResult<unknown, E>) => AsyncResult<A, E>
+  <A>(a: A): <E>(asyncResult: AsyncResult<unknown, E>) => AsyncResult<A, E>
 } = Functor.as

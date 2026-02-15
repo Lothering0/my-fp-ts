@@ -10,11 +10,11 @@ export const NonEmptyTappable = create(NonEmptyMonad)
 export const tap: {
   <F extends ReadonlyArray<any>, G extends ReadonlyArray<any>>(
     f: (a: Array.Infer<F>) => G,
-  ): (self: F) => Array.AndNonEmpty<F, G, Array.Infer<F>>
+  ): (array: F) => Array.AndNonEmpty<F, G, Array.Infer<F>>
 } = Tappable.tap as any
 
 export const tapSync: {
   <F extends ReadonlyArray<any>>(
     f: (a: Array.Infer<F>) => Sync<unknown>,
-  ): (self: F) => Array.With<F>
+  ): (array: F) => Array.With<F>
 } = Tappable.tapSync as any

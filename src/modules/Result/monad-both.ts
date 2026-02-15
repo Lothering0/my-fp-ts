@@ -14,13 +14,13 @@ export const MonadBoth = create<ResultHkt>(FromIdentityLeft, Bifunctor, Monad, {
 })
 
 export const flatLeft: {
-  <A, B, E>(self: Result<A, Result<B, E>>): Result<A | B, E>
+  <A, B, E>(result: Result<A, Result<B, E>>): Result<A | B, E>
 } = MonadBoth.flatLeft
 
 export const flatMapLeft: {
   <A, E, D>(
     emd: (e: E) => Result<A, D>,
-  ): <B>(self: Result<B, E>) => Result<A | B, D>
+  ): <B>(result: Result<B, E>) => Result<A | B, D>
 } = MonadBoth.flatMapLeft
 
 export const composeLeft: {

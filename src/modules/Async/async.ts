@@ -12,8 +12,8 @@ export const async: {
 } = a => () => Promise.resolve(a)
 
 export const toPromise: {
-  <A>(ma: Async<A>): Promise<A>
-} = ma => ma()
+  <A>(async: Async<A>): Promise<A>
+} = async => async()
 
 /** Alias for `toPromise` */
 export const run = toPromise

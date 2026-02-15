@@ -11,22 +11,22 @@ export const MonadBoth = MonadBoth_.create<EffectHkt>(
   Bifunctor,
   Monad,
   {
-    flatLeft: <A, B, E, R>(self: Effect<A, Effect<B, E, R>, R>) =>
+    flatLeft: <A, B, E, R>(effect: Effect<A, Effect<B, E, R>, R>) =>
       create<A, Effect<B, E, R>, A | B, E, R>(
         ma => r => (Result.isFailure(ma) ? run(r)(ma.failure) : ma),
-        self,
+        effect,
       ),
   },
 )
 
 export const flatLeft: {
-  <A, B, E, R>(self: Effect<A, Effect<B, E, R>, R>): Effect<A | B, E, R>
+  <A, B, E, R>(effect: Effect<A, Effect<B, E, R>, R>): Effect<A | B, E, R>
 } = MonadBoth.flatLeft
 
 export const flatMapLeft: {
   <A, E, D, R>(
     emd: (e: E) => Effect<A, D, R>,
-  ): <B>(self: Effect<B, E, R>) => Effect<A | B, D, R>
+  ): <B>(effect: Effect<B, E, R>) => Effect<A | B, D, R>
 } = MonadBoth.flatMapLeft
 
 export const composeLeft: {

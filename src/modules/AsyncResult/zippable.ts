@@ -7,15 +7,17 @@ export const Zippable: Zippable_.Zippable<AsyncResultHkt> =
 
 export const zipWith: {
   <A, B, D, C>(
-    that: AsyncResult<B, D>,
+    asyncResult: AsyncResult<B, D>,
     f: (a: A, b: B) => C,
-  ): <E>(self: AsyncResult<A, E>) => AsyncResult<C, E | D>
+  ): <E>(selfAsyncResult: AsyncResult<A, E>) => AsyncResult<C, E | D>
 } = Zippable.zipWith
 
 export const zip: {
   <A, B, D>(
-    that: AsyncResult<B, D>,
-  ): <E>(self: AsyncResult<A, E>) => AsyncResult<readonly [A, B], E | D>
+    asyncResult: AsyncResult<B, D>,
+  ): <E>(
+    selfAsyncResult: AsyncResult<A, E>,
+  ) => AsyncResult<readonly [A, B], E | D>
 } = Zippable.zip
 
 export const unzip: {

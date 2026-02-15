@@ -5,9 +5,9 @@ import { Monad } from './monad'
 export const Applicative = create<TreeHkt>(Monad)
 
 export const apply: {
-  <A>(fa: Tree<A>): <B>(self: Tree<(a: A) => B>) => Tree<B>
+  <A>(tree: Tree<A>): <B>(selfTree: Tree<(a: A) => B>) => Tree<B>
 } = Applicative.apply
 
 export const flipApply: {
-  <A, B>(fab: Tree<(a: A) => B>): (self: Tree<A>) => Tree<B>
+  <A, B>(tree: Tree<(a: A) => B>): (selfTree: Tree<A>) => Tree<B>
 } = Applicative.flipApply

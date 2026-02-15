@@ -12,7 +12,7 @@ export const Extendable = create<Chunk.Hkt>(Functor, {
 export const extend: {
   <F extends Chunk.Chunk<any>, B>(
     fab: (fa: F) => B,
-  ): (self: F) => Chunk.With<F, B>
+  ): (chunk: F) => Chunk.With<F, B>
 } = Extendable.extend as any
 
 export const NonEmptyExtendable = create<Chunk.NonEmptyHkt>(NonEmptyFunctor, {
@@ -20,5 +20,5 @@ export const NonEmptyExtendable = create<Chunk.NonEmptyHkt>(NonEmptyFunctor, {
 })
 
 export const duplicate: {
-  <F extends Chunk.Chunk<any>>(self: F): Chunk.With<F, Chunk.With<F>>
+  <F extends Chunk.Chunk<any>>(chunk: F): Chunk.With<F, Chunk.With<F>>
 } = Extendable.duplicate as any
