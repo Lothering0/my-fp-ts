@@ -4,6 +4,7 @@ import * as Result from '../Result'
 import * as Reader from '../Reader'
 import { Hkt as Hkt_ } from '../../typeclasses/Hkt'
 import { pipe } from '../../utils/flow'
+import { Streamable } from './_internal'
 
 export interface Hkt extends Hkt_ {
   readonly Type: Stream<this['In'], this['Collectable'], this['Fixed']>
@@ -11,13 +12,6 @@ export interface Hkt extends Hkt_ {
 
 export interface Stream<A, E = never, R = unknown>
   extends Effect.Effect<Streamable<A, E>, E, R> {}
-
-interface Streamable<A, E = never> {
-  readonly _id: 'Streamable'
-  readonly _consumers: Consumer<A, E>[]
-  _result: Result.Result<Chunk.Chunk<A>, E>
-  _isFinished: boolean
-}
 
 export interface Consumer<A, E = never> {
   readonly onPush?: (a: A, i: number) => void

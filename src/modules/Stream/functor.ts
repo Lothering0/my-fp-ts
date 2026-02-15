@@ -1,9 +1,9 @@
 import * as Stream from './stream'
 import * as Effect from '../Effect'
-import * as Result from '../Result'
 import * as Functor_ from '../../typeclasses/Functor'
 import * as FunctorWithIndex_ from '../../typeclasses/FunctorWithIndex'
 import { pipe } from '../../utils/flow'
+import { listen } from './_internal'
 
 export const Functor = Functor_.create<Stream.Hkt>({
   map: ab => stream =>
@@ -12,53 +12,33 @@ export const Functor = Functor_.create<Stream.Hkt>({
       Effect.flatMap(streamable =>
         Stream.create(({ push, fail, finish }) => () => {
           pipe(
-            streamable._result,
-            Result.map(chunk => {
-              for (const a of chunk) {
-                push(ab(a))
-              }
-              if (streamable._isFinished) {
-                finish()
-              }
+            streamable,
+            listen({
+              onPush: a => push(ab(a)),
+              onFail: fail,
+              onFinish: finish,
             }),
-            Result.mapLeft(fail),
           )
-          streamable._consumers.push({
-            onPush: a => push(ab(a)),
-            onFail: fail,
-            onFinish: finish,
-          })
         }),
       ),
     ),
 })
 
 export const map =
-  <A, B>(ab: (a: A, i: number) => B) =>
+  <A, B>(aib: (a: A, i: number) => B) =>
   <E, R>(stream: Stream.Stream<A, E, R>): Stream.Stream<B, E, R> =>
     pipe(
       stream,
       Effect.flatMap(streamable =>
         Stream.create(({ push, fail, finish }) => () => {
           pipe(
-            streamable._result,
-            Result.map(chunk => {
-              let i = -1
-              for (const a of chunk) {
-                i++
-                push(ab(a, i))
-              }
-              if (streamable._isFinished) {
-                finish()
-              }
+            streamable,
+            listen({
+              onPush: (a, i) => push(aib(a, i)),
+              onFail: fail,
+              onFinish: finish,
             }),
-            Result.mapLeft(fail),
           )
-          streamable._consumers.push({
-            onPush: (a, i) => push(ab(a, i)),
-            onFail: fail,
-            onFinish: finish,
-          })
         }),
       ),
     )

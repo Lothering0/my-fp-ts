@@ -5,7 +5,9 @@ import * as Chunk from '../Chunk'
 import * as Result from '../Result'
 import { pipe } from '../../utils/flow'
 
-export const fromIterable = <A>(iterable: Iterable<A>): Stream.Stream<A> =>
+export const fromIterable = <A, E = never, R = unknown>(
+  iterable: Iterable<A>,
+): Stream.Stream<A, E, R> =>
   Stream.create(({ push, finish }) => () => {
     for (const a of iterable) {
       push(a)
@@ -13,8 +15,9 @@ export const fromIterable = <A>(iterable: Iterable<A>): Stream.Stream<A> =>
     finish()
   })
 
-export const make = <A>(...as: ReadonlyArray<A>): Stream.Stream<A> =>
-  fromIterable(as)
+export const make = <A, E = never, R = unknown>(
+  ...as: ReadonlyArray<A>
+): Stream.Stream<A, E, R> => fromIterable(as)
 
 export const succeed = <A>(a: A): Stream.Stream<A> => make(a)
 
