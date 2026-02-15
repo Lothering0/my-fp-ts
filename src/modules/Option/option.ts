@@ -1,5 +1,7 @@
 import { Hkt as Hkt_ } from '../../typeclasses/Hkt'
+import { Pipeable } from '../../utils/flow'
 import { hole } from '../../utils/hole'
+import { pipe } from '../_internal'
 
 export interface Hkt extends Hkt_ {
   readonly Type: Option<this['In']>
@@ -13,13 +15,13 @@ export interface OptionGenerator<A> {
   (): Generator<unknown, A>
 }
 
-export interface None {
+export interface None extends Pipeable {
   readonly _id: 'Option'
   readonly _tag: 'None'
   readonly [Symbol.iterator]: OptionGenerator<never>
 }
 
-export interface Some<A> {
+export interface Some<A> extends Pipeable {
   readonly _id: 'Option'
   readonly _tag: 'Some'
   readonly value: A
@@ -29,6 +31,7 @@ export interface Some<A> {
 const _none = Object.freeze<None>({
   _id: 'Option',
   _tag: 'None',
+  pipe,
   *[Symbol.iterator]() {
     yield
     return hole()
@@ -46,6 +49,7 @@ export const some: {
     _id: 'Option',
     _tag: 'Some',
     value,
+    pipe,
     *[Symbol.iterator]() {
       return value
     },

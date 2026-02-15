@@ -5,11 +5,12 @@ import * as Boolean from './Boolean'
 import * as Equivalence_ from '../typeclasses/Equivalence'
 import * as Predicate from './Predicate'
 import * as Schema_ from './Schema'
-import { flow, pipe } from '../utils/flow'
+import { flow, pipe as pipe_, Pipeable } from '../utils/flow'
 import { Refinement } from './Refinement'
 import { Tagged, Tag } from '../types/Tag'
+import { pipe } from './_internal'
 
-export interface Matching<E, A> {
+export interface Matching<E, A> extends Pipeable {
   readonly Equivalence: Equivalence_.Equivalence<E>
   readonly patterns: ReadonlyArray<[Predicate.Predicate<E>, (e: E) => A]>
   readonly value: E
@@ -21,6 +22,7 @@ export const match: {
   Equivalence: Equivalence_.EquivalenceStrict,
   patterns: [],
   value,
+  pipe,
 })
 
 export const matchEquivalence: {
@@ -31,6 +33,7 @@ export const matchEquivalence: {
   Equivalence,
   patterns: [],
   value,
+  pipe,
 })
 
 export const on: {
@@ -46,7 +49,10 @@ export const on: {
   <E, A>(p: Predicate.Predicate<E>, ea: (e: E) => A) =>
   <B>(matching: Matching<E, B>): Matching<E, A | B> => ({
     ...matching,
-    patterns: pipe(matching.patterns, Array.append([p, ea as (e: E) => A | B])),
+    patterns: pipe_(
+      matching.patterns,
+      Array.append([p, ea as (e: E) => A | B]),
+    ),
   })
 
 export const onNot: {
@@ -88,7 +94,7 @@ export const when: {
 export const whenNot =
   <E, const D extends E, A>(pattern: D, ea: (e: Exclude<E, D>) => A) =>
   <B>(matching: Matching<E, B>): Matching<E, A | B> =>
-    pipe(
+    pipe_(
       matching,
       whenEquals(
         Equivalence_.reverse(matching.Equivalence),
@@ -126,7 +132,7 @@ export const whenNotInstance: {
     ea: (e: Exclude<E, D>) => A,
   ): <B>(matching: Matching<E, B>) => Matching<E, A | B>
 } = (constructor, ea) =>
-  on(e => pipe(e instanceof constructor, Boolean.not), ea)
+  on(e => pipe_(e instanceof constructor, Boolean.not), ea)
 
 export const whenSchema: {
   <E, D extends E, A>(
@@ -145,12 +151,12 @@ export const whenNotSchema: {
 export const getResult: {
   <E, A>(matching: Matching<E, A>): Result.Result<A, E>
 } = matching =>
-  pipe(
+  pipe_(
     matching.patterns,
     Array.find(([p]) => p(matching.value)),
     Option.match({
       onNone: () => Result.fail(matching.value),
-      onSome: ([, f]) => pipe(matching.value, f, Result.succeed),
+      onSome: ([, f]) => pipe_(matching.value, f, Result.succeed),
     }),
   )
 
@@ -165,15 +171,15 @@ export const getOrElse: {
 export const getResults: {
   <E, A>(matching: Matching<E, A>): ReadonlyArray<Result.Result<A, E>>
 } = matching =>
-  pipe(
+  pipe_(
     matching.patterns,
     Array.map(([p, f]) =>
-      pipe(
+      pipe_(
         matching.value,
         p,
         Boolean.match({
           onFalse: () => Result.fail(matching.value),
-          onTrue: () => pipe(matching.value, f, Result.succeed),
+          onTrue: () => pipe_(matching.value, f, Result.succeed),
         }),
       ),
     ),

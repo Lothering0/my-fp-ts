@@ -1,8 +1,10 @@
+import { Pipeable } from '../../utils/flow'
 import { hole } from '../../utils/hole'
 import { isFunction } from '../../utils/typeChecks'
+import { pipe } from '../_internal'
 import { ProcessResult } from './process'
 
-export interface Schema<In, Out = In> {
+export interface Schema<In, Out = In> extends Pipeable {
   readonly In: In
   readonly Type: Out
   readonly proceed: (x: unknown) => ProcessResult<Out>
@@ -30,6 +32,7 @@ export const create: {
       Type: hole(),
       isOptional: false,
       proceed,
+      pipe,
     }
   }
 
@@ -37,6 +40,7 @@ export const create: {
     In: hole(),
     Type: hole(),
     isOptional: false,
+    pipe,
     ...partialSchemaOrProceed,
   }
 }

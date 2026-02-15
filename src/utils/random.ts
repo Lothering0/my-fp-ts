@@ -3,46 +3,45 @@ import * as Sync from '../modules/Sync'
 import * as Effect from '../modules/Effect'
 import { pipe, flow } from './flow'
 
-export const randomSync: Sync.Sync<number> = () => Math.random()
+export const numberSync: Sync.Sync<number> = () => Math.random()
 
-export const random: Effect.Effect<number> = Effect.fromSync(randomSync)
+export const number: Effect.Effect<number> = Effect.fromSync(numberSync)
 
-export const randomBooleanSync: Sync.Sync<boolean> = pipe(
-  randomSync,
+export const booleanSync: Sync.Sync<boolean> = pipe(
+  numberSync,
   Sync.map(n => n > 0.5),
 )
 
-export const randomBoolean: Effect.Effect<boolean> =
-  Effect.fromSync(randomBooleanSync)
+export const boolean: Effect.Effect<boolean> = Effect.fromSync(booleanSync)
 
-export const randomFloatSync: {
+export const floatSync: {
   (min: number, max: number): Sync.Sync<number>
 } = (min, max) =>
   pipe(
-    randomSync,
+    numberSync,
     Sync.map(n => n * (max - min) + min),
   )
 
-export const randomFloat: {
+export const float: {
   (min: number, max: number): Effect.Effect<number>
-} = flow(randomFloatSync, Effect.fromSync)
+} = flow(floatSync, Effect.fromSync)
 
-export const randomIntSync: {
+export const intSync: {
   (min: number, max: number): Sync.Sync<number>
-} = flow(randomFloatSync, Sync.map(Math.round))
+} = flow(floatSync, Sync.map(Math.round))
 
-export const randomInt: {
+export const int: {
   (min: number, max: number): Effect.Effect<number>
-} = flow(randomIntSync, Effect.fromSync)
+} = flow(intSync, Effect.fromSync)
 
-export const randomElemSync: {
+export const elemSync: {
   <A>(as: Array.NonEmpty<A>): Sync.Sync<A>
 } = as =>
   pipe(
-    randomIntSync(0, Array.length(as) - 1),
+    intSync(0, Array.length(as) - 1),
     Sync.map(n => as.at(n)!),
   )
 
-export const randomElem: {
+export const elem: {
   <A>(as: Array.NonEmpty<A>): Effect.Effect<A>
-} = flow(randomElemSync, Effect.fromSync)
+} = flow(elemSync, Effect.fromSync)

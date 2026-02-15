@@ -1,6 +1,7 @@
 import * as Array from '../ReadonlyArray'
 import { Hkt as Hkt_ } from '../../typeclasses/Hkt'
 import { NonEmptyIterable } from '../_internal'
+import { Pipeable } from '../../utils/flow'
 
 export interface Hkt extends Hkt_ {
   readonly Type: Chunk<this['In']>
@@ -45,27 +46,27 @@ export type AndNonEmpty<
       : Chunk<A>
     : Chunk<A>
 
-export interface EmptyChunk<A> extends Iterable<A> {
+export interface EmptyChunk<A> extends Iterable<A>, Pipeable {
   readonly _id: 'Chunk'
   readonly _tag: 'EmptyChunk'
   readonly length: 0
 }
 
-interface SingletonChunk<A> extends NonEmptyIterable<A> {
+interface SingletonChunk<A> extends NonEmptyIterable<A>, Pipeable {
   readonly _id: 'Chunk'
   readonly _tag: 'SingletonChunk'
   readonly length: 1
   readonly a: A
 }
 
-interface ArrayChunk<A> extends NonEmptyIterable<A> {
+interface ArrayChunk<A> extends NonEmptyIterable<A>, Pipeable {
   readonly _id: 'Chunk'
   readonly _tag: 'ArrayChunk'
   readonly length: number
   readonly array: Array.NonEmpty<A>
 }
 
-interface ConcatChunk<A> extends NonEmptyIterable<A> {
+interface ConcatChunk<A> extends NonEmptyIterable<A>, Pipeable {
   readonly _id: 'Chunk'
   readonly _tag: 'ConcatChunk'
   readonly length: number
@@ -73,7 +74,7 @@ interface ConcatChunk<A> extends NonEmptyIterable<A> {
   readonly end: NonEmpty<A>
 }
 
-interface SliceChunk<A> extends NonEmptyIterable<A> {
+interface SliceChunk<A> extends NonEmptyIterable<A>, Pipeable {
   readonly _id: 'Chunk'
   readonly _tag: 'SliceChunk'
   readonly length: number

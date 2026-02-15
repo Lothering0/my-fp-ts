@@ -1,4 +1,5 @@
 import { Hkt as Hkt_ } from '../../typeclasses/Hkt'
+import { Pipeable } from '../../utils/flow'
 import { NonEmptyIterable } from '../_internal'
 import { _cons, _nil, ListInternal } from './_internal'
 
@@ -14,14 +15,14 @@ export type List<A> = (Nil | Cons<A>) & Iterable<A>
 
 export type NonEmpty<A> = Cons<A>
 
-export interface Nil extends Iterable<never> {
+export interface Nil extends Iterable<never>, Pipeable {
   readonly _id: 'List'
   readonly _tag: 'Nil'
   readonly length: number
   readonly _internal: ListInternal<never>
 }
 
-export interface Cons<A> extends NonEmptyIterable<A> {
+export interface Cons<A> extends NonEmptyIterable<A>, Pipeable {
   readonly _id: 'List'
   readonly _tag: 'Cons'
   readonly length: number

@@ -1,4 +1,4 @@
-import { nonEmpty } from '../_internal'
+import { nonEmpty, pipe } from '../_internal'
 import { Cons, List, nil } from './list'
 
 export interface ListInternal<A> {
@@ -9,6 +9,7 @@ export const _nil: List<never> = Object.freeze({
   _id: 'List',
   _tag: 'Nil',
   length: 0,
+  pipe,
   _internal: {},
   *[Symbol.iterator]() {},
 })
@@ -26,6 +27,7 @@ export const _cons = <A>(
     _tag: 'Cons',
     length,
     head,
+    pipe,
     get tail() {
       if (length === 2) {
         return this._internal.last

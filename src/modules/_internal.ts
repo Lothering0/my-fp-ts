@@ -1,6 +1,6 @@
 import { Hkt, Kind } from '../typeclasses/Hkt'
 import { Monad } from '../typeclasses/Monad'
-import { pipe } from '../utils/flow'
+import { pipe as pipe_ } from '../utils/flow'
 
 export const nonEmpty: unique symbol = Symbol('nonEmpty')
 
@@ -24,7 +24,7 @@ export const getIterableGen =
       if (!yielded.done) {
         const { value } = yielded
         const xs = typeof value === 'function' ? value() : value
-        return pipe(
+        return pipe_(
           xs,
           Monad.flatMap(x => run([...args, x])),
         )
@@ -34,3 +34,7 @@ export const getIterableGen =
 
     return run([])
   }
+
+export function pipe(...fs: any[]) {
+  return pipe_(this, ...(fs as [any]))
+}

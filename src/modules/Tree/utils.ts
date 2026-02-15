@@ -3,8 +3,8 @@ import * as Array from '../ReadonlyArray'
 import { Show } from '../../typeclasses/Show'
 import { isNonEmpty } from '../ReadonlyArray'
 import { Forest, Tree } from './tree'
-import { pipe, flow } from '../../utils/flow'
-import { nonEmpty } from '../_internal'
+import { pipe as pipe_, flow } from '../../utils/flow'
+import { nonEmpty, pipe } from '../_internal'
 
 export const valueOf: {
   <A>(tree: Tree<A>): A
@@ -21,6 +21,7 @@ export const make: {
     [nonEmpty]: undefined,
     value,
     forest,
+    pipe,
     *[Symbol.iterator]() {
       yield value
       for (const tree of forest) {
@@ -30,7 +31,7 @@ export const make: {
   })
 
 export const hasForest = <A>(tree: Tree<A>): boolean =>
-  pipe(tree, forestOf, Iterable.toReadonlyArray, isNonEmpty)
+  pipe_(tree, forestOf, Iterable.toReadonlyArray, isNonEmpty)
 
 const draw: {
   <A>(Show: Show<A>): (tree: Tree<A>) => (level: number) => string

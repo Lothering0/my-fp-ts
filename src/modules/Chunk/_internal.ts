@@ -1,11 +1,12 @@
 import * as Array from '../ReadonlyArray'
-import { nonEmpty } from '../_internal'
+import { nonEmpty, pipe } from '../_internal'
 import { Chunk, NonEmpty } from './chunk'
 
 export const _emptyChunk: Chunk<never> = Object.freeze<Chunk<never>>({
   _id: 'Chunk',
   _tag: 'EmptyChunk',
   length: 0,
+  pipe,
   *[Symbol.iterator]() {},
 })
 
@@ -16,6 +17,7 @@ export const createSingletonChunk = <A>(a: A): NonEmpty<A> =>
     _tag: 'SingletonChunk',
     length: 1,
     a,
+    pipe,
     *[Symbol.iterator]() {
       yield a
     },
@@ -28,6 +30,7 @@ export const createArrayChunk = <A>(array: Array.NonEmpty<A>): NonEmpty<A> =>
     _tag: 'ArrayChunk',
     length: array.length,
     array,
+    pipe,
     *[Symbol.iterator]() {
       yield* array
     },
@@ -45,6 +48,7 @@ export const createSliceChunk = <A>(
     length: take,
     skip,
     chunk,
+    pipe,
     *[Symbol.iterator]() {
       let i = -1
       for (const a of chunk) {
@@ -71,6 +75,7 @@ export const createConcatChunk = <A>(
     length: start.length + end.length,
     start,
     end,
+    pipe,
     *[Symbol.iterator]() {
       yield* start
       yield* end

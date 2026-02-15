@@ -8,6 +8,7 @@ import {
   EffectValue,
   SyncEffectException,
 } from './effect'
+import { pipe } from '../_internal'
 
 export function _run<A, E, R>(
   effect: Effect<A, E, R>,
@@ -81,6 +82,7 @@ export const create = <B, D, A, E, R>(
     _id: 'Effect',
     mapper,
     previous,
+    pipe,
     [Symbol.iterator]: hole(),
   }
   ;(effect as any)[Symbol.iterator] = getEffectGenerator(effect)

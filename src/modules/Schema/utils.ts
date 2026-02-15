@@ -1,18 +1,19 @@
 import * as Result from '../Result'
 import * as Boolean from '../Boolean'
 import * as Equivalence from '../../typeclasses/Equivalence'
-import { flow, pipe } from '../../utils/flow'
+import { flow, pipe as pipe_ } from '../../utils/flow'
 import { isUndefined } from '../../utils/typeChecks'
 import { create, Schema, SchemaOptional } from './schema'
 import { message } from './process'
 import { LazyArg } from '../../types/utils'
 import { hole } from '../../utils/hole'
+import { pipe } from '../_internal'
 
 export const equals =
   <A>(Equivalence: Equivalence.Equivalence<A>) =>
   (a: A): Schema<A> =>
     create(x =>
-      pipe(
+      pipe_(
         x,
         Equivalence.equals(a),
         Boolean.match({
@@ -24,7 +25,7 @@ export const equals =
     )
 
 export const exact = <const A>(a: A): Schema<A> =>
-  pipe(a, equals<A>(Equivalence.EquivalenceStrict))
+  pipe_(a, equals<A>(Equivalence.EquivalenceStrict))
 
 export const lazy = <A>(schema: LazyArg<Schema<A>>): Schema<A> => {
   const finalSchema: Schema<A> = create(x => {
@@ -47,6 +48,7 @@ export const optional: {
   Type: hole(),
   isOptional: true,
   schemasByKey: schema.schemasByKey,
+  pipe,
   proceed: x => {
     if (isUndefined(x)) {
       return Result.succeed(x)
@@ -84,7 +86,7 @@ export const union: {
       ])
     }
 
-    return pipe(thatResult, Result.orElse(selfResult))
+    return pipe_(thatResult, Result.orElse(selfResult))
   })
 
 export const minLength =

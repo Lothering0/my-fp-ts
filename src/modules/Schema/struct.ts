@@ -3,12 +3,13 @@ import * as String from '../String'
 import * as Array from '../ReadonlyArray'
 import * as Record from '../ReadonlyRecord'
 import { create, Schema, SchemaOptional, Type } from './schema'
-import { pipe } from '../../utils/flow'
+import { pipe as pipe_ } from '../../utils/flow'
 import { hole } from '../../utils/hole'
 import { isRecord, isUndefined } from '../../utils/typeChecks'
 import { message } from './process'
 import { optional } from './utils'
 import { Prettify } from '../../types/utils'
+import { pipe } from '../_internal'
 
 export interface StructSchema<
   Out extends Record.ReadonlyRecord<string, Schema<unknown>>,
@@ -37,35 +38,36 @@ export const Struct = <
   Type: hole(),
   isOptional: false,
   schemasByKey,
+  pipe,
   proceed: x => {
     if (!isRecord(x)) {
       return Result.fail([message`value ${x} is not a struct`])
     }
 
     const DifferenceMagma = Array.getDifferenceMagma(String.Equivalence)
-    const excessiveKeys = pipe(
+    const excessiveKeys = pipe_(
       x,
       Record.keys,
-      DifferenceMagma.combine(pipe(schemasByKey, Record.keys)),
+      DifferenceMagma.combine(pipe_(schemasByKey, Record.keys)),
     )
 
     if (Array.isNonEmpty(excessiveKeys)) {
-      return pipe(
+      return pipe_(
         excessiveKeys,
         Array.map(key => message`property ${key} should not exist`),
         Result.fail,
       )
     }
 
-    const missingKeys = pipe(
+    const missingKeys = pipe_(
       schemasByKey,
       Record.keys,
       Array.filter(k => !schemasByKey[k]?.isOptional),
-      DifferenceMagma.combine(pipe(x, Record.keys)),
+      DifferenceMagma.combine(pipe_(x, Record.keys)),
     )
 
     if (Array.isNonEmpty(missingKeys)) {
-      return pipe(
+      return pipe_(
         missingKeys,
         Array.map(key => message`property ${key} is required`),
         Result.fail,
@@ -79,7 +81,7 @@ export const Struct = <
       const processResult = schemasByKey[k]!.proceed(x[k])
 
       if (Result.isFailure(processResult)) {
-        const msgs = pipe(
+        const msgs = pipe_(
           processResult,
           Result.failureOf,
           Array.map(msg => `${message`on property ${k}`}: ${msg}`),
@@ -127,7 +129,7 @@ export const omit: {
 } =
   (...keys) =>
   schema =>
-    pipe(schema.schemasByKey, Record.omit(...keys), Struct)
+    pipe_(schema.schemasByKey, Record.omit(...keys), Struct)
 
 export const pick: {
   <
@@ -139,20 +141,20 @@ export const pick: {
 } =
   (...keys) =>
   schema =>
-    pipe(schema.schemasByKey, Record.pick(...keys), Struct)
+    pipe_(schema.schemasByKey, Record.pick(...keys), Struct)
 
 export const partial: {
   <A extends Record.ReadonlyRecord<string, Schema<unknown>>>(
     schema: StructSchema<A>,
   ): StructSchema<{ [K in keyof A]: SchemaOptional<Type<A[K]>> }>
-} = schema => pipe(schema.schemasByKey, Record.map(optional), Struct) as any
+} = schema => pipe_(schema.schemasByKey, Record.map(optional), Struct) as any
 
 export const required: {
   <A extends Record.ReadonlyRecord<string, Schema<unknown>>>(
     schema: StructSchema<A>,
   ): StructSchema<{ [K in keyof A]: Schema<Type<A[K]>> }>
 } = schema =>
-  pipe(
+  pipe_(
     schema.schemasByKey,
     Record.map(
       (schema): Schema<unknown> => ({
@@ -160,6 +162,7 @@ export const required: {
         Type: hole(),
         isOptional: false,
         schemasByKey: schema.schemasByKey,
+        pipe,
         proceed: x => {
           if (isUndefined(x)) {
             return Result.fail([message`value is undefined`])
