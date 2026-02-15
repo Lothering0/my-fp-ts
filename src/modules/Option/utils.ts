@@ -3,6 +3,8 @@ import { constNull, constUndefined, constVoid } from '../../utils/constant'
 import { identity } from '../Identity'
 import { isNull, isUndefined } from '../../utils/typeChecks'
 import { match } from './matchers'
+import { nonEmpty, NonEmptyIterable } from '../_internal'
+import { isSome } from './refinements'
 
 export const valueOf: {
   <A>(option: Some<A>): A
@@ -40,4 +42,16 @@ export const toVoid: {
 } = match({
   onNone: constVoid,
   onSome: identity,
+})
+
+export const toIterable: {
+  <A>(option: Some<A>): NonEmptyIterable<A>
+  <A>(option: Option<A>): Iterable<A>
+} = option => ({
+  [nonEmpty]: undefined,
+  *[Symbol.iterator]() {
+    if (isSome(option)) {
+      yield option.value
+    }
+  },
 })

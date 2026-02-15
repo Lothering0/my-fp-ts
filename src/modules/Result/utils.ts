@@ -1,5 +1,7 @@
+import { nonEmpty, NonEmptyIterable } from '../_internal'
 import { identity } from '../Identity'
 import { match } from './matchers'
+import { isSuccess } from './refinements'
 import { Result, fail, Failure, succeed, Success } from './result'
 
 export const failureOf: {
@@ -22,4 +24,16 @@ export const swap: {
 } = match({
   onFailure: succeed,
   onSuccess: fail,
+})
+
+export const toIterable: {
+  <A>(result: Success<A>): NonEmptyIterable<A>
+  <A>(result: Result<A, unknown>): Iterable<A>
+} = result => ({
+  [nonEmpty]: undefined,
+  *[Symbol.iterator]() {
+    if (isSuccess(result)) {
+      yield result.success
+    }
+  },
 })
