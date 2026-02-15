@@ -76,9 +76,9 @@ export const andThen: {
 export const compose: {
   <E1, E2, A, B, C, R>(
     amb: (a: A) => Stream.Stream<B, E1, R>,
-    bmc: (b: B) => Stream.Stream<C, E2, R>,
+    bmc: (b: B, i: number) => Stream.Stream<C, E2, R>,
   ): (a: A) => Stream.Stream<C, E1 | E2, R>
-} = Monad.compose
+} = MonadWithIndex.composeWithIndex
 
 export const setTo: {
   <N extends DoObjectKey, A, B>(
@@ -92,35 +92,35 @@ export const setTo: {
 export const mapTo: {
   <N extends DoObjectKey, A, B>(
     name: Exclude<N, keyof A>,
-    ab: (a: A) => B,
+    ab: (a: A, i: number) => B,
   ): <E, R>(
-    self: Stream.Stream<A, E, R>,
+    stream: Stream.Stream<A, E, R>,
   ) => Stream.Stream<DoObject<N, A, B>, E, R>
-} = Monad.mapTo
+} = MonadWithIndex.mapToWithIndex
 
 export const flipApplyTo: {
   <N extends DoObjectKey, A, B, E1, R>(
     name: Exclude<N, keyof A>,
-    fab: Stream.Stream<(a: A) => B, E1, R>,
+    fab: Stream.Stream<(a: A, i: number) => B, E1, R>,
   ): <E2>(
-    self: Stream.Stream<A, E2, R>,
+    stream: Stream.Stream<A, E2, R>,
   ) => Stream.Stream<DoObject<N, A, B>, E1 | E2, R>
-} = Monad.flipApplyTo
+} = MonadWithIndex.flipApplyToWithIndex
 
 export const bind: {
   <N extends DoObjectKey, A, B, E1, R>(
     name: Exclude<N, keyof A>,
     fb: Stream.Stream<B, E1, R>,
   ): <E2>(
-    self: Stream.Stream<A, E2, R>,
+    stream: Stream.Stream<A, E2, R>,
   ) => Stream.Stream<DoObject<N, A, B>, E1 | E2, R>
 } = Monad.bind
 
 export const flatMapTo: {
   <N extends DoObjectKey, A, B, E1, R>(
     name: Exclude<N, keyof A>,
-    amb: (a: A) => Stream.Stream<B, E1, R>,
+    amb: (a: A, i: number) => Stream.Stream<B, E1, R>,
   ): <E2>(
     self: Stream.Stream<A, E2, R>,
   ) => Stream.Stream<DoObject<N, A, B>, E1 | E2, R>
-} = Monad.flatMapTo
+} = MonadWithIndex.flatMapToWithIndex
