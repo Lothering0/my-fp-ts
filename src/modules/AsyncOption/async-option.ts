@@ -2,11 +2,11 @@ import * as Async from '../Async'
 import * as AsyncResult from '../AsyncResult'
 import * as Result from '../Result'
 import * as Option from '../Option'
-import { Hkt } from '../../typeclasses/Hkt'
+import { Hkt as Hkt_ } from '../../typeclasses/Hkt'
 import { constant } from '../../utils/constant'
 import { _AsyncOption } from './_internal'
 
-export interface AsyncOptionHkt extends Hkt {
+export interface Hkt extends Hkt_ {
   readonly Type: AsyncOption<this['In']>
 }
 

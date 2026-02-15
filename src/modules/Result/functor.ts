@@ -1,9 +1,9 @@
 import * as Functor_ from '../../typeclasses/Functor'
-import { Result, ResultHkt, fail, succeed } from './result'
+import { Result, Hkt, fail, succeed } from './result'
 import { match } from './matchers'
 import { flow } from '../../utils/flow'
 
-export const Functor = Functor_.create<ResultHkt>({
+export const Functor = Functor_.create<Hkt>({
   map: ab =>
     match({
       onFailure: fail,

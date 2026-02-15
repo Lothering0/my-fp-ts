@@ -1,7 +1,7 @@
 import { FromIdentity as FromIdentity_ } from '../../typeclasses/FromIdentity'
-import { Sync, sync, SyncHkt } from './sync'
+import { Sync, sync, Hkt } from './sync'
 
-export const FromIdentity: FromIdentity_<SyncHkt> = {
+export const FromIdentity: FromIdentity_<Hkt> = {
   of: sync,
 }
 

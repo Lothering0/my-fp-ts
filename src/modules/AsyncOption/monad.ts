@@ -1,11 +1,11 @@
 import * as Option from '../Option'
 import { Monad as Monad_ } from '../../typeclasses/Monad'
-import { AsyncOptionHkt, AsyncOption, toPromise } from './async-option'
+import { Hkt, AsyncOption, toPromise } from './async-option'
 import { pipe } from '../../utils/flow'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
 import { _AsyncOption } from './_internal'
 
-export const Monad: Monad_<AsyncOptionHkt> = _AsyncOption.Monad
+export const Monad: Monad_<Hkt> = _AsyncOption.Monad
 
 export const Do = Monad.Do
 

@@ -1,12 +1,11 @@
 import * as Option from '../Option'
 import { Applicative as Applicative_ } from '../../typeclasses/Applicative'
-import { AsyncOptionHkt, toPromise, AsyncOption } from './async-option'
+import { Hkt, toPromise, AsyncOption } from './async-option'
 import { pipe } from '../../utils/flow'
 import { flip } from '../../utils/flip'
 import { _AsyncOption } from './_internal'
 
-export const Applicative: Applicative_<AsyncOptionHkt> =
-  _AsyncOption.Applicative
+export const Applicative: Applicative_<Hkt> = _AsyncOption.Applicative
 
 export const apply: {
   <A>(

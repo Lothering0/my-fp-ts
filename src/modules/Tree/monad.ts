@@ -1,14 +1,14 @@
 import * as Monad_ from '../../typeclasses/Monad'
 import * as Iterable from '../Iterable'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
-import { Tree, TreeHkt } from './tree'
+import { Tree, Hkt } from './tree'
 import { Functor } from './functor'
 import { make, valueOf, forestOf } from './utils'
 import { pipe } from '../../utils/flow'
 import { FromIdentity } from './from-identity'
 import { getIterableGen } from '../_internal'
 
-export const Monad: Monad_.Monad<TreeHkt> = Monad_.create<TreeHkt>(
+export const Monad: Monad_.Monad<Hkt> = Monad_.create<Hkt>(
   FromIdentity,
   Functor,
   {

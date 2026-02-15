@@ -1,6 +1,6 @@
 import * as Alt_ from '../../typeclasses/Alt'
 import { Sync } from '../Sync'
-import { SyncResult, SyncResultHkt } from './sync-result'
+import { SyncResult, Hkt } from './sync-result'
 import { _SyncResult } from './_internal'
 import { Tag, Tagged } from '../../types/Tag'
 import { pipe } from '../../utils/flow'
@@ -47,4 +47,4 @@ export const catchTag =
   ): SyncResult<A | B, (E1 extends Tagged<T> ? never : E1) | E2> =>
     pipe(syncResult, _SyncResult.catchTag(tag, onFailure))
 
-export const Alt: Alt_.Alt<SyncResultHkt> = _SyncResult.Alt
+export const Alt: Alt_.Alt<Hkt> = _SyncResult.Alt

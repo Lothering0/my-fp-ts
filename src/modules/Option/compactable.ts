@@ -1,10 +1,10 @@
 import * as Result from '../Result'
 import { create } from '../../typeclasses/Compactable'
-import { Option, OptionHkt } from './option'
+import { Option, Hkt } from './option'
 import { flat } from './monad'
 import { Functor } from './functor'
 
-export const Compactable = create<OptionHkt>(Functor, {
+export const Compactable = create<Hkt>(Functor, {
   compact: flat,
 })
 

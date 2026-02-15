@@ -1,7 +1,7 @@
-import { Hkt } from '../../typeclasses/Hkt'
+import { Hkt as Hkt_ } from '../../typeclasses/Hkt'
 import { hole } from '../../utils/hole'
 
-export interface ResultHkt extends Hkt {
+export interface Hkt extends Hkt_ {
   readonly Type: Result<this['In'], this['Collectable']>
 }
 

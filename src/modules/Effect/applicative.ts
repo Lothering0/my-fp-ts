@@ -1,11 +1,11 @@
 import * as Result from '../Result'
 import { create } from '../../typeclasses/Applicative'
-import { EffectHkt, Effect, fromReaderResult, run } from './effect'
+import { Hkt, Effect, fromReaderResult, run } from './effect'
 import { pipe } from '../../utils/flow'
 import { Monad } from './monad'
 import { flip } from '../../utils/flip'
 
-export const Applicative = create<EffectHkt>(Monad)
+export const Applicative = create<Hkt>(Monad)
 
 export const apply: {
   <A, E1, R>(

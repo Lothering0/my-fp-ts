@@ -15,8 +15,22 @@ import { match } from './matchers'
 import { isEmpty, isNonEmpty } from './refinements'
 import { of } from './from-identity'
 import { Endomorphism } from '../../typeclasses/Endomorphism'
+import { NonEmptyIterable } from '../_internal'
 
 export const toArray = <A>(array: ReadonlyArray<A>): A[] => array as A[]
+
+export const fromIterable = <F extends Iterable<any>>(
+  iterable: F,
+): F extends NonEmptyIterable<infer A>
+  ? Array.NonEmpty<A>
+  : F extends Iterable<infer A>
+    ? ReadonlyArray<A>
+    : never => [...iterable] as any
+
+export const make: {
+  <A>(...as: Array.NonEmpty<A>): Array.NonEmpty<A>
+  <A>(...as: ReadonlyArray<A>): ReadonlyArray<A>
+} = (...as) => fromIterable(as) as any
 
 /** Time complexity: O(1) */
 export const length: {

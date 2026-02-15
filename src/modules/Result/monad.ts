@@ -1,12 +1,12 @@
 import { Functor } from './functor'
-import { fail, Result, ResultHkt } from './result'
+import { fail, Result, Hkt } from './result'
 import { match } from './matchers'
 import { create } from '../../typeclasses/Monad'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
 import { identity } from '../Identity'
 import { FromIdentity } from './from-identity'
 
-export const Monad = create<ResultHkt>(FromIdentity, Functor, {
+export const Monad = create<Hkt>(FromIdentity, Functor, {
   flat: match({
     onFailure: fail,
     onSuccess: identity,

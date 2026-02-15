@@ -1,8 +1,8 @@
 import { Bifunctor as Bifunctor_ } from '../../typeclasses/Bifunctor'
-import { AsyncResultHkt, AsyncResult } from './async-result'
+import { Hkt, AsyncResult } from './async-result'
 import { _AsyncResult } from './_internal'
 
-export const Bifunctor: Bifunctor_<AsyncResultHkt> = _AsyncResult.Bifunctor
+export const Bifunctor: Bifunctor_<Hkt> = _AsyncResult.Bifunctor
 
 export const mapLeft: {
   <E, D>(

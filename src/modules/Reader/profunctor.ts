@@ -1,9 +1,9 @@
 import * as Profunctor_ from '../../typeclasses/Profunctor'
 import { Contravariant } from './contravariant'
 import { Functor } from './functor'
-import { Reader, ReaderHkt } from './reader'
+import { Reader, Hkt } from './reader'
 
-export const Profunctor = Profunctor_.create<ReaderHkt>(Functor, Contravariant)
+export const Profunctor = Profunctor_.create<Hkt>(Functor, Contravariant)
 
 export const promap: {
   <R1, R2, A, B>(

@@ -5,11 +5,11 @@ import * as Async from '../Async'
 import * as AsyncResult from '../AsyncResult'
 import * as SyncResult from '../SyncResult'
 import { flow } from '../../utils/flow'
-import { Hkt } from '../../typeclasses/Hkt'
+import { Hkt as Hkt_ } from '../../typeclasses/Hkt'
 import { TaggedTypeError } from '../Exception'
 import { _run, create } from './_internal'
 
-export interface EffectHkt extends Hkt {
+export interface Hkt extends Hkt_ {
   readonly Type: Effect<this['In'], this['Collectable'], this['Fixed']>
 }
 

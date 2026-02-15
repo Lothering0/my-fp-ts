@@ -1,8 +1,8 @@
-import { Result, ResultHkt } from '../Result'
+import { Result, Hkt } from '../Result'
 import { FromResult as FromResult_ } from '../../typeclasses/FromResult'
 import { identity } from '../Identity'
 
-export const FromResult: FromResult_<ResultHkt> = {
+export const FromResult: FromResult_<Hkt> = {
   fromResult: identity,
 }
 

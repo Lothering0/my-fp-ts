@@ -1,8 +1,8 @@
 import { FromIdentity as FromIdentity_ } from '../../typeclasses/FromIdentity'
-import { Reader, ReaderHkt } from './reader'
+import { Reader, Hkt } from './reader'
 import { constant } from '../../utils/constant'
 
-export const FromIdentity: FromIdentity_<ReaderHkt> = {
+export const FromIdentity: FromIdentity_<Hkt> = {
   of: constant,
 }
 

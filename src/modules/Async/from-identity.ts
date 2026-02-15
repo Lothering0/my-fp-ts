@@ -1,7 +1,7 @@
 import { FromIdentity as FromIdentity_ } from '../../typeclasses/FromIdentity'
-import { Async, async, AsyncHkt } from './async'
+import { Async, async, Hkt } from './async'
 
-export const FromIdentity: FromIdentity_<AsyncHkt> = {
+export const FromIdentity: FromIdentity_<Hkt> = {
   of: async,
 }
 

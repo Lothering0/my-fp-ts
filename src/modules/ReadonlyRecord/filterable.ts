@@ -5,18 +5,15 @@ import { PredicateWithIndex } from '../Predicate'
 import { Result } from '../Result'
 import { Compactable } from './compactable'
 import { Functor, FunctorWithIndex } from './functor'
-import { ReadonlyRecord, ReadonlyRecordHkt } from './readonly-record'
+import { ReadonlyRecord, Hkt } from './readonly-record'
 import { RefinementWithIndex } from '../Refinement'
 
-export const Filterable = Filterable_.create<ReadonlyRecordHkt>(
-  Functor,
-  Compactable,
-)
+export const Filterable = Filterable_.create<Hkt>(Functor, Compactable)
 
-export const FilterableWithIndex = FilterableWithIndex_.create<
-  ReadonlyRecordHkt,
-  string
->(FunctorWithIndex, Filterable)
+export const FilterableWithIndex = FilterableWithIndex_.create<Hkt, string>(
+  FunctorWithIndex,
+  Filterable,
+)
 
 export const filterMap: {
   <A, B, K extends string>(

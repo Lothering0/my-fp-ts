@@ -1,8 +1,8 @@
 import { create } from '../../typeclasses/Applicative'
 import { Monad } from './monad'
-import { State, StateHkt } from './state'
+import { State, Hkt } from './state'
 
-export const Applicative = create<StateHkt>(Monad)
+export const Applicative = create<Hkt>(Monad)
 
 export const apply: {
   <S, A>(

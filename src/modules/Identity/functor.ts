@@ -1,7 +1,7 @@
 import * as Functor_ from '../../typeclasses/Functor'
-import { Identity, IdentityHkt } from './identity'
+import { Identity, Hkt } from './identity'
 
-export const Functor = Functor_.create<IdentityHkt>({
+export const Functor = Functor_.create<Hkt>({
   map: ab => a => ab(a),
 })
 

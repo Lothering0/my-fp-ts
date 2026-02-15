@@ -1,8 +1,8 @@
 import { Bifunctor as Bifunctor_ } from '../../typeclasses/Bifunctor'
-import { SyncResultHkt, SyncResult } from './sync-result'
+import { Hkt, SyncResult } from './sync-result'
 import { _SyncResult } from './_internal'
 
-export const Bifunctor: Bifunctor_<SyncResultHkt> = _SyncResult.Bifunctor
+export const Bifunctor: Bifunctor_<Hkt> = _SyncResult.Bifunctor
 
 export const mapLeft: {
   <E, D>(

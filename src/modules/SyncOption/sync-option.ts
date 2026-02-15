@@ -1,9 +1,9 @@
 import * as Sync from '../Sync'
 import * as Option from '../Option'
-import { Hkt } from '../../typeclasses/Hkt'
+import { Hkt as Hkt_ } from '../../typeclasses/Hkt'
 import { _SyncOption } from './_internal'
 
-export interface SyncOptionHkt extends Hkt {
+export interface Hkt extends Hkt_ {
   readonly Type: SyncOption<this['In']>
 }
 

@@ -4,13 +4,13 @@ import * as Sync from '../Sync'
 import * as SyncResult from '../SyncResult'
 import { identity } from '../Identity'
 import { flow, pipe } from '../../utils/flow'
-import { Hkt } from '../../typeclasses/Hkt'
+import { Hkt as Hkt_ } from '../../typeclasses/Hkt'
 import { TryCatch } from '../../types/TryCatch'
 import { UnknownException } from '../Exception'
 import { isFunction } from '../../utils/typeChecks'
 import { _AsyncResult } from './_internal'
 
-export interface AsyncResultHkt extends Hkt {
+export interface Hkt extends Hkt_ {
   readonly Type: AsyncResult<this['In'], this['Collectable']>
 }
 

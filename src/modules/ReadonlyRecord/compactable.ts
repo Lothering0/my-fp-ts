@@ -3,11 +3,11 @@ import * as Result from '../Result'
 import * as Array from '../ReadonlyArray'
 import { create } from '../../typeclasses/Compactable'
 import { flow, pipe } from '../../utils/flow'
-import { ReadonlyRecord, ReadonlyRecordHkt } from './readonly-record'
+import { ReadonlyRecord, Hkt } from './readonly-record'
 import { fromEntries, toEntries } from './utils'
 import { Functor } from './functor'
 
-export const Compactable = create<ReadonlyRecordHkt>(Functor, {
+export const Compactable = create<Hkt>(Functor, {
   compact: flow(
     toEntries,
     Array.filterMap(([k, ma]) =>

@@ -3,13 +3,13 @@ import * as Sync from '../Sync'
 import * as Functor from './functor'
 import { create } from '../../typeclasses/Tappable'
 import { Monad, flatMap } from './monad'
-import { fail, Result, ResultHkt, succeed } from './result'
+import { fail, Result, Hkt, succeed } from './result'
 import { pipe } from '../../utils/flow'
 import { match } from './matchers'
 
 export const Tappable = create(Monad)
 
-export const TappableBoth: TappableBoth_.TappableBoth<ResultHkt> = {
+export const TappableBoth: TappableBoth_.TappableBoth<Hkt> = {
   ...Tappable,
   tapLeft: f =>
     match({

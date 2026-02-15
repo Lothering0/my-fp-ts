@@ -1,9 +1,8 @@
 import * as MonadBoth_ from '../../typeclasses/MonadBoth'
 import { _SyncResult } from './_internal'
-import { SyncResult, SyncResultHkt } from './sync-result'
+import { SyncResult, Hkt } from './sync-result'
 
-export const MonadBoth: MonadBoth_.MonadBoth<SyncResultHkt> =
-  _SyncResult.MonadBoth
+export const MonadBoth: MonadBoth_.MonadBoth<Hkt> = _SyncResult.MonadBoth
 
 export const flatLeft: {
   <A, B, E>(syncResult: SyncResult<A, SyncResult<B, E>>): SyncResult<A | B, E>

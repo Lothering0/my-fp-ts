@@ -2,7 +2,7 @@ import * as Alt_ from '../../typeclasses/Alt'
 import { Tag, Tagged } from '../../types/Tag'
 import { pipe } from '../../utils/flow'
 import { identity } from '../Identity'
-import { Effect, EffectHkt, succeed, fail } from './effect'
+import { Effect, Hkt, succeed, fail } from './effect'
 import { match } from './matchers'
 import { flatMapLeft } from './monad-both'
 
@@ -53,6 +53,6 @@ export const catchAll: {
   ): (effect: Effect<A, E1, R>) => Effect<A | B, E2, R>
 } = flatMapLeft
 
-export const Alt: Alt_.Alt<EffectHkt> = {
+export const Alt: Alt_.Alt<Hkt> = {
   orElse,
 }

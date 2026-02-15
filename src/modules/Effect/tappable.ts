@@ -16,7 +16,7 @@ import { identity } from '../Identity'
 
 export const Tappable = create(Monad)
 
-export const TappableBoth: TappableBoth_.TappableBoth<Effect.EffectHkt> = {
+export const TappableBoth: TappableBoth_.TappableBoth<Effect.Hkt> = {
   ...Tappable,
   tapLeft: f =>
     mapResult(result => r => {

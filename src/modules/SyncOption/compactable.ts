@@ -1,10 +1,10 @@
 import * as Option from '../Option'
 import * as Result from '../Result'
 import { Compactable as Compactable_ } from '../../typeclasses/Compactable'
-import { SyncOption, SyncOptionHkt } from './sync-option'
+import { SyncOption, Hkt } from './sync-option'
 import { _SyncOption } from './_internal'
 
-export const Compactable: Compactable_<SyncOptionHkt> = _SyncOption.Compactable
+export const Compactable: Compactable_<Hkt> = _SyncOption.Compactable
 
 export const compact: {
   <A>(syncOption: SyncOption<Option.Option<A>>): SyncOption<A>

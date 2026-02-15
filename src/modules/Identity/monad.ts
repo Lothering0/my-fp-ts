@@ -2,9 +2,9 @@ import { create } from '../../typeclasses/Monad'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
 import { FromIdentity } from './from-identity'
 import { Functor } from './functor'
-import { Identity, IdentityHkt, identity } from './identity'
+import { Identity, Hkt, identity } from './identity'
 
-export const Monad = create<IdentityHkt>(FromIdentity, Functor, {
+export const Monad = create<Hkt>(FromIdentity, Functor, {
   flat: identity,
 })
 

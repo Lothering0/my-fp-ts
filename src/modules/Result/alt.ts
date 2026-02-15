@@ -1,6 +1,6 @@
 import * as Alt_ from '../../typeclasses/Alt'
 import { identity } from '../Identity'
-import { fail, Result, ResultHkt, succeed } from './result'
+import { fail, Result, Hkt, succeed } from './result'
 import { match } from './matchers'
 import { constant } from '../../utils/constant'
 import { Tag, Tagged } from '../../types/Tag'
@@ -70,6 +70,6 @@ export const catchTag =
       ),
     )
 
-export const Alt: Alt_.Alt<ResultHkt> = {
+export const Alt: Alt_.Alt<Hkt> = {
   orElse,
 }

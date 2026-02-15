@@ -1,12 +1,12 @@
 import * as Semigroup from './Semigroup'
 import * as Invariant_ from './Invariant'
-import { Hkt } from './Hkt'
+import { Hkt as Hkt_ } from './Hkt'
 
 export interface Monoid<S> extends Semigroup.Semigroup<S> {
   readonly empty: S
 }
 
-export interface MonoidHkt extends Hkt {
+export interface Hkt extends Hkt_ {
   readonly Type: Monoid<this['Fixed']>
 }
 
@@ -21,7 +21,7 @@ export const combineAll: {
   <S>(Monoid: Monoid<S>): (as: Iterable<S>) => S
 } = Monoid => Semigroup.combineAll(Monoid)(Monoid.empty)
 
-export const Invariant: Invariant_.Invariant<MonoidHkt> = {
+export const Invariant: Invariant_.Invariant<Hkt> = {
   imap: (st, ts) => self => ({
     ...Semigroup.imap(st, ts)(self),
     empty: st(self.empty),

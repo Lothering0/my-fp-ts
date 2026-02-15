@@ -1,10 +1,10 @@
 import * as Result from '../Result'
 import { create } from '../../typeclasses/Bifunctor'
 import { Functor, mapResult } from './functor'
-import { Effect, EffectHkt } from './effect'
+import { Effect, Hkt } from './effect'
 import { pipe } from '../../utils/flow'
 
-export const Bifunctor = create<EffectHkt>(Functor, {
+export const Bifunctor = create<Hkt>(Functor, {
   mapLeft: ed => mapResult(result => () => pipe(result, Result.mapLeft(ed))),
 })
 

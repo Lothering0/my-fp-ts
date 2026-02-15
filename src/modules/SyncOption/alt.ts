@@ -1,5 +1,5 @@
 import * as Alt_ from '../../typeclasses/Alt'
-import { SyncOption, SyncOptionHkt } from './sync-option'
+import { SyncOption, Hkt } from './sync-option'
 import { identity } from '../Identity'
 import { LazyArg } from '../../types/utils'
 import { match } from './matchers'
@@ -30,4 +30,4 @@ export const catchAll: {
   ): <A>(selfSyncOption: SyncOption<A>) => SyncOption<A | B>
 } = _SyncOption.catchAll
 
-export const Alt: Alt_.Alt<SyncOptionHkt> = _SyncOption.Alt
+export const Alt: Alt_.Alt<Hkt> = _SyncOption.Alt

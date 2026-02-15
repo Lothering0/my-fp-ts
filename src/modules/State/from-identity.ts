@@ -1,7 +1,7 @@
 import { FromIdentity as FromIdentity_ } from '../../typeclasses/FromIdentity'
-import { State, StateHkt } from './state'
+import { State, Hkt } from './state'
 
-export const FromIdentity: FromIdentity_<StateHkt> = {
+export const FromIdentity: FromIdentity_<Hkt> = {
   of: a => s => [a, s],
 }
 

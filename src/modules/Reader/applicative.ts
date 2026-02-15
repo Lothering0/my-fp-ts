@@ -1,8 +1,8 @@
 import * as Applicative_ from '../../typeclasses/Applicative'
 import { Monad } from './monad'
-import { Reader, ReaderHkt } from './reader'
+import { Reader, Hkt } from './reader'
 
-export const Applicative = Applicative_.create<ReaderHkt>(Monad)
+export const Applicative = Applicative_.create<Hkt>(Monad)
 
 export const apply: {
   <R, A>(

@@ -1,8 +1,8 @@
 import * as Zippable_ from '../../typeclasses/Zippable'
 import { _SyncOption } from './_internal'
-import { SyncOption, SyncOptionHkt } from './sync-option'
+import { SyncOption, Hkt } from './sync-option'
 
-export const Zippable: Zippable_.Zippable<SyncOptionHkt> = _SyncOption.Zippable
+export const Zippable: Zippable_.Zippable<Hkt> = _SyncOption.Zippable
 
 export const zipWith: {
   <A, B, C>(

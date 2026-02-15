@@ -1,9 +1,9 @@
 import * as Functor_ from '../../typeclasses/Functor'
-import { OptionHkt, Option, some, none } from './option'
+import { Hkt, Option, some, none } from './option'
 import { flow } from '../../utils/flow'
 import { match } from './matchers'
 
-export const Functor = Functor_.create<OptionHkt>({
+export const Functor = Functor_.create<Hkt>({
   map: fab =>
     match({
       onNone: none,

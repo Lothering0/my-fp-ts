@@ -1,7 +1,7 @@
 import { FromIdentity as FromIdentity_ } from '../../typeclasses/FromIdentity'
-import { EffectHkt, Effect, succeed } from './effect'
+import { Hkt, Effect, succeed } from './effect'
 
-export const FromIdentity: FromIdentity_<EffectHkt> = {
+export const FromIdentity: FromIdentity_<Hkt> = {
   of: succeed,
 }
 

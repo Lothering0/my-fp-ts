@@ -1,6 +1,6 @@
-import { Hkt } from '../../typeclasses/Hkt'
+import { Hkt as Hkt_ } from '../../typeclasses/Hkt'
 
-export interface PredicateHkt extends Hkt {
+export interface Hkt extends Hkt_ {
   readonly Type: Predicate<this['Fixed']>
 }
 

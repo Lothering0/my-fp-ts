@@ -2,11 +2,11 @@ import * as Result from '../Result'
 import * as MonadBoth_ from '../../typeclasses/MonadBoth'
 import { Monad } from './monad'
 import { Bifunctor } from './bifunctor'
-import { Effect, EffectHkt, run } from './effect'
+import { Effect, Hkt, run } from './effect'
 import { FromIdentityLeft } from './from-identity-left'
 import { create } from './_internal'
 
-export const MonadBoth = MonadBoth_.create<EffectHkt>(
+export const MonadBoth = MonadBoth_.create<Hkt>(
   FromIdentityLeft,
   Bifunctor,
   Monad,

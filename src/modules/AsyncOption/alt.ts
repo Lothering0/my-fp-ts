@@ -1,6 +1,6 @@
 import * as Alt_ from '../../typeclasses/Alt'
 import * as Async from '../Async'
-import { AsyncOption, AsyncOptionHkt } from './async-option'
+import { AsyncOption, Hkt } from './async-option'
 import { _AsyncOption } from './_internal'
 import { LazyArg } from '../../types/utils'
 
@@ -27,4 +27,4 @@ export const catchAll: {
   ): <A>(selfAsyncOption: AsyncOption<A>) => AsyncOption<A | B>
 } = _AsyncOption.catchAll
 
-export const Alt: Alt_.Alt<AsyncOptionHkt> = _AsyncOption.Alt
+export const Alt: Alt_.Alt<Hkt> = _AsyncOption.Alt

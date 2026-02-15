@@ -1,12 +1,12 @@
 import { create } from '../../typeclasses/MonadBoth'
 import { Monad } from './monad'
 import { Bifunctor } from './bifunctor'
-import { Result, ResultHkt, succeed } from './result'
+import { Result, Hkt, succeed } from './result'
 import { FromIdentityLeft } from './from-identity-left'
 import { identity } from '../Identity'
 import { match } from './matchers'
 
-export const MonadBoth = create<ResultHkt>(FromIdentityLeft, Bifunctor, Monad, {
+export const MonadBoth = create<Hkt>(FromIdentityLeft, Bifunctor, Monad, {
   flatLeft: match({
     onSuccess: succeed,
     onFailure: identity,

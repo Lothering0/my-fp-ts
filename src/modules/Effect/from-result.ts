@@ -1,8 +1,8 @@
 import { FromResult as FromResult_ } from '../../typeclasses/FromResult'
 import { Result } from '../Result'
-import { Effect, EffectHkt, fromSyncResult } from './effect'
+import { Effect, Hkt, fromSyncResult } from './effect'
 
-export const FromResult: FromResult_<EffectHkt> = {
+export const FromResult: FromResult_<Hkt> = {
   fromResult: result => fromSyncResult(() => result),
 }
 

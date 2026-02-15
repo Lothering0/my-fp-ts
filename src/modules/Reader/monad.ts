@@ -2,9 +2,9 @@ import * as Monad_ from '../../typeclasses/Monad'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
 import { FromIdentity } from './from-identity'
 import { Functor } from './functor'
-import { Reader, ReaderHkt } from './reader'
+import { Reader, Hkt } from './reader'
 
-export const Monad = Monad_.create<ReaderHkt>(FromIdentity, Functor, {
+export const Monad = Monad_.create<Hkt>(FromIdentity, Functor, {
   flat: reader => r => reader(r)(r),
 })
 

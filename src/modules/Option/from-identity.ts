@@ -1,7 +1,7 @@
 import { FromIdentity as FromIdentity_ } from '../../typeclasses/FromIdentity'
-import { Option, OptionHkt, some } from './option'
+import { Option, Hkt, some } from './option'
 
-export const FromIdentity: FromIdentity_<OptionHkt> = {
+export const FromIdentity: FromIdentity_<Hkt> = {
   of: some,
 }
 

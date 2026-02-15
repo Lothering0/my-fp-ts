@@ -1,9 +1,9 @@
 import { Monad as Monad_ } from '../../typeclasses/Monad'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
-import { SyncResultHkt, SyncResult } from './sync-result'
+import { Hkt, SyncResult } from './sync-result'
 import { _SyncResult } from './_internal'
 
-export const Monad: Monad_<SyncResultHkt> = _SyncResult.Monad
+export const Monad: Monad_<Hkt> = _SyncResult.Monad
 
 export const Do = Monad.Do
 

@@ -2,7 +2,7 @@ import * as Effect from '../Effect'
 import { FromEffect as FromEffect_ } from '../../typeclasses/FromEffect'
 import { identity } from '../Identity'
 
-export const FromEffect: FromEffect_<Effect.EffectHkt> = {
+export const FromEffect: FromEffect_<Effect.Hkt> = {
   fromEffect: identity,
 }
 

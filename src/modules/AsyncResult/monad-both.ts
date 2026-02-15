@@ -1,9 +1,8 @@
 import * as MonadBoth_ from '../../typeclasses/MonadBoth'
 import { _AsyncResult } from './_internal'
-import { AsyncResult, AsyncResultHkt } from './async-result'
+import { AsyncResult, Hkt } from './async-result'
 
-export const MonadBoth: MonadBoth_.MonadBoth<AsyncResultHkt> =
-  _AsyncResult.MonadBoth
+export const MonadBoth: MonadBoth_.MonadBoth<Hkt> = _AsyncResult.MonadBoth
 
 export const flatLeft: {
   <A, B, E>(

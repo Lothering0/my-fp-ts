@@ -2,11 +2,11 @@ import * as SyncResult from '../SyncResult'
 import * as Option from '../Option'
 import { Sync } from '../Sync'
 import { Result } from '../Result'
-import { SyncOption, SyncOptionHkt } from './sync-option'
+import { SyncOption, Hkt } from './sync-option'
 import { Tappable as Tappable_ } from '../../typeclasses/Tappable'
 import { _SyncOption } from './_internal'
 
-export const Tappable: Tappable_<SyncOptionHkt> = _SyncOption.Tappable
+export const Tappable: Tappable_<Hkt> = _SyncOption.Tappable
 
 export const tap: {
   <A>(

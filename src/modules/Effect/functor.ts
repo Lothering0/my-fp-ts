@@ -1,7 +1,7 @@
 import * as Result from '../Result'
 import * as Reader from '../Reader'
 import * as Functor_ from '../../typeclasses/Functor'
-import { Effect, EffectHkt, EffectValue } from './effect'
+import { Effect, Hkt, EffectValue } from './effect'
 import { create } from './_internal'
 import { pipe } from '../../utils/flow'
 
@@ -17,7 +17,7 @@ export const asResult: {
   ): (effect: Effect<unknown, unknown, unknown>) => Effect<A, E, R>
 } = result => mapResult(() => () => result)
 
-export const Functor = Functor_.create<EffectHkt>({
+export const Functor = Functor_.create<Hkt>({
   map: ab => mapResult(result => () => pipe(result, Result.map(ab))),
 })
 

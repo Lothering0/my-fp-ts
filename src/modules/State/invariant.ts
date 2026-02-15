@@ -1,8 +1,8 @@
 import * as Invariant_ from '../../typeclasses/Invariant'
-import { State, StateHkt } from './state'
+import { State, Hkt } from './state'
 import { flow } from '../../utils/flow'
 
-export const Invariant: Invariant_.Invariant<StateHkt> = {
+export const Invariant: Invariant_.Invariant<Hkt> = {
   imap: (st, ts) => state => flow(ts, state, ([a, s]) => [a, st(s)]),
 }
 

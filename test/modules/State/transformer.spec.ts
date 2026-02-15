@@ -5,7 +5,7 @@ describe('transformer', () => {
 
   describe('run', () => {
     it('should return tuple lifted to transformed monad context', () => {
-      const fa: State.StateT<Option.OptionHkt, number, never, string, string> =
+      const fa: State.StateT<Option.Hkt, number, never, string, string> =
         jest.fn(s => Option.some([1, s]))
       expect(StateOption.run('')(fa)).toEqual(Option.some([1, '']))
       expect(fa).toHaveBeenCalledTimes(1)
@@ -14,7 +14,7 @@ describe('transformer', () => {
 
   describe('of', () => {
     it('should correctly lift value to `Option` monad context', () => {
-      const fa: State.StateT<Option.OptionHkt, number, never, string, unknown> =
+      const fa: State.StateT<Option.Hkt, number, never, string, unknown> =
         StateOption.of(1)
       expect(StateOption.run('')(fa)).toEqual(Option.some([1, '']))
     })
@@ -22,7 +22,7 @@ describe('transformer', () => {
 
   describe('fromState', () => {
     it('should correctly lift state to transformed monad context', () => {
-      const fa: State.StateT<Option.OptionHkt, number, never, string, unknown> =
+      const fa: State.StateT<Option.Hkt, number, never, string, unknown> =
         jest.fn(StateOption.fromState(s => [1, s]))
       expect(StateOption.run('')(fa)).toEqual(Option.some([1, '']))
       expect(fa).toHaveBeenCalledTimes(1)
@@ -31,7 +31,7 @@ describe('transformer', () => {
 
   describe('fromKind', () => {
     it('should correctly lift state to transformed monad context', () => {
-      const fa: State.StateT<Option.OptionHkt, number, never, string, unknown> =
+      const fa: State.StateT<Option.Hkt, number, never, string, unknown> =
         StateOption.fromKind(Option.some(1))
       expect(StateOption.run('')(fa)).toEqual(Option.some([1, '']))
     })

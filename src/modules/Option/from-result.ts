@@ -1,11 +1,11 @@
 import * as Result from '../Result'
 import { FromResult as FromResult_ } from '../../typeclasses/FromResult'
-import { Option, OptionHkt, some, none } from './option'
+import { Option, Hkt, some, none } from './option'
 import { LazyArg } from '../../types/utils'
 import { flow } from '../../utils/flow'
 import { match } from './matchers'
 
-export const FromResult: FromResult_<OptionHkt> = {
+export const FromResult: FromResult_<Hkt> = {
   fromResult: Result.match({ onFailure: none, onSuccess: some }),
 }
 

@@ -1,6 +1,6 @@
 import * as Alt_ from '../../typeclasses/Alt'
 import * as Async from '../Async'
-import { AsyncResult, AsyncResultHkt } from './async-result'
+import { AsyncResult, Hkt } from './async-result'
 import { _AsyncResult } from './_internal'
 import { Tag, Tagged } from '../../types/Tag'
 import { pipe } from '../../utils/flow'
@@ -49,4 +49,4 @@ export const catchTag =
   ): AsyncResult<A | B, (E1 extends Tagged<T> ? never : E1) | E2> =>
     pipe(asyncResult, _AsyncResult.catchTag(tag, onFailure))
 
-export const Alt: Alt_.Alt<AsyncResultHkt> = _AsyncResult.Alt
+export const Alt: Alt_.Alt<Hkt> = _AsyncResult.Alt

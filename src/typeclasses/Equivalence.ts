@@ -1,5 +1,5 @@
 import * as Contravariant_ from './Contravariant'
-import { Hkt } from './Hkt'
+import { Hkt as Hkt_ } from './Hkt'
 import { Semigroup } from './Semigroup'
 import { Monoid } from './Monoid'
 import { constant, constTrue } from '../utils/constant'
@@ -8,7 +8,7 @@ export interface Equivalence<S> {
   readonly equals: (y: S) => (x: S) => boolean
 }
 
-export interface EquivalenceHkt extends Hkt {
+export interface Hkt extends Hkt_ {
   readonly Type: Equivalence<this['Fixed']>
 }
 
@@ -22,7 +22,7 @@ export const reverse: {
   equals: y => x => !Equivalence.equals(y)(x),
 })
 
-export const Contravariant: Contravariant_.Contravariant<EquivalenceHkt> = {
+export const Contravariant: Contravariant_.Contravariant<Hkt> = {
   contramap: ba => self => ({
     equals: y => x => self.equals(ba(y))(ba(x)),
   }),

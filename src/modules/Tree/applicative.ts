@@ -1,8 +1,8 @@
-import { Tree, TreeHkt } from './tree'
+import { Tree, Hkt } from './tree'
 import { create } from '../../typeclasses/Applicative'
 import { Monad } from './monad'
 
-export const Applicative = create<TreeHkt>(Monad)
+export const Applicative = create<Hkt>(Monad)
 
 export const apply: {
   <A>(tree: Tree<A>): <B>(selfTree: Tree<(a: A) => B>) => Tree<B>

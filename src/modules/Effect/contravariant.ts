@@ -1,8 +1,8 @@
 import * as Contravariant_ from '../../typeclasses/Contravariant'
-import { Effect, EffectHkt } from './effect'
+import { Effect, Hkt } from './effect'
 import { local } from './utils'
 
-export const Contravariant: Contravariant_.Contravariant<EffectHkt> = {
+export const Contravariant: Contravariant_.Contravariant<Hkt> = {
   contramap: local,
 }
 

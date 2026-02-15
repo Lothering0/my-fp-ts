@@ -1,8 +1,8 @@
 import { create } from '../../typeclasses/Extendable'
-import { Result, ResultHkt } from './result'
+import { Result, Hkt } from './result'
 import { Functor, as } from './functor'
 
-export const Extendable = create<ResultHkt>(Functor, {
+export const Extendable = create<Hkt>(Functor, {
   extend: fab => result => as(fab(result))(result),
 })
 

@@ -1,5 +1,5 @@
 import * as Alt_ from '../../typeclasses/Alt'
-import { some, Option, OptionHkt } from './option'
+import { some, Option, Hkt } from './option'
 import { identity } from '../Identity'
 import { LazyArg } from '../../types/utils'
 import { match } from './matchers'
@@ -34,6 +34,6 @@ export const catchAll: {
     onSome: some,
   })
 
-export const Alt: Alt_.Alt<OptionHkt> = {
+export const Alt: Alt_.Alt<Hkt> = {
   orElse,
 }

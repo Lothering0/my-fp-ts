@@ -1,11 +1,10 @@
 import * as Option from '../Option'
 import * as Result from '../Result'
 import { Compactable as Compactable_ } from '../../typeclasses/Compactable'
-import { AsyncOption, AsyncOptionHkt } from './async-option'
+import { AsyncOption, Hkt } from './async-option'
 import { _AsyncOption } from './_internal'
 
-export const Compactable: Compactable_<AsyncOptionHkt> =
-  _AsyncOption.Compactable
+export const Compactable: Compactable_<Hkt> = _AsyncOption.Compactable
 
 export const compact: {
   <A>(asyncOption: AsyncOption<Option.Option<A>>): AsyncOption<A>

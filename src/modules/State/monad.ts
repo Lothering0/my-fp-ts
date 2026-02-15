@@ -1,11 +1,11 @@
 import { flow } from '../../utils/flow'
 import { create } from '../../typeclasses/Monad'
 import { Functor } from './functor'
-import { State, StateHkt } from './state'
+import { State, Hkt } from './state'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
 import { FromIdentity } from './from-identity'
 
-export const Monad = create<StateHkt>(FromIdentity, Functor, {
+export const Monad = create<Hkt>(FromIdentity, Functor, {
   flat: state => flow(state, ([ma, s1]) => ma(s1)),
 })
 

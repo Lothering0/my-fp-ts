@@ -2,7 +2,7 @@ import * as Ordering from '../modules/Ordering'
 import * as Contravariant_ from './Contravariant'
 import * as Boolean from '../modules/Boolean'
 import { flow, pipe } from '../utils/flow'
-import { Hkt } from './Hkt'
+import { Hkt as Hkt_ } from './Hkt'
 import { constant } from '../utils/constant'
 import { Endomorphism } from './Endomorphism'
 import { Predicate } from '../modules/Predicate'
@@ -10,7 +10,7 @@ import { Semigroup } from './Semigroup'
 import { identity } from '../modules/Identity'
 import { Monoid } from './Monoid'
 
-export interface OrderHkt extends Hkt {
+export interface Hkt extends Hkt_ {
   readonly Type: Order<this['Fixed']>
 }
 
@@ -83,7 +83,7 @@ export const between: {
     Boolean.and(pipe(a, lessThanOrEquals(Order)(high))),
   )
 
-export const Contravariant: Contravariant_.Contravariant<OrderHkt> = {
+export const Contravariant: Contravariant_.Contravariant<Hkt> = {
   contramap: ts => Order => ({
     compare: y => x => Order.compare(ts(y))(ts(x)),
   }),

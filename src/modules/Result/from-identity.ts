@@ -1,7 +1,7 @@
 import { FromIdentity as FromIdentity_ } from '../../typeclasses/FromIdentity'
-import { Result, ResultHkt, succeed } from './result'
+import { Result, Hkt, succeed } from './result'
 
-export const FromIdentity: FromIdentity_<ResultHkt> = {
+export const FromIdentity: FromIdentity_<Hkt> = {
   of: succeed,
 }
 

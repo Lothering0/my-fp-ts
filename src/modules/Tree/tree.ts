@@ -1,7 +1,7 @@
-import { Hkt } from '../../typeclasses/Hkt'
+import { Hkt as Hkt_ } from '../../typeclasses/Hkt'
 import { NonEmptyIterable } from '../_internal'
 
-export interface TreeHkt extends Hkt {
+export interface Hkt extends Hkt_ {
   readonly Type: Tree<this['In']>
 }
 

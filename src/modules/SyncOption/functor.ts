@@ -1,8 +1,8 @@
 import * as Functor_ from '../../typeclasses/Functor'
-import { SyncOptionHkt, SyncOption } from './sync-option'
+import { Hkt, SyncOption } from './sync-option'
 import { _SyncOption } from './_internal'
 
-export const Functor: Functor_.Functor<SyncOptionHkt> = _SyncOption.Functor
+export const Functor: Functor_.Functor<Hkt> = _SyncOption.Functor
 
 export const map: {
   <A, B>(ab: (a: A) => B): (syncOption: SyncOption<A>) => SyncOption<B>

@@ -1,9 +1,9 @@
 import { create } from '../../typeclasses/Applicative'
 import { flip } from '../../utils/flip'
-import { AsyncHkt, toPromise, Async } from './async'
+import { Hkt, toPromise, Async } from './async'
 import { Monad } from './monad'
 
-export const Applicative = create<AsyncHkt>(Monad)
+export const Applicative = create<Hkt>(Monad)
 
 export const apply: {
   <A>(async: Async<A>): <B>(selfAsync: Async<(a: A) => B>) => Async<B>

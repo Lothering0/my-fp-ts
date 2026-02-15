@@ -1,8 +1,8 @@
 import { Applicative as Applicative_ } from '../../typeclasses/Applicative'
-import { SyncOptionHkt, SyncOption } from './sync-option'
+import { Hkt, SyncOption } from './sync-option'
 import { _SyncOption } from './_internal'
 
-export const Applicative: Applicative_<SyncOptionHkt> = _SyncOption.Applicative
+export const Applicative: Applicative_<Hkt> = _SyncOption.Applicative
 
 export const apply: {
   <A>(

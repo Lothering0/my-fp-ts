@@ -5,19 +5,14 @@ import * as Sync from '../Sync'
 import * as TappableBoth_ from '../../typeclasses/TappableBoth'
 import { Tappable as Tappable_ } from '../../typeclasses/Tappable'
 import { map } from './functor'
-import {
-  AsyncResult,
-  AsyncResultHkt,
-  fromAsync,
-  toPromise,
-} from './async-result'
+import { AsyncResult, Hkt, fromAsync, toPromise } from './async-result'
 import { pipe } from '../../utils/flow'
 import { Do, bind } from './monad'
 import { _AsyncResult } from './_internal'
 
-export const Tappable: Tappable_<AsyncResultHkt> = _AsyncResult.Tappable
+export const Tappable: Tappable_<Hkt> = _AsyncResult.Tappable
 
-export const TappableBoth: TappableBoth_.TappableBoth<AsyncResultHkt> = {
+export const TappableBoth: TappableBoth_.TappableBoth<Hkt> = {
   ...Tappable,
   tapLeft: f => asyncResult => () =>
     pipe(asyncResult, toPromise, promise =>

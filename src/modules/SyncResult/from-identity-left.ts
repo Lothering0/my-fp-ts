@@ -1,8 +1,8 @@
 import { FromIdentityLeft as FromIdentityLeft_ } from '../../typeclasses/FromIdentityLeft'
 import { _SyncResult } from './_internal'
-import { SyncResult, SyncResultHkt } from './sync-result'
+import { SyncResult, Hkt } from './sync-result'
 
-export const FromIdentityLeft: FromIdentityLeft_<SyncResultHkt> =
+export const FromIdentityLeft: FromIdentityLeft_<Hkt> =
   _SyncResult.FromIdentityLeft
 
 export const ofLeft: {

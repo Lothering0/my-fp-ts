@@ -2,9 +2,9 @@ import { create } from '../../typeclasses/Monad'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
 import { FromIdentity } from './from-identity'
 import { Functor } from './functor'
-import { SyncHkt, Sync, run } from './sync'
+import { Hkt, Sync, run } from './sync'
 
-export const Monad = create<SyncHkt>(FromIdentity, Functor, {
+export const Monad = create<Hkt>(FromIdentity, Functor, {
   flat: run,
 })
 

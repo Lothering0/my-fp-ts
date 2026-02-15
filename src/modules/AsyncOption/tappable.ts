@@ -6,13 +6,13 @@ import * as SyncResult from '../SyncResult'
 import * as Option from '../Option'
 import { Tappable as Tappable_ } from '../../typeclasses/Tappable'
 import { Do, bind } from './monad'
-import { AsyncOption, AsyncOptionHkt, fromAsync } from './async-option'
+import { AsyncOption, Hkt, fromAsync } from './async-option'
 import { Sync } from '../Sync'
 import { map } from './functor'
 import { pipe } from '../../utils/flow'
 import { _AsyncOption } from './_internal'
 
-export const Tappable: Tappable_<AsyncOptionHkt> = _AsyncOption.Tappable
+export const Tappable: Tappable_<Hkt> = _AsyncOption.Tappable
 
 export const tap: {
   <A>(

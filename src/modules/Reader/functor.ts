@@ -1,8 +1,8 @@
 import * as Functor_ from '../../typeclasses/Functor'
 import { flow } from '../../utils/flow'
-import { Reader, ReaderHkt } from './reader'
+import { Reader, Hkt } from './reader'
 
-export const Functor = Functor_.create<ReaderHkt>({
+export const Functor = Functor_.create<Hkt>({
   map: ab => reader => flow(reader, ab),
 })
 

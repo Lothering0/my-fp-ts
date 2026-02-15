@@ -1,10 +1,10 @@
 import * as Iterable from '../Iterable'
 import * as Foldable_ from '../../typeclasses/Foldable'
-import { Tree, TreeHkt } from './tree'
+import { Tree, Hkt } from './tree'
 import { forestOf, valueOf } from './utils'
 import { pipe } from '../../utils/flow'
 
-export const Foldable: Foldable_.Foldable<TreeHkt> = {
+export const Foldable: Foldable_.Foldable<Hkt> = {
   reduce: (b, bab) => tree =>
     Iterable.reduce(bab(b, valueOf(tree)), (b, tree) =>
       pipe(tree, reduce(b, bab)),

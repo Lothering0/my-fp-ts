@@ -2,16 +2,16 @@ import * as Foldable_ from '../../typeclasses/Foldable'
 import * as FoldableWithIndex_ from '../../typeclasses/FoldableWithIndex'
 import * as Array from '../ReadonlyArray'
 import { flow } from '../../utils/flow'
-import { ReadonlyRecord, ReadonlyRecordHkt } from './readonly-record'
+import { ReadonlyRecord, Hkt } from './readonly-record'
 import { toEntries, values } from './utils'
 
-export const Foldable: Foldable_.Foldable<ReadonlyRecordHkt> = {
+export const Foldable: Foldable_.Foldable<Hkt> = {
   reduce: (b, bab) => flow(values, Array.Foldable.reduce(b, bab)),
   reduceRight: (b, abb) => flow(values, Array.Foldable.reduceRight(b, abb)),
 }
 
 export const FoldableWithIndex: FoldableWithIndex_.FoldableWithIndex<
-  ReadonlyRecordHkt,
+  Hkt,
   string
 > = {
   ...Foldable,

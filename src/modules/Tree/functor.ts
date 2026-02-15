@@ -1,10 +1,10 @@
 import * as Iterable from '../Iterable'
 import * as Functor_ from '../../typeclasses/Functor'
-import { Tree, TreeHkt } from './tree'
+import { Tree, Hkt } from './tree'
 import { make, valueOf, forestOf } from './utils'
 import { pipe } from '../../utils/flow'
 
-export const Functor = Functor_.create<TreeHkt>({
+export const Functor = Functor_.create<Hkt>({
   map: ab => tree =>
     make(pipe(tree, valueOf, ab), pipe(tree, forestOf, Iterable.map(map(ab)))),
 })

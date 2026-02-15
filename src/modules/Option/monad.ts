@@ -6,7 +6,7 @@ import { Functor } from './functor'
 import { identity } from '../Identity'
 import { match } from './matchers'
 
-export const Monad = create<Option.OptionHkt>(FromIdentity, Functor, {
+export const Monad = create<Option.Hkt>(FromIdentity, Functor, {
   flat: match({
     onNone: Option.none,
     onSome: identity,

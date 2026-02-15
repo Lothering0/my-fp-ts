@@ -1,7 +1,7 @@
-import { Hkt } from '../../typeclasses/Hkt'
+import { Hkt as Hkt_ } from '../../typeclasses/Hkt'
 import { _ } from '../../utils/underscore'
 
-export interface StateHkt extends Hkt {
+export interface Hkt extends Hkt_ {
   readonly Type: State<this['Fixed'], this['In']>
 }
 

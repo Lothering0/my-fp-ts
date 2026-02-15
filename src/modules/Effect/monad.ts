@@ -4,10 +4,10 @@ import { Functor } from './functor'
 import { pipe } from '../../utils/flow'
 import { DoObject, DoObjectKey } from '../../types/DoObject'
 import { FromIdentity } from './from-identity'
-import { Effect, EffectHkt, fromReaderResult, run } from './effect'
+import { Effect, Hkt, fromReaderResult, run } from './effect'
 import { create } from './_internal'
 
-export const Monad = Monad_.create<EffectHkt>(FromIdentity, Functor, {
+export const Monad = Monad_.create<Hkt>(FromIdentity, Functor, {
   flat: <A, E1, E2, R>(effect: Effect<Effect<A, E1, R>, E2, R>) =>
     create<Effect<A, E1, R>, E2, A, E1 | E2, R>(
       result => r =>

@@ -1,7 +1,7 @@
-import { Hkt } from '../../typeclasses/Hkt'
+import { Hkt as Hkt_ } from '../../typeclasses/Hkt'
 import { hole } from '../../utils/hole'
 
-export interface OptionHkt extends Hkt {
+export interface Hkt extends Hkt_ {
   readonly Type: Option<this['In']>
 }
 

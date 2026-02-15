@@ -1,7 +1,7 @@
 import { FromIdentityLeft as FromIdentityLeft_ } from '../../typeclasses/FromIdentityLeft'
-import { ResultHkt, Result, fail } from './result'
+import { Hkt, Result, fail } from './result'
 
-export const FromIdentityLeft: FromIdentityLeft_<ResultHkt> = {
+export const FromIdentityLeft: FromIdentityLeft_<Hkt> = {
   ofLeft: fail,
 }
 

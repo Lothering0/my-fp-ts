@@ -1,8 +1,8 @@
 import * as Functor_ from '../../typeclasses/Functor'
-import { AsyncOptionHkt, AsyncOption } from './async-option'
+import { Hkt, AsyncOption } from './async-option'
 import { _AsyncOption } from './_internal'
 
-export const Functor: Functor_.Functor<AsyncOptionHkt> = _AsyncOption.Functor
+export const Functor: Functor_.Functor<Hkt> = _AsyncOption.Functor
 
 export const map: {
   <A, B>(ab: (a: A) => B): (asyncOption: AsyncOption<A>) => AsyncOption<B>

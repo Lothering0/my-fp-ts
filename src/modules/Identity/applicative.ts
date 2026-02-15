@@ -1,8 +1,8 @@
 import { create } from '../../typeclasses/Applicative'
 import { Monad } from './monad'
-import { Identity, IdentityHkt } from './identity'
+import { Identity, Hkt } from './identity'
 
-export const Applicative = create<IdentityHkt>(Monad)
+export const Applicative = create<Hkt>(Monad)
 
 export const apply: {
   <A>(a: Identity<A>): <B>(f: Identity<(a: A) => B>) => Identity<B>

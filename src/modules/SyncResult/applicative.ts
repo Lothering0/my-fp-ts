@@ -1,8 +1,8 @@
 import { Applicative as Applicative_ } from '../../typeclasses/Applicative'
-import { SyncResult, SyncResultHkt } from './sync-result'
+import { SyncResult, Hkt } from './sync-result'
 import { _SyncResult } from './_internal'
 
-export const Applicative: Applicative_<SyncResultHkt> = _SyncResult.Applicative
+export const Applicative: Applicative_<Hkt> = _SyncResult.Applicative
 
 export const apply: {
   <A, E1>(
