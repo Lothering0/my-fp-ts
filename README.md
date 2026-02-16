@@ -1,5 +1,5 @@
 **my-fp-ts** is a pet-project, [fp-ts](https://github.com/gcanti/fp-ts) library implemented from zero. It was made just for fun (so don't blame me because of commit names).
-[Here](https://github.com/Lothering0/dotfiles/tree/main/waybar/mediaplayer) you can find an example of a small app that uses my lib.
+[Here](https://github.com/Lothering0/dotfiles/tree/e412a4cdb0097919993b833dcb40b1bda03f9667/waybar/mediaplayer) you can find an example of a small app that uses my lib.
 
 It is not fully compatible with the original library and has a lot of things that I made in my way. There some of key differences:
 
